@@ -1,5 +1,6 @@
 /* Complementos do portal multi-curso (o visual base vem de base.css) */
 .app.full{grid-template-columns:minmax(0,1fr);}
+a.logo{text-decoration:none;}
 .app.full .sb{display:none;}
 .pbar.off,.plabel.off,.btn-tool.off{visibility:hidden;}
 .bn{grid-auto-flow:column; grid-auto-columns:1fr;}
