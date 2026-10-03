@@ -1,0 +1,426 @@
+(function(){
+'use strict';
+
+const $ = id => document.getElementById(id);
+const UFS = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+const NIVEIS_PADRAO = [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']];
+
+let CURSOS = [];
+let ALUNO = null;
+let MATR = [];
+let PROG = {};
+let S = { view:'cursos', cur:null, modDone:null, escolhido:null };
+let SESSION = {};
+let TB = { open:false, mod:1 };
+let C = null;
+
+/* ============ UTILITÁRIOS ============ */
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cursoPorId = id => CURSOS.find(c => c.id === id);
+const pctCurso = c => { const d = PROG[c.id] || {}; return c.total ? Math.round(c.licoes.filter(l => d[l.id]).length / c.total * 100) : 0; };
+const ccor = c => '--c:' + c.cores[0] + ';--c2:' + c.cores[1];
+
+/* ============ CURSO ABERTO ============ */
+const D = () => PROG[C.id] || (PROG[C.id] = {});
+const FLAT = () => C.licoes;
+const byId = id => C.licoes.find(l => l.id === id);
+const modOf = id => C.conteudo.modulos.find(m => m.id === id);
+const idxOf = id => C.licoes.findIndex(l => l.id === id);
+function unlocked(id){ const i = idxOf(id), d = D(); for (let k=0;k<i;k++){ if(!d[C.licoes[k].id]) return false; } return true; }
+function modDone(m){ return m.lessons.every(l => D()[l.id]); }
+function modCount(m){ return m.lessons.filter(l => D()[l.id]).length; }
+function modPct(m){ return Math.round(modCount(m) / m.lessons.length * 100); }
+function xp(){ return FLAT().filter(l => D()[l.id]).length * 100 + C.conteudo.modulos.filter(modDone).length * 200; }
+function level(x){ return ((C.conteudo.niveis || NIVEIS_PADRAO).find(n => x >= n[0]) || [0,''])[1]; }
+function tstyle(id){ const t = (C.conteudo.cores || {})[id] || PORTAL.paleta(id - 1); return '--c:' + t[0] + ';--c2:' + t[1]; }
+const prompts = () => C.conteudo.prompts || {};
+const temToolbox = () => Object.keys(prompts()).length > 0;
+const iconeLicao = L => (C.conteudo.iconesLicao || {})[L.id] || L.icon || modOf(L.mod).icon;
+
+/* ============ RENDER: PORTAL ============ */
+function renderCursos(){
+  const ola = ALUNO
+    ? `<h1 class="hh">Olá, ${esc(ALUNO.nome.split(' ')[0])}! 👋</h1><p class="hp">Escolha um curso para começar ou continuar de onde parou.</p>`
+    : `<h1 class="hh">Portal de Estudos</h1><p class="hp">Cursos práticos com lições curtas, desafios reais e prompts prontos. Faça seu cadastro gratuito e comece agora.</p>
+       <button class="next" data-act="cadastro">Criar meu cadastro ➜</button>`;
+  const cards = CURSOS.map((c, i) => {
+    const matr = MATR.includes(c.id), pct = pctCurso(c), fim = matr && pct === 100;
+    const acao = fim ? '✅ Concluído' : matr ? '▶ Continuar' : '✨ Iniciar curso';
+    return `<div class="mc ${fim?'fin':''}" role="button" tabindex="0" data-act="curso" data-id="${esc(c.id)}" style="${ccor(c)};--d:${i*0.5}s">
+      <div class="mtile">${c.icone}</div>
+      <div>${c.status === 'rascunho' ? '<span class="badge">RASCUNHO</span>' : ''}<div class="mt">${esc(c.titulo)}</div><div class="ms">${esc(c.descricao)}</div></div>
+      ${matr ? `<div class="cbar"><i style="width:${pct}%"></i></div>` : ''}
+      <div class="mfoot"><span>${c.conteudo.modulos.length} módulos · ${c.total} lições${matr ? ' · ' + pct + '%' : ''}</span><span class="mst">${acao}</span></div>
+    </div>`;
+  }).join('');
+  $('main').removeAttribute('style');
+  $('main').innerHTML = `<section class="hero"><div>${ola}</div></section>
+    <div class="grid">${cards || '<div class="empty">Nenhum curso publicado ainda.</div>'}</div>`;
+}
+
+function renderCadastro(){
+  const opcoes = CURSOS.map(c => `<option value="${esc(c.id)}" ${S.escolhido===c.id?'selected':''}>${esc(c.titulo)}</option>`).join('');
+  $('main').removeAttribute('style');
+  $('main').innerHTML = `<form class="form" id="f-cad" novalidate>
+    <h1 class="h1" style="margin-bottom:6px">Cadastro do aluno</h1>
+    <p class="hp">Preencha seus dados, escolha o curso e comece na hora.</p>
+    <div class="card"><div class="fgrid">
+      <label class="fl wide">Nome completo<input name="nome" autocomplete="name" required maxlength="120"></label>
+      <label class="fl">Idade<input name="idade" type="number" inputmode="numeric" min="5" max="120" required></label>
+      <label class="fl">Telefone / WhatsApp<input name="telefone" type="tel" autocomplete="tel" placeholder="(11) 91234-5678" required maxlength="25"></label>
+      <label class="fl">País<input name="pais" autocomplete="country-name" value="Brasil" required maxlength="60"></label>
+      <label class="fl">CEP<input name="cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" required maxlength="12"><small id="cep-info"></small></label>
+      <label class="fl wide" id="estado-wrap"></label>
+      <label class="fl wide">Curso<select name="curso" required>${opcoes}</select></label>
+    </div>
+    <label class="check"><input type="checkbox" name="lgpd" required><span>Autorizo o uso destes dados pelo Portal de Estudos para acompanhar meu progresso nos cursos.</span></label>
+    <div class="err" id="cad-err" role="alert"></div>
+    <button class="next" type="submit" id="cad-ok">Cadastrar e iniciar o curso ➜</button>
+    </div>
+    <button class="link" type="button" data-act="cursos">← Voltar aos cursos</button>
+  </form>`;
+  renderEstado();
+}
+
+function ehBrasil(){ const p = $('f-cad').elements.pais.value.trim().toLowerCase(); return p === 'brasil' || p === 'brazil' || p === 'br'; }
+function renderEstado(valor){
+  const w = $('estado-wrap'), atual = valor != null ? valor : (w.querySelector('[name=estado]') || {}).value || '';
+  w.innerHTML = ehBrasil()
+    ? `Estado<select name="estado" required><option value="">Selecione</option>${UFS.map(u => `<option ${u===atual?'selected':''}>${u}</option>`).join('')}</select>`
+    : `Estado / Província<input name="estado" required maxlength="60" value="${esc(atual)}">`;
+}
+
+/* ============ RENDER: CURSO ============ */
+function renderSidebar(){
+  if (!C) { $('sb').innerHTML = ''; return; }
+  const d = D();
+  $('sb').innerHTML = `<button class="homebtn" data-act="cursos"><span class="hi">🎓</span>Todos os cursos</button>
+  <button class="homebtn ${S.view==='home'?'cur':''}" data-act="home"><span class="hi">🏠</span>Início do curso</button>` +
+  C.conteudo.modulos.map(m => {
+    const done = modDone(m), open = unlocked(m.lessons[0].id);
+    const status = done ? 'Concluído' : (open ? modCount(m) + ' de ' + m.lessons.length + ' lições' : 'Bloqueado');
+    const tool = prompts()[m.id] ? `<button class="modtool" data-act="tool" data-mod="${m.id}" ${done?'':'disabled'} title="${done?'Abrir prompts do módulo':'Conclua o módulo para liberar'}" aria-label="Toolbox do módulo ${m.id}">${done?'🧰':'🔒'}</button>` : '';
+    return `<div class="mod" style="${tstyle(m.id)};--p:${modPct(m)}">
+      <div class="modh"><div class="ring"><span class="modic">${m.icon}</span></div>
+        <div class="modt">Módulo ${m.id}: ${m.title}<div class="mods">${status}</div></div>${tool}</div>
+      ${m.lessons.map(l => {
+        const ok = unlocked(l.id), cur = S.cur === l.id && S.view === 'lesson';
+        const st = d[l.id] ? '✅' : (ok ? '▶️' : '🔒');
+        return `<button class="les ${cur?'cur':''}" data-act="go" data-id="${l.id}" ${ok?'':'disabled'}><span class="st">${st}</span><span>${l.id} ${l.title}</span></button>`;
+      }).join('')}
+    </div>`;
+  }).join('') + `<button class="reset" data-act="reset">Reiniciar meu progresso neste curso</button>`;
+}
+
+function renderProgress(){
+  const noCurso = !!C && S.view !== 'cursos' && S.view !== 'cadastro';
+  const tb = noCurso && temToolbox();
+  $('app').classList.toggle('full', !noCurso);
+  $('titulo').textContent = noCurso ? C.titulo : 'Portal de Estudos';
+  ['pb-wrap','pl'].forEach(id => $(id).classList.toggle('off', !noCurso));
+  $('btn-tool').classList.toggle('off', !tb);
+  $('bn-home').classList.toggle('off', !noCurso);
+  $('bn-menu').classList.toggle('off', !noCurso);
+  $('bn-tool').classList.toggle('off', !tb);
+  const on = (id, v) => $(id).classList.toggle('on', v);
+  on('bn-cursos', !noCurso); on('bn-home', noCurso && S.view !== 'lesson'); on('bn-menu', noCurso && S.view === 'lesson'); on('bn-tool', TB.open);
+  if (!noCurso) return;
+  const n = C.licoes.filter(l => D()[l.id]).length, pct = Math.round(n / C.total * 100);
+  $('pb').style.width = pct + '%';
+  $('pl').textContent = n + ' de ' + C.total + ' lições';
+  $('pb-wrap').setAttribute('aria-valuenow', pct);
+}
+
+function countUp(el, to){
+  if (reduced()) { el.textContent = to + '%'; return; }
+  const t0 = performance.now();
+  (function f(t){ const k = Math.min(1,(t-t0)/1100); el.textContent = Math.round(to*(1-Math.pow(1-k,3))) + '%'; if (k<1) requestAnimationFrame(f); })(t0);
+}
+
+function renderHome(){
+  const total = C.total, n = C.licoes.filter(l => D()[l.id]).length, pct = Math.round(n/total*100), x = xp();
+  $('main').removeAttribute('style');
+  $('main').innerHTML = `<section class="hero">
+      <div><h1 class="hh">${esc(C.titulo)}</h1>
+      <p class="hp">${esc(C.descricao)}</p>
+      <div class="chips"><span class="chip">⚡ ${x} XP</span><span class="chip">🏅 ${level(x)}</span><span class="chip">📘 ${n} de ${total} lições</span></div>
+      <button class="next" data-act="continue">${n===0?'Começar agora':(n===total?'Revisar o curso':'Continuar estudando')} ➜</button></div>
+      <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>concluído</span></div></div>
+    </section>
+    <div class="grid">${C.conteudo.modulos.map((m,i) => {
+      const lock = !unlocked(m.lessons[0].id), fin = modDone(m);
+      return `<div class="mc ${lock?'lock':''} ${fin?'fin':''}" role="button" tabindex="0" data-act="openmod" data-mod="${m.id}" style="${tstyle(m.id)};--d:${i*0.5}s">
+        <div class="mtile">${m.icon}</div>
+        <div><h3>Módulo ${m.id}</h3><div class="mt">${m.title}</div><div class="ms">${m.sub || ''}</div></div>
+        <div class="mdots">${m.lessons.map(l => `<i class="${D()[l.id]?'on':''}" title="${esc(l.title)}"></i>`).join('')}</div>
+        <div class="mfoot"><span>${modCount(m)} de ${m.lessons.length} lições</span><span class="mst">${fin?'✅ Concluído':lock?'🔒 Bloqueado':'▶ Abrir'}</span></div>
+      </div>`; }).join('')}</div>`;
+  setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pct); }, 60);
+  countUp($('bignum'), pct);
+}
+
+function renderModuloConcluido(){
+  const mod = modOf(S.modDone || 1), next = C.conteudo.modulos.find(x => x.id === mod.id + 1);
+  const msg = (C.conteudo.conclusaoModulo || {})[mod.id] || '';
+  const tem = !!prompts()[mod.id];
+  $('main').setAttribute('style', tstyle(mod.id));
+  $('main').innerHTML = `<div class="crumb">Módulo ${mod.id}: ${mod.title}</div>
+    <div class="done-box"><div class="trophy">🏆</div>
+    <h2>${next ? 'Módulo ' + mod.id + ' concluído!' : 'Curso concluído!'}</h2>
+    <p>${msg}${tem ? ' Os prompts deste módulo foram liberados no Code Toolbox.' : ''}</p>
+    <div class="row">${tem ? `<button class="next alt" data-act="tool" data-mod="${mod.id}">🧰 Abrir Code Toolbox</button>` : ''}
+    ${next ? `<button class="next" data-act="go" data-id="${next.lessons[0].id}" style="${tstyle(next.id)}">Ir para o Módulo ${next.id} ➜</button>` : `<button class="next" data-act="cursos">Ver outros cursos</button>`}</div></div>`;
+}
+
+function renderLicao(){
+  const m = $('main'), L = byId(S.cur), mod = modOf(L.mod), d = D();
+  m.setAttribute('style', tstyle(mod.id));
+  const lessonDots = mod.lessons.map(l => `<i class="${d[l.id]?'on':(l.id===L.id?'now':'')}"></i>`).join('');
+  const head = `<div class="lh"><button class="ltile" data-act="spin" aria-label="Ícone da lição">${iconeLicao(L)}</button>
+    <div><div class="crumb">Módulo ${mod.id}: ${mod.title} · Lição ${L.id}${L.min?' · '+L.min+' min':''}</div><h1 class="h1">${L.title}</h1></div></div><div class="dots">${lessonDots}</div>`;
+  if (L.soon || !L.ch) {
+    m.innerHTML = head + (L.body || []).join('') + `<div class="card soon"><div style="font-size:46px">🚧</div><h3>Conteúdo em construção</h3><p style="margin:6px auto 0">${L.teaser || ''}</p></div>`;
+    return;
+  }
+  const ss = SESSION[C.id + ':' + L.id] || { tried:[] };
+  const solved = !!d[L.id];
+  const c = L.ch, letters = ['A','B','C','D','E'];
+  const opts = c.opts.map((o,i) => {
+    const tried = ss.tried.includes(i);
+    let cls = '', dis = '';
+    if (solved) { dis = 'disabled'; cls = o.ok ? 'right' : 'dim'; }
+    else if (tried) { dis = 'disabled'; cls = 'wrong' + (i === ss.last ? ' shake' : ''); }
+    return `<button class="opt ${cls}" data-act="ans" data-i="${i}" ${dis}><span class="l l${letters[i]}">${letters[i]}</span><span>${o.t}</span></button>`;
+  }).join('');
+  let fb = '';
+  if (solved) {
+    const right = c.opts.find(o => o.ok);
+    fb = `<div class="fb ok pop"><b>✅ ${C.conteudo.acerto || 'Acertou!'} +100 XP</b><span>${right.why}</span></div>`;
+  } else if (ss.tried.length) {
+    const last = c.opts[ss.tried[ss.tried.length-1]];
+    fb = `<div class="fb no pop"><b>❌ Ainda não.</b><span>${last.why} Tente outra alternativa.</span></div>`;
+  }
+  const i = idxOf(L.id), isLastOfMod = mod.lessons[mod.lessons.length-1].id === L.id;
+  let nav = '';
+  if (solved) {
+    if (isLastOfMod && modDone(mod)) nav = `<button class="next alt" data-act="finish" data-mod="${mod.id}">🎉 Concluir módulo</button>`;
+    else if (FLAT()[i+1]) nav = `<button class="next" data-act="next">Avançar para próxima lição ➜</button>`;
+  }
+  m.innerHTML = head + L.body.join('') + `<section class="os" aria-label="Desafio">
+      <div class="who">${c.who} diz:</div>
+      <div class="says">"${c.says}"</div>
+      <div class="q">${c.q}</div>
+      ${opts}
+      <div id="fb">${fb}</div>
+      ${nav}
+    </section>`;
+  rodarGancho();
+}
+
+function rodarGancho(){
+  if (!C || S.view !== 'lesson') return;
+  const g = (C.conteudo.aoAbrirLicao || {})[S.cur];
+  if (g) { try { g($('main')); } catch(e){ console.error(e); } }
+}
+
+function renderMain(keep){
+  if (S.view === 'cursos') renderCursos();
+  else if (S.view === 'cadastro') renderCadastro();
+  else if (S.view === 'home') renderHome();
+  else if (S.view === 'moduleDone') renderModuloConcluido();
+  else renderLicao();
+  if (!keep) window.scrollTo(0,0);
+}
+
+function renderToolbox(){
+  const d = $('drawer');
+  if (!C || !temToolbox()) { TB.open = false; d.classList.remove('on'); $('shade').classList.remove('on'); return; }
+  const tabs = C.conteudo.modulos.filter(m => prompts()[m.id]).map(m => {
+    const ok = modDone(m);
+    return `<button class="tab ${TB.mod===m.id?'on':''}" style="${tstyle(m.id)}" data-act="tbmod" data-mod="${m.id}" ${ok?'':'disabled'}>${ok?m.icon+' ':'🔒 '}Módulo ${m.id}</button>`;
+  }).join('');
+  const mod = modOf(TB.mod);
+  let body;
+  if (!mod || !modDone(mod) || !prompts()[mod.id]) {
+    body = `<div class="lockmsg"><div style="font-size:40px">🔒</div><p>Conclua todas as lições do módulo para liberar os prompts.</p></div>`;
+  } else {
+    body = `<div style="${tstyle(mod.id)}"><p style="margin:0 0 14px; color:var(--muted); font-size:14px">Troque o que está entre [COLCHETES] pelos dados do seu caso e cole no Cursor.</p>` +
+      prompts()[mod.id].map((p,k) => `<div class="pr"><div class="prh"><b>${p.title}</b><button class="cp" data-act="copy" data-k="${k}">Copiar</button></div><div class="prd">${p.desc}</div><pre>${esc(p.text)}</pre></div>`).join('') + `</div>`;
+  }
+  d.innerHTML = `<div class="dh"><h2>🧰 Code Toolbox</h2><button class="x" data-act="toolclose" aria-label="Fechar">✕</button></div>
+    <div class="tabs">${tabs}</div><div class="db">${body}</div>`;
+  d.classList.toggle('on', TB.open); $('shade').classList.toggle('on', TB.open);
+}
+
+function renderAll(keep){ renderSidebar(); renderProgress(); renderMain(keep); renderToolbox(); }
+
+/* ============ EFEITOS ============ */
+function confetti(){
+  if (reduced()) return;
+  const cv = document.createElement('canvas'); cv.className = 'confetti'; cv.width = innerWidth; cv.height = innerHeight;
+  document.body.appendChild(cv); const g = cv.getContext('2d');
+  const cols = ['#ff5a5f','#fbbf24','#4ade80','#22d3ee','#c084fc','#ec4899'];
+  const P = Array.from({length:130}, () => ({ x:innerWidth/2 + (Math.random()-.5)*220, y:innerHeight*0.62, vx:(Math.random()-.5)*15, vy:-Math.random()*17-4, s:5+Math.random()*6, c:cols[(Math.random()*cols.length)|0], r:Math.random()*6, vr:(Math.random()-.5)*.4 }));
+  let t = 0;
+  (function f(){
+    g.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p => { p.vy += .45; p.x += p.vx; p.y += p.vy; p.r += p.vr; g.save(); g.translate(p.x,p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6); g.restore(); });
+    if (++t < 120) requestAnimationFrame(f); else cv.remove();
+  })();
+}
+let toastT;
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
+
+/* ============ AÇÕES ============ */
+function closeMenu(){ $('sb').classList.remove('on'); $('ov').classList.remove('on'); }
+function goLesson(id){ S.cur = id; S.view = 'lesson'; closeMenu(); renderAll(); }
+function irParaCursos(){ S.view = 'cursos'; TB.open = false; closeMenu(); renderAll(); }
+
+async function abrirCurso(id){
+  const c = cursoPorId(id); if (!c) return;
+  if (!ALUNO) { S.escolhido = id; S.view = 'cadastro'; renderAll(); return; }
+  if (!MATR.includes(id)) {
+    try { await DB.matricular(id); MATR.push(id); }
+    catch(e){ console.error(e); toast('Não foi possível iniciar o curso. Verifique a internet.'); return; }
+  }
+  C = c; S.view = 'home'; TB = { open:false, mod:1 }; SESSION = {};
+  closeMenu(); renderAll();
+}
+
+async function enviarCadastro(form){
+  const f = form.elements, err = $('cad-err');
+  const dados = {
+    nome: f.nome.value.trim().replace(/\s+/g, ' '),
+    idade: parseInt(f.idade.value, 10),
+    telefone: f.telefone.value.trim(),
+    pais: f.pais.value.trim(),
+    estado: f.estado.value.trim(),
+    cep: f.cep.value.trim()
+  };
+  const curso = f.curso.value;
+  const digitos = dados.telefone.replace(/\D/g, '');
+  let msg = '';
+  if (dados.nome.split(' ').length < 2) msg = 'Informe nome e sobrenome.';
+  else if (!(dados.idade >= 5 && dados.idade <= 120)) msg = 'Informe uma idade válida.';
+  else if (digitos.length < 10 || digitos.length > 15) msg = 'Informe o telefone com DDD.';
+  else if (!dados.pais) msg = 'Informe o país.';
+  else if (!dados.estado) msg = 'Informe o estado.';
+  else if (!dados.cep) msg = 'Informe o CEP / código postal.';
+  else if (ehBrasil() && dados.cep.replace(/\D/g, '').length !== 8) msg = 'O CEP deve ter 8 números.';
+  else if (!curso) msg = 'Escolha um curso.';
+  else if (!f.lgpd.checked) msg = 'É preciso autorizar o uso dos dados para continuar.';
+  err.textContent = msg;
+  if (msg) return;
+  const btn = $('cad-ok'); btn.disabled = true; btn.textContent = 'Salvando…';
+  try {
+    ALUNO = await DB.cadastrar(dados);
+    toast('Cadastro feito! Bom estudo, ' + dados.nome.split(' ')[0] + ' 🎉');
+    await abrirCurso(curso);
+  } catch(e){
+    console.error(e);
+    err.textContent = 'Não foi possível salvar o cadastro. Tente novamente em instantes.';
+    btn.disabled = false; btn.textContent = 'Cadastrar e iniciar o curso ➜';
+  }
+}
+
+async function buscarCep(input){
+  const cep = input.value.replace(/\D/g, '');
+  if (!ehBrasil() || cep.length !== 8 || input.dataset.buscado === cep) return;
+  input.dataset.buscado = cep;
+  input.value = cep.slice(0,5) + '-' + cep.slice(5);
+  const info = $('cep-info'); info.textContent = 'Buscando…';
+  try {
+    const r = await fetch('https://viacep.com.br/ws/' + cep + '/json/').then(x => x.json());
+    if (r.erro) { info.textContent = 'CEP não encontrado. Confira os números.'; return; }
+    info.textContent = r.localidade + ' / ' + r.uf;
+    renderEstado(r.uf);
+  } catch(e){ info.textContent = ''; }
+}
+
+function copyText(txt, btn){
+  const ok = () => { btn.textContent = 'Copiado ✓'; btn.classList.add('done'); setTimeout(()=>{ btn.textContent='Copiar'; btn.classList.remove('done'); }, 1800); };
+  const fallback = () => { try { const t = document.createElement('textarea'); t.value = txt; t.style.position='fixed'; t.style.opacity='0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); ok(); } catch(e){ btn.textContent='Selecione e copie'; } };
+  try { navigator.clipboard.writeText(txt).then(ok, fallback); } catch(e){ fallback(); }
+}
+
+async function responder(i){
+  const L = byId(S.cur), key = C.id + ':' + L.id;
+  const ss = SESSION[key] = SESSION[key] || { tried:[] };
+  if (L.ch.opts[i].ok) {
+    D()[L.id] = true; renderAll(true); confetti();
+    const mod = modOf(L.mod); if (modDone(mod)) toast('🏆 Módulo ' + mod.id + ' completo!');
+    try { await DB.concluirLicao(C.id, L.id); }
+    catch(e){ console.error(e); toast('⚠️ Não foi possível salvar o progresso. Verifique a internet.'); }
+  } else { if (!ss.tried.includes(i)) ss.tried.push(i); ss.last = i; renderMain(true); }
+  const fb = $('fb'); if (fb && fb.scrollIntoView) fb.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block:'center' });
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  const a = t.dataset.act;
+  if (a === 'cursos') irParaCursos();
+  else if (a === 'cadastro') { S.escolhido = S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); }
+  else if (a === 'curso') abrirCurso(t.dataset.id);
+  else if (!C) return;
+  else if (a === 'menu') { $('sb').classList.toggle('on'); $('ov').classList.toggle('on'); }
+  else if (a === 'home') { S.view = 'home'; closeMenu(); renderAll(); }
+  else if (a === 'continue') { const nx = FLAT().find(l => !D()[l.id]) || FLAT()[0]; goLesson(nx.id); }
+  else if (a === 'openmod') {
+    const m = modOf(parseInt(t.dataset.mod,10));
+    if (!unlocked(m.lessons[0].id)) { toast('🔒 Conclua o módulo anterior para liberar este'); return; }
+    const nx = m.lessons.find(l => !D()[l.id] && unlocked(l.id)) || m.lessons[0];
+    goLesson(nx.id);
+  }
+  else if (a === 'go') { const id = t.dataset.id; if (unlocked(id)) goLesson(id); }
+  else if (a === 'spin') { t.classList.remove('spin'); void t.offsetWidth; t.classList.add('spin'); setTimeout(() => t.classList.remove('spin'), 750); }
+  else if (a === 'ans') responder(parseInt(t.dataset.i,10));
+  else if (a === 'next') { const i = idxOf(S.cur); if (FLAT()[i+1]) goLesson(FLAT()[i+1].id); }
+  else if (a === 'finish') { S.view = 'moduleDone'; S.modDone = parseInt(t.dataset.mod,10); renderAll(); confetti(); }
+  else if (a === 'tool') {
+    if (!temToolbox()) return;
+    const m = t.dataset.mod ? parseInt(t.dataset.mod,10) : null;
+    if (m) TB.mod = m;
+    else { const last = C.conteudo.modulos.filter(x => modDone(x) && prompts()[x.id]).pop(); if (!last) { toast('🔒 Conclua um módulo para liberar o Toolbox'); return; } TB.mod = last.id; }
+    TB.open = true; closeMenu(); renderToolbox(); renderProgress();
+  }
+  else if (a === 'toolclose') { TB.open = false; renderToolbox(); renderProgress(); }
+  else if (a === 'tbmod') { TB.mod = parseInt(t.dataset.mod,10); renderToolbox(); }
+  else if (a === 'copy') { const k = parseInt(t.dataset.k,10); copyText(prompts()[TB.mod][k].text, t); }
+  else if (a === 'reset') {
+    if (!confirm('Apagar todo o seu progresso neste curso?')) return;
+    DB.reiniciar(C.id).then(() => { PROG[C.id] = {}; SESSION = {}; S.view = 'home'; renderAll(); })
+      .catch(err => { console.error(err); toast('Não foi possível reiniciar agora.'); });
+  }
+});
+document.addEventListener('submit', e => { if (e.target.id === 'f-cad') { e.preventDefault(); enviarCadastro(e.target); } });
+document.addEventListener('input', e => {
+  if (e.target.name === 'pais' && e.target.form && e.target.form.id === 'f-cad') renderEstado();
+  else if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') { if (e.target.value.replace(/\D/g, '').length === 8) buscarCep(e.target); }
+  else if (S.view === 'lesson' && $('main').contains(e.target)) rodarGancho();
+});
+document.addEventListener('focusout', e => { if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') buscarCep(e.target); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { TB.open = false; renderToolbox(); renderProgress(); closeMenu(); }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('role') === 'button') { e.preventDefault(); e.target.click(); }
+});
+
+/* ============ INÍCIO ============ */
+async function iniciar(){
+  try {
+    await DB.iniciar();
+    CURSOS = await PORTAL.carregarCursos(false);
+    ALUNO = await DB.alunoAtual();
+    if (ALUNO) [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
+  } catch(e){
+    console.error(e);
+    $('main').innerHTML = '<div class="empty">Não foi possível carregar o portal. Verifique a internet e recarregue a página.</div>';
+    return;
+  }
+  if (DB.modo === 'demo') { const b = $('demo-bar'); b.hidden = false; b.textContent = 'Modo demonstração: os dados ficam salvos só neste navegador.'; }
+  renderAll();
+  const pedido = new URLSearchParams(location.search).get('curso');
+  if (pedido && cursoPorId(pedido)) abrirCurso(pedido);
+}
+iniciar();
+})();

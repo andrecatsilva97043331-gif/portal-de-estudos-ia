@@ -1,0 +1,11 @@
+[
+  {
+    "id": "arquiteto-solucoes-ia",
+    "titulo": "Arquiteto de Soluções com IA",
+    "descricao": "Do problema do cliente ao fluxo automatizado: 4 módulos práticos, com desafios e prompts prontos para o Cursor.",
+    "icone": "🏗️",
+    "cores": ["#22d3ee", "#c084fc"],
+    "status": "publicado",
+    "versao": 1
+  }
+]
