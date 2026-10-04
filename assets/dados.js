@@ -45,7 +45,7 @@ function bancoSupabase(){
       return aluno;
     },
     async enviarCodigoEmail(email){
-      ok(await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser:true } }));
+      ok(await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser:true, emailRedirectTo:location.origin + location.pathname } }));
       return {};
     },
     async verificarCodigoEmail(email, codigo){

@@ -170,7 +170,7 @@ function renderVerificar(){
     <div class="vsteps">${passo(1, 'E-mail', email ? 'cur' : 'ok')}${passo(2, 'WhatsApp', email ? '' : 'cur')}${passo(3, 'Acesso liberado', '')}</div>
     <form class="card fcard rise" id="f-ver" novalidate style="--c:${email ? '#22d3ee;--c2:#3b82f6' : '#4ade80;--c2:#22c55e'}">
       <h3 class="fsec"><span class="fico">${email ? '✉️' : '📱'}</span>Digite o código de 6 números</h3>
-      <p class="hp" style="margin:0 0 14px">${VER.enviado ? 'Enviamos um código para ' + destino + '. Ele vale por 10 minutos.' : 'Enviando código para ' + destino + '…'}${email ? ' Confira também a caixa de spam.' : ''}</p>
+      <p class="hp" style="margin:0 0 14px">${VER.enviado ? 'Enviamos um código para ' + destino + '. Ele vale por 10 minutos.' : 'Enviando código para ' + destino + '…'}${email ? ' Confira também a caixa de spam. Se chegar um <b>link</b> em vez do código, basta clicar nele neste aparelho.' : ''}</p>
       <input class="otp" name="codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="••••••" aria-label="Código de confirmação">
       ${VER.codigoDemo ? `<div class="demo-code">🧪 Modo demonstração: nada é enviado de verdade. Seu código é <b>${VER.codigoDemo}</b></div>` : ''}
       <div class="err" id="ver-err" role="alert">${esc(VER.erro || '')}</div>
@@ -497,6 +497,7 @@ async function enviarCodigo(){
   clearTimeout(VER.timer);
   VER.erro = ''; VER.enviado = false; VER.codigoDemo = null;
   renderVerificar();
+  if (VER.etapa === 'email') guardarPendente();
   try {
     const r = VER.etapa === 'email' ? await DB.enviarCodigoEmail(VER.email) : await DB.enviarCodigoWhats();
     VER.enviado = true; VER.codigoDemo = (r && r.codigoDemo) || null;
@@ -508,6 +509,29 @@ async function enviarCodigo(){
   if (S.view === 'verificar') renderVerificar();
 }
 
+const CHAVE_PENDENTE = 'portal-estudos-pendente';
+function guardarPendente(){ try { localStorage.setItem(CHAVE_PENDENTE, JSON.stringify({ email:VER.email, dados:VER.dados || null, curso:VER.curso || null, modo:VER.modo })); } catch(e){} }
+function lerPendente(){ try { return JSON.parse(localStorage.getItem(CHAVE_PENDENTE)); } catch(e){ return null; } }
+function limparPendente(){ try { localStorage.removeItem(CHAVE_PENDENTE); } catch(e){} }
+
+async function continuarAposEmail(){
+  EMAIL_SESSAO = VER.email;
+  if (VER.dados) ALUNO = await DB.cadastrar(VER.dados);
+  else ALUNO = await DB.alunoAtual();
+  if (!ALUNO) { toast('E-mail confirmado ✓ Agora complete seu cadastro.'); S.escolhido = VER.curso || S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); return; }
+  [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
+  if (!ALUNO.whatsapp_verificado) { toast('E-mail confirmado ✓'); VER.etapa = 'whats'; VER.cooldownAte = 0; S.view = 'verificar'; renderAll(); enviarCodigo(); return; }
+  await liberarAcesso();
+}
+
+async function checarLinkEmail(){
+  if (S.view !== 'verificar' || VER.etapa !== 'email' || VER.conferindo) return;
+  const email = await DB.emailDaSessao();
+  if (!email || email !== VER.email) return;
+  VER.conferindo = true;
+  try { await continuarAposEmail(); } catch(e){ console.error(e); } finally { VER.conferindo = false; }
+}
+
 async function confirmarCodigo(form){
   const codigo = form.elements.codigo.value.replace(/\D/g, ''), err = $('ver-err');
   if (codigo.length !== 6) { err.textContent = 'O código tem 6 números.'; return; }
@@ -515,12 +539,8 @@ async function confirmarCodigo(form){
   try {
     if (VER.etapa === 'email') {
       await DB.verificarCodigoEmail(VER.email, codigo);
-      EMAIL_SESSAO = VER.email;
-      if (VER.dados) ALUNO = await DB.cadastrar(VER.dados);
-      else ALUNO = await DB.alunoAtual();
-      if (!ALUNO) { toast('E-mail confirmado ✓ Agora complete seu cadastro.'); S.escolhido = VER.curso || S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); return; }
-      [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
-      if (!ALUNO.whatsapp_verificado) { toast('E-mail confirmado ✓'); VER.etapa = 'whats'; VER.cooldownAte = 0; enviarCodigo(); return; }
+      await continuarAposEmail();
+      return;
     } else {
       await DB.verificarCodigoWhats(codigo);
       ALUNO.whatsapp_verificado = true;
@@ -535,7 +555,7 @@ async function confirmarCodigo(form){
 
 async function liberarAcesso(){
   const curso = VER.curso, nome = ALUNO.nome.split(' ')[0];
-  VER = {};
+  VER = {}; limparPendente();
   confetti();
   toast((curso ? 'Tudo confirmado! Bom estudo, ' : 'Bem-vindo de volta, ') + nome + ' 🎉');
   if (curso && cursoPorId(curso)) await abrirCurso(curso);
@@ -552,7 +572,7 @@ async function pedirEntrada(form){
 
 async function sair(){
   try { await DB.sair(); } catch(e){ console.error(e); }
-  ALUNO = null; EMAIL_SESSAO = null; MATR = []; PROG = {}; C = null; VER = {};
+  ALUNO = null; EMAIL_SESSAO = null; MATR = []; PROG = {}; C = null; VER = {}; limparPendente();
   irParaCursos(); toast('Você saiu da sua conta.');
 }
 
@@ -675,8 +695,17 @@ async function iniciar(){
   }
   if (DB.modo === 'demo') { const b = $('demo-bar'); b.hidden = false; b.textContent = 'Modo demonstração: os dados ficam salvos só neste navegador.'; }
   renderAll();
+  const pend = lerPendente();
+  if (pend && EMAIL_SESSAO && pend.email === EMAIL_SESSAO && !DB.verificado(ALUNO)) {
+    if (/[#&]access_token=/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
+    VER = Object.assign({ etapa:'email' }, pend);
+    try { await continuarAposEmail(); } catch(e){ console.error(e); toast('Não foi possível continuar o cadastro. Tente de novo.'); }
+    return;
+  }
   const pedido = new URLSearchParams(location.search).get('curso');
   if (pedido && cursoPorId(pedido)) abrirCurso(pedido);
 }
+window.addEventListener('focus', () => { checarLinkEmail(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checarLinkEmail(); });
 iniciar();
 })();
