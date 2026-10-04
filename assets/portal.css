@@ -10,7 +10,34 @@ a.logo{text-decoration:none;}
 .cbar{height:8px; border-radius:99px; background:#262633; overflow:hidden;}
 .cbar > i{display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--c),var(--c2));}
 
+/* ---------- Apresentação ---------- */
+.rise{animation:rise .6s cubic-bezier(.2,.8,.2,1) both; animation-delay:var(--d,0s);}
+@keyframes rise{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+.mc.rise{animation:rise .6s cubic-bezier(.2,.8,.2,1) both; animation-delay:var(--d,0s);}
+.eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--yellow); margin-bottom:8px;}
+.grad{background:linear-gradient(90deg,#ff5a5f,#fbbf24,#4ade80,#22d3ee,#c084fc,#ff5a5f); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:slide 6s linear infinite;}
+.orb{width:164px; height:164px; border-radius:50%; position:relative; display:grid; place-items:center; background:conic-gradient(from 0deg,#ff5a5f,#fbbf24,#4ade80,#22d3ee,#c084fc,#ff5a5f); box-shadow:0 0 60px -10px #c084fc, 0 0 90px -30px #22d3ee; animation:orb 14s linear infinite;}
+.orb::before{content:""; position:absolute; inset:10px; border-radius:50%; background:radial-gradient(circle at 30% 25%, #1c1c27, #050508 70%);}
+.orb span{position:relative; font-size:62px; animation:orb 14s linear infinite reverse, float 4s ease-in-out infinite;}
+@keyframes orb{to{transform:rotate(360deg);}}
+.steps{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:26px;}
+.step{display:flex; gap:14px; align-items:flex-start; padding:16px; border-radius:18px; border:1px solid color-mix(in srgb,var(--c) 35%,#16161e); background:linear-gradient(155deg,color-mix(in srgb,var(--c) 14%,#050507),#050507 70%);}
+.step b{font-family:var(--font-d); font-size:16px;}
+.step p{margin:4px 0 0; font-size:14px; color:var(--muted); line-height:1.45;}
+.stile{flex:none; width:46px; height:46px; border-radius:14px; display:grid; place-items:center; font-size:22px; background:linear-gradient(135deg,var(--c),var(--c2)); box-shadow:0 8px 24px -8px var(--c);}
+.sec-t{font-size:20px; font-weight:800; margin:6px 2px 14px;}
+.mhead{display:flex; justify-content:space-between; align-items:flex-start;}
+.pctpill{font-family:var(--font-d); font-weight:800; font-size:14px; padding:5px 12px; border-radius:99px; color:#000; background:linear-gradient(135deg,var(--c),var(--c2)); box-shadow:0 6px 20px -8px var(--c);}
+.pctpill.novo{background:var(--s2); color:var(--text); border:1px solid color-mix(in srgb,var(--c) 50%,transparent); box-shadow:none;}
+
 /* ---------- Formulários ---------- */
+.fprog-w{display:flex; align-items:center; gap:12px; margin:0 0 16px; position:sticky; top:calc(env(safe-area-inset-top,0px) + 66px); z-index:5; background:rgba(0,0,0,.75); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); padding:10px 0;}
+.fprog{flex:1; height:10px; border-radius:99px; background:var(--s2); border:1px solid var(--line); overflow:hidden;}
+.fprog > i{display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,#ff5a5f,#fbbf24,#4ade80,#22d3ee,#c084fc,#ff5a5f); background-size:200% 100%; animation:slide 4s linear infinite; transition:width .5s cubic-bezier(.2,.8,.2,1); box-shadow:0 0 12px rgba(251,191,36,.45);}
+#fprog-t{font-size:13px; color:var(--muted); white-space:nowrap; font-weight:600; min-width:110px; text-align:right;}
+.fcard{border-color:color-mix(in srgb,var(--c) 35%,var(--line)); background:linear-gradient(160deg,color-mix(in srgb,var(--c) 8%,#0a0a0f),#0a0a0f 60%);}
+.fcard .fsec{margin:0 0 16px; display:flex; align-items:center; gap:10px; color:var(--text); font-size:18px;}
+.fico{width:36px; height:36px; border-radius:12px; display:grid; place-items:center; font-size:18px; background:linear-gradient(135deg,var(--c),var(--c2)); box-shadow:0 6px 18px -6px var(--c);}
 .form{max-width:640px; margin:0 auto;}
 .form .card{padding:22px;}
 .fgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
@@ -62,6 +89,10 @@ a.logo{text-decoration:none;}
 
 @media (max-width: 900px){
   .fgrid{grid-template-columns:1fr;}
+  .steps{grid-template-columns:1fr;}
+  .orb{width:120px; height:120px;}
+  .orb span{font-size:46px;}
+  .fprog-w{top:calc(env(safe-area-inset-top,0px) + 58px);}
   .stats{grid-template-columns:1fr 1fr;}
   .hide-m{display:none;}
 }

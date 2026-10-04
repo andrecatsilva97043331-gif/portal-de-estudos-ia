@@ -41,40 +41,74 @@ const iconeLicao = L => (C.conteudo.iconesLicao || {})[L.id] || L.icon || modOf(
 
 /* ============ RENDER: PORTAL ============ */
 function renderCursos(){
-  const ola = ALUNO
-    ? `<h1 class="hh">Olá, ${esc(ALUNO.nome.split(' ')[0])}! 👋</h1><p class="hp">Escolha um curso para começar ou continuar de onde parou.</p>`
-    : `<h1 class="hh">Portal de Estudos</h1><p class="hp">Cursos práticos com lições curtas, desafios reais e prompts prontos. Faça seu cadastro gratuito e comece agora.</p>
-       <button class="next" data-act="cadastro">Criar meu cadastro ➜</button>`;
+  const totalLicoes = CURSOS.reduce((s, c) => s + c.total, 0);
+  let topo, pctGeral = null;
+  if (ALUNO) {
+    const meus = CURSOS.filter(c => MATR.includes(c.id));
+    const feitas = meus.reduce((s, c) => s + c.licoes.filter(l => (PROG[c.id] || {})[l.id]).length, 0);
+    const total = meus.reduce((s, c) => s + c.total, 0);
+    const concluidos = meus.filter(c => pctCurso(c) === 100).length;
+    const seguir = meus.find(c => pctCurso(c) < 100);
+    pctGeral = total ? Math.round(feitas / total * 100) : 0;
+    topo = `<section class="hero rise">
+      <div><div class="eyebrow">Seu painel de estudos</div>
+      <h1 class="hh">Olá, <span class="grad">${esc(ALUNO.nome.split(' ')[0])}</span>! 👋</h1>
+      <p class="hp">${seguir ? 'Continue de onde parou ou comece um curso novo.' : 'Escolha um curso para começar.'}</p>
+      <div class="chips"><span class="chip">⚡ ${feitas * 100} XP</span><span class="chip">📘 ${feitas} lições concluídas</span><span class="chip">🎓 ${meus.length} ${meus.length === 1 ? 'curso' : 'cursos'}</span>${concluidos ? `<span class="chip">🏆 ${concluidos} concluído${concluidos > 1 ? 's' : ''}</span>` : ''}</div>
+      ${seguir ? `<button class="next" data-act="curso" data-id="${esc(seguir.id)}" style="${ccor(seguir)}">Continuar ${esc(seguir.titulo)} ➜</button>` : ''}</div>
+      <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>dos seus cursos</span></div></div>
+    </section>`;
+  } else {
+    topo = `<section class="hero rise">
+      <div><div class="eyebrow">Portal de Estudos</div>
+      <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
+      <p class="hp">Lições curtas, casos de clientes de verdade e prompts prontos para usar. Faça seu cadastro gratuito e comece agora.</p>
+      <div class="chips"><span class="chip">🎓 ${CURSOS.length} ${CURSOS.length === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
+      <button class="next" data-act="cadastro">Criar meu cadastro ➜</button></div>
+      <div class="orb" aria-hidden="true"><span>📚</span></div>
+    </section>
+    <div class="steps">
+      ${[['📝','Cadastre-se','Leva menos de 2 minutos e não pede documentos.'],['🎯','Escolha o curso','Comece na hora, no seu ritmo, pelo celular ou computador.'],['🏆','Aprenda com desafios','Cada lição termina com um caso real para você resolver.']]
+        .map((s, i) => `<div class="step rise" style="--d:${0.1 + i * 0.08}s;${'--c:' + PORTAL.paleta(i)[0] + ';--c2:' + PORTAL.paleta(i)[1]}"><div class="stile">${s[0]}</div><div><b>${i + 1}. ${s[1]}</b><p>${s[2]}</p></div></div>`).join('')}
+    </div>`;
+  }
   const cards = CURSOS.map((c, i) => {
-    const matr = MATR.includes(c.id), pct = pctCurso(c), fim = matr && pct === 100;
+    const matr = MATR.includes(c.id), pct = pctCurso(c), fim = matr && pct === 100, d = PROG[c.id] || {};
     const acao = fim ? '✅ Concluído' : matr ? '▶ Continuar' : '✨ Iniciar curso';
-    return `<div class="mc ${fim?'fin':''}" role="button" tabindex="0" data-act="curso" data-id="${esc(c.id)}" style="${ccor(c)};--d:${i*0.5}s">
-      <div class="mtile">${c.icone}</div>
-      <div>${c.status === 'rascunho' ? '<span class="badge">RASCUNHO</span>' : ''}<div class="mt">${esc(c.titulo)}</div><div class="ms">${esc(c.descricao)}</div></div>
-      ${matr ? `<div class="cbar"><i style="width:${pct}%"></i></div>` : ''}
-      <div class="mfoot"><span>${c.conteudo.modulos.length} módulos · ${c.total} lições${matr ? ' · ' + pct + '%' : ''}</span><span class="mst">${acao}</span></div>
+    const dots = c.conteudo.modulos.map(m => `<i class="${m.lessons.every(l => d[l.id]) ? 'on' : ''}" title="Módulo ${m.id}: ${esc(m.title)}"></i>`).join('');
+    return `<div class="mc rise ${fim?'fin':''}" role="button" tabindex="0" data-act="curso" data-id="${esc(c.id)}" style="${ccor(c)};--d:${0.15 + i * 0.08}s">
+      <div class="mhead"><div class="mtile">${c.icone}</div>${c.status === 'rascunho' ? '<span class="badge">RASCUNHO</span>' : matr ? `<span class="pctpill">${pct}%</span>` : '<span class="pctpill novo">Novo</span>'}</div>
+      <div><div class="mt">${esc(c.titulo)}</div><div class="ms">${esc(c.descricao)}</div></div>
+      <div class="mdots">${dots}</div>
+      <div class="mfoot"><span>${c.conteudo.modulos.length} módulos · ${c.total} lições</span><span class="mst">${acao}</span></div>
     </div>`;
   }).join('');
   $('main').removeAttribute('style');
-  $('main').innerHTML = `<section class="hero"><div>${ola}</div></section>
+  $('main').innerHTML = topo + `<h2 class="sec-t">${ALUNO ? 'Cursos do portal' : 'Cursos disponíveis'}</h2>
     <div class="grid">${cards || '<div class="empty">Nenhum curso publicado ainda.</div>'}</div>`;
+  if (pctGeral !== null) {
+    setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pctGeral); }, 60);
+    countUp($('bignum'), pctGeral);
+  }
 }
 
 function renderCadastro(){
   const opcoes = CURSOS.map(c => `<option value="${esc(c.id)}" ${S.escolhido===c.id?'selected':''}>${esc(c.titulo)}</option>`).join('');
   $('main').removeAttribute('style');
   $('main').innerHTML = `<form class="form" id="f-cad" novalidate>
-    <h1 class="h1" style="margin-bottom:6px">Cadastro do aluno</h1>
+    <div class="eyebrow">Cadastro gratuito</div>
+    <h1 class="h1" style="margin-bottom:6px">Comece a <span class="grad">estudar agora</span></h1>
     <p class="hp">Preencha seus dados, escolha o curso e comece na hora.</p>
-    <div class="card"><div class="fgrid">
+    <div class="fprog-w"><div class="fprog"><i id="fprog"></i></div><span id="fprog-t">0% preenchido</span></div>
+    <div class="card fcard rise" style="--c:#22d3ee;--c2:#3b82f6"><h3 class="fsec"><span class="fico">📇</span>Seus dados</h3><div class="fgrid">
       <label class="fl wide">Nome completo<input name="nome" autocomplete="name" required maxlength="120"></label>
       <label class="fl">Idade<input name="idade" type="number" inputmode="numeric" min="5" max="120" required></label>
       <label class="fl">Telefone / WhatsApp<input name="telefone" type="tel" autocomplete="tel" placeholder="(11) 91234-5678" required maxlength="25"></label>
       <label class="fl">País<input name="pais" autocomplete="country-name" value="Brasil" required maxlength="60"></label>
       <label class="fl">CEP<input name="cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" required maxlength="12"><small id="cep-info"></small></label>
       <label class="fl wide" id="estado-wrap"></label>
-    </div>
-    <h3 class="fsec">Sobre você</h3>
+    </div></div>
+    <div class="card fcard rise" style="--c:#c084fc;--c2:#ec4899;--d:.08s"><h3 class="fsec"><span class="fico">🧑‍💼</span>Sobre você</h3>
     <div class="fgrid">
       <label class="fl">Profissão<input name="profissao" required maxlength="80" placeholder="Ex.: Administrador, Técnica de enfermagem"><small>Se ainda não tem, escreva "Nenhuma".</small></label>
       <label class="fl">Ocupação atual<input name="ocupacao" required maxlength="80" placeholder="Ex.: Analista de compras, autônomo, procurando emprego"></label>
@@ -84,8 +118,8 @@ function renderCadastro(){
         <label><input type="radio" name="estudante" value="sim" required> Sim</label><label><input type="radio" name="estudante" value="nao"> Não</label></fieldset>
       <label class="fl wide">Principal objetivo com o curso<select name="objetivo" required><option value="">Selecione</option>${OBJETIVOS.map(o => `<option>${o}</option>`).join('')}</select></label>
       <label class="fl wide">Conte um pouco mais (opcional)<textarea name="objetivo_detalhe" maxlength="300" rows="3" placeholder="O que você espera conseguir fazer depois do curso?"></textarea></label>
-    </div>
-    <h3 class="fsec">Curso</h3>
+    </div></div>
+    <div class="card fcard rise" style="--c:#4ade80;--c2:#a3e635;--d:.16s"><h3 class="fsec"><span class="fico">🎓</span>Curso</h3>
     <div class="fgrid">
       <label class="fl wide">Escolha o curso<select name="curso" required>${opcoes}</select></label>
     </div>
@@ -97,6 +131,16 @@ function renderCadastro(){
     <button class="link" type="button" data-act="cursos">← Voltar aos cursos</button>
   </form>`;
   renderEstado();
+  atualizarPreenchimento();
+}
+
+const OBRIGATORIOS = ['nome','idade','telefone','pais','cep','estado','profissao','ocupacao','trabalhando','estudante','objetivo','curso','lgpd'];
+function atualizarPreenchimento(){
+  const f = $('f-cad'); if (!f) return;
+  const feitos = OBRIGATORIOS.filter(n => { const el = f.elements[n]; if (!el) return false; return el.type === 'checkbox' ? el.checked : String(el.value || '').trim() !== ''; }).length;
+  const pct = Math.round(feitos / OBRIGATORIOS.length * 100);
+  $('fprog').style.width = pct + '%';
+  $('fprog-t').textContent = pct === 100 ? 'Tudo pronto ✓' : pct + '% preenchido';
 }
 
 function ehBrasil(){ const p = $('f-cad').elements.pais.value.trim().toLowerCase(); return p === 'brasil' || p === 'brazil' || p === 'br'; }
@@ -362,6 +406,7 @@ async function buscarCep(input){
     if (r.erro) { info.textContent = 'CEP não encontrado. Confira os números.'; return; }
     info.textContent = r.localidade + ' / ' + r.uf;
     renderEstado(r.uf);
+    atualizarPreenchimento();
   } catch(e){ info.textContent = ''; }
 }
 
@@ -426,6 +471,9 @@ document.addEventListener('input', e => {
   else if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') { if (e.target.value.replace(/\D/g, '').length === 8) buscarCep(e.target); }
   else if (S.view === 'lesson' && $('main').contains(e.target)) rodarGancho();
 });
+['input','change'].forEach(tipo => document.addEventListener(tipo, e => {
+  if (e.target.form && e.target.form.id === 'f-cad') setTimeout(atualizarPreenchimento);
+}));
 document.addEventListener('focusout', e => { if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') buscarCep(e.target); });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { TB.open = false; renderToolbox(); renderProgress(); closeMenu(); }
