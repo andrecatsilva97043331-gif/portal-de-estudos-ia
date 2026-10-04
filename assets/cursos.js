@@ -8,8 +8,10 @@ PORTAL.cursos = {};
 PORTAL.registrarCurso = c => { PORTAL.cursos[c.id] = c; };
 PORTAL.paleta = i => PALETA[((i % PALETA.length) + PALETA.length) % PALETA.length];
 
-/* Rascunhos só aparecem no computador local (localhost) ou com ?previa na URL. */
-PORTAL.modoPrevia = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || new URLSearchParams(location.search).has('previa');
+/* Cursos "em_breve" com curso.js e rascunhos abrem no computador local (localhost) e,
+   no site publicado, só para o master logado (o app liga PORTAL.previaMaster ao confirmar o master). */
+PORTAL.modoPrevia = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+PORTAL.previaMaster = false;
 
 /* Botão de olho dos campos de senha: <span class="pw"><input type="password"> + PORTAL.olho</span> */
 PORTAL.olho = '<button type="button" class="olho" aria-label="Mostrar senha" title="Mostrar senha">👁️</button>';
@@ -56,7 +58,8 @@ PORTAL.catalogo = [];
 PORTAL.carregarCursos = async function(todos){
   const lista = await fetch('cursos/catalogo.json', { cache:'no-store' }).then(r => r.json());
   PORTAL.catalogo = lista.slice().sort((a, b) => (a.ordem || 99) - (b.ordem || 99));
-  const visiveis = lista.filter(c => PORTAL.disponivel(c) || (c.status === 'em_breve' ? PORTAL.modoPrevia : todos || (PORTAL.modoPrevia && c.status === 'rascunho')));
+  const previa = PORTAL.modoPrevia || PORTAL.previaMaster;
+  const visiveis = lista.filter(c => PORTAL.disponivel(c) || (c.status === 'em_breve' ? previa || todos : todos || (previa && c.status === 'rascunho')));
   await Promise.all(visiveis.map(c => carregarScript('cursos/' + c.id + '/curso.js?v=' + (c.versao || 1))));
   return visiveis.filter(c => PORTAL.cursos[c.id]).map((c, i) => {
     const conteudo = PORTAL.cursos[c.id];

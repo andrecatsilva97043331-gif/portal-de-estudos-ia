@@ -15,9 +15,9 @@ Dados de alunos ficam no Supabase (`assets/dados.js`); sem `config.js` preenchid
 1. Crie `cursos/<id-do-curso>/curso.js` (id em minúsculas com hífens, ex.: `excel-para-negocios`). Se o curso já está na Trilha de IA como `"em_breve"`, use o mesmo id do catálogo.
 2. Se ainda não existir, adicione a entrada em `cursos/catalogo.json` com `"status": "em_breve"` (aparece na trilha com selo "Em breve", sem abrir) ou `"rascunho"` (fora da trilha, só na prévia).
 3. Rode `npm run validar` e corrija tudo o que aparecer.
-4. Rode `npm run dev` e teste em http://127.0.0.1:5180 (cursos `em_breve` com `curso.js` e rascunhos só abrem no localhost ou com `?previa` na URL): abra o curso, erre e acerte desafios, conclua um módulo.
-5. Mostre ao usuário e aguarde a aprovação.
-6. Aprovado: mude o status para `"disponivel"`, aumente `versao` se o curso já existia, rode `npm run validar` de novo, faça commit e push.
+4. Rode `npm run dev` e teste em http://127.0.0.1:5180 (no localhost, cursos `em_breve` com `curso.js` e rascunhos abrem para todos): abra o curso, erre e acerte desafios, conclua um módulo.
+5. Publique com `"status": "em_breve"` (commit e push com autorização do usuário): no site publicado o curso abre só para o master logado, com o selo "PRÉVIA · SÓ MASTER", para conferência no ar; alunos continuam vendo "Em breve" sem abrir. `?previa` na URL não libera mais nada no site publicado.
+6. Quando o Andre der o ok: mude o status para `"disponivel"`, aumente `versao` se o curso já existia, rode `npm run validar` de novo, faça commit e push.
 
 Status: `disponivel` (aberto a todos; `publicado` é o nome antigo e equivale), `em_breve`, `rascunho` e `arquivado`. Para tirar um curso do ar sem apagar o histórico dos alunos, use `"status": "arquivado"`. Nunca mude o `id` de um curso ou de uma lição já publicada: o progresso dos alunos está gravado por esses ids. O curso `arquiteto-solucoes-ia` não deve ser alterado sem pedido explícito.
 

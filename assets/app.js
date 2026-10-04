@@ -9,7 +9,14 @@ const NIVEIS_PADRAO = [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],
 let CURSOS = [];
 let ALUNO = null;
 let MASTER = false;
-const checarMaster = async () => { try { MASTER = await DB.ehMaster(); } catch(e){ MASTER = false; } };
+const checarMaster = async () => { try { MASTER = await DB.ehMaster(); } catch(e){ MASTER = false; } await ajustarPrevia(); };
+/* No site publicado, cursos em_breve com curso.js só carregam para o master. */
+async function ajustarPrevia(){
+  if (PORTAL.previaMaster === MASTER) return;
+  PORTAL.previaMaster = MASTER;
+  try { CURSOS = await PORTAL.carregarCursos(false); } catch(e){ console.error(e); }
+}
+const seloPrevia = () => PORTAL.modoPrevia ? 'PRÉVIA · EM BREVE' : 'PRÉVIA · SÓ MASTER';
 let MATR = [];
 let PROG = {};
 let S = { view:'cursos', cur:null, modDone:null, escolhido:null };
@@ -93,7 +100,7 @@ function renderCursos(){
     const acao = fim ? '✅ Concluído' : matr ? '▶ Continuar' : '✨ Iniciar curso';
     const dots = c.conteudo.modulos.map(m => `<i class="${m.lessons.every(l => d[l.id]) ? 'on' : ''}" title="Módulo ${m.id}: ${esc(m.title)}"></i>`).join('');
     return `<div class="mc rise ${fim?'fin':''}" role="button" tabindex="0" data-act="curso" data-id="${esc(c.id)}" style="${ccor(c)};--d:${0.15 + i * 0.08}s">
-      <div class="mhead"><div class="mtile">${c.icone}</div>${c.status === 'rascunho' ? '<span class="badge">RASCUNHO</span>' : c.status === 'em_breve' ? '<span class="badge">PRÉVIA · EM BREVE</span>' : matr ? `<span class="pctpill">${pct}%</span>` : '<span class="pctpill novo">Novo</span>'}</div>
+      <div class="mhead"><div class="mtile">${c.icone}</div>${c.status === 'rascunho' ? '<span class="badge">RASCUNHO</span>' : c.status === 'em_breve' ? `<span class="badge">${seloPrevia()}</span>` : matr ? `<span class="pctpill">${pct}%</span>` : '<span class="pctpill novo">Novo</span>'}</div>
       <div><div class="mt">${esc(c.titulo)}</div><div class="ms">${esc(c.descricao)}</div></div>
       <div class="mdots">${dots}</div>
       <div class="mfoot"><span>${c.conteudo.modulos.length} módulos · ${c.total} lições</span><span class="mst">${acao}</span></div>
@@ -608,7 +615,7 @@ function sidebarPortal(){
         if (!c) return `<button class="les" type="button" disabled title="Em breve"><span class="st">🔜</span><span>${m.ordem ? m.ordem + '. ' : ''}${esc(m.titulo)}</span></button>`;
         const pct = MATR.includes(c.id) ? pctCurso(c) : null;
         const st = pct === 100 ? '✅' : pct !== null ? '▶️' : '✨';
-        return `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${st}</span><span>${m.ordem ? m.ordem + '. ' : ''}${esc(c.titulo)}${pct !== null && pct < 100 ? ` <small class="sbpct">${pct}%</small>` : ''}</span></button>`;
+        return `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${st}</span><span>${m.ordem ? m.ordem + '. ' : ''}${esc(c.titulo)}${pct !== null && pct < 100 ? ` <small class="sbpct">${pct}%</small>` : ''}${PORTAL.disponivel(c) ? '' : ` <small class="sbpct">${seloPrevia()}</small>`}</span></button>`;
       }).join('')}</div></div>
     </div>`;
   }).join('');
@@ -627,7 +634,7 @@ function sidebarPortal(){
         if (!c) return `<button class="les" type="button" disabled title="Em breve"><span class="st">🔜</span><span>${num}. ${esc(m.titulo)}</span></button>`;
         const pct = MATR.includes(c.id) ? pctCurso(c) : null;
         const st = pct === 100 ? '✅' : pct !== null ? '▶️' : '✨';
-        return `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${st}</span><span>${num}. ${esc(c.titulo)}${pct !== null && pct < 100 ? ` <small class="sbpct">${pct}%</small>` : ''}</span></button>`;
+        return `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${st}</span><span>${num}. ${esc(c.titulo)}${pct !== null && pct < 100 ? ` <small class="sbpct">${pct}%</small>` : ''}${PORTAL.disponivel(c) ? '' : ` <small class="sbpct">${seloPrevia()}</small>`}</span></button>`;
       }).join('')}</div></div>
     </div>`;
   }).join('');
@@ -682,6 +689,7 @@ function renderProgress(){
   $('bn-menu').classList.toggle('off', !noCurso && S.view !== 'cursos');
   $('bn-menu').innerHTML = noCurso ? '<span>📚</span>Lições' : '<span>🧭</span>Trilha';
   $('bn-tool').classList.toggle('off', !tb);
+  $('bn-sair').classList.toggle('off', !(ALUNO || MASTER));
   const on = (id, v) => $(id).classList.toggle('on', v);
   on('bn-cursos', !noCurso); on('bn-home', noCurso && S.view !== 'lesson'); on('bn-menu', noCurso && S.view === 'lesson'); on('bn-tool', TB.open);
   if (!noCurso) return;
@@ -892,7 +900,7 @@ function goLesson(id){ S.cur = id; S.view = 'lesson'; closeMenu(); renderAll(); 
 function irParaCursos(){ S.view = 'cursos'; TB.open = false; closeMenu(); renderAll(); }
 
 async function abrirCurso(id){
-  const c = cursoPorId(id); if (!c) return;
+  const c = cursoPorId(id); if (!c || !(PORTAL.disponivel(c) || PORTAL.modoPrevia || MASTER)) return;
   if (!ALUNO) { S.escolhido = id; S.view = 'cadastro'; renderAll(); return; }
   if (!DB.verificado(ALUNO)) { iniciarVerificacao({ curso:id }); return; }
   if (!MATR.includes(id)) {
@@ -1003,6 +1011,7 @@ async function continuarAposEmail(){
   else ALUNO = await DB.alunoAtual();
   if (!ALUNO) { toast('E-mail confirmado ✓ Agora complete seu cadastro.'); S.escolhido = VER.curso || S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); return; }
   [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
+  await checarMaster();
   if (!DB.verificado(ALUNO)) { toast('E-mail confirmado ✓'); VER.etapa = 'whats'; VER.cooldownAte = 0; S.view = 'verificar'; renderAll(); enviarCodigo(); return; }
   if (VER.dados) { limparPendente(); await aposCadastro(VER.curso); return; }
   await liberarAcesso();
@@ -1065,8 +1074,9 @@ async function pedirEntrada(form){
 }
 
 async function sair(){
-  try { await DB.sair(); } catch(e){ console.error(e); }
+  try { await DB.sair(); if (MASTER) await DB.sairMaster(); } catch(e){ console.error(e); }
   ALUNO = null; EMAIL_SESSAO = null; MATR = []; PROG = {}; C = null; VER = {}; MASTER = false; limparPendente();
+  await ajustarPrevia();
   irParaCursos(); toast('Você saiu da sua conta.');
 }
 

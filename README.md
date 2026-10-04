@@ -7,7 +7,7 @@
 - **Portal dos alunos:** https://andrecatsilva97043331-gif.github.io/portal-de-estudos-ia/
 - **Painel do master:** https://andrecatsilva97043331-gif.github.io/portal-de-estudos-ia/admin.html
 - **Link de convite de um curso:** use o botão "Copiar link de convite" no painel (formato `.../?curso=ID-DO-CURSO`).
-- **Prévia de rascunhos no site publicado:** acrescente `?previa` ao endereço.
+- **Prévia de cursos `em_breve` no site publicado:** entre com a conta master; o curso aparece com o selo "PRÉVIA · SÓ MASTER" (alunos continuam vendo "Em breve").
 
 Cada `git push` na branch `main` atualiza o site em 1 ou 2 minutos (GitHub Pages).
 
