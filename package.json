@@ -1,7 +1,7 @@
 {
   "name": "portal-estudos",
   "private": true,
-  "description": "Portal de Estudos com vários cursos, cadastro de alunos e painel do master",
+  "description": "Portal de Estudos IA com vários cursos, cadastro de alunos e painel do master",
   "scripts": {
     "dev": "npx --yes http-server -p 5180 -c-1",
     "validar": "node scripts/validar-cursos.js"

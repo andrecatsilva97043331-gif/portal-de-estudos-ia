@@ -77,7 +77,7 @@ function renderCursos(){
     </section>`;
   } else {
     topo = `<section class="hero rise">
-      <div><div class="eyebrow">Portal de Estudos</div>
+      <div><div class="eyebrow">Portal de Estudos IA</div>
       <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
       <p class="hp">Lições curtas, casos de clientes de verdade e prompts prontos para usar. Faça seu cadastro gratuito e comece agora.</p>
       <div class="chips"><span class="chip">🎓 ${CURSOS.length} ${CURSOS.length === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
@@ -145,7 +145,7 @@ function renderCadastro(){
       <label class="fl wide">Escolha o curso<select name="curso" required>${opcoes}</select></label>
     </div>
     <p class="nota">🔒 Não pedimos CPF, RG nem nenhum documento com foto.</p>
-    <label class="check"><input type="checkbox" name="lgpd" required><span>Autorizo o uso destes dados pelo Portal de Estudos para acompanhar meu progresso nos cursos e para receber códigos de confirmação e avisos sobre meus estudos por e-mail e WhatsApp.</span></label>
+    <label class="check"><input type="checkbox" name="lgpd" required><span>Autorizo o uso destes dados pelo Portal de Estudos IA para acompanhar meu progresso nos cursos e para receber códigos de confirmação e avisos sobre meus estudos por e-mail e WhatsApp.</span></label>
     <div class="err" id="cad-err" role="alert"></div>
     <button class="next" type="submit" id="cad-ok">${textoBotaoCadastro()}</button>
     </div>
@@ -207,7 +207,7 @@ function contarReenvio(){
 }
 
 function linkConfirmacao(){
-  const msg = 'Olá! Quero confirmar meu WhatsApp no Portal de Estudos.\nNome: ' + (ALUNO ? ALUNO.nome : '') + '\nCódigo: ' + (ALUNO && ALUNO.codigo_whats || '');
+  const msg = 'Olá! Quero confirmar meu WhatsApp no Portal de Estudos IA.\nNome: ' + (ALUNO ? ALUNO.nome : '') + '\nCódigo: ' + (ALUNO && ALUNO.codigo_whats || '');
   return 'https://wa.me/' + WA_PORTAL + '?text=' + encodeURIComponent(msg);
 }
 
@@ -217,7 +217,7 @@ function renderConfirmarWhats(){
   $('main').innerHTML = `<div class="form vform">
     <div class="eyebrow">Último passo · 10 segundos</div>
     <h1 class="h1" style="margin-bottom:6px">Confirme seu <span class="grad">WhatsApp</span></h1>
-    <p class="hp">Toque no botão: o WhatsApp vai abrir com uma mensagem pronta para a equipe do Portal de Estudos. É só enviar. Assim confirmamos que o número <b>${esc(ALUNO.telefone)}</b> é seu e podemos te mandar avisos sobre seus estudos.</p>
+    <p class="hp">Toque no botão: o WhatsApp vai abrir com uma mensagem pronta para a equipe do Portal de Estudos IA. É só enviar. Assim confirmamos que o número <b>${esc(ALUNO.telefone)}</b> é seu e podemos te mandar avisos sobre seus estudos.</p>
     <div class="card fcard rise" style="--c:#25d366;--c2:#128c7e">
       <h3 class="fsec"><span class="fico">📲</span>Seu código de confirmação</h3>
       <div class="codigo-w">${esc(ALUNO.codigo_whats || '')}</div>
@@ -301,7 +301,7 @@ function renderProgress(){
   const noCurso = !!C && !VIEWS_PORTAL.includes(S.view);
   const tb = noCurso && temToolbox();
   $('app').classList.toggle('full', !noCurso);
-  $('titulo').textContent = noCurso ? C.titulo : 'Portal de Estudos';
+  $('titulo').textContent = noCurso ? C.titulo : 'Portal de Estudos IA';
   ['pb-wrap','pl'].forEach(id => $(id).classList.toggle('off', !noCurso));
   $('btn-tool').classList.toggle('off', !tb);
   $('bn-home').classList.toggle('off', !noCurso);

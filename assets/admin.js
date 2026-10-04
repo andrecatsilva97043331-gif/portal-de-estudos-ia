@@ -156,13 +156,13 @@ const SEGMENTOS = [
   { id:'pendente',    ico:'⏳', nome:'Sem confirmar', desc:'Falta confirmar e-mail ou WhatsApp',      cor:['#a0a0b6','#64748b'] }
 ];
 const MODELOS_PADRAO = {
-  abandono:'Oi, {nome}! Aqui é do Portal de Estudos. Sentimos sua falta! 💙\nVocê parou em {pct}% do curso {curso}.\nA próxima lição é "{proxima}" e leva poucos minutos.\nLembra do seu objetivo: {objetivo}.\nBora retomar? {link}',
+  abandono:'Oi, {nome}! Aqui é do Portal de Estudos IA. Sentimos sua falta! 💙\nVocê parou em {pct}% do curso {curso}.\nA próxima lição é "{proxima}" e leva poucos minutos.\nLembra do seu objetivo: {objetivo}.\nBora retomar? {link}',
   foco:'Oi, {nome}! Faz {dias} dias desde sua última lição em {curso}.\nReserve 15 minutos hoje para "{proxima}" e mantenha o ritmo. 🎯\n{link}',
   'sem-comecar':'Oi, {nome}! Seu curso {curso} já está liberado. 🚀\nA primeira lição é curta e prática: que tal começar hoje?\n{link}',
   quase:'{nome}, você já fez {pct}% do curso {curso}! 🏁\nFaltam poucas lições para concluir. Próxima: "{proxima}".\n{link}',
   incentivo:'Mandou bem, {nome}! 💪 Você está com {pct}% no curso {curso}.\nContinue assim: a próxima é "{proxima}".\n{link}',
   concluiu:'Parabéns, {nome}! 🎉 Você concluiu o curso {curso}.\nQue tal o próximo desafio? Veja os outros cursos do portal: {link}',
-  pendente:'Oi, {nome}! Aqui é do Portal de Estudos.\nFalta só confirmar seu e-mail e WhatsApp para liberar o curso {curso}. Leva 1 minuto: {link}'
+  pendente:'Oi, {nome}! Aqui é do Portal de Estudos IA.\nFalta só confirmar seu e-mail e WhatsApp para liberar o curso {curso}. Leva 1 minuto: {link}'
 };
 const VARIAVEIS = ['nome','curso','pct','proxima','dias','objetivo','ocupacao','link'];
 const CHAVE_MODELOS = 'portal-estudos-modelos-v1';
@@ -322,7 +322,7 @@ function renderConfirmacoes(){
       <p class="nota" style="margin:0 0 12px">Quando o aluno toca em "Enviar confirmação", chega no seu WhatsApp uma mensagem com o código. Confira se o <b>número de quem mandou</b> e o <b>código</b> batem com os daqui e clique em Confirmar.</p>
       <div class="confs">${pediram.map(a => {
         const wa = linkWhats(a.telefone, a.pais);
-        const ok = 'Olá, ' + String(a.nome || '').split(' ')[0] + '! Seu WhatsApp foi confirmado no Portal de Estudos ✅ Bons estudos!';
+        const ok = 'Olá, ' + String(a.nome || '').split(' ')[0] + '! Seu WhatsApp foi confirmado no Portal de Estudos IA ✅ Bons estudos!';
         return `<div class="conf pediu">
           <div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><div><b>${esc(a.nome)}</b><br><small>${esc(a.telefone)} · pediu ${dataHora(a.whatsapp_solicitado_em)}</small></div></div>
           <span class="cod" title="Código que o aluno enviou">${esc(a.codigo_whats || '-')}</span>

@@ -1,4 +1,4 @@
-// Função "whatsapp" do Portal de Estudos (Supabase Edge Function, Deno).
+// Função "whatsapp" do Portal de Estudos IA (Supabase Edge Function, Deno).
 // Ações: enviar-codigo e verificar-codigo (confirmação obrigatória do WhatsApp do aluno).
 // Segredos necessários: WHATSAPP_TOKEN, WHATSAPP_PHONE_ID.
 // Opcionais: WHATSAPP_TEMPLATE_CODIGO (padrão "codigo_verificacao"), WHATSAPP_IDIOMA (padrão "pt_BR"),
@@ -67,7 +67,7 @@ Deno.serve(async req => {
     if (a.inscricao_notificada_em) return resposta({ ok: true, jaNotificado: true });
     const { data: m } = await admin.from('matriculas').select('curso_id').eq('aluno_id', a.id);
     const texto = [
-      '🎓 Nova inscrição no Portal de Estudos',
+      '🎓 Nova inscrição no Portal de Estudos IA',
       `Nome: ${a.nome}`,
       `WhatsApp: ${a.telefone}`,
       `Local: ${a.estado} · ${a.pais}`,
@@ -82,7 +82,7 @@ Deno.serve(async req => {
       body: JSON.stringify({ chat_id: env('TELEGRAM_CHAT_ID'), text: texto })
     }));
     if (temNtfy) envios.push(fetch(`https://ntfy.sh/${encodeURIComponent(env('NTFY_TOPIC'))}`, {
-      method: 'POST', headers: { Title: 'Nova inscricao no Portal de Estudos', Tags: 'mortar_board' }, body: texto
+      method: 'POST', headers: { Title: 'Nova inscricao no Portal de Estudos IA', Tags: 'mortar_board' }, body: texto
     }));
     if (temCallMeBot) envios.push(fetch(`https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(env('CALLMEBOT_PHONE'))}&text=${encodeURIComponent(texto)}&apikey=${encodeURIComponent(env('CALLMEBOT_APIKEY'))}`));
     const resultados = await Promise.allSettled(envios);

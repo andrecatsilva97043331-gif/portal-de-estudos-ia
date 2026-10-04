@@ -1,4 +1,4 @@
--- Portal de Estudos: tabelas e regras de acesso.
+-- Portal de Estudos IA: tabelas e regras de acesso.
 -- Rode uma vez no Supabase (SQL Editor > New query > colar > Run).
 
 create table if not exists public.alunos (

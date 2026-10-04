@@ -1,4 +1,4 @@
-# Portal de Estudos: instruções para agentes (Cursor, Claude)
+# Portal de Estudos IA: instruções para agentes (Cursor, Claude)
 
 Site estático (HTML, CSS e JavaScript puro, sem build). Os alunos usam `index.html`; o master usa `admin.html`.
 Dados de alunos ficam no Supabase (`assets/dados.js`); sem `config.js` preenchido, roda em modo demonstração (localStorage).

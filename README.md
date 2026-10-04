@@ -1,4 +1,4 @@
-# Portal de Estudos
+# Portal de Estudos IA
 
 **O maior portal de estudos de desenvolvimento em IA.** Portal com vários cursos. O aluno se cadastra (nome, e-mail, idade, telefone/WhatsApp, país, estado, CEP, profissão, ocupação atual, se trabalha, se estuda e objetivo com o curso), confirma o e-mail e o WhatsApp, escolhe um curso e começa na hora. Não pedimos CPF, RG nem documentos com foto. O master acompanha todos os alunos e envia avisos pelo WhatsApp em `admin.html`.
 
@@ -27,7 +27,7 @@ Sem o Supabase configurado, o portal roda em **modo demonstração**: os dados f
 - **WhatsApp (grátis, confirmação pelo master):** o curso é liberado na hora. Logo depois do cadastro, o aluno toca em **"Enviar confirmação pelo WhatsApp"**: abre o WhatsApp dele com uma mensagem pronta, com um código de 4 números, para o número do master (`whatsappPortal` em `config.js`). No painel, o bloco **"Confirmações de WhatsApp"** mostra quem pediu e o código; confira o número de quem mandou e clique em **Confirmar**. Só o master consegue confirmar, e a regra está no banco.
 - **Aviso de nova inscrição para o master (grátis).** A função envia para todos os canais configurados abaixo. Cada aviso traz nome, telefone, local, profissão, objetivo, curso e o código de confirmação.
   - **Telegram (recomendado):**
-    1. No Telegram, abra o **@BotFather**, mande `/newbot`, escolha um nome (ex.: *Avisos Portal de Estudos*) e um usuário terminado em `bot`. Ele responde com o **token**.
+    1. No Telegram, abra o **@BotFather**, mande `/newbot`, escolha um nome (ex.: *Avisos Portal de Estudos IA*) e um usuário terminado em `bot`. Ele responde com o **token**.
     2. Abra o seu bot novo e mande qualquer mensagem (ex.: `oi`).
     3. No navegador, abra `https://api.telegram.org/botSEU-TOKEN/getUpdates` e anote o número em `"chat":{"id": ...}`.
     4. Na pasta do projeto, rode:
@@ -90,7 +90,7 @@ A chave `anon` pode ficar no site: as regras do banco garantem que cada aluno s�
 2. **Authentication > Email Templates**: nos modelos **Magic Link** e **Confirm signup**, troque o conteúdo para mostrar o código, por exemplo:
 
    ```html
-   <h2>Portal de Estudos</h2>
+   <h2>Portal de Estudos IA</h2>
    <p>Seu código de confirmação é:</p>
    <p style="font-size:28px;font-weight:bold;letter-spacing:6px">{{ .Token }}</p>
    <p>Ele vale por 10 minutos. Se não foi você, ignore este e-mail.</p>

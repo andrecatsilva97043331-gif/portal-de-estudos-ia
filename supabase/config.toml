@@ -234,11 +234,11 @@ otp_expiry = 600
 
 # Requer SMTP próprio (no plano gratuito com o e-mail padrão do Supabase o modelo não pode ser alterado).
 # [auth.email.template.magic_link]
-# subject = "Seu código do Portal de Estudos"
+# subject = "Seu código do Portal de Estudos IA"
 # content_path = "./supabase/templates/codigo.html"
 
 # [auth.email.template.confirmation]
-# subject = "Seu código do Portal de Estudos"
+# subject = "Seu código do Portal de Estudos IA"
 # content_path = "./supabase/templates/codigo.html"
 
 # Use a production-ready SMTP server
