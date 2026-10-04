@@ -32,7 +32,7 @@ create unique index if not exists alunos_email_unico on public.alunos (lower(ema
 revoke insert, update on public.alunos from anon, authenticated;
 grant insert (id, email, nome, idade, telefone, pais, estado, cep, profissao, ocupacao, trabalhando, estudante, objetivo, objetivo_detalhe, aceita_contato, ultimo_acesso)
   on public.alunos to authenticated;
-grant update (email, nome, idade, telefone, pais, estado, cep, profissao, ocupacao, trabalhando, estudante, objetivo, objetivo_detalhe, aceita_contato, ultimo_acesso)
+grant update (id, email, nome, idade, telefone, pais, estado, cep, profissao, ocupacao, trabalhando, estudante, objetivo, objetivo_detalhe, aceita_contato, ultimo_acesso)
   on public.alunos to authenticated;
 
 -- Trocou o telefone? Precisa confirmar o WhatsApp de novo.
@@ -88,12 +88,23 @@ $$;
 revoke all on function public.is_master() from public;
 grant execute on function public.is_master() to anon, authenticated;
 
+-- Configuração do portal (uma linha só). exigir_whatsapp = false dispensa temporariamente a confirmação do WhatsApp.
+create table if not exists public.config_portal (
+  id int primary key default 1 check (id = 1),
+  exigir_whatsapp boolean not null default true
+);
+insert into public.config_portal (id) values (1) on conflict do nothing;
+alter table public.config_portal enable row level security;
+drop policy if exists "todos leem a configuracao" on public.config_portal;
+create policy "todos leem a configuracao" on public.config_portal for select to anon, authenticated using (true);
+
 -- Aluno com e-mail e WhatsApp confirmados: única condição para se matricular e registrar progresso.
 create or replace function public.aluno_verificado()
 returns boolean language sql stable security definer set search_path = public as $$
   select exists (
     select 1 from public.alunos a join auth.users u on u.id = a.id
-    where a.id = auth.uid() and a.whatsapp_verificado and u.email_confirmed_at is not null
+    where a.id = auth.uid() and u.email_confirmed_at is not null
+      and (a.whatsapp_verificado or not coalesce((select exigir_whatsapp from public.config_portal where id = 1), true))
   );
 $$;
 revoke all on function public.aluno_verificado() from public;
@@ -144,6 +155,9 @@ drop policy if exists "master le avisos" on public.avisos;
 drop policy if exists "master registra avisos" on public.avisos;
 create policy "master le avisos" on public.avisos for select to authenticated using (public.is_master());
 create policy "master registra avisos" on public.avisos for insert to authenticated with check (public.is_master());
+
+-- Dispensar o WhatsApp temporariamente:  update public.config_portal set exigir_whatsapp = false;
+-- Voltar a exigir:                        update public.config_portal set exigir_whatsapp = true;
 
 -- Depois de criar seu usuário em Authentication > Users (e-mail e senha), torne-o master:
 -- insert into public.masters (user_id) select id from auth.users where email = 'SEU-EMAIL@exemplo.com';

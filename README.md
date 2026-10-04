@@ -11,6 +11,14 @@ npm run dev
 Abra http://127.0.0.1:5180 (alunos) e http://127.0.0.1:5180/admin.html (master).
 Sem o Supabase configurado, o portal roda em **modo demonstração**: os dados ficam só no navegador, a senha do master é `master` e os códigos de confirmação aparecem na própria tela (nada é enviado de verdade).
 
+## Modo atual do portal (Supabase ligado)
+
+- **Projeto:** `portal-estudos` (organização "Portal de Estudos", região São Paulo). A senha do banco está em `.env.local`, só neste computador.
+- **Acesso do aluno:** e-mail e **senha** criados no cadastro, sem código por e-mail (`confirmarEmailPorCodigo: false` em `config.js`), porque ainda não há SMTP próprio.
+- **WhatsApp:** confirmação **temporariamente dispensada**. Para voltar a exigir, depois de configurar a API da Meta, rode no SQL Editor:
+  `update public.config_portal set exigir_whatsapp = true;`
+- **Para ligar o código por e-mail:** configure o SMTP próprio (veja abaixo), troque `enable_confirmations` para `true` em `supabase/config.toml`, descomente os modelos de e-mail, rode `npx supabase config push` e mude `confirmarEmailPorCodigo` para `true` em `config.js`.
+
 ## Confirmação obrigatória de e-mail e WhatsApp
 
 Sem confirmar os dois, o aluno não conclui a inscrição, não acessa o curso e não se inscreve em outros cursos. A tela deixa isso claro em todas as etapas.

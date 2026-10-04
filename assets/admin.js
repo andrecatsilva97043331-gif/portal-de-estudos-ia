@@ -25,6 +25,7 @@ function linkWhats(tel, pais){
 const simNao = v => v === true ? 'Sim' : v === false ? 'Não' : '-';
 const selos = a => a.email_verificado && a.whatsapp_verificado
   ? '<span class="act hoje" title="E-mail e WhatsApp confirmados">✓ Confirmado</span>'
+  : DB.verificado(a) ? '<span class="act semana" title="Acesso liberado; a confirmação do WhatsApp está dispensada no momento">✓ Liberado</span>'
   : `<span class="act pend-v" title="Falta confirmar ${a.email_verificado ? 'o WhatsApp' : 'o e-mail'}">⏳ ${a.email_verificado ? 'Falta WhatsApp' : a.whatsapp_verificado ? 'Falta e-mail' : 'Não confirmado'}</span>`;
 function situacao(a){
   const s = [];
@@ -176,7 +177,7 @@ function perfilAviso({ a, cursos }){
   const c = andamento[0] || cursos.find(x => x.pct === 100) || null;
   const dias = diasDesde(a.ultimo_acesso);
   let seg;
-  if (!(a.email_verificado && a.whatsapp_verificado)) seg = 'pendente';
+  if (!DB.verificado(a)) seg = 'pendente';
   else if (!cursos.length || (andamento.length && andamento.every(x => x.feitas === 0))) seg = 'sem-comecar';
   else if (!andamento.length) seg = 'concluiu';
   else if (dias >= 7) seg = 'abandono';
@@ -283,7 +284,7 @@ function renderPainel(){
   const taxa = pcts.length ? Math.round(concluidos / pcts.length * 100) : 0;
   const opCursos = CURSOS.map(c => `<option value="${esc(c.id)}" ${F.curso===c.id?'selected':''}>${esc(c.titulo)}${c.status !== 'publicado' ? ' (' + c.status + ')' : ''}</option>`).join('');
   const stats = [
-    ['👥', DADOS.alunos.length, '', 'alunos cadastrados', '+' + novos + ' em 7 dias · ' + DADOS.alunos.filter(a => a.email_verificado && a.whatsapp_verificado).length + ' confirmados'],
+    ['👥', DADOS.alunos.length, '', 'alunos cadastrados', '+' + novos + ' em 7 dias · ' + DADOS.alunos.filter(a => DB.verificado(a)).length + ' liberados'],
     ['⚡', ativos, '', 'ativos nos últimos 7 dias', DADOS.alunos.length ? Math.round(ativos / DADOS.alunos.length * 100) + '% da base' : '-'],
     ['📈', media, '%', 'progresso médio', DADOS.matriculas.length + ' matrículas'],
     ['🏆', concluidos, '', 'cursos concluídos', taxa + '% de conclusão']

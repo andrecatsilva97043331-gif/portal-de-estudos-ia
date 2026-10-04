@@ -18,7 +18,13 @@ let EMAIL_SESSAO = null;
 let VER = {};
 const VIEWS_PORTAL = ['cursos','cadastro','verificar','entrar'];
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const AVISO_OBRIGATORIO = 'A confirmação do e-mail e do WhatsApp é <b>obrigatória</b> para concluir a inscrição no portal, acessar o curso e se inscrever nos demais cursos no futuro.';
+const MODO_SENHA = () => !DB.codigoEmail;
+const pedeConfirmacao = () => DB.codigoEmail || DB.exigirWhatsapp;
+function textoObrigatorio(){
+  const itens = [DB.codigoEmail && 'do e-mail', DB.exigirWhatsapp && 'do WhatsApp'].filter(Boolean);
+  if (!itens.length) return 'O cadastro com e-mail e senha é <b>obrigatório</b> para se inscrever no portal, acessar o curso e se inscrever nos demais cursos no futuro.';
+  return 'A confirmação ' + itens.join(' e ') + ' é <b>obrigatória</b> para concluir a inscrição no portal, acessar o curso e se inscrever nos demais cursos no futuro.';
+}
 
 /* ============ UTILITÁRIOS ============ */
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -60,7 +66,7 @@ function renderCursos(){
       <h1 class="hh">Olá, <span class="grad">${esc(ALUNO.nome.split(' ')[0])}</span>! 👋</h1>
       <p class="hp">${seguir ? 'Continue de onde parou ou comece um curso novo.' : 'Escolha um curso para começar.'}</p>
       <div class="chips"><span class="chip">⚡ ${feitas * 100} XP</span><span class="chip">📘 ${feitas} lições concluídas</span><span class="chip">🎓 ${meus.length} ${meus.length === 1 ? 'curso' : 'cursos'}</span>${concluidos ? `<span class="chip">🏆 ${concluidos} concluído${concluidos > 1 ? 's' : ''}</span>` : ''}</div>
-      ${!DB.verificado(ALUNO) ? `<div class="pend"><b>⚠️ Falta confirmar seu ${ALUNO.email_verificado ? 'WhatsApp' : 'e-mail'}</b><span>${AVISO_OBRIGATORIO}</span><button class="next" data-act="verificar">Confirmar agora ➜</button></div>`
+      ${!DB.verificado(ALUNO) ? `<div class="pend"><b>⚠️ Falta confirmar seu ${ALUNO.email_verificado ? 'WhatsApp' : 'e-mail'}</b><span>${textoObrigatorio()}</span><button class="next" data-act="verificar">Confirmar agora ➜</button></div>`
         : seguir ? `<button class="next" data-act="curso" data-id="${esc(seguir.id)}" style="${ccor(seguir)}">Continuar ${esc(seguir.titulo)} ➜</button>` : ''}
       <button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>dos seus cursos</span></div></div>
@@ -75,7 +81,7 @@ function renderCursos(){
       <div class="orb" aria-hidden="true"><span>📚</span></div>
     </section>
     <div class="steps">
-      ${[['📝','Cadastre-se','Leva 2 minutos, não pede documentos e é confirmado por e-mail e WhatsApp.'],['🎯','Escolha o curso','Comece na hora, no seu ritmo, pelo celular ou computador.'],['🏆','Aprenda com desafios','Cada lição termina com um caso real para você resolver.']]
+      ${[['📝','Cadastre-se', pedeConfirmacao() ? 'Leva 2 minutos, não pede documentos e é confirmado por ' + [DB.codigoEmail && 'e-mail', DB.exigirWhatsapp && 'WhatsApp'].filter(Boolean).join(' e ') + '.' : 'Leva 2 minutos e não pede documentos.'],['🎯','Escolha o curso','Comece na hora, no seu ritmo, pelo celular ou computador.'],['🏆','Aprenda com desafios','Cada lição termina com um caso real para você resolver.']]
         .map((s, i) => `<div class="step rise" style="--d:${0.1 + i * 0.08}s;${'--c:' + PORTAL.paleta(i)[0] + ';--c2:' + PORTAL.paleta(i)[1]}"><div class="stile">${s[0]}</div><div><b>${i + 1}. ${s[1]}</b><p>${s[2]}</p></div></div>`).join('')}
     </div>`;
   }
@@ -105,13 +111,15 @@ function renderCadastro(){
   $('main').innerHTML = `<form class="form" id="f-cad" novalidate>
     <div class="eyebrow">Cadastro gratuito</div>
     <h1 class="h1" style="margin-bottom:6px">Comece a <span class="grad">estudar agora</span></h1>
-    <p class="hp">Preencha seus dados, escolha o curso e confirme seu e-mail e WhatsApp. <button class="link inl" type="button" data-act="entrar">Já tenho cadastro</button></p>
-    <div class="obrig">🛡️ <span>${AVISO_OBRIGATORIO}</span></div>
+    <p class="hp">Preencha seus dados${MODO_SENHA() ? ', crie sua senha' : ''} e escolha o curso${pedeConfirmacao() ? '. Depois é só confirmar ' + [DB.codigoEmail && 'o e-mail', DB.exigirWhatsapp && 'o WhatsApp'].filter(Boolean).join(' e ') : ''}. <button class="link inl" type="button" data-act="entrar">Já tenho cadastro</button></p>
+    <div class="obrig">🛡️ <span>${textoObrigatorio()}</span></div>
     <div class="fprog-w"><div class="fprog"><i id="fprog"></i></div><span id="fprog-t">0% preenchido</span></div>
     <div class="card fcard rise" style="--c:#22d3ee;--c2:#3b82f6"><h3 class="fsec"><span class="fico">📇</span>Seus dados</h3><div class="fgrid">
       <label class="fl wide">Nome completo<input name="nome" autocomplete="name" required maxlength="120"></label>
       <label class="fl">Idade<input name="idade" type="number" inputmode="numeric" min="5" max="120" required></label>
-      <label class="fl wide">E-mail<input name="email" type="email" autocomplete="email" required maxlength="120" placeholder="voce@exemplo.com" value="${esc(EMAIL_SESSAO || '')}" ${EMAIL_SESSAO ? 'readonly' : ''}><small>${EMAIL_SESSAO ? '✅ E-mail já confirmado.' : 'Vamos enviar um código de confirmação para este e-mail.'}</small></label>
+      <label class="fl wide">E-mail<input name="email" type="email" autocomplete="email" required maxlength="120" placeholder="voce@exemplo.com" value="${esc(EMAIL_SESSAO || '')}" ${EMAIL_SESSAO ? 'readonly' : ''}><small>${EMAIL_SESSAO ? '✅ Você já está conectado com este e-mail.' : MODO_SENHA() ? 'Você vai usar este e-mail e a senha para entrar de qualquer aparelho.' : 'Vamos enviar um código de confirmação para este e-mail.'}</small></label>
+      ${MODO_SENHA() && !EMAIL_SESSAO ? `<label class="fl">Crie uma senha<input name="senha" type="password" autocomplete="new-password" required minlength="8" maxlength="72" placeholder="Mínimo de 8 caracteres"></label>
+      <label class="fl">Repita a senha<input name="senha2" type="password" autocomplete="new-password" required minlength="8" maxlength="72"></label>` : ''}
       <label class="fl">Telefone / WhatsApp<input name="telefone" type="tel" autocomplete="tel" placeholder="(11) 91234-5678" required maxlength="25"><small>Precisa ser um número com WhatsApp: o código chega por lá.</small></label>
       <label class="fl">País<input name="pais" autocomplete="country-name" value="Brasil" required maxlength="60"></label>
       <label class="fl">CEP<input name="cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" required maxlength="12"><small id="cep-info"></small></label>
@@ -135,7 +143,7 @@ function renderCadastro(){
     <p class="nota">🔒 Não pedimos CPF, RG nem nenhum documento com foto.</p>
     <label class="check"><input type="checkbox" name="lgpd" required><span>Autorizo o uso destes dados pelo Portal de Estudos para acompanhar meu progresso nos cursos e para receber códigos de confirmação e avisos sobre meus estudos por e-mail e WhatsApp.</span></label>
     <div class="err" id="cad-err" role="alert"></div>
-    <button class="next" type="submit" id="cad-ok">Continuar para a confirmação ➜</button>
+    <button class="next" type="submit" id="cad-ok">${textoBotaoCadastro()}</button>
     </div>
     <button class="link" type="button" data-act="cursos">← Voltar aos cursos</button>
   </form>`;
@@ -166,7 +174,7 @@ function renderVerificar(){
   $('main').innerHTML = `<div class="form vform">
     <div class="eyebrow">Etapa obrigatória</div>
     <h1 class="h1" style="margin-bottom:6px">Confirme seu <span class="grad">${email ? 'e-mail' : 'WhatsApp'}</span></h1>
-    <div class="obrig">🛡️ <span>${AVISO_OBRIGATORIO}</span></div>
+    <div class="obrig">🛡️ <span>${textoObrigatorio()}</span></div>
     <div class="vsteps">${passo(1, 'E-mail', email ? 'cur' : 'ok')}${passo(2, 'WhatsApp', email ? '' : 'cur')}${passo(3, 'Acesso liberado', '')}</div>
     <form class="card fcard rise" id="f-ver" novalidate style="--c:${email ? '#22d3ee;--c2:#3b82f6' : '#4ade80;--c2:#22c55e'}">
       <h3 class="fsec"><span class="fico">${email ? '✉️' : '📱'}</span>Digite o código de 6 números</h3>
@@ -199,23 +207,27 @@ function renderEntrar(){
   $('main').innerHTML = `<form class="form vform" id="f-entrar" novalidate>
     <div class="eyebrow">Já tenho cadastro</div>
     <h1 class="h1" style="margin-bottom:6px">Entrar no <span class="grad">portal</span></h1>
-    <p class="hp">Use o e-mail do seu cadastro. Enviamos um código para confirmar que é você, sem senha. Assim você continua seus cursos em qualquer aparelho e se inscreve nos outros.</p>
+    <p class="hp">${MODO_SENHA() ? 'Use o e-mail e a senha do seu cadastro.' : 'Use o e-mail do seu cadastro. Enviamos um código para confirmar que é você, sem senha.'} Assim você continua seus cursos em qualquer aparelho e se inscreve nos outros.</p>
     <div class="card fcard rise" style="--c:#22d3ee;--c2:#c084fc">
-      <h3 class="fsec"><span class="fico">🔑</span>Seu e-mail</h3>
+      <h3 class="fsec"><span class="fico">🔑</span>${MODO_SENHA() ? 'Seu acesso' : 'Seu e-mail'}</h3>
       <label class="fl">E-mail<input name="email" type="email" autocomplete="email" required maxlength="120" placeholder="voce@exemplo.com"></label>
+      ${MODO_SENHA() ? '<label class="fl" style="margin-top:12px">Senha<input name="senha" type="password" autocomplete="current-password" required maxlength="72"></label>' : ''}
       <div class="err" id="ent-err" role="alert"></div>
-      <button class="next" type="submit" id="ent-ok">Receber código ➜</button>
+      <button class="next" type="submit" id="ent-ok">${MODO_SENHA() ? 'Entrar ➜' : 'Receber código ➜'}</button>
+      ${MODO_SENHA() ? '<p class="nota">Esqueceu a senha? Peça ao responsável pelo portal para redefinir.</p>' : ''}
     </div>
     <button class="link" type="button" data-act="cadastro">Ainda não tenho cadastro</button>
   </form>`;
   document.querySelector('#f-entrar input').focus();
 }
 
-const OBRIGATORIOS = ['nome','email','idade','telefone','pais','cep','estado','profissao','ocupacao','trabalhando','estudante','objetivo','curso','lgpd'];
+const textoBotaoCadastro = () => pedeConfirmacao() ? 'Continuar para a confirmação ➜' : 'Cadastrar e iniciar o curso ➜';
+const OBRIGATORIOS = ['nome','email','senha','senha2','idade','telefone','pais','cep','estado','profissao','ocupacao','trabalhando','estudante','objetivo','curso','lgpd'];
 function atualizarPreenchimento(){
   const f = $('f-cad'); if (!f) return;
-  const feitos = OBRIGATORIOS.filter(n => { const el = f.elements[n]; if (!el) return false; return el.type === 'checkbox' ? el.checked : String(el.value || '').trim() !== ''; }).length;
-  const pct = Math.round(feitos / OBRIGATORIOS.length * 100);
+  const campos = OBRIGATORIOS.filter(n => f.elements[n]);
+  const feitos = campos.filter(n => { const el = f.elements[n]; return el.type === 'checkbox' ? el.checked : String(el.value || '').trim() !== ''; }).length;
+  const pct = Math.round(feitos / campos.length * 100);
   $('fprog').style.width = pct + '%';
   $('fprog-t').textContent = pct === 100 ? 'Tudo pronto ✓' : pct + '% preenchido';
 }
@@ -464,18 +476,25 @@ async function enviarCadastro(form){
   else if (!dados.objetivo) msg = 'Escolha seu principal objetivo com o curso.';
   else if (!curso) msg = 'Escolha um curso.';
   else if (!f.lgpd.checked) msg = 'É preciso autorizar o uso dos dados para continuar.';
+  else if (f.senha && f.senha.value.length < 8) msg = 'A senha precisa ter pelo menos 8 caracteres.';
+  else if (f.senha && f.senha.value !== f.senha2.value) msg = 'As duas senhas não são iguais.';
   err.textContent = msg;
   if (msg) return;
   const btn = $('cad-ok'); btn.disabled = true; btn.textContent = 'Salvando…';
+  if (f.senha && !EMAIL_SESSAO) {
+    try { await DB.criarConta(email, f.senha.value); EMAIL_SESSAO = email; }
+    catch(e){ console.error(e); err.textContent = e.message; btn.disabled = false; btn.textContent = textoBotaoCadastro(); return; }
+  }
   if (EMAIL_SESSAO && EMAIL_SESSAO === email) {
     try {
       ALUNO = await DB.cadastrar(dados);
       VER = { dados, curso, email };
-      iniciarVerificacao({ curso, dados });
+      if (DB.verificado(ALUNO)) { [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]); await liberarAcesso(); }
+      else iniciarVerificacao({ curso, dados });
     } catch(e){
       console.error(e);
       err.textContent = 'Não foi possível salvar o cadastro. Tente novamente em instantes.';
-      btn.disabled = false; btn.textContent = 'Continuar para a confirmação ➜';
+      btn.disabled = false; btn.textContent = textoBotaoCadastro();
     }
     return;
   }
@@ -520,7 +539,7 @@ async function continuarAposEmail(){
   else ALUNO = await DB.alunoAtual();
   if (!ALUNO) { toast('E-mail confirmado ✓ Agora complete seu cadastro.'); S.escolhido = VER.curso || S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); return; }
   [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
-  if (!ALUNO.whatsapp_verificado) { toast('E-mail confirmado ✓'); VER.etapa = 'whats'; VER.cooldownAte = 0; S.view = 'verificar'; renderAll(); enviarCodigo(); return; }
+  if (!DB.verificado(ALUNO)) { toast('E-mail confirmado ✓'); VER.etapa = 'whats'; VER.cooldownAte = 0; S.view = 'verificar'; renderAll(); enviarCodigo(); return; }
   await liberarAcesso();
 }
 
@@ -557,7 +576,7 @@ async function liberarAcesso(){
   const curso = VER.curso, nome = ALUNO.nome.split(' ')[0];
   VER = {}; limparPendente();
   confetti();
-  toast((curso ? 'Tudo confirmado! Bom estudo, ' : 'Bem-vindo de volta, ') + nome + ' 🎉');
+  toast((curso ? (pedeConfirmacao() ? 'Tudo confirmado! Bom estudo, ' : 'Tudo pronto! Bom estudo, ') : 'Bem-vindo de volta, ') + nome + ' 🎉');
   if (curso && cursoPorId(curso)) await abrirCurso(curso);
   else irParaCursos();
 }
@@ -565,6 +584,15 @@ async function liberarAcesso(){
 async function pedirEntrada(form){
   const email = form.elements.email.value.trim().toLowerCase(), err = $('ent-err');
   if (!RE_EMAIL.test(email)) { err.textContent = 'Informe um e-mail válido.'; return; }
+  if (MODO_SENHA()) {
+    const btn = $('ent-ok'); btn.disabled = true; btn.textContent = 'Entrando…';
+    try {
+      await DB.entrarComSenha(email, form.elements.senha.value);
+      VER = { etapa:'email', email, modo:'entrar', curso:S.escolhido };
+      await continuarAposEmail();
+    } catch(e){ console.error(e); err.textContent = e.message; btn.disabled = false; btn.textContent = 'Entrar ➜'; }
+    return;
+  }
   VER = { etapa:'email', email, modo:'entrar', curso:S.escolhido };
   S.view = 'verificar'; renderAll();
   enviarCodigo();

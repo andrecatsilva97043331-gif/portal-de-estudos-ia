@@ -11,7 +11,15 @@ function carregarScript(src){
   return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
 }
 function soCampos(d){ const o = {}; CAMPOS.forEach(k => { if (d[k] !== undefined) o[k] = d[k]; }); return o; }
-const verificado = a => !!(a && a.email_verificado && a.whatsapp_verificado);
+let EXIGIR_WHATS = true;
+const verificado = a => !!(a && a.email_verificado && (a.whatsapp_verificado || !EXIGIR_WHATS));
+function erroSenha(e){
+  const m = String((e && e.message) || '');
+  if (/already registered|already been registered|exists/i.test(m)) return new Error('Este e-mail já tem cadastro. Use "Já tenho cadastro" para entrar.');
+  if (/invalid login|credentials/i.test(m)) return new Error('E-mail ou senha incorretos.');
+  if (/password/i.test(m)) return new Error('A senha precisa ter pelo menos 8 caracteres.');
+  return new Error('Não foi possível continuar agora. Tente novamente.');
+}
 
 /* ================= Supabase ================= */
 function bancoSupabase(){
@@ -34,6 +42,17 @@ function bancoSupabase(){
     async iniciar(){
       await carregarScript(CDN);
       sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth:{ persistSession:true } });
+      const r = await sb.from('config_portal').select('exigir_whatsapp').eq('id', 1).maybeSingle();
+      if (!r.error && r.data) EXIGIR_WHATS = r.data.exigir_whatsapp !== false;
+    },
+    async criarConta(email, senha){
+      const r = await sb.auth.signUp({ email, password:senha });
+      if (r.error) throw erroSenha(r.error);
+      if (!r.data.session) throw new Error('Cadastro criado, mas é preciso confirmar o e-mail. Avise o suporte do portal.');
+    },
+    async entrarComSenha(email, senha){
+      const r = await sb.auth.signInWithPassword({ email, password:senha });
+      if (r.error) throw erroSenha(r.error);
     },
     async emailDaSessao(){ const s = await sessao(); return s && s.user.email_confirmed_at ? s.user.email : null; },
     async alunoAtual(){
@@ -120,6 +139,7 @@ function bancoDemo(){
   const gravar = d => localStorage.setItem(KEY, JSON.stringify(d));
   const novoId = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
   const novoCodigo = () => String(Math.floor(100000 + Math.random() * 900000));
+  async function hashDemo(t){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''); }
   function conferir(d, chave, codigo){
     const c = d.codigos[chave];
     if (!c || Date.now() > c.expira) throw new Error('Código expirado. Peça um novo.');
@@ -133,7 +153,23 @@ function bancoDemo(){
 
   return {
     modo: 'demo',
-    async iniciar(){},
+    async iniciar(){ EXIGIR_WHATS = cfg.exigirWhatsappDemo !== false; },
+    async criarConta(email, senha){
+      const d = ler(); d.contas = d.contas || {};
+      if (d.contas[email] || d.alunos.some(a => a.email === email)) throw erroSenha({ message:'already registered' });
+      if (String(senha).length < 8) throw erroSenha({ message:'password' });
+      d.contas[email] = await hashDemo(email + ':' + senha);
+      d.emailSessao = email; d.eu = null;
+      gravar(d);
+    },
+    async entrarComSenha(email, senha){
+      const d = ler(); d.contas = d.contas || {};
+      if (!d.contas[email] || d.contas[email] !== await hashDemo(email + ':' + senha)) throw erroSenha({ message:'invalid login' });
+      const a = d.alunos.find(x => x.email === email);
+      d.emailSessao = email; d.eu = a ? a.id : null;
+      if (a) a.email_verificado = true;
+      gravar(d);
+    },
     async emailDaSessao(){ return ler().emailSessao; },
     async alunoAtual(){
       const d = ler(), a = d.alunos.find(x => x.id === d.eu);
@@ -215,4 +251,6 @@ function bancoDemo(){
 
 window.DB = USA_SUPABASE ? bancoSupabase() : bancoDemo();
 DB.verificado = verificado;
+DB.codigoEmail = !!cfg.confirmarEmailPorCodigo;
+Object.defineProperty(DB, 'exigirWhatsapp', { get: () => EXIGIR_WHATS });
 })();
