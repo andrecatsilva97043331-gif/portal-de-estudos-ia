@@ -13,6 +13,14 @@ create table if not exists public.alunos (
   ultimo_acesso timestamptz not null default now()
 );
 
+-- Perfil do aluno (não guardamos CPF, RG nem documentos com foto)
+alter table public.alunos add column if not exists profissao text check (char_length(profissao) <= 80);
+alter table public.alunos add column if not exists ocupacao text check (char_length(ocupacao) <= 80);
+alter table public.alunos add column if not exists trabalhando boolean;
+alter table public.alunos add column if not exists estudante boolean;
+alter table public.alunos add column if not exists objetivo text check (char_length(objetivo) <= 60);
+alter table public.alunos add column if not exists objetivo_detalhe text check (char_length(objetivo_detalhe) <= 300);
+
 create table if not exists public.masters (
   user_id uuid primary key references auth.users on delete cascade
 );

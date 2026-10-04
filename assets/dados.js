@@ -5,7 +5,7 @@ const cfg = window.PORTAL_CONFIG || {};
 const USA_SUPABASE = !!(cfg.supabaseUrl && cfg.supabaseAnonKey);
 const CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 const agora = () => new Date().toISOString();
-const CAMPOS = ['nome','idade','telefone','pais','estado','cep'];
+const CAMPOS = ['nome','idade','telefone','pais','estado','cep','profissao','ocupacao','trabalhando','estudante','objetivo','objetivo_detalhe'];
 
 function carregarScript(src){
   return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });

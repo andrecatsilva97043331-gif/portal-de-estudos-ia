@@ -22,6 +22,15 @@ function linkWhats(tel, pais){
   return d ? 'https://wa.me/' + d : '';
 }
 
+const simNao = v => v === true ? 'Sim' : v === false ? 'Não' : '-';
+function situacao(a){
+  const s = [];
+  if (a.trabalhando === true) s.push('Trabalhando');
+  if (a.trabalhando === false) s.push('Sem trabalho');
+  if (a.estudante === true) s.push('Estudante');
+  return s.join(' · ');
+}
+
 function linkConvite(id){ return new URL('./?curso=' + encodeURIComponent(id), location.href).href; }
 
 /* ============ CÁLCULOS ============ */
@@ -40,7 +49,7 @@ function linhas(){
     const cursos = DADOS.matriculas.filter(m => m.aluno_id === a.id).map(m => Object.assign({ curso:m.curso_id, iniciado:m.iniciado_em }, progressoDe(a.id, m.curso_id)));
     return { a, cursos };
   }).filter(r =>
-    (!q || [r.a.nome, r.a.telefone, r.a.estado, r.a.pais, r.a.cep].some(v => String(v || '').toLowerCase().includes(q))) &&
+    (!q || [r.a.nome, r.a.telefone, r.a.estado, r.a.pais, r.a.cep, r.a.profissao, r.a.ocupacao, r.a.objetivo].some(v => String(v || '').toLowerCase().includes(q))) &&
     (!F.curso || r.cursos.some(c => c.curso === F.curso))
   );
 }
@@ -75,7 +84,7 @@ function renderPainel(){
       <div class="stat"><b>${ativos}</b><span>ativos nos últimos 7 dias</span></div>
     </div>
     <div class="tools">
-      <input class="inp" id="busca" type="search" placeholder="Buscar por nome, telefone, estado ou CEP" value="${esc(F.busca)}">
+      <input class="inp" id="busca" type="search" placeholder="Buscar por nome, telefone, estado, profissão ou objetivo" value="${esc(F.busca)}">
       <select class="inp" id="filtro-curso"><option value="">Todos os cursos</option>${opCursos}</select>
       <button class="sbtn" data-act="convite">🔗 Copiar link de convite</button>
       <button class="sbtn" data-act="csv">⬇️ Exportar planilha</button>
@@ -92,11 +101,12 @@ function renderTabela(){
     return;
   }
   $('tabela').innerHTML = `<table class="atbl"><thead><tr>
-      <th>Aluno</th><th>Contato</th><th class="hide-m">Local</th><th>Cursos e progresso</th><th class="hide-m">Último acesso</th>
+      <th>Aluno</th><th class="hide-m">Perfil</th><th>Contato</th><th class="hide-m">Local</th><th>Cursos e progresso</th><th class="hide-m">Último acesso</th>
     </tr></thead><tbody>${rs.map(({ a, cursos }) => {
       const wa = linkWhats(a.telefone, a.pais);
       return `<tr data-act="aluno" data-id="${esc(a.id)}">
         <td><b>${esc(a.nome)}</b><br><small>${esc(a.idade)} anos · desde ${data(a.criado_em)}</small></td>
+        <td class="hide-m">${esc(a.ocupacao || a.profissao || '-')}<br><small>${esc(situacao(a))}${a.objetivo ? '<br>🎯 ' + esc(a.objetivo) : ''}</small></td>
         <td>${wa ? `<a href="${wa}" target="_blank" rel="noopener" data-act="link">${esc(a.telefone)}</a>` : esc(a.telefone)}</td>
         <td class="hide-m">${esc(a.estado)} · ${esc(a.pais)}<br><small>CEP ${esc(a.cep)}</small></td>
         <td>${cursos.length ? cursos.map(c => {
@@ -129,6 +139,12 @@ function abrirAluno(id){
         <span>País</span><b>${esc(a.pais)}</b>
         <span>Estado</span><b>${esc(a.estado)}</b>
         <span>CEP</span><b>${esc(a.cep)}</b>
+        <span>Profissão</span><b>${esc(a.profissao || '-')}</b>
+        <span>Ocupação atual</span><b>${esc(a.ocupacao || '-')}</b>
+        <span>Trabalhando</span><b>${simNao(a.trabalhando)}</b>
+        <span>Estudante</span><b>${simNao(a.estudante)}</b>
+        <span>Objetivo</span><b>${esc(a.objetivo || '-')}</b>
+        ${a.objetivo_detalhe ? `<span>Em detalhe</span><b style="font-weight:400">${esc(a.objetivo_detalhe)}</b>` : ''}
         <span>Cadastro</span><b>${dataHora(a.criado_em)}</b>
         <span>Último acesso</span><b>${dataHora(a.ultimo_acesso)}</b>
       </div>
@@ -145,10 +161,10 @@ function copiar(txt){
 }
 
 function exportarCsv(){
-  const cab = ['Nome','Idade','Telefone','País','Estado','CEP','Cadastro','Último acesso','Curso','Lições concluídas','Total de lições','Progresso (%)','Iniciado em'];
+  const cab = ['Nome','Idade','Telefone','País','Estado','CEP','Profissão','Ocupação atual','Trabalhando','Estudante','Objetivo','Objetivo (detalhe)','Cadastro','Último acesso','Curso','Lições concluídas','Total de lições','Progresso (%)','Iniciado em'];
   const out = [cab];
   linhas().forEach(({ a, cursos }) => {
-    const base = [a.nome, a.idade, a.telefone, a.pais, a.estado, a.cep, dataHora(a.criado_em), dataHora(a.ultimo_acesso)];
+    const base = [a.nome, a.idade, a.telefone, a.pais, a.estado, a.cep, a.profissao, a.ocupacao, simNao(a.trabalhando), simNao(a.estudante), a.objetivo, a.objetivo_detalhe, dataHora(a.criado_em), dataHora(a.ultimo_acesso)];
     const lista = F.curso ? cursos.filter(c => c.curso === F.curso) : cursos;
     if (!lista.length) out.push(base.concat(['', '', '', '', '']));
     lista.forEach(c => out.push(base.concat([tituloCurso(c.curso), c.feitas, c.total, c.pct, dataHora(c.iniciado)])));

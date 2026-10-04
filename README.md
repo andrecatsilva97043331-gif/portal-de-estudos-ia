@@ -1,6 +1,6 @@
 # Portal de Estudos
 
-Portal com vários cursos. O aluno se cadastra (nome, idade, telefone/WhatsApp, país, estado e CEP), escolhe um curso e começa na hora. O master acompanha todos os alunos em `admin.html`.
+Portal com vários cursos. O aluno se cadastra (nome, idade, telefone/WhatsApp, país, estado, CEP, profissão, ocupação atual, se trabalha, se estuda e objetivo com o curso), escolhe um curso e começa na hora. Não pedimos CPF, RG nem documentos com foto. O master acompanha todos os alunos em `admin.html`.
 
 ## Testar no computador
 

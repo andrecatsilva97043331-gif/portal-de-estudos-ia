@@ -3,6 +3,7 @@
 
 const $ = id => document.getElementById(id);
 const UFS = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+const OBJETIVOS = ['Conseguir um emprego','Crescer na carreira atual','Mudar de área','Empreender ou melhorar meu negócio','Aplicar no meu trabalho atual','Complementar os estudos','Conhecimento pessoal','Outro'];
 const NIVEIS_PADRAO = [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']];
 
 let CURSOS = [];
@@ -72,8 +73,23 @@ function renderCadastro(){
       <label class="fl">País<input name="pais" autocomplete="country-name" value="Brasil" required maxlength="60"></label>
       <label class="fl">CEP<input name="cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" required maxlength="12"><small id="cep-info"></small></label>
       <label class="fl wide" id="estado-wrap"></label>
-      <label class="fl wide">Curso<select name="curso" required>${opcoes}</select></label>
     </div>
+    <h3 class="fsec">Sobre você</h3>
+    <div class="fgrid">
+      <label class="fl">Profissão<input name="profissao" required maxlength="80" placeholder="Ex.: Administrador, Técnica de enfermagem"><small>Se ainda não tem, escreva "Nenhuma".</small></label>
+      <label class="fl">Ocupação atual<input name="ocupacao" required maxlength="80" placeholder="Ex.: Analista de compras, autônomo, procurando emprego"></label>
+      <fieldset class="fl radios"><legend>Está trabalhando?</legend>
+        <label><input type="radio" name="trabalhando" value="sim" required> Sim</label><label><input type="radio" name="trabalhando" value="nao"> Não</label></fieldset>
+      <fieldset class="fl radios"><legend>É estudante?</legend>
+        <label><input type="radio" name="estudante" value="sim" required> Sim</label><label><input type="radio" name="estudante" value="nao"> Não</label></fieldset>
+      <label class="fl wide">Principal objetivo com o curso<select name="objetivo" required><option value="">Selecione</option>${OBJETIVOS.map(o => `<option>${o}</option>`).join('')}</select></label>
+      <label class="fl wide">Conte um pouco mais (opcional)<textarea name="objetivo_detalhe" maxlength="300" rows="3" placeholder="O que você espera conseguir fazer depois do curso?"></textarea></label>
+    </div>
+    <h3 class="fsec">Curso</h3>
+    <div class="fgrid">
+      <label class="fl wide">Escolha o curso<select name="curso" required>${opcoes}</select></label>
+    </div>
+    <p class="nota">🔒 Não pedimos CPF, RG nem nenhum documento com foto.</p>
     <label class="check"><input type="checkbox" name="lgpd" required><span>Autorizo o uso destes dados pelo Portal de Estudos para acompanhar meu progresso nos cursos.</span></label>
     <div class="err" id="cad-err" role="alert"></div>
     <button class="next" type="submit" id="cad-ok">Cadastrar e iniciar o curso ➜</button>
@@ -296,7 +312,13 @@ async function enviarCadastro(form){
     telefone: f.telefone.value.trim(),
     pais: f.pais.value.trim(),
     estado: f.estado.value.trim(),
-    cep: f.cep.value.trim()
+    cep: f.cep.value.trim(),
+    profissao: f.profissao.value.trim(),
+    ocupacao: f.ocupacao.value.trim(),
+    trabalhando: f.trabalhando.value ? f.trabalhando.value === 'sim' : null,
+    estudante: f.estudante.value ? f.estudante.value === 'sim' : null,
+    objetivo: f.objetivo.value,
+    objetivo_detalhe: f.objetivo_detalhe.value.trim()
   };
   const curso = f.curso.value;
   const digitos = dados.telefone.replace(/\D/g, '');
@@ -308,6 +330,11 @@ async function enviarCadastro(form){
   else if (!dados.estado) msg = 'Informe o estado.';
   else if (!dados.cep) msg = 'Informe o CEP / código postal.';
   else if (ehBrasil() && dados.cep.replace(/\D/g, '').length !== 8) msg = 'O CEP deve ter 8 números.';
+  else if (!dados.profissao) msg = 'Informe sua profissão (ou "Nenhuma").';
+  else if (!dados.ocupacao) msg = 'Informe sua ocupação atual.';
+  else if (dados.trabalhando === null) msg = 'Diga se está trabalhando.';
+  else if (dados.estudante === null) msg = 'Diga se é estudante.';
+  else if (!dados.objetivo) msg = 'Escolha seu principal objetivo com o curso.';
   else if (!curso) msg = 'Escolha um curso.';
   else if (!f.lgpd.checked) msg = 'É preciso autorizar o uso dos dados para continuar.';
   err.textContent = msg;

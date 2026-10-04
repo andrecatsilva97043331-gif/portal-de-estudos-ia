@@ -16,8 +16,15 @@ a.logo{text-decoration:none;}
 .fgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
 .fgrid .wide{grid-column:1/-1;}
 .fl{display:flex; flex-direction:column; gap:6px; font-size:14px; font-weight:600;}
-.fl input,.fl select,.inp{background:var(--s2); border:1px solid var(--line); color:var(--text); border-radius:12px; padding:11px 12px; font:inherit; font-weight:400; font-size:15px; width:100%; box-sizing:border-box;}
-.fl input:focus,.fl select:focus,.inp:focus{outline:2px solid var(--c); border-color:transparent;}
+.fsec{font-size:16px; margin:22px 0 12px; color:var(--c);}
+.radios{border:0; margin:0; padding:0; flex-direction:row; flex-wrap:wrap; gap:8px 18px; align-items:center;}
+.radios legend{width:100%; padding:0; margin-bottom:6px;}
+.radios label{display:flex; align-items:center; gap:6px; font-weight:400; font-size:15px;}
+.radios input{accent-color:var(--c); width:18px; height:18px;}
+.nota{font-size:13px; color:var(--muted); margin:16px 0 0;}
+.fl textarea{resize:vertical; min-height:70px;}
+.fl input,.fl select,.fl textarea,.inp{background:var(--s2); border:1px solid var(--line); color:var(--text); border-radius:12px; padding:11px 12px; font:inherit; font-weight:400; font-size:15px; width:100%; box-sizing:border-box;}
+.fl input:focus,.fl select:focus,.fl textarea:focus,.inp:focus{outline:2px solid var(--c); border-color:transparent;}
 .fl small{font-weight:400; color:var(--muted);}
 .check{display:flex; gap:10px; align-items:flex-start; font-size:14px; color:var(--muted); margin:14px 0;}
 .check input{margin-top:4px; accent-color:var(--c);}
