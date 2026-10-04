@@ -95,14 +95,20 @@ function bancoSupabase(){
     },
     async sairMaster(){ await sb.auth.signOut(); },
     async painel(){
-      const [alunos, matriculas, progresso] = await Promise.all([
+      const [alunos, matriculas, progresso, avisos] = await Promise.all([
         sb.from('alunos').select('*').order('criado_em', { ascending:false }).then(ok),
         sb.from('matriculas').select('*').then(ok),
-        sb.from('progresso').select('*').then(ok)
+        sb.from('progresso').select('*').then(ok),
+        sb.from('avisos').select('*').order('enviado_em', { ascending:false }).limit(2000).then(ok)
       ]);
       alunos.forEach(a => { a.email_verificado = !!a.email; });
-      return { alunos, matriculas, progresso };
-    }
+      return { alunos, matriculas, progresso, avisos };
+    },
+    async registrarAvisos(lista){
+      ok(await sb.from('avisos').insert(lista.map(v => ({ aluno_id:v.aluno_id, tipo:v.tipo, canal:v.canal, texto:v.texto }))));
+    },
+    temApiWhats: true,
+    async enviarAvisosApi(tipo, envios){ return funcao({ acao:'enviar-aviso', tipo, envios }); }
   };
 }
 
@@ -196,7 +202,14 @@ function bancoDemo(){
     },
     async ehMaster(){ return ler().master; },
     async sairMaster(){ const d = ler(); d.master = false; gravar(d); },
-    async painel(){ const d = ler(); return { alunos:d.alunos.slice().reverse(), matriculas:d.matriculas, progresso:d.progresso }; }
+    async painel(){ const d = ler(); return { alunos:d.alunos.slice().reverse(), matriculas:d.matriculas, progresso:d.progresso, avisos:(d.avisos || []).slice().reverse() }; },
+    async registrarAvisos(lista){
+      const d = ler(); d.avisos = d.avisos || [];
+      lista.forEach(v => d.avisos.push(Object.assign({ enviado_em:agora() }, v)));
+      gravar(d);
+    },
+    temApiWhats: false,
+    async enviarAvisosApi(){ throw new Error('Disponível depois de conectar o Supabase e a API do WhatsApp.'); }
   };
 }
 

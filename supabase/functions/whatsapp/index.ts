@@ -54,10 +54,37 @@ Deno.serve(async req => {
   const usuario = createClient(url, env('SUPABASE_ANON_KEY'), { global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } } });
   const { data: { user } } = await usuario.auth.getUser();
   if (!user) return erro('Sessão expirada. Entre novamente.', 401);
-  if (!user.email_confirmed_at) return erro('Confirme o e-mail antes do WhatsApp.', 403);
 
   const admin = createClient(url, env('SUPABASE_SERVICE_ROLE_KEY'));
   const corpo = await req.json().catch(() => ({}));
+
+  if (corpo.acao === 'enviar-aviso') {
+    const { data: master } = await admin.from('masters').select('user_id').eq('user_id', user.id).maybeSingle();
+    if (!master) return erro('Apenas o master pode enviar avisos.', 403);
+    const TIPOS = ['abandono', 'foco', 'sem-comecar', 'quase', 'incentivo', 'concluiu'];
+    if (!TIPOS.includes(corpo.tipo)) return erro('Tipo de aviso inválido.');
+    const envios = Array.isArray(corpo.envios) ? corpo.envios.slice(0, 200) : [];
+    const ids = envios.map((e: { aluno_id: string }) => e.aluno_id);
+    const { data: alunos } = await admin.from('alunos').select('id,telefone,pais,whatsapp_verificado,aceita_contato').in('id', ids);
+    const porId = new Map((alunos ?? []).map(a => [a.id, a]));
+    const modelo = env('WHATSAPP_PREFIXO_AVISO', 'aviso_') + corpo.tipo.replace(/-/g, '_');
+    let enviados = 0, falhas = 0;
+    const registros = [];
+    for (const e of envios) {
+      const a = porId.get(e.aluno_id);
+      if (!a || !a.whatsapp_verificado || !a.aceita_contato) { falhas++; continue; }
+      const parametros = (Array.isArray(e.parametros) ? e.parametros : []).slice(0, 6).map((p: unknown) => String(p ?? '-').slice(0, 200));
+      try {
+        await enviarModelo(numeroInternacional(a.telefone, a.pais), modelo, parametros);
+        enviados++;
+        registros.push({ aluno_id: a.id, tipo: corpo.tipo, canal: 'api', texto: String(e.texto ?? '').slice(0, 2000), enviado_por: user.id });
+      } catch { falhas++; }
+    }
+    if (registros.length) await admin.from('avisos').insert(registros);
+    return resposta({ ok: true, enviados, falhas });
+  }
+
+  if (!user.email_confirmed_at) return erro('Confirme o e-mail antes do WhatsApp.', 403);
 
   const { data: aluno } = await admin.from('alunos').select('id,nome,telefone,pais,whatsapp_verificado').eq('id', user.id).maybeSingle();
   if (!aluno) return erro('Cadastro não encontrado. Preencha o formulário de inscrição.', 404);

@@ -128,5 +128,22 @@ create policy "aluno ou master leem progresso" on public.progresso for select to
 create policy "aluno registra progresso" on public.progresso for insert to authenticated with check (aluno_id = auth.uid() and public.aluno_verificado());
 create policy "aluno reinicia progresso" on public.progresso for delete to authenticated using (aluno_id = auth.uid());
 
+-- Avisos enviados aos alunos (WhatsApp pelo wa.me ou automático pela API). Só o master lê e grava.
+create table if not exists public.avisos (
+  id bigint generated always as identity primary key,
+  aluno_id uuid not null references public.alunos on delete cascade,
+  tipo text not null check (tipo in ('abandono','foco','sem-comecar','quase','incentivo','concluiu','pendente')),
+  canal text not null check (canal in ('wa.me','api')),
+  texto text check (char_length(texto) <= 2000),
+  enviado_por uuid default auth.uid() references auth.users on delete set null,
+  enviado_em timestamptz not null default now()
+);
+create index if not exists avisos_aluno on public.avisos (aluno_id, enviado_em desc);
+alter table public.avisos enable row level security;
+drop policy if exists "master le avisos" on public.avisos;
+drop policy if exists "master registra avisos" on public.avisos;
+create policy "master le avisos" on public.avisos for select to authenticated using (public.is_master());
+create policy "master registra avisos" on public.avisos for insert to authenticated with check (public.is_master());
+
 -- Depois de criar seu usuário em Authentication > Users (e-mail e senha), torne-o master:
 -- insert into public.masters (user_id) select id from auth.users where email = 'SEU-EMAIL@exemplo.com';

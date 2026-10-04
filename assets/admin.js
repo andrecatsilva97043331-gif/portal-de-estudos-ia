@@ -144,6 +144,133 @@ function grafSituacao(rs){
     <ul class="leg">${cats.map((c, i) => n[i] ? `<li><i style="background:${c[1]}"></i>${c[0]}<b>${n[i]}</b></li>` : '').join('')}</ul></div>`, 3);
 }
 
+/* ============ CENTRAL DE AVISOS (WHATSAPP) ============ */
+const SEGMENTOS = [
+  { id:'abandono',    ico:'🚨', nome:'Abandono',      desc:'Começou e não volta há 7 dias ou mais', cor:['#ff5a5f','#fb7185'] },
+  { id:'foco',        ico:'🎯', nome:'Foco',          desc:'Parado há 3 a 6 dias',                    cor:['#fbbf24','#f59e0b'] },
+  { id:'sem-comecar', ico:'🚀', nome:'Não começou',   desc:'Inscrito, mas sem nenhuma lição',         cor:['#22d3ee','#3b82f6'] },
+  { id:'quase',       ico:'🏁', nome:'Quase lá',      desc:'75% ou mais do curso',                    cor:['#c084fc','#ec4899'] },
+  { id:'incentivo',   ico:'💪', nome:'Incentivo',     desc:'Ativo e avançando',                       cor:['#4ade80','#a3e635'] },
+  { id:'concluiu',    ico:'🏆', nome:'Concluiu',      desc:'Terminou o curso: parabéns',              cor:['#fbbf24','#4ade80'] },
+  { id:'pendente',    ico:'⏳', nome:'Sem confirmar', desc:'Falta confirmar e-mail ou WhatsApp',      cor:['#a0a0b6','#64748b'] }
+];
+const MODELOS_PADRAO = {
+  abandono:'Oi, {nome}! Aqui é do Portal de Estudos. Sentimos sua falta! 💙\nVocê parou em {pct}% do curso {curso}.\nA próxima lição é "{proxima}" e leva poucos minutos.\nLembra do seu objetivo: {objetivo}.\nBora retomar? {link}',
+  foco:'Oi, {nome}! Faz {dias} dias desde sua última lição em {curso}.\nReserve 15 minutos hoje para "{proxima}" e mantenha o ritmo. 🎯\n{link}',
+  'sem-comecar':'Oi, {nome}! Seu curso {curso} já está liberado. 🚀\nA primeira lição é curta e prática: que tal começar hoje?\n{link}',
+  quase:'{nome}, você já fez {pct}% do curso {curso}! 🏁\nFaltam poucas lições para concluir. Próxima: "{proxima}".\n{link}',
+  incentivo:'Mandou bem, {nome}! 💪 Você está com {pct}% no curso {curso}.\nContinue assim: a próxima é "{proxima}".\n{link}',
+  concluiu:'Parabéns, {nome}! 🎉 Você concluiu o curso {curso}.\nQue tal o próximo desafio? Veja os outros cursos do portal: {link}',
+  pendente:'Oi, {nome}! Aqui é do Portal de Estudos.\nFalta só confirmar seu e-mail e WhatsApp para liberar o curso {curso}. Leva 1 minuto: {link}'
+};
+const VARIAVEIS = ['nome','curso','pct','proxima','dias','objetivo','ocupacao','link'];
+const CHAVE_MODELOS = 'portal-estudos-modelos-v1';
+let AV = { seg:null };
+
+function modelos(){ try { return Object.assign({}, MODELOS_PADRAO, JSON.parse(localStorage.getItem(CHAVE_MODELOS))); } catch(e){ return Object.assign({}, MODELOS_PADRAO); } }
+function salvarModelo(seg, txt){ const m = modelos(); m[seg] = txt; localStorage.setItem(CHAVE_MODELOS, JSON.stringify(m)); }
+const diasDesde = iso => iso ? Math.floor((Date.now() - new Date(iso).getTime()) / DIA) : 999;
+
+function perfilAviso({ a, cursos }){
+  const andamento = cursos.filter(c => c.pct < 100).sort((x, y) => String(y.ultima || y.iniciado).localeCompare(String(x.ultima || x.iniciado)));
+  const c = andamento[0] || cursos.find(x => x.pct === 100) || null;
+  const dias = diasDesde(a.ultimo_acesso);
+  let seg;
+  if (!(a.email_verificado && a.whatsapp_verificado)) seg = 'pendente';
+  else if (!cursos.length || (andamento.length && andamento.every(x => x.feitas === 0))) seg = 'sem-comecar';
+  else if (!andamento.length) seg = 'concluiu';
+  else if (dias >= 7) seg = 'abandono';
+  else if (dias >= 3) seg = 'foco';
+  else if (c.pct >= 75) seg = 'quase';
+  else seg = 'incentivo';
+  const cc = c && cursoPorId(c.curso);
+  const feitas = {}; if (c) DADOS.progresso.forEach(p => { if (p.aluno_id === a.id && p.curso_id === c.curso) feitas[p.licao_id] = true; });
+  const prox = cc ? cc.licoes.find(l => !feitas[l.id]) : null;
+  const cursoId = c ? c.curso : (CURSOS.find(x => x.status === 'publicado') || CURSOS[0] || {}).id;
+  return {
+    seg, a, cursoId,
+    vars: {
+      nome: String(a.nome || '').split(' ')[0],
+      curso: cursoId ? tituloCurso(cursoId) : '',
+      pct: c ? String(c.pct) : '0',
+      proxima: prox ? prox.id + ' ' + prox.title : '',
+      dias: dias >= 999 ? '' : String(dias),
+      objetivo: a.objetivo ? a.objetivo.charAt(0).toLowerCase() + a.objetivo.slice(1) : '',
+      ocupacao: a.ocupacao || '',
+      link: seg === 'concluiu' ? new URL('./', location.href).href : (cursoId ? linkConvite(cursoId) : new URL('./', location.href).href)
+    }
+  };
+}
+
+function montarMensagem(modelo, vars){
+  return modelo.split('\n')
+    .filter(linha => !VARIAVEIS.some(v => linha.includes('{' + v + '}') && !vars[v]))
+    .map(linha => linha.replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m))
+    .join('\n').trim();
+}
+
+function ultimoAviso(alunoId){ return (DADOS.avisos || []).filter(v => v.aluno_id === alunoId).sort((x, y) => String(y.enviado_em).localeCompare(String(x.enviado_em)))[0]; }
+const nomeSeg = id => (SEGMENTOS.find(s => s.id === id) || { nome:id }).nome;
+
+function renderAvisos(rs){
+  const el = $('avisos'); if (!el) return;
+  const perfis = rs.map(perfilAviso);
+  const grupos = {}; SEGMENTOS.forEach(s => { grupos[s.id] = []; });
+  perfis.forEach(p => grupos[p.seg].push(p));
+  if (!AV.seg || !grupos[AV.seg]) AV.seg = (SEGMENTOS.find(s => grupos[s.id].length) || SEGMENTOS[0]).id;
+  const seg = SEGMENTOS.find(s => s.id === AV.seg), lista = grupos[AV.seg];
+  lista.sort((x, y) => { const ux = ultimoAviso(x.a.id), uy = ultimoAviso(y.a.id); return (ux ? 1 : 0) - (uy ? 1 : 0) || String(ux && ux.enviado_em).localeCompare(String(uy && uy.enviado_em)); });
+  const modelo = modelos()[AV.seg];
+  const api = lista.filter(p => p.seg !== 'pendente' && p.a.aceita_contato);
+  el.innerHTML = `<div class="segs">${SEGMENTOS.map(s => `<button class="seg ${s.id === AV.seg ? 'on' : ''}" data-act="seg" data-seg="${s.id}" style="--c:${s.cor[0]};--c2:${s.cor[1]}" title="${esc(s.desc)}">
+      <span class="sgi">${s.ico}</span><span class="sgt"><b>${s.nome}</b><small>${s.desc}</small></span><em>${grupos[s.id].length}</em></button>`).join('')}</div>
+    <div class="avbody" style="--c:${seg.cor[0]};--c2:${seg.cor[1]}">
+      <div class="avmodelo">
+        <div class="ch-h"><b>${seg.ico} Mensagem modelo · ${seg.nome}</b><small>Use as variáveis ${VARIAVEIS.map(v => '<code>{' + v + '}</code>').join(' ')}. Linhas com variável vazia são removidas.</small></div>
+        <textarea class="inp" id="modelo" rows="7" spellcheck="true">${esc(modelo)}</textarea>
+        <div class="avbtns"><button class="sbtn" data-act="modelo-padrao">↺ Restaurar padrão</button>
+          <button class="sbtn ${DB.temApiWhats ? '' : 'off-api'}" data-act="enviar-api" ${api.length ? '' : 'disabled'} title="${DB.temApiWhats ? 'Envia o modelo aprovado no WhatsApp Business para todo o grupo' : 'Disponível depois de conectar o Supabase e a API do WhatsApp'}">⚡ Enviar automático para ${api.length}</button></div>
+        <p class="nota">📲 O botão <b>WhatsApp</b> abre a conversa com a mensagem pronta (grátis, você confirma o envio). O envio automático usa a API oficial do WhatsApp e modelos aprovados pela Meta.</p>
+      </div>
+      <div class="avlista" id="avlista">${lista.length ? lista.map(p => {
+        const msg = montarMensagem(modelo, p.vars), wa = linkWhats(p.a.telefone, p.a.pais), u = ultimoAviso(p.a.id);
+        const dd = u ? diasDesde(u.enviado_em) : null;
+        return `<div class="avi">
+          <div class="pessoa"><span class="av" style="${corDe(p.a.id)}">${esc(iniciais(p.a.nome))}</span><div><b>${esc(p.a.nome)}</b><br>
+            <small>${esc(p.vars.curso)}${p.seg !== 'pendente' ? ' · ' + p.vars.pct + '%' : ''}${p.vars.dias ? ' · último acesso há ' + p.vars.dias + (p.vars.dias === '1' ? ' dia' : ' dias') : ''}</small></div>
+            ${u ? `<span class="act ${dd < 3 ? 'semana' : 'off'}" title="${esc(nomeSeg(u.tipo))} · ${u.canal === 'api' ? 'automático' : 'wa.me'}">✉️ ${dd === 0 ? 'Avisado hoje' : 'Avisado há ' + dd + (dd === 1 ? ' dia' : ' dias')}</span>` : ''}</div>
+          <div class="avmsg">${esc(msg)}</div>
+          <div class="avbtns">${wa ? `<a class="sbtn wa" href="${wa}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener" data-act="enviar-wa" data-id="${esc(p.a.id)}">📲 WhatsApp</a>` : '<small>Sem telefone</small>'}
+            <button class="sbtn" data-act="copiar-msg" data-id="${esc(p.a.id)}">Copiar</button>${p.a.aceita_contato ? '' : '<small class="semc" title="Cadastro antigo, sem a autorização de contato">sem autorização registrada</small>'}</div>
+        </div>`;
+      }).join('') : `<div class="empty">Nenhum aluno em “${seg.nome}” ${F.busca || F.curso ? 'com esse filtro' : 'agora'}.</div>`}</div>
+    </div>`;
+  AV.perfis = perfis;
+}
+
+async function registrar(lista){
+  try { await DB.registrarAvisos(lista); }
+  catch(e){ console.error(e); toast('⚠️ Não foi possível registrar o aviso.'); return; }
+  DADOS.avisos = lista.map(v => Object.assign({ enviado_em:new Date().toISOString() }, v)).concat(DADOS.avisos || []);
+  renderAvisos(linhas());
+}
+
+const PARAMS_API = {
+  abandono:['nome','curso','pct','proxima'], foco:['nome','dias','curso','proxima'], 'sem-comecar':['nome','curso'],
+  quase:['nome','pct','curso','proxima'], incentivo:['nome','pct','curso','proxima'], concluiu:['nome','curso'], pendente:['nome','curso']
+};
+async function enviarApi(){
+  const lista = (AV.perfis || []).filter(p => p.seg === AV.seg && p.seg !== 'pendente' && p.a.aceita_contato);
+  if (!lista.length) return;
+  if (!DB.temApiWhats) { toast('Disponível depois de conectar o Supabase e a API do WhatsApp.'); return; }
+  if (!confirm('Enviar o aviso "' + nomeSeg(AV.seg) + '" pelo WhatsApp para ' + lista.length + ' aluno(s)?')) return;
+  try {
+    const r = await DB.enviarAvisosApi(AV.seg, lista.map(p => ({ aluno_id:p.a.id, parametros:PARAMS_API[AV.seg].map(k => p.vars[k] || '-'), texto:montarMensagem(modelos()[AV.seg], p.vars) })));
+    toast('Enviados: ' + (r.enviados || 0) + (r.falhas ? ' · falhas: ' + r.falhas : ''));
+    await carregarDados();
+  } catch(e){ console.error(e); toast(e.message || 'Falha no envio automático.'); }
+}
+
 function renderPainel(){
   $('btn-sair').hidden = false;
   const agora = Date.now();
@@ -173,6 +300,8 @@ function renderPainel(){
       <button class="sbtn" data-act="atualizar">🔄 Atualizar</button>
     </div>
     <div class="charts" id="graficos"></div>
+    <h2 class="sec-t">📲 Central de avisos no WhatsApp</h2>
+    <div class="card avc rise" id="avisos"></div>
     <h2 class="sec-t" id="titulo-tabela">Alunos</h2>
     <div class="card tcard" id="tabela"></div>`;
   document.querySelectorAll('.stat b[data-n]').forEach(contar);
@@ -182,6 +311,7 @@ function renderPainel(){
 function renderTabela(){
   const rs = linhas();
   $('graficos').innerHTML = grafCadastros(rs) + grafFunil(rs) + grafObjetivos(rs) + grafSituacao(rs);
+  renderAvisos(rs);
   $('titulo-tabela').textContent = 'Alunos (' + rs.length + ')';
   if (!rs.length) {
     $('tabela').innerHTML = `<div class="empty">${DADOS.alunos.length ? 'Nenhum aluno encontrado com esse filtro.' : 'Nenhum aluno cadastrado ainda. Envie o link de convite para começar.'}</div>`;
@@ -238,6 +368,9 @@ function abrirAluno(id){
         <span>Último acesso</span><b>${dataHora(a.ultimo_acesso)}</b>
       </div>
       ${cursos || '<p class="empty">Ainda não iniciou nenhum curso.</p>'}
+      <h3>Avisos enviados</h3>
+      ${(() => { const av = (DADOS.avisos || []).filter(v => v.aluno_id === id).sort((x, y) => String(y.enviado_em).localeCompare(String(x.enviado_em)));
+        return av.length ? `<ul class="lst">${av.map(v => `<li>✉️ <span>${esc(nomeSeg(v.tipo))} · ${v.canal === 'api' ? 'automático' : 'wa.me'}</span><small>${dataHora(v.enviado_em)}</small></li>`).join('')}</ul>` : '<p class="nota">Nenhum aviso enviado ainda.</p>'; })()}
     </div>`;
   $('drawer').classList.add('on'); $('shade').classList.add('on');
 }
@@ -273,7 +406,17 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-act]'); if (!t) return;
   const a = t.dataset.act;
   if (a === 'link') return;
-  if (a === 'aluno') abrirAluno(t.dataset.id);
+  if (a === 'enviar-wa' || a === 'copiar-msg') {
+    const p = (AV.perfis || []).find(x => x.a.id === t.dataset.id); if (!p) return;
+    const texto = montarMensagem(modelos()[AV.seg], p.vars);
+    if (a === 'copiar-msg') { copiar(texto); toast('Mensagem copiada'); return; }
+    setTimeout(() => registrar([{ aluno_id:p.a.id, tipo:AV.seg, canal:'wa.me', texto }]), 50);
+    return;
+  }
+  if (a === 'seg') { AV.seg = t.dataset.seg; renderAvisos(linhas()); }
+  else if (a === 'modelo-padrao') { salvarModelo(AV.seg, MODELOS_PADRAO[AV.seg]); renderAvisos(linhas()); toast('Modelo restaurado'); }
+  else if (a === 'enviar-api') enviarApi();
+  else if (a === 'aluno') abrirAluno(t.dataset.id);
   else if (a === 'fechar') fechar();
   else if (a === 'atualizar') carregarDados().then(() => toast('Dados atualizados'));
   else if (a === 'csv') exportarCsv();
@@ -287,6 +430,15 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('input', e => {
   if (e.target.id === 'busca') { F.busca = e.target.value; renderTabela(); }
+  else if (e.target.id === 'modelo') {
+    salvarModelo(AV.seg, e.target.value);
+    (AV.perfis || []).filter(p => p.seg === AV.seg).forEach(p => {
+      const msg = montarMensagem(e.target.value, p.vars), card = document.querySelector(`[data-act="copiar-msg"][data-id="${CSS.escape(p.a.id)}"]`);
+      if (!card) return;
+      const avi = card.closest('.avi'); avi.querySelector('.avmsg').textContent = msg;
+      const w = avi.querySelector('a.wa'); if (w) w.href = w.href.split('?')[0] + '?text=' + encodeURIComponent(msg);
+    });
+  }
 });
 document.addEventListener('change', e => {
   if (e.target.id === 'filtro-curso') { F.curso = e.target.value; renderTabela(); }
