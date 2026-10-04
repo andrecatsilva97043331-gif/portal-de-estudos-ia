@@ -58,7 +58,10 @@ Deno.serve(async req => {
   const corpo = await req.json().catch(() => ({}));
 
   if (corpo.acao === 'notificar-inscricao') {
-    if (!env('CALLMEBOT_PHONE') || !env('CALLMEBOT_APIKEY')) return resposta({ ok: false, motivo: 'callmebot-nao-configurado' });
+    const temTelegram = env('TELEGRAM_BOT_TOKEN') && env('TELEGRAM_CHAT_ID');
+    const temNtfy = env('NTFY_TOPIC');
+    const temCallMeBot = env('CALLMEBOT_PHONE') && env('CALLMEBOT_APIKEY');
+    if (!temTelegram && !temNtfy && !temCallMeBot) return resposta({ ok: false, motivo: 'aviso-nao-configurado' });
     const { data: a } = await admin.from('alunos').select('id,nome,telefone,pais,estado,profissao,objetivo,codigo_whats,inscricao_notificada_em').eq('id', user.id).maybeSingle();
     if (!a) return erro('Cadastro não encontrado.', 404);
     if (a.inscricao_notificada_em) return resposta({ ok: true, jaNotificado: true });
@@ -73,8 +76,19 @@ Deno.serve(async req => {
       m && m.length ? `Curso: ${m.map(x => x.curso_id).join(', ')}` : '',
       a.codigo_whats ? `Código de confirmação: ${a.codigo_whats}` : ''
     ].filter(Boolean).join('\n');
-    const r = await fetch(`https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(env('CALLMEBOT_PHONE'))}&text=${encodeURIComponent(texto)}&apikey=${encodeURIComponent(env('CALLMEBOT_APIKEY'))}`);
-    if (!r.ok) { console.error('CallMeBot', r.status, await r.text()); return resposta({ ok: false, motivo: 'falha-callmebot' }); }
+    const envios: Promise<Response>[] = [];
+    if (temTelegram) envios.push(fetch(`https://api.telegram.org/bot${env('TELEGRAM_BOT_TOKEN')}/sendMessage`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: env('TELEGRAM_CHAT_ID'), text: texto })
+    }));
+    if (temNtfy) envios.push(fetch(`https://ntfy.sh/${encodeURIComponent(env('NTFY_TOPIC'))}`, {
+      method: 'POST', headers: { Title: 'Nova inscricao no Portal de Estudos', Tags: 'mortar_board' }, body: texto
+    }));
+    if (temCallMeBot) envios.push(fetch(`https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(env('CALLMEBOT_PHONE'))}&text=${encodeURIComponent(texto)}&apikey=${encodeURIComponent(env('CALLMEBOT_APIKEY'))}`));
+    const resultados = await Promise.allSettled(envios);
+    const algumOk = resultados.some(r => r.status === 'fulfilled' && r.value.ok);
+    resultados.forEach(r => { if (r.status === 'rejected' || !r.value.ok) console.error('Aviso de inscrição falhou', r.status === 'fulfilled' ? r.value.status : r.reason); });
+    if (!algumOk) return resposta({ ok: false, motivo: 'falha-aviso' });
     await admin.from('alunos').update({ inscricao_notificada_em: new Date().toISOString() }).eq('id', a.id);
     return resposta({ ok: true });
   }
