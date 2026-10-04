@@ -70,6 +70,15 @@ button.bc:hover{color:var(--text); background:var(--s2);}
   body.sb-flut .sb:has(:focus-visible), body.sb-flut .sb.on{transform:none; box-shadow:18px 0 50px -20px rgba(0,0,0,.9);}
 }
 
+/* ---------- Níveis do painel lateral: abrem e fecham no clique ---------- */
+.sbacc .modh{width:100%;}
+.sbseta{margin-left:auto; flex:none; font-size:13px; color:var(--muted); transition:transform .25s ease, color .2s;}
+.sbacc.aberto .sbseta{transform:rotate(90deg); color:var(--c);}
+.sbacc .sbitens{display:grid; grid-template-rows:0fr; transition:grid-template-rows .3s ease;}
+.sbacc .sbin{min-height:0; overflow:hidden;}
+.sbacc.aberto .sbitens{grid-template-rows:1fr;}
+.sbacc:not(.aberto) .sbitens .les{visibility:hidden;}
+
 /* ---------- Barra de rolagem do painel lateral ---------- */
 .sb::-webkit-scrollbar{width:6px;}
 .sb::-webkit-scrollbar-track{background:transparent; margin:14px 0;}
@@ -79,7 +88,8 @@ button.bc:hover{color:var(--text); background:var(--s2);}
 @supports not selector(::-webkit-scrollbar){ .sb{scrollbar-width:thin; scrollbar-color:rgba(245,158,11,.55) transparent;} }
 
 /* ---------- QR code: levar para o celular ---------- */
-@media (max-width: 900px){ .so-pc{display:none !important;} }
+@media (hover: none) and (pointer: coarse){ .so-pc{display:none !important;} }
+.btn-sair{--yellow:#f87171;}
 .qr-modal{position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:20px; background:rgba(0,0,0,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); animation:qrfade .25s ease both;}
 @keyframes qrfade{from{opacity:0;} to{opacity:1;}}
 .qr-box{position:relative; width:min(420px,100%); text-align:center; padding:26px 24px 20px; border-radius:26px; background:radial-gradient(circle at 50% 0%, #15152a, #050508 70%); border:1px solid #242431; box-shadow:0 30px 80px -30px #22d3ee, 0 0 0 1px rgba(192,132,252,.15) inset; animation:rise .35s cubic-bezier(.2,.8,.2,1) both;}
@@ -187,6 +197,8 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .check{display:flex; gap:10px; align-items:flex-start; font-size:14px; color:var(--muted); margin:14px 0;}
 .check input{margin-top:4px; accent-color:var(--c);}
 .err{color:var(--bad); font-size:14px; min-height:20px; margin:4px 0 10px;}
+.ok-msg{color:#4ade80; font-size:14px; line-height:1.5; margin:0 0 12px; padding:10px 12px; border-radius:12px; background:rgba(74,222,128,.08); border:1px solid rgba(74,222,128,.3);}
+.ok-msg[hidden]{display:none;}
 .link{background:none; border:0; color:var(--muted); text-decoration:underline; font-size:14px; padding:6px 0;}
 .link.inl{color:var(--c); padding:0; font-size:inherit;}
 .link:disabled{opacity:.55; text-decoration:none; cursor:default;}
@@ -246,6 +258,13 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .ch-h{margin-bottom:14px;}
 .ch-h b{display:block; font-family:var(--font-d); font-size:17px;}
 .ch-h small{color:var(--muted); font-size:13px;}
+.gline{width:100%; height:auto; display:block; overflow:visible;}
+.gl-grade{stroke:#24242f; stroke-width:1; stroke-dasharray:3 4;}
+.gl-traco{stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 0 4px var(--c)); stroke-dasharray:1200; stroke-dashoffset:1200; animation:gl-desenha 1.2s ease forwards;}
+@keyframes gl-desenha{to{stroke-dashoffset:0;}}
+.gl-pt{fill:#0a0a0f; stroke:var(--c2); stroke-width:2;}
+.gl-n{fill:var(--text); font-size:10px; font-weight:700; text-anchor:middle;}
+.gl-dia{fill:var(--muted); font-size:9.5px; text-anchor:middle;}
 .ch-vazio{color:var(--muted); text-align:center; padding:36px 10px; font-size:14px;}
 .vbars{display:flex; align-items:flex-end; gap:6px; flex:1; min-height:160px;}
 .vb{flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:4px; min-width:0;}

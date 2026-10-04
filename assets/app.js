@@ -18,7 +18,7 @@ let TB = { open:false, mod:1 };
 let C = null;
 let EMAIL_SESSAO = null;
 let VER = {};
-const VIEWS_PORTAL = ['cursos','cadastro','verificar','entrar','confirmar-whats'];
+const VIEWS_PORTAL = ['cursos','cadastro','verificar','entrar','confirmar-whats','esqueci','nova-senha'];
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const WA_PORTAL = String((window.PORTAL_CONFIG || {}).whatsappPortal || '').replace(/\D/g, '');
 const MODO_SENHA = () => !DB.codigoEmail;
@@ -147,6 +147,14 @@ async function instalarApp(){
 }
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); PEDIDO_INSTALAR = e; atualizarInstalar(); });
 window.addEventListener('appinstalled', () => { PEDIDO_INSTALAR = null; atualizarInstalar(); toast('App instalado! Procure o ícone "Estudos IA". 🎉'); });
+
+/* Contato com o gestor do portal pelo WhatsApp (número em config.js: whatsappPortal). */
+function linkContato(cls){
+  const n = String((window.PORTAL_CONFIG || {}).whatsappPortal || '').replace(/\D/g, '');
+  if (!n) return '';
+  const msg = 'Olá! Vim pelo Portal de Estudos IA' + (ALUNO ? ' (sou ' + ALUNO.nome.split(' ')[0] + ', ' + (EMAIL_SESSAO || ALUNO.email || '') + ')' : '') + ' e preciso de ajuda.';
+  return `<a class="${cls}" href="https://wa.me/${n}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener"><span class="hi">💬</span>Falar com o gestor</a>`;
+}
 
 /* QR code para abrir o portal no celular (imagem fixa em assets/qr-app.svg). */
 function abrirQr(){
@@ -402,11 +410,76 @@ function renderEntrar(){
       ${MODO_SENHA() ? `<label class="fl" style="margin-top:12px">Senha<span class="pw"><input name="senha" type="password" autocomplete="current-password" required maxlength="72">${PORTAL.olho}</span></label>` : ''}
       <div class="err" id="ent-err" role="alert"></div>
       <button class="next" type="submit" id="ent-ok">${MODO_SENHA() ? 'Entrar ➜' : 'Receber código ➜'}</button>
-      ${MODO_SENHA() ? '<p class="nota">Esqueceu a senha? Peça ao responsável pelo portal para redefinir.</p>' : ''}
+      ${MODO_SENHA() ? '<button class="link" type="button" data-act="esqueci" style="margin-top:10px">Esqueci minha senha</button>' : ''}
     </div>
     <button class="link" type="button" data-act="cadastro">Ainda não tenho cadastro</button>
   </form>`;
   document.querySelector('#f-entrar input').focus();
+}
+
+function renderEsqueci(){
+  $('main').removeAttribute('style');
+  $('main').innerHTML = `<form class="form vform" id="f-esqueci" novalidate>
+    <div class="eyebrow">Esqueci minha senha</div>
+    <h1 class="h1" style="margin-bottom:6px">Criar uma <span class="grad">nova senha</span></h1>
+    <p class="hp">Informe o e-mail do seu cadastro. Enviamos um link para você criar uma senha nova. Confira também a caixa de spam.</p>
+    <div class="card fcard rise" style="--c:#22d3ee;--c2:#c084fc">
+      <h3 class="fsec"><span class="fico">📧</span>Seu e-mail</h3>
+      <label class="fl">E-mail<input name="email" type="email" autocomplete="email" required maxlength="120" placeholder="voce@exemplo.com"></label>
+      <div class="err" id="esq-err" role="alert"></div>
+      <div class="ok-msg" id="esq-ok" role="status" hidden></div>
+      <button class="next" type="submit" id="esq-btn">Enviar link ➜</button>
+      <p class="nota">Não recebeu? ${linkContato('link') || 'Fale com o responsável pelo portal.'}</p>
+    </div>
+    <button class="link" type="button" data-act="entrar">Lembrei a senha, quero entrar</button>
+  </form>`;
+  document.querySelector('#f-esqueci input').focus();
+}
+async function pedirNovaSenha(form){
+  const email = form.elements.email.value.trim().toLowerCase(), err = $('esq-err'), btn = $('esq-btn');
+  err.textContent = '';
+  if (!RE_EMAIL.test(email)) { err.textContent = 'Informe um e-mail válido.'; return; }
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    const r = await DB.pedirNovaSenha(email);
+    if (r.demo) { toast('Modo demonstração: sem e-mail, crie a nova senha aqui.'); S.view = 'nova-senha'; renderAll(); return; }
+    const ok = $('esq-ok'); ok.hidden = false;
+    ok.textContent = '✅ Pronto! Se este e-mail tiver cadastro, o link chega em alguns minutos. Abra o e-mail neste aparelho e toque no link.';
+    btn.textContent = 'Enviado';
+  } catch(e){ console.error(e); err.textContent = e.message; btn.disabled = false; btn.textContent = 'Enviar link ➜'; }
+}
+
+function renderNovaSenha(){
+  $('main').removeAttribute('style');
+  $('main').innerHTML = `<form class="form vform" id="f-nova" novalidate>
+    <div class="eyebrow">Nova senha</div>
+    <h1 class="h1" style="margin-bottom:6px">Crie sua <span class="grad">nova senha</span></h1>
+    <p class="hp">Use pelo menos 8 caracteres. Depois disso você já entra no portal.</p>
+    <div class="card fcard rise" style="--c:#22d3ee;--c2:#c084fc">
+      <h3 class="fsec"><span class="fico">🔒</span>Nova senha</h3>
+      <label class="fl">Nova senha<span class="pw"><input name="senha" type="password" autocomplete="new-password" required minlength="8" maxlength="72">${PORTAL.olho}</span></label>
+      <label class="fl" style="margin-top:12px">Repita a nova senha<span class="pw"><input name="senha2" type="password" autocomplete="new-password" required minlength="8" maxlength="72">${PORTAL.olho}</span></label>
+      <div class="err" id="nova-err" role="alert"></div>
+      <button class="next" type="submit" id="nova-btn">Salvar e entrar ➜</button>
+    </div>
+  </form>`;
+  document.querySelector('#f-nova input').focus();
+}
+async function salvarNovaSenha(form){
+  const s1 = form.elements.senha.value, s2 = form.elements.senha2.value, err = $('nova-err'), btn = $('nova-btn');
+  err.textContent = '';
+  if (s1.length < 8) { err.textContent = 'A senha precisa ter pelo menos 8 caracteres.'; return; }
+  if (s1 !== s2) { err.textContent = 'As duas senhas não são iguais.'; return; }
+  btn.disabled = true; btn.textContent = 'Salvando…';
+  try {
+    await DB.definirNovaSenha(s1);
+    if (/[#&](access_token|type)=/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
+    EMAIL_SESSAO = await DB.emailDaSessao();
+    await checarMaster();
+    toast('Senha alterada! ✅');
+    VER = { etapa:'email', email:EMAIL_SESSAO, modo:'entrar', curso:S.escolhido };
+    await continuarAposEmail();
+  } catch(e){ console.error(e); err.textContent = e.message; btn.disabled = false; btn.textContent = 'Salvar e entrar ➜'; }
 }
 
 const textoBotaoCadastro = () => pedeConfirmacao() ? 'Continuar para a confirmação ➜' : 'Cadastrar e iniciar o curso ➜';
@@ -430,22 +503,24 @@ function renderEstado(valor){
 
 /* ============ RENDER: CURSO ============ */
 const ICONE_NIVEL = { iniciante:'🌱', intermediario:'⚙️', avancado:'🚀' };
+const SB_NIVEIS_ABERTOS = new Set();
 function sidebarPortal(){
   const niveis = PORTAL.niveis.map(nv => {
     const itens = PORTAL.catalogo.filter(m => m.nivel === nv.id && (cursoPorId(m.id) || m.status === 'em_breve'));
     if (!itens.length) return '';
     const abertos = itens.map(m => cursoPorId(m.id)).filter(Boolean);
     const p = abertos.length ? Math.round(abertos.reduce((s, c) => s + (MATR.includes(c.id) ? pctCurso(c) : 0), 0) / abertos.length) : 0;
-    return `<div class="mod" style="--c:${nv.cores[0]};--c2:${nv.cores[1]};--p:${p}">
-      <button class="modh sbniv" type="button" data-act="ver-nivel" data-nivel="${nv.id}"><div class="ring"><span class="modic">${ICONE_NIVEL[nv.id]}</span></div>
-        <div class="modt">${nv.titulo}<div class="mods">${abertos.length} de ${itens.length} ${itens.length === 1 ? 'disponível' : 'disponíveis'}</div></div></button>
-      ${itens.map(m => {
+    const aberto = SB_NIVEIS_ABERTOS.has(nv.id);
+    return `<div class="mod sbacc ${aberto ? 'aberto' : ''}" style="--c:${nv.cores[0]};--c2:${nv.cores[1]};--p:${p}">
+      <button class="modh sbniv" type="button" data-act="sb-nivel" data-nivel="${nv.id}" aria-expanded="${aberto}"><div class="ring"><span class="modic">${ICONE_NIVEL[nv.id]}</span></div>
+        <div class="modt">${nv.titulo}<div class="mods">${abertos.length} de ${itens.length} ${itens.length === 1 ? 'disponível' : 'disponíveis'}</div></div><span class="sbseta" aria-hidden="true">▸</span></button>
+      <div class="sbitens"><div class="sbin">${itens.map(m => {
         const c = cursoPorId(m.id);
         if (!c) return `<button class="les" type="button" disabled title="Em breve"><span class="st">🔜</span><span>${m.ordem ? m.ordem + '. ' : ''}${esc(m.titulo)}</span></button>`;
         const pct = MATR.includes(c.id) ? pctCurso(c) : null;
         const st = pct === 100 ? '✅' : pct !== null ? '▶️' : '✨';
         return `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${st}</span><span>${m.ordem ? m.ordem + '. ' : ''}${esc(c.titulo)}${pct !== null && pct < 100 ? ` <small class="sbpct">${pct}%</small>` : ''}</span></button>`;
-      }).join('')}
+      }).join('')}</div></div>
     </div>`;
   }).join('');
   const outros = CURSOS.filter(c => !PORTAL.niveis.some(nv => nv.id === c.nivel))
@@ -456,6 +531,7 @@ function sidebarPortal(){
     ${outros ? `<div class="sbsec">Outros cursos</div>${outros}` : ''}
     <div class="sbsec">App e conta</div>
     <button class="homebtn so-pc" type="button" data-act="qr"><span class="hi">📱</span>Levar para o celular</button>
+    ${linkContato('homebtn')}
     ${MASTER ? '<a class="homebtn" href="admin.html"><span class="hi">🛡️</span>Painel do Master</a>' : ''}
     <button class="homebtn inst" type="button" data-act="instalar" ${podeInstalar() ? '' : 'hidden'}><span class="hi">📲</span>Instalar o app</button>${dicaIos()}
     ${ALUNO ? `<button class="homebtn" type="button" data-act="sair"><span class="hi">👋</span>Sair (${esc(ALUNO.nome.split(' ')[0])})</button>`
@@ -489,6 +565,7 @@ function renderProgress(){
   $('app').classList.toggle('full', !noCurso && S.view !== 'cursos');
   document.body.classList.toggle('sb-flut', !noCurso && S.view === 'cursos');
   $('btn-master').hidden = !MASTER;
+  $('btn-sair').hidden = !(ALUNO || MASTER);
   $('titulo').textContent = noCurso ? C.titulo : 'Portal de Estudos IA';
   ['pb-wrap','pl'].forEach(id => $(id).classList.toggle('off', !noCurso));
   $('btn-tool').classList.toggle('off', !tb);
@@ -602,6 +679,8 @@ function renderMain(keep){
   else if (S.view === 'cadastro') renderCadastro();
   else if (S.view === 'verificar') renderVerificar();
   else if (S.view === 'entrar') renderEntrar();
+  else if (S.view === 'esqueci') renderEsqueci();
+  else if (S.view === 'nova-senha') renderNovaSenha();
   else if (S.view === 'confirmar-whats') renderConfirmarWhats();
   else if (S.view === 'home') renderHome();
   else if (S.view === 'moduleDone') renderModuloConcluido();
@@ -612,7 +691,7 @@ function renderMain(keep){
 }
 
 /* Barra do topo: Voltar + caminho (Início › Curso › Módulo › Lição). */
-const TITULO_VIEW = { cadastro:'Cadastro', entrar:'Entrar', verificar:'Confirmação', 'confirmar-whats':'Confirmar WhatsApp' };
+const TITULO_VIEW = { cadastro:'Cadastro', entrar:'Entrar', verificar:'Confirmação', 'confirmar-whats':'Confirmar WhatsApp', esqueci:'Esqueci minha senha', 'nova-senha':'Nova senha' };
 function barraNav(){
   const p = [`<button class="bc" type="button" data-act="cursos">🏠 Início</button>`];
   let voltar = 'cursos';
@@ -921,6 +1000,7 @@ document.addEventListener('click', e => {
   if (a === 'cursos') irParaCursos();
   else if (a === 'cadastro') { S.escolhido = S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); }
   else if (a === 'entrar') { VER = {}; S.view = 'entrar'; renderAll(); }
+  else if (a === 'esqueci') { S.view = 'esqueci'; renderAll(); }
   else if (a === 'verificar') iniciarVerificacao({});
   else if (a === 'reenviar') enviarCodigo();
   else if (a === 'corrigir') {
@@ -951,6 +1031,11 @@ document.addEventListener('click', e => {
   else if (a === 'tn-curso') { const id = t.dataset.id; fecharTeste(); abrirCurso(id); }
   else if (a === 'tn-trilha') { const nv = t.dataset.nivel; fecharTeste(); setTimeout(() => { const s = $('nivel-' + nv); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }, 80); }
   else if (a === 'topo') { closeMenu(); window.scrollTo({ top:0, behavior:'smooth' }); }
+  else if (a === 'sb-nivel') {
+    const id = t.dataset.nivel, abrir = !SB_NIVEIS_ABERTOS.has(id);
+    if (abrir) SB_NIVEIS_ABERTOS.add(id); else SB_NIVEIS_ABERTOS.delete(id);
+    t.parentElement.classList.toggle('aberto', abrir); t.setAttribute('aria-expanded', abrir);
+  }
   else if (a === 'ver-nivel') { closeMenu(); const s = $('nivel-' + t.dataset.nivel); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
   else if (a === 'ver-trilha') { const s = $('trilha'); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
   else if (a === 'fechar-aviso') { try { localStorage.setItem(CHAVE_AVISO_TRILHA, '1'); } catch(e){} const b = $('aviso-trilha'); if (b) b.remove(); }
@@ -990,6 +1075,8 @@ document.addEventListener('submit', e => {
   if (id === 'f-cad') { e.preventDefault(); enviarCadastro(e.target); }
   else if (id === 'f-ver') { e.preventDefault(); confirmarCodigo(e.target); }
   else if (id === 'f-entrar') { e.preventDefault(); pedirEntrada(e.target); }
+  else if (id === 'f-esqueci') { e.preventDefault(); pedirNovaSenha(e.target); }
+  else if (id === 'f-nova') { e.preventDefault(); salvarNovaSenha(e.target); }
 });
 document.addEventListener('input', e => {
   if (e.target.name === 'pais' && e.target.form && e.target.form.id === 'f-cad') renderEstado();
@@ -1024,6 +1111,8 @@ async function iniciar(){
     return;
   }
   if (DB.modo === 'demo') { const b = $('demo-bar'); b.hidden = false; b.textContent = 'Modo demonstração: os dados ficam salvos só neste navegador.'; }
+  DB.aoRecuperarSenha(() => { S.view = 'nova-senha'; renderAll(); });
+  if (DB.emRecuperacao() && DB.modo !== 'demo') { S.view = 'nova-senha'; renderAll(); return; }
   renderAll();
   const pend = lerPendente();
   if (pend && EMAIL_SESSAO && pend.email === EMAIL_SESSAO && !DB.verificado(ALUNO)) {

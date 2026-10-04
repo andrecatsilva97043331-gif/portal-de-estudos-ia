@@ -12,6 +12,9 @@ function carregarScript(src){
 }
 function soCampos(d){ const o = {}; CAMPOS.forEach(k => { if (d[k] !== undefined) o[k] = d[k]; }); return o; }
 let EXIGIR_WHATS = true;
+/* Volta do link "redefinir senha" do e-mail (o Supabase limpa o endereço logo depois, por isso é lido aqui). */
+let RECUPERANDO = /[#&]type=recovery/.test(location.hash);
+let AO_RECUPERAR = null;
 const verificado = a => !!(a && a.email_verificado && (a.whatsapp_verificado || !EXIGIR_WHATS));
 function erroSenha(e){
   const m = String((e && e.message) || '');
@@ -42,6 +45,7 @@ function bancoSupabase(){
     async iniciar(){
       await carregarScript(CDN);
       sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth:{ persistSession:true } });
+      sb.auth.onAuthStateChange(ev => { if (ev === 'PASSWORD_RECOVERY') { RECUPERANDO = true; if (AO_RECUPERAR) AO_RECUPERAR(); } });
       const r = await sb.from('config_portal').select('exigir_whatsapp').eq('id', 1).maybeSingle();
       if (!r.error && r.data) EXIGIR_WHATS = r.data.exigir_whatsapp !== false;
     },
@@ -53,6 +57,16 @@ function bancoSupabase(){
     async entrarComSenha(email, senha){
       const r = await sb.auth.signInWithPassword({ email, password:senha });
       if (r.error) throw erroSenha(r.error);
+    },
+    async pedirNovaSenha(email){
+      const r = await sb.auth.resetPasswordForEmail(email, { redirectTo:location.origin + location.pathname });
+      if (r.error) throw new Error(/rate|seconds/i.test(r.error.message) ? 'Muitos pedidos seguidos. Aguarde alguns minutos e tente de novo.' : 'Não foi possível enviar o e-mail agora. Tente novamente.');
+      return {};
+    },
+    async definirNovaSenha(senha){
+      const r = await sb.auth.updateUser({ password:senha });
+      if (r.error) throw /session|missing/i.test(r.error.message) ? new Error('O link expirou. Peça um novo em "Esqueci minha senha".') : erroSenha(r.error);
+      RECUPERANDO = false;
     },
     async emailDaSessao(){ const s = await sessao(); return s && s.user.email_confirmed_at ? s.user.email : null; },
     async alunoAtual(){
@@ -177,6 +191,20 @@ function bancoDemo(){
       if (a) a.email_verificado = true;
       gravar(d);
     },
+    async pedirNovaSenha(email){
+      const d = ler(); d.contas = d.contas || {};
+      d.recuperando = email; gravar(d); RECUPERANDO = true;
+      return { demo:true };
+    },
+    async definirNovaSenha(senha){
+      const d = ler(); d.contas = d.contas || {};
+      if (!d.recuperando) throw new Error('Peça a redefinição em "Esqueci minha senha".');
+      if (String(senha).length < 8) throw erroSenha({ message:'password' });
+      const email = d.recuperando, a = d.alunos.find(x => x.email === email);
+      d.contas[email] = await hashDemo(email + ':' + senha);
+      d.emailSessao = email; d.eu = a ? a.id : null; delete d.recuperando;
+      gravar(d); RECUPERANDO = false;
+    },
     async emailDaSessao(){ return ler().emailSessao; },
     async alunoAtual(){
       const d = ler(), a = d.alunos.find(x => x.id === d.eu);
@@ -271,4 +299,6 @@ window.DB = USA_SUPABASE ? bancoSupabase() : bancoDemo();
 DB.verificado = verificado;
 DB.codigoEmail = !!cfg.confirmarEmailPorCodigo;
 Object.defineProperty(DB, 'exigirWhatsapp', { get: () => EXIGIR_WHATS });
+DB.emRecuperacao = () => RECUPERANDO;
+DB.aoRecuperarSenha = fn => { AO_RECUPERAR = fn; };
 })();

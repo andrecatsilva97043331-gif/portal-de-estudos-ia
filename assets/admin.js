@@ -102,8 +102,18 @@ function grafCadastros(rs){
   for (let i = 13; i >= 0; i--) { const d = new Date(Date.now() - i * DIA); dias.push({ chave:d.toDateString(), rot:d.getDate(), txt:d.toLocaleDateString('pt-BR'), n:0 }); }
   rs.forEach(({ a }) => { const d = dias.find(x => x.chave === new Date(a.criado_em).toDateString()); if (d) d.n++; });
   const max = Math.max(1, ...dias.map(d => d.n)), total = dias.reduce((s, d) => s + d.n, 0);
+  const W = 320, H = 130, px = 12, topo = 18, base = H - 22;
+  const pts = dias.map((d, i) => ({ d, x: px + i * (W - 2 * px) / (dias.length - 1), y: base - d.n / max * (base - topo) }));
+  const linha = pts.map((p, i) => (i ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
   return grafico('Novos cadastros', total + ' nos últimos 14 dias',
-    `<div class="vbars">${dias.map(d => `<div class="vb" title="${d.txt}: ${d.n}">${d.n ? `<em>${d.n}</em>` : ''}<i style="height:${Math.max(3, d.n / max * 100)}%"></i><span>${d.rot}</span></div>`).join('')}</div>`, 0);
+    `<svg class="gline" viewBox="0 0 ${W} ${H}" role="img" aria-label="Novos cadastros por dia nos últimos 14 dias">
+      <defs><linearGradient id="gl-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--c)" stop-opacity=".45"/><stop offset="1" stop-color="var(--c)" stop-opacity="0"/></linearGradient>
+      <linearGradient id="gl-traco" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--c)"/><stop offset="1" stop-color="var(--c2)"/></linearGradient></defs>
+      ${[0, .5, 1].map(k => `<line class="gl-grade" x1="${px}" x2="${W - px}" y1="${(base - k * (base - topo)).toFixed(1)}" y2="${(base - k * (base - topo)).toFixed(1)}"/>`).join('')}
+      <path d="${linha} L${pts[pts.length - 1].x.toFixed(1)} ${base} L${px} ${base} Z" fill="url(#gl-area)"/>
+      <path class="gl-traco" d="${linha}" fill="none" stroke="url(#gl-traco)"/>
+      ${pts.map(p => `<g><title>${p.d.txt}: ${p.d.n}</title><circle class="gl-pt" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.2"/>${p.d.n ? `<text class="gl-n" x="${p.x.toFixed(1)}" y="${(p.y - 7).toFixed(1)}">${p.d.n}</text>` : ''}<text class="gl-dia" x="${p.x.toFixed(1)}" y="${H - 6}">${p.d.rot}</text></g>`).join('')}
+    </svg>`, 0);
 }
 
 function grafFunil(rs){
