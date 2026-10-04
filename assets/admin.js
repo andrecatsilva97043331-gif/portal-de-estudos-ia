@@ -60,7 +60,7 @@ function linhas(){
 
 /* ============ TELAS ============ */
 function renderLogin(msg){
-  $('btn-sair').hidden = true;
+  $('btn-sair').hidden = true; $('btn-aluno').hidden = true;
   const demo = DB.modo === 'demo';
   $('main').innerHTML = `<form class="form" id="f-login" style="max-width:420px; margin-top:40px">
     <div class="orb mini rise" aria-hidden="true"><span>🛡️</span></div>
@@ -69,7 +69,7 @@ function renderLogin(msg){
     <p class="hp">${demo ? 'Modo demonstração: use qualquer e-mail e a senha definida em <code>config.js</code> (padrão: <b>master</b>).' : 'Acesso restrito ao administrador do portal.'}</p>
     <div class="card">
       <label class="fl" style="margin-bottom:12px">E-mail<input name="email" type="email" autocomplete="username" required></label>
-      <label class="fl">Senha<input name="senha" type="password" autocomplete="current-password" required></label>
+      <label class="fl">Senha<span class="pw"><input name="senha" type="password" autocomplete="current-password" required>${PORTAL.olho}</span></label>
       <div class="err" id="login-err" role="alert">${esc(msg || '')}</div>
       <button class="next" type="submit" id="login-ok">Entrar ➜</button>
     </div>
@@ -187,7 +187,7 @@ function perfilAviso({ a, cursos }){
   const cc = c && cursoPorId(c.curso);
   const feitas = {}; if (c) DADOS.progresso.forEach(p => { if (p.aluno_id === a.id && p.curso_id === c.curso) feitas[p.licao_id] = true; });
   const prox = cc ? cc.licoes.find(l => !feitas[l.id]) : null;
-  const cursoId = c ? c.curso : (CURSOS.find(x => x.status === 'publicado') || CURSOS[0] || {}).id;
+  const cursoId = c ? c.curso : (CURSOS.find(x => PORTAL.disponivel(x)) || CURSOS[0] || {}).id;
   return {
     seg, a, cursoId,
     vars: {
@@ -273,7 +273,7 @@ async function enviarApi(){
 }
 
 function renderPainel(){
-  $('btn-sair').hidden = false;
+  $('btn-sair').hidden = false; $('btn-aluno').hidden = false;
   const agora = Date.now();
   const recente = (iso, dias) => iso && agora - new Date(iso).getTime() < dias * DIA;
   const ativos = DADOS.alunos.filter(a => recente(a.ultimo_acesso, 7)).length;
@@ -282,7 +282,7 @@ function renderPainel(){
   const media = pcts.length ? Math.round(pcts.reduce((s, p) => s + p, 0) / pcts.length) : 0;
   const concluidos = pcts.filter(p => p === 100).length;
   const taxa = pcts.length ? Math.round(concluidos / pcts.length * 100) : 0;
-  const opCursos = CURSOS.map(c => `<option value="${esc(c.id)}" ${F.curso===c.id?'selected':''}>${esc(c.titulo)}${c.status !== 'publicado' ? ' (' + c.status + ')' : ''}</option>`).join('');
+  const opCursos = CURSOS.map(c => `<option value="${esc(c.id)}" ${F.curso===c.id?'selected':''}>${esc(c.titulo)}${!PORTAL.disponivel(c) ? ' (' + c.status + ')' : ''}</option>`).join('');
   const stats = [
     ['👥', DADOS.alunos.length, '', 'alunos cadastrados', '+' + novos + ' em 7 dias · ' + DADOS.alunos.filter(a => DB.verificado(a)).length + ' liberados'],
     ['⚡', ativos, '', 'ativos nos últimos 7 dias', DADOS.alunos.length ? Math.round(ativos / DADOS.alunos.length * 100) + '% da base' : '-'],
@@ -456,7 +456,7 @@ document.addEventListener('click', e => {
   else if (a === 'atualizar') carregarDados().then(() => toast('Dados atualizados'));
   else if (a === 'csv') exportarCsv();
   else if (a === 'convite') {
-    const id = F.curso || (CURSOS.find(c => c.status === 'publicado') || CURSOS[0] || {}).id;
+    const id = F.curso || (CURSOS.find(c => PORTAL.disponivel(c)) || CURSOS[0] || {}).id;
     if (!id) { toast('Nenhum curso no catálogo.'); return; }
     copiar(linkConvite(id));
     toast('Link de convite copiado: ' + tituloCurso(id));

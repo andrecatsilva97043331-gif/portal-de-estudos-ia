@@ -1,11 +1,112 @@
 [
   {
+    "id": "ia-do-zero",
+    "titulo": "IA do Zero",
+    "descricao": "Entender o que é IA e usar uma ferramenta com segurança, sem saber programar.",
+    "icone": "🌱",
+    "cores": ["#22C55E", "#14B8A6"],
+    "nivel": "iniciante",
+    "ordem": 1,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "prompts-que-funcionam",
+    "titulo": "Prompts que Funcionam",
+    "descricao": "Pedir do jeito certo e melhorar qualquer resposta da IA.",
+    "icone": "✍️",
+    "cores": ["#22C55E", "#14B8A6"],
+    "nivel": "iniciante",
+    "ordem": 2,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "ia-no-trabalho",
+    "titulo": "IA no Trabalho e no Dia a Dia",
+    "descricao": "Ganhar tempo com textos, planilhas, pesquisa e estudos usando ferramentas gratuitas.",
+    "icone": "💼",
+    "cores": ["#22C55E", "#14B8A6"],
+    "nivel": "iniciante",
+    "ordem": 3,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "automacao-sem-codigo",
+    "titulo": "Automação Sem Código",
+    "descricao": "Criar fluxos que trabalham sozinhos, como formulário, planilha e WhatsApp.",
+    "icone": "🔗",
+    "cores": ["#F59E0B", "#F97316"],
+    "nivel": "intermediario",
+    "ordem": 4,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "criando-apps-com-ia",
+    "titulo": "Criando Apps com IA",
+    "descricao": "Sair da ideia e chegar a um app no ar usando o Cursor.",
+    "icone": "📱",
+    "cores": ["#F59E0B", "#F97316"],
+    "nivel": "intermediario",
+    "ordem": 5,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
     "id": "arquiteto-solucoes-ia",
     "titulo": "Arquiteto de Soluções com IA",
     "descricao": "Do problema do cliente ao fluxo automatizado: 4 módulos práticos, com desafios e prompts prontos para o Cursor.",
     "icone": "🏗️",
     "cores": ["#22d3ee", "#c084fc"],
-    "status": "publicado",
+    "nivel": "intermediario",
+    "ordem": 6,
+    "status": "disponivel",
+    "versao": 1
+  },
+  {
+    "id": "agentes-de-ia",
+    "titulo": "Agentes de IA",
+    "descricao": "Montar assistentes que decidem, usam ferramentas e lembram do contexto.",
+    "icone": "🤖",
+    "cores": ["#EF4444", "#EC4899"],
+    "nivel": "avancado",
+    "ordem": 7,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "ia-com-seus-dados",
+    "titulo": "IA com os Seus Dados",
+    "descricao": "Fazer a IA responder com base nos seus próprios documentos.",
+    "icone": "📂",
+    "cores": ["#EF4444", "#EC4899"],
+    "nivel": "avancado",
+    "ordem": 8,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "ia-em-producao",
+    "titulo": "IA em Produção",
+    "descricao": "Segurança, LGPD, custo e qualidade para usar IA no mundo real.",
+    "icone": "🛡️",
+    "cores": ["#EF4444", "#EC4899"],
+    "nivel": "avancado",
+    "ordem": 9,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "do-projeto-ao-negocio",
+    "titulo": "Do Projeto ao Negócio",
+    "descricao": "Transformar o que você sabe em serviço, proposta e renda.",
+    "icone": "🚀",
+    "cores": ["#EF4444", "#EC4899"],
+    "nivel": "avancado",
+    "ordem": 10,
+    "status": "em_breve",
     "versao": 1
   }
 ]

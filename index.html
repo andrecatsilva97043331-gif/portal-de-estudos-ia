@@ -7,6 +7,12 @@
 <meta name="description" content="O maior portal de estudos de desenvolvimento em IA: cursos práticos com desafios reais.">
 <link rel="icon" type="image/svg+xml" href="assets/icone.svg">
 <meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Estudos IA">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/base.css">
@@ -21,10 +27,12 @@
     <div class="pbar off" role="progressbar" aria-label="Progresso no curso" id="pb-wrap"><i id="pb"></i></div>
     <div class="plabel off" id="pl"></div>
     <button class="btn-tool off" id="btn-tool" data-act="tool" aria-label="Abrir Code Toolbox">🧰 <span class="tt">Code Toolbox</span></button>
+    <a class="btn-tool btn-master" id="btn-master" href="admin.html" hidden aria-label="Abrir o Painel do Master">🛡️ <span class="tt">Painel do Master</span></a>
   </div>
 </header>
 
 <div class="ov" id="ov" data-act="menu"></div>
+<button class="sbz" type="button" data-act="menu" aria-label="Abrir o painel da trilha"><span>☰ Trilha</span></button>
 
 <div class="app full" id="app">
   <aside class="sb" id="sb" aria-label="Módulos e lições"></aside>

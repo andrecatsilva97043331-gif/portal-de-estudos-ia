@@ -4,7 +4,9 @@ const path = require('path');
 const vm = require('vm');
 
 const raiz = path.join(__dirname, '..');
-const STATUS = ['rascunho', 'publicado', 'arquivado'];
+const STATUS = ['disponivel', 'em_breve', 'rascunho', 'arquivado', 'publicado'];
+const NIVEIS = ['iniciante', 'intermediario', 'avancado'];
+const ordens = new Set();
 const erros = [];
 const avisos = [];
 const erro = (onde, msg) => erros.push(onde + ': ' + msg);
@@ -24,9 +26,20 @@ for (const meta of catalogo) {
   if (!meta.descricao) erro(onde, 'falta "descricao"');
   if (!STATUS.includes(meta.status)) erro(onde, 'status deve ser ' + STATUS.join(', '));
   if (meta.cores && !(Array.isArray(meta.cores) && meta.cores.length === 2)) erro(onde, '"cores" deve ter 2 cores');
+  if (meta.nivel === undefined) avisos.push(onde + ': sem "nivel", fica fora da Trilha de IA');
+  else if (!NIVEIS.includes(meta.nivel)) erro(onde, 'nivel deve ser ' + NIVEIS.join(', '));
+  if (meta.ordem !== undefined) {
+    if (!Number.isInteger(meta.ordem) || meta.ordem < 1) erro(onde, '"ordem" deve ser um número inteiro a partir de 1');
+    else if (ordens.has(meta.ordem)) erro(onde, 'ordem ' + meta.ordem + ' repetida');
+    ordens.add(meta.ordem);
+  }
 
   const arq = path.join(raiz, 'cursos', meta.id, 'curso.js');
-  if (!fs.existsSync(arq)) { erro(onde, 'arquivo cursos/' + meta.id + '/curso.js não existe'); continue; }
+  if (!fs.existsSync(arq)) {
+    if (meta.status === 'em_breve') console.log('… ' + meta.id + ' [em_breve]: aguardando conteúdo');
+    else erro(onde, 'arquivo cursos/' + meta.id + '/curso.js não existe');
+    continue;
+  }
 
   const registrados = [];
   try {

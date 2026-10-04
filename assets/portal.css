@@ -31,6 +31,94 @@ a.logo{text-decoration:none;}
 .stile{flex:none; width:46px; height:46px; border-radius:14px; display:grid; place-items:center; font-size:22px; background:linear-gradient(135deg,var(--c),var(--c2)); box-shadow:0 8px 24px -8px var(--c);}
 .sec-t{font-size:20px; font-weight:800; margin:6px 2px 14px;}
 .mhead{display:flex; justify-content:space-between; align-items:flex-start;}
+
+/* ---------- Navegação: barra do topo e rodapé da lição ---------- */
+.navbar{display:flex; align-items:center; gap:10px; margin:0 0 16px; padding:8px; border:1px solid var(--line); border-radius:16px; background:rgba(10,10,15,.75);}
+.nvolta{flex:none; border:1px solid var(--line); background:var(--s2); color:var(--text); border-radius:12px; padding:8px 14px; font-weight:700; font-size:14px; cursor:pointer;}
+.nvolta:hover{border-color:var(--muted);}
+.bcs{display:flex; align-items:center; gap:6px; min-width:0; font-size:14px; overflow-x:auto; scrollbar-width:none;}
+.bcs::-webkit-scrollbar{display:none;}
+.bc{border:0; background:transparent; color:var(--muted); padding:4px 6px; border-radius:8px; font-size:14px; font-weight:600; white-space:nowrap; max-width:260px; overflow:hidden; text-overflow:ellipsis;}
+button.bc{cursor:pointer;}
+button.bc:hover{color:var(--text); background:var(--s2);}
+.bc.atual{color:var(--text);}
+.sep{color:var(--line); font-weight:700;}
+.lnav{display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:center; margin:18px 0 8px; padding-top:16px; border-top:1px solid var(--line);}
+.lnav > :first-child{justify-self:start;}
+.lnav > :last-child{justify-self:end;}
+.lnav .ghost{padding:10px 16px; font-size:14px; cursor:pointer;}
+.lnav .ghost:hover:not([disabled]){border-color:var(--muted); background:var(--s2);}
+.lnav .ghost[disabled]{opacity:.5; cursor:not-allowed;}
+.lnav .prox{border-color:color-mix(in srgb,var(--c) 60%,transparent); color:var(--c);}
+@media (max-width: 560px){ .lnav{grid-template-columns:1fr 1fr;} .lnav > :nth-child(2){grid-column:1/-1; grid-row:2; justify-self:center;} .bc{max-width:150px;} }
+
+/* ---------- Painel lateral do portal ---------- */
+.sbsec{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:14px 10px 6px;}
+.sbniv{width:100%; border:0; background:transparent; color:var(--text); text-align:left; padding:0; cursor:pointer;}
+.sbpct{color:var(--c); font-weight:700; font-size:12px;}
+.nivel{scroll-margin-top:8px;}
+.inst[hidden]{display:none !important;}
+.sb .dica-ios{margin:4px 6px 8px;}
+
+/* Notebook: na página inicial o painel fica escondido e desliza ao passar o mouse na aba da esquerda. */
+.sbz{display:none;}
+@media (min-width: 901px){
+  body.sb-flut .app{grid-template-columns:minmax(0,1fr);}
+  body.sb-flut .sbz{display:flex; position:fixed; left:0; top:calc(env(safe-area-inset-top,0px) + 74px); bottom:0; width:26px; z-index:44; padding:0; border:0; background:transparent; cursor:pointer; align-items:flex-start;}
+  body.sb-flut .sbz span{margin-top:16px; writing-mode:vertical-rl; transform:rotate(180deg); padding:14px 5px; border-radius:0 12px 12px 0; font-size:12.5px; font-weight:800; letter-spacing:.06em; color:#000; background:linear-gradient(180deg,#22C55E,#F59E0B,#EC4899); box-shadow:0 8px 24px -8px #F59E0B;}
+  body.sb-flut .sb{position:fixed; left:0; top:calc(env(safe-area-inset-top,0px) + 74px); bottom:16px; width:316px; max-height:none; align-self:stretch; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; z-index:45; border-radius:0 20px 20px 0; transform:translateX(-105%); transition:transform .25s ease, box-shadow .25s;}
+  body.sb-flut .sb:has(:focus-visible), body.sb-flut .sb.on{transform:none; box-shadow:18px 0 50px -20px rgba(0,0,0,.9);}
+}
+
+/* ---------- Barra de rolagem do painel lateral ---------- */
+.sb::-webkit-scrollbar{width:6px;}
+.sb::-webkit-scrollbar-track{background:transparent; margin:14px 0;}
+.sb::-webkit-scrollbar-thumb{border-radius:99px; background:linear-gradient(180deg,rgba(34,197,94,.55),rgba(245,158,11,.55),rgba(236,72,153,.55));}
+.sb::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#22C55E,#F59E0B,#EC4899); box-shadow:0 0 8px #F59E0B;}
+.sb::-webkit-scrollbar-button{display:none; height:0;}
+@supports not selector(::-webkit-scrollbar){ .sb{scrollbar-width:thin; scrollbar-color:rgba(245,158,11,.55) transparent;} }
+
+/* ---------- QR code: levar para o celular ---------- */
+@media (max-width: 900px){ .so-pc{display:none !important;} }
+.qr-modal{position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:20px; background:rgba(0,0,0,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); animation:qrfade .25s ease both;}
+@keyframes qrfade{from{opacity:0;} to{opacity:1;}}
+.qr-box{position:relative; width:min(420px,100%); text-align:center; padding:26px 24px 20px; border-radius:26px; background:radial-gradient(circle at 50% 0%, #15152a, #050508 70%); border:1px solid #242431; box-shadow:0 30px 80px -30px #22d3ee, 0 0 0 1px rgba(192,132,252,.15) inset; animation:rise .35s cubic-bezier(.2,.8,.2,1) both;}
+.qr-tit{font-family:var(--font-d); font-size:26px; font-weight:800; margin:2px 0 18px;}
+.qr-moldura{--a:0deg; position:relative; width:252px; height:252px; margin:0 auto 18px; padding:4px; border-radius:26px; background:conic-gradient(from var(--a),#22d3ee,#c084fc,#ec4899,#fbbf24,#4ade80,#22d3ee); animation:qrgira 5s linear infinite; box-shadow:0 0 40px -6px #22d3ee, 0 0 70px -20px #c084fc;}
+@property --a{syntax:'<angle>'; inherits:false; initial-value:0deg;}
+@keyframes qrgira{to{--a:360deg;}}
+.qr-in{position:relative; width:100%; height:100%; border-radius:22px; overflow:hidden; background:#fff; display:grid; place-items:center;}
+.qr-in img{width:226px; height:226px; display:block;}
+.qr-scan{position:absolute; left:8px; right:8px; top:8px; height:30px; background:linear-gradient(180deg,transparent,rgba(34,211,238,.22) 45%,#22d3ee 50%,rgba(34,211,238,.22) 55%,transparent); filter:drop-shadow(0 0 6px #22d3ee); border-radius:4px; animation:qrscan 1.5s ease-in-out infinite alternate; pointer-events:none;}
+@keyframes qrscan{from{top:8px;} to{top:calc(100% - 38px);}}
+.qr-passos{list-style:none; margin:0 0 12px; padding:0; text-align:left; display:grid; gap:8px;}
+.qr-passos li{display:flex; gap:10px; align-items:flex-start; font-size:14px; line-height:1.45; color:var(--muted);}
+.qr-passos li > b{flex:none; width:24px; height:24px; border-radius:8px; display:grid; place-items:center; font-size:13px; color:#000; background:linear-gradient(135deg,#22d3ee,#c084fc);}
+.qr-passos li span b{color:var(--text);}
+.qr-url{margin:0; font-size:12px; color:var(--muted); word-break:break-all;}
+
+/* ---------- Instalar como app ---------- */
+.dica-ios{margin-top:12px; padding:10px 12px; border-radius:14px; border:1px solid color-mix(in srgb,#22d3ee 40%,transparent); background:color-mix(in srgb,#22d3ee 10%,#050507); font-size:13.5px; line-height:1.5; color:var(--text); max-width:460px;}
+
+/* ---------- Aviso de novidade ---------- */
+.novidade{position:relative; margin-bottom:18px; padding:18px 18px 16px; border-radius:22px; border:1px solid transparent; background:linear-gradient(#07070b,#07070b) padding-box, linear-gradient(90deg,#22C55E,#F59E0B,#EF4444,#EC4899) border-box; box-shadow:0 14px 40px -24px #F59E0B;}
+.ntit{font-family:var(--font-d); font-size:19px; font-weight:800; margin:0 34px 6px 0; line-height:1.25;}
+.nsub{margin:0 0 8px; font-weight:700; color:#fbbf24; font-size:14.5px;}
+.ncorpo{margin:0 0 12px; color:var(--muted); font-size:14px; line-height:1.55;}
+.nchips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+.nfechar{position:absolute; top:10px; right:10px; width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--s2); color:var(--muted); font-size:15px; cursor:pointer;}
+.nfechar:hover{color:var(--text); border-color:var(--muted);}
+
+/* ---------- Trilha de IA ---------- */
+.trilha{scroll-margin-top:8px; margin-bottom:22px;}
+.tsub{margin:-8px 2px 16px; color:var(--muted); font-size:14.5px; line-height:1.5;}
+.nivel{margin-bottom:22px; padding:14px; border-radius:24px; border:1px solid color-mix(in srgb,var(--c) 28%,#16161e); background:linear-gradient(180deg,color-mix(in srgb,var(--c) 8%,#050507),transparent 70%);}
+.nhead{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin:0 2px 14px;}
+.npill{font-family:var(--font-d); font-weight:800; font-size:14px; padding:6px 14px; border-radius:99px; color:#000; background:linear-gradient(135deg,var(--c),var(--c2)); box-shadow:0 6px 20px -8px var(--c);}
+.nhead small{color:var(--muted); font-size:13px;}
+.mc.breve{min-height:0; cursor:default; filter:grayscale(.55); opacity:.72;}
+.mc.breve .mtile{transform:none;}
+.mc.breve .mfoot{color:var(--muted);}
 .pctpill{font-family:var(--font-d); font-weight:800; font-size:14px; padding:5px 12px; border-radius:99px; color:#000; background:linear-gradient(135deg,var(--c),var(--c2)); box-shadow:0 6px 20px -8px var(--c);}
 .pctpill.novo{background:var(--s2); color:var(--text); border:1px solid color-mix(in srgb,var(--c) 50%,transparent); box-shadow:none;}
 
@@ -54,6 +142,10 @@ a.logo{text-decoration:none;}
 .radios input{accent-color:var(--c); width:18px; height:18px;}
 .nota{font-size:13px; color:var(--muted); margin:16px 0 0;}
 .fl textarea{resize:vertical; min-height:70px;}
+.pw{position:relative; display:block;}
+.fl .pw input{padding-right:48px;}
+.olho{position:absolute; right:6px; top:50%; transform:translateY(-50%); width:36px; height:36px; border:0; border-radius:10px; background:transparent; font-size:18px; line-height:1; cursor:pointer; opacity:.75;}
+.olho:hover,.olho:focus-visible{opacity:1; background:var(--s3);}
 .fl input,.fl select,.fl textarea,.inp{background:var(--s2); border:1px solid var(--line); color:var(--text); border-radius:12px; padding:11px 12px; font:inherit; font-weight:400; font-size:15px; width:100%; box-sizing:border-box;}
 .fl input:focus,.fl select:focus,.fl textarea:focus,.inp:focus{outline:2px solid var(--c); border-color:transparent;}
 .fl small{font-weight:400; color:var(--muted);}

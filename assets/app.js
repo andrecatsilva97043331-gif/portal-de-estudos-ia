@@ -8,6 +8,8 @@ const NIVEIS_PADRAO = [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],
 
 let CURSOS = [];
 let ALUNO = null;
+let MASTER = false;
+const checarMaster = async () => { try { MASTER = await DB.ehMaster(); } catch(e){ MASTER = false; } };
 let MATR = [];
 let PROG = {};
 let S = { view:'cursos', cur:null, modDone:null, escolhido:null };
@@ -69,10 +71,7 @@ function renderCursos(){
       <div class="chips"><span class="chip">⚡ ${feitas * 100} XP</span><span class="chip">📘 ${feitas} lições concluídas</span><span class="chip">🎓 ${meus.length} ${meus.length === 1 ? 'curso' : 'cursos'}</span>${concluidos ? `<span class="chip">🏆 ${concluidos} concluído${concluidos > 1 ? 's' : ''}</span>` : ''}</div>
       ${!DB.verificado(ALUNO) ? `<div class="pend"><b>⚠️ Falta confirmar seu ${ALUNO.email_verificado ? 'WhatsApp' : 'e-mail'}</b><span>${textoObrigatorio()}</span><button class="next" data-act="verificar">Confirmar agora ➜</button></div>`
         : seguir ? `<button class="next" data-act="curso" data-id="${esc(seguir.id)}" style="${ccor(seguir)}">Continuar ${esc(seguir.titulo)} ➜</button>` : ''}
-      ${DB.verificado(ALUNO) && !ALUNO.whatsapp_verificado && WA_PORTAL ? `<div class="pend wa-pend"><b>📲 Confirme seu WhatsApp</b>
-        <span>${ALUNO.whatsapp_solicitado_em ? 'Mensagem enviada em ' + new Date(ALUNO.whatsapp_solicitado_em).toLocaleDateString('pt-BR') + '. Assim que conferirmos, seu WhatsApp aparece como confirmado.' : 'Envie uma mensagem pronta com seu código <b>' + esc(ALUNO.codigo_whats || '') + '</b> para confirmarmos que o número é seu.'}</span>
-        <a class="${ALUNO.whatsapp_solicitado_em ? 'link' : 'next wa-btn'}" href="${linkConfirmacao()}" target="_blank" rel="noopener" data-act="pedir-whats">${ALUNO.whatsapp_solicitado_em ? 'Enviar de novo' : '📲 Enviar pelo WhatsApp'}</a></div>` : ''}
-      <button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>
+      <div class="hbtns">${botaoInstalar()}<button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>${dicaIos()}</div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>dos seus cursos</span></div></div>
     </section>`;
   } else {
@@ -81,7 +80,7 @@ function renderCursos(){
       <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
       <p class="hp">Lições curtas, casos de clientes de verdade e prompts prontos para usar. Faça seu cadastro gratuito e comece agora.</p>
       <div class="chips"><span class="chip">🎓 ${CURSOS.length} ${CURSOS.length === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
-      <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button></div></div>
+      <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}</div>
       <div class="orb" aria-hidden="true"><span>📚</span></div>
     </section>
     <div class="steps">
@@ -89,24 +88,97 @@ function renderCursos(){
         .map((s, i) => `<div class="step rise" style="--d:${0.1 + i * 0.08}s;${'--c:' + PORTAL.paleta(i)[0] + ';--c2:' + PORTAL.paleta(i)[1]}"><div class="stile">${s[0]}</div><div><b>${i + 1}. ${s[1]}</b><p>${s[2]}</p></div></div>`).join('')}
     </div>`;
   }
-  const cards = CURSOS.map((c, i) => {
+  const cartao = (c, i) => {
     const matr = MATR.includes(c.id), pct = pctCurso(c), fim = matr && pct === 100, d = PROG[c.id] || {};
     const acao = fim ? '✅ Concluído' : matr ? '▶ Continuar' : '✨ Iniciar curso';
     const dots = c.conteudo.modulos.map(m => `<i class="${m.lessons.every(l => d[l.id]) ? 'on' : ''}" title="Módulo ${m.id}: ${esc(m.title)}"></i>`).join('');
     return `<div class="mc rise ${fim?'fin':''}" role="button" tabindex="0" data-act="curso" data-id="${esc(c.id)}" style="${ccor(c)};--d:${0.15 + i * 0.08}s">
-      <div class="mhead"><div class="mtile">${c.icone}</div>${c.status === 'rascunho' ? '<span class="badge">RASCUNHO</span>' : matr ? `<span class="pctpill">${pct}%</span>` : '<span class="pctpill novo">Novo</span>'}</div>
+      <div class="mhead"><div class="mtile">${c.icone}</div>${c.status === 'rascunho' ? '<span class="badge">RASCUNHO</span>' : c.status === 'em_breve' ? '<span class="badge">PRÉVIA · EM BREVE</span>' : matr ? `<span class="pctpill">${pct}%</span>` : '<span class="pctpill novo">Novo</span>'}</div>
       <div><div class="mt">${esc(c.titulo)}</div><div class="ms">${esc(c.descricao)}</div></div>
       <div class="mdots">${dots}</div>
       <div class="mfoot"><span>${c.conteudo.modulos.length} módulos · ${c.total} lições</span><span class="mst">${acao}</span></div>
     </div>`;
+  };
+  const emBreve = (m, i) => `<div class="mc lock breve rise" aria-disabled="true" style="${ccor(Object.assign({ cores:PORTAL.paleta(i) }, m))};--d:${0.15 + i * 0.06}s">
+      <div class="mhead"><div class="mtile">${m.icone || '📘'}</div><span class="pctpill novo">🔜 Em breve</span></div>
+      <div><div class="mt">${esc(m.titulo)}</div><div class="ms">${esc(m.descricao)}</div></div>
+      <div class="mfoot"><span>Curso ${m.ordem || ''} da trilha</span></div>
+    </div>`;
+  const carregado = id => CURSOS.find(c => c.id === id);
+  let n = 0;
+  const niveis = PORTAL.niveis.map((nv, k) => {
+    const itens = PORTAL.catalogo.filter(m => m.nivel === nv.id)
+      .map(m => carregado(m.id) ? cartao(carregado(m.id), n++) : m.status === 'em_breve' ? emBreve(m, n++) : '').filter(Boolean);
+    if (!itens.length) return '';
+    const abertos = PORTAL.catalogo.filter(m => m.nivel === nv.id && carregado(m.id)).length;
+    return `<div class="nivel" id="nivel-${nv.id}" style="--c:${nv.cores[0]};--c2:${nv.cores[1]}">
+      <div class="nhead"><span class="npill">Nível ${k + 1} · ${nv.titulo}</span><small>${itens.length} ${itens.length === 1 ? 'curso' : 'cursos'} · ${abertos} ${abertos === 1 ? 'disponível' : 'disponíveis'}</small></div>
+      <div class="grid">${itens.join('')}</div></div>`;
   }).join('');
+  const outros = CURSOS.filter(c => !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
   $('main').removeAttribute('style');
-  $('main').innerHTML = topo + `<h2 class="sec-t">${ALUNO ? 'Cursos do portal' : 'Cursos disponíveis'}</h2>
-    <div class="grid">${cards || '<div class="empty">Nenhum curso publicado ainda.</div>'}</div>`;
+  $('main').innerHTML = avisoTrilha() + topo + `<section class="trilha" id="trilha">
+      <h2 class="sec-t">Trilha de IA</h2>
+      <p class="tsub">Do zero ao avançado em 3 níveis. Siga na ordem ou escolha só o curso de que você precisa.</p>
+      ${niveis || '<div class="empty">Nenhum curso publicado ainda.</div>'}
+    </section>
+    ${outros ? `<h2 class="sec-t">Outros cursos</h2><div class="grid">${outros}</div>` : ''}`;
   if (pctGeral !== null) {
     setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pctGeral); }, 60);
     countUp($('bignum'), pctGeral);
   }
+}
+
+/* ============ INSTALAR COMO APP ============ */
+let PEDIDO_INSTALAR = null;
+const instalado = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const ehIos = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const podeInstalar = () => !instalado() && (!!PEDIDO_INSTALAR || ehIos());
+const botaoInstalar = () => `<button class="ghost inst" type="button" data-act="instalar" ${podeInstalar() ? '' : 'hidden'}>📲 Instalar o app</button>`;
+const dicaIos = () => `<div class="dica-ios" hidden>📱 No iPhone ou iPad: toque em <b>Compartilhar</b> (o quadrado com a seta ↑) e depois em <b>Adicionar à Tela de Início</b>.</div>`;
+function atualizarInstalar(){ document.querySelectorAll('.inst').forEach(b => { b.hidden = !podeInstalar(); }); }
+async function instalarApp(){
+  if (PEDIDO_INSTALAR) {
+    PEDIDO_INSTALAR.prompt();
+    try { await PEDIDO_INSTALAR.userChoice; } catch(e){}
+    PEDIDO_INSTALAR = null; atualizarInstalar();
+  } else if (ehIos()) document.querySelectorAll('.dica-ios').forEach(d => { d.hidden = !d.hidden; });
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); PEDIDO_INSTALAR = e; atualizarInstalar(); });
+window.addEventListener('appinstalled', () => { PEDIDO_INSTALAR = null; atualizarInstalar(); toast('App instalado! Procure o ícone "Estudos IA". 🎉'); });
+
+/* QR code para abrir o portal no celular (imagem fixa em assets/qr-app.svg). */
+function abrirQr(){
+  if ($('qr-modal')) return;
+  closeMenu();
+  document.body.insertAdjacentHTML('beforeend', `<div class="qr-modal" id="qr-modal" data-act="fechar-qr" role="dialog" aria-modal="true" aria-labelledby="qr-tit">
+    <div class="qr-box">
+      <button class="nfechar" type="button" data-act="fechar-qr" aria-label="Fechar">✕</button>
+      <div class="eyebrow">Portal de Estudos IA no seu bolso</div>
+      <h2 class="qr-tit" id="qr-tit">Estude no <span class="grad">celular</span></h2>
+      <div class="qr-moldura"><div class="qr-in"><img src="assets/qr-app.svg" alt="QR code do Portal de Estudos IA" width="220" height="220"><i class="qr-scan" aria-hidden="true"></i></div></div>
+      <ol class="qr-passos">
+        <li><b>1</b><span>Aponte a câmera do celular para o código.</span></li>
+        <li><b>2</b><span>Toque no link que aparecer.</span></li>
+        <li><b>3</b><span>No portal, toque em <b>📲 Instalar o app</b> e pronto: o ícone fica na tela inicial.</span></li>
+      </ol>
+      <p class="qr-url">andrecatsilva97043331-gif.github.io/portal-de-estudos-ia</p>
+    </div>
+  </div>`);
+}
+function fecharQr(){ const m = $('qr-modal'); if (m) m.remove(); }
+
+const CHAVE_AVISO_TRILHA = 'portal-estudos-aviso-trilha-v1';
+function avisoTrilha(){
+  try { if (localStorage.getItem(CHAVE_AVISO_TRILHA)) return ''; } catch(e){}
+  return `<section class="novidade rise" id="aviso-trilha" role="region" aria-label="Novidade">
+    <button class="nfechar" type="button" data-act="fechar-aviso" aria-label="Fechar aviso">✕</button>
+    <h2 class="ntit">🚀 Novidade: a Trilha de IA do Portal de Estudos IA</h2>
+    <p class="nsub">Do zero ao arquiteto, de graça. Escolha seu ponto de partida.</p>
+    <p class="ncorpo">Nunca usou IA? Já usa e quer ir mais longe? Agora o portal tem uma trilha completa com 3 níveis e 10 cursos curtos, em português, para estudar no celular, com lições de 5 a 8 minutos. Siga a trilha na ordem ou escolha só o curso de que você precisa. Cada lição termina com um desafio prático.</p>
+    <div class="nchips"><span class="chip">✅ Já disponível: Arquiteto de Soluções com IA</span><span class="chip">🔜 Os próximos chegam um a um</span><span class="chip">🆓 100% gratuito</span></div>
+    <button class="next" type="button" data-act="ver-trilha">Ver a trilha ➜</button>
+  </section>`;
 }
 
 function renderCadastro(){
@@ -122,8 +194,8 @@ function renderCadastro(){
       <label class="fl wide">Nome completo<input name="nome" autocomplete="name" required maxlength="120"></label>
       <label class="fl">Idade<input name="idade" type="number" inputmode="numeric" min="5" max="120" required></label>
       <label class="fl wide">E-mail<input name="email" type="email" autocomplete="email" required maxlength="120" placeholder="voce@exemplo.com" value="${esc(EMAIL_SESSAO || '')}" ${EMAIL_SESSAO ? 'readonly' : ''}><small>${EMAIL_SESSAO ? '✅ Você já está conectado com este e-mail.' : MODO_SENHA() ? 'Você vai usar este e-mail e a senha para entrar de qualquer aparelho.' : 'Vamos enviar um código de confirmação para este e-mail.'}</small></label>
-      ${MODO_SENHA() && !EMAIL_SESSAO ? `<label class="fl">Crie uma senha<input name="senha" type="password" autocomplete="new-password" required minlength="8" maxlength="72" placeholder="Mínimo de 8 caracteres"></label>
-      <label class="fl">Repita a senha<input name="senha2" type="password" autocomplete="new-password" required minlength="8" maxlength="72"></label>` : ''}
+      ${MODO_SENHA() && !EMAIL_SESSAO ? `<label class="fl">Crie uma senha<span class="pw"><input name="senha" type="password" autocomplete="new-password" required minlength="8" maxlength="72" placeholder="Mínimo de 8 caracteres">${PORTAL.olho}</span></label>
+      <label class="fl">Repita a senha<span class="pw"><input name="senha2" type="password" autocomplete="new-password" required minlength="8" maxlength="72">${PORTAL.olho}</span></label>` : ''}
       <label class="fl">Telefone / WhatsApp<input name="telefone" type="tel" autocomplete="tel" placeholder="(11) 91234-5678" required maxlength="25"><small>Precisa ser um número com WhatsApp: o código chega por lá.</small></label>
       <label class="fl">País<input name="pais" autocomplete="country-name" value="Brasil" required maxlength="60"></label>
       <label class="fl">CEP<input name="cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" required maxlength="12"><small id="cep-info"></small></label>
@@ -246,7 +318,7 @@ function renderEntrar(){
     <div class="card fcard rise" style="--c:#22d3ee;--c2:#c084fc">
       <h3 class="fsec"><span class="fico">🔑</span>${MODO_SENHA() ? 'Seu acesso' : 'Seu e-mail'}</h3>
       <label class="fl">E-mail<input name="email" type="email" autocomplete="email" required maxlength="120" placeholder="voce@exemplo.com"></label>
-      ${MODO_SENHA() ? '<label class="fl" style="margin-top:12px">Senha<input name="senha" type="password" autocomplete="current-password" required maxlength="72"></label>' : ''}
+      ${MODO_SENHA() ? `<label class="fl" style="margin-top:12px">Senha<span class="pw"><input name="senha" type="password" autocomplete="current-password" required maxlength="72">${PORTAL.olho}</span></label>` : ''}
       <div class="err" id="ent-err" role="alert"></div>
       <button class="next" type="submit" id="ent-ok">${MODO_SENHA() ? 'Entrar ➜' : 'Receber código ➜'}</button>
       ${MODO_SENHA() ? '<p class="nota">Esqueceu a senha? Peça ao responsável pelo portal para redefinir.</p>' : ''}
@@ -276,8 +348,40 @@ function renderEstado(valor){
 }
 
 /* ============ RENDER: CURSO ============ */
+const ICONE_NIVEL = { iniciante:'🌱', intermediario:'⚙️', avancado:'🚀' };
+function sidebarPortal(){
+  const niveis = PORTAL.niveis.map(nv => {
+    const itens = PORTAL.catalogo.filter(m => m.nivel === nv.id && (cursoPorId(m.id) || m.status === 'em_breve'));
+    if (!itens.length) return '';
+    const abertos = itens.map(m => cursoPorId(m.id)).filter(Boolean);
+    const p = abertos.length ? Math.round(abertos.reduce((s, c) => s + (MATR.includes(c.id) ? pctCurso(c) : 0), 0) / abertos.length) : 0;
+    return `<div class="mod" style="--c:${nv.cores[0]};--c2:${nv.cores[1]};--p:${p}">
+      <button class="modh sbniv" type="button" data-act="ver-nivel" data-nivel="${nv.id}"><div class="ring"><span class="modic">${ICONE_NIVEL[nv.id]}</span></div>
+        <div class="modt">${nv.titulo}<div class="mods">${abertos.length} de ${itens.length} ${itens.length === 1 ? 'disponível' : 'disponíveis'}</div></div></button>
+      ${itens.map(m => {
+        const c = cursoPorId(m.id);
+        if (!c) return `<button class="les" type="button" disabled title="Em breve"><span class="st">🔜</span><span>${m.ordem ? m.ordem + '. ' : ''}${esc(m.titulo)}</span></button>`;
+        const pct = MATR.includes(c.id) ? pctCurso(c) : null;
+        const st = pct === 100 ? '✅' : pct !== null ? '▶️' : '✨';
+        return `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${st}</span><span>${m.ordem ? m.ordem + '. ' : ''}${esc(c.titulo)}${pct !== null && pct < 100 ? ` <small class="sbpct">${pct}%</small>` : ''}</span></button>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+  const outros = CURSOS.filter(c => !PORTAL.niveis.some(nv => nv.id === c.nivel))
+    .map(c => `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${c.icone}</span><span>${esc(c.titulo)}</span></button>`).join('');
+  return `<button class="homebtn cur" type="button" data-act="topo"><span class="hi">🏠</span>Início</button>
+    <div class="sbsec">Trilha de IA</div>${niveis}
+    ${outros ? `<div class="sbsec">Outros cursos</div>${outros}` : ''}
+    <div class="sbsec">App e conta</div>
+    <button class="homebtn so-pc" type="button" data-act="qr"><span class="hi">📱</span>Levar para o celular</button>
+    ${MASTER ? '<a class="homebtn" href="admin.html"><span class="hi">🛡️</span>Painel do Master</a>' : ''}
+    <button class="homebtn inst" type="button" data-act="instalar" ${podeInstalar() ? '' : 'hidden'}><span class="hi">📲</span>Instalar o app</button>${dicaIos()}
+    ${ALUNO ? `<button class="homebtn" type="button" data-act="sair"><span class="hi">👋</span>Sair (${esc(ALUNO.nome.split(' ')[0])})</button>`
+      : `<button class="homebtn" type="button" data-act="cadastro"><span class="hi">📝</span>Criar meu cadastro</button><button class="homebtn" type="button" data-act="entrar"><span class="hi">🔑</span>Já tenho cadastro</button>`}`;
+}
+
 function renderSidebar(){
-  if (!C) { $('sb').innerHTML = ''; return; }
+  if (!C || VIEWS_PORTAL.includes(S.view)) { $('sb').innerHTML = S.view === 'cursos' ? sidebarPortal() : ''; return; }
   const d = D();
   $('sb').innerHTML = `<button class="homebtn" data-act="cursos"><span class="hi">🎓</span>Todos os cursos</button>
   <button class="homebtn ${S.view==='home'?'cur':''}" data-act="home"><span class="hi">🏠</span>Início do curso</button>` +
@@ -300,12 +404,15 @@ function renderSidebar(){
 function renderProgress(){
   const noCurso = !!C && !VIEWS_PORTAL.includes(S.view);
   const tb = noCurso && temToolbox();
-  $('app').classList.toggle('full', !noCurso);
+  $('app').classList.toggle('full', !noCurso && S.view !== 'cursos');
+  document.body.classList.toggle('sb-flut', !noCurso && S.view === 'cursos');
+  $('btn-master').hidden = !MASTER;
   $('titulo').textContent = noCurso ? C.titulo : 'Portal de Estudos IA';
   ['pb-wrap','pl'].forEach(id => $(id).classList.toggle('off', !noCurso));
   $('btn-tool').classList.toggle('off', !tb);
   $('bn-home').classList.toggle('off', !noCurso);
-  $('bn-menu').classList.toggle('off', !noCurso);
+  $('bn-menu').classList.toggle('off', !noCurso && S.view !== 'cursos');
+  $('bn-menu').innerHTML = noCurso ? '<span>📚</span>Lições' : '<span>🧭</span>Trilha';
   $('bn-tool').classList.toggle('off', !tb);
   const on = (id, v) => $(id).classList.toggle('on', v);
   on('bn-cursos', !noCurso); on('bn-home', noCurso && S.view !== 'lesson'); on('bn-menu', noCurso && S.view === 'lesson'); on('bn-tool', TB.open);
@@ -417,7 +524,34 @@ function renderMain(keep){
   else if (S.view === 'home') renderHome();
   else if (S.view === 'moduleDone') renderModuloConcluido();
   else renderLicao();
+  if (S.view !== 'cursos') $('main').insertAdjacentHTML('afterbegin', barraNav());
+  if (S.view === 'lesson') $('main').insertAdjacentHTML('beforeend', navLicao());
   if (!keep) window.scrollTo(0,0);
+}
+
+/* Barra do topo: Voltar + caminho (Início › Curso › Módulo › Lição). */
+const TITULO_VIEW = { cadastro:'Cadastro', entrar:'Entrar', verificar:'Confirmação', 'confirmar-whats':'Confirmar WhatsApp' };
+function barraNav(){
+  const p = [`<button class="bc" type="button" data-act="cursos">🏠 Início</button>`];
+  let voltar = 'cursos';
+  if (C && !VIEWS_PORTAL.includes(S.view)) {
+    p.push(S.view === 'home' ? `<span class="bc atual">${esc(C.titulo)}</span>` : `<button class="bc" type="button" data-act="home">${esc(C.titulo)}</button>`);
+    if (S.view === 'lesson') { const L = byId(S.cur); p.push(`<span class="bc">Módulo ${L.mod}</span>`, `<span class="bc atual">Lição ${esc(L.id)}</span>`); voltar = 'home'; }
+    else if (S.view === 'moduleDone') { p.push(`<span class="bc atual">Módulo ${S.modDone} concluído</span>`); voltar = 'home'; }
+  } else if (TITULO_VIEW[S.view]) p.push(`<span class="bc atual">${TITULO_VIEW[S.view]}</span>`);
+  return `<nav class="navbar" aria-label="Caminho"><button class="nvolta" type="button" data-act="${voltar}">← Voltar</button>
+    <div class="bcs">${p.join('<span class="sep" aria-hidden="true">›</span>')}</div></nav>`;
+}
+
+/* Rodapé da lição: anterior, início do curso e próxima (só libera a próxima depois de acertar o desafio). */
+function navLicao(){
+  const i = idxOf(S.cur), ant = FLAT()[i - 1], prox = FLAT()[i + 1];
+  const livre = prox && unlocked(prox.id);
+  return `<nav class="lnav" aria-label="Navegação entre lições">
+    ${ant ? `<button class="ghost" type="button" data-act="go" data-id="${ant.id}" title="${esc(ant.title)}">← Anterior</button>` : '<span></span>'}
+    <button class="ghost" type="button" data-act="home">☰ Início do curso</button>
+    ${prox ? `<button class="ghost ${livre ? 'prox' : ''}" type="button" data-act="go" data-id="${prox.id}" ${livre ? '' : 'disabled title="Acerte o desafio para liberar"'}>${livre ? 'Próxima →' : '🔒 Próxima'}</button>` : '<span></span>'}
+  </nav>`;
 }
 
 function renderToolbox(){
@@ -440,7 +574,30 @@ function renderToolbox(){
   d.classList.toggle('on', TB.open); $('shade').classList.toggle('on', TB.open);
 }
 
-function renderAll(keep){ renderSidebar(); renderProgress(); renderMain(keep); renderToolbox(); }
+function renderAll(keep){ renderSidebar(); renderProgress(); renderMain(keep); renderToolbox(); sincronizarHistorico(); }
+
+/* Botão voltar do navegador, do mouse e do celular: cada tela vira um passo no histórico. */
+let NAV_POP = false;
+const chaveNav = () => [S.view, C ? C.id : '', S.view === 'lesson' ? S.cur : '', S.view === 'moduleDone' ? S.modDone : ''].join('|');
+function sincronizarHistorico(){
+  if (NAV_POP) return;
+  const k = chaveNav();
+  if (history.state && history.state.k === k) return;
+  const st = { k, view:S.view, curso:C ? C.id : null, cur:S.cur, modDone:S.modDone };
+  if (history.state && history.state.k) history.pushState(st, ''); else history.replaceState(st, '');
+}
+window.addEventListener('popstate', e => {
+  const st = e.state; if (!st || !st.k) return;
+  const c = st.curso ? cursoPorId(st.curso) : null;
+  let view = st.view;
+  if (view === 'verificar' || view === 'confirmar-whats') view = 'cursos';
+  if (!VIEWS_PORTAL.includes(view) && (!c || !ALUNO || !MATR.includes(c.id))) view = 'cursos';
+  if (c && !VIEWS_PORTAL.includes(view)) C = c;
+  if (view === 'lesson' && !(st.cur && unlocked(st.cur))) view = 'home';
+  S.view = view; S.cur = st.cur; S.modDone = st.modDone; TB.open = false; closeMenu();
+  NAV_POP = true; renderAll(); NAV_POP = false;
+  history.replaceState(Object.assign({}, st, { k:chaveNav(), view:S.view }), '');
+});
 
 /* ============ EFEITOS ============ */
 function confetti(){
@@ -626,6 +783,7 @@ async function pedirEntrada(form){
     const btn = $('ent-ok'); btn.disabled = true; btn.textContent = 'Entrando…';
     try {
       await DB.entrarComSenha(email, form.elements.senha.value);
+      await checarMaster();
       VER = { etapa:'email', email, modo:'entrar', curso:S.escolhido };
       await continuarAposEmail();
     } catch(e){ console.error(e); err.textContent = e.message; btn.disabled = false; btn.textContent = 'Entrar ➜'; }
@@ -638,7 +796,7 @@ async function pedirEntrada(form){
 
 async function sair(){
   try { await DB.sair(); } catch(e){ console.error(e); }
-  ALUNO = null; EMAIL_SESSAO = null; MATR = []; PROG = {}; C = null; VER = {}; limparPendente();
+  ALUNO = null; EMAIL_SESSAO = null; MATR = []; PROG = {}; C = null; VER = {}; MASTER = false; limparPendente();
   irParaCursos(); toast('Você saiu da sua conta.');
 }
 
@@ -697,8 +855,15 @@ document.addEventListener('click', e => {
   }
   else if (a === 'ir-curso') liberarAcesso();
   else if (a === 'curso') abrirCurso(t.dataset.id);
-  else if (!C) return;
+  else if (a === 'instalar') instalarApp();
+  else if (a === 'qr') abrirQr();
+  else if (a === 'fechar-qr') { if (t === e.target || t.classList.contains('nfechar')) fecharQr(); }
+  else if (a === 'topo') { closeMenu(); window.scrollTo({ top:0, behavior:'smooth' }); }
+  else if (a === 'ver-nivel') { closeMenu(); const s = $('nivel-' + t.dataset.nivel); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
+  else if (a === 'ver-trilha') { const s = $('trilha'); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
+  else if (a === 'fechar-aviso') { try { localStorage.setItem(CHAVE_AVISO_TRILHA, '1'); } catch(e){} const b = $('aviso-trilha'); if (b) b.remove(); }
   else if (a === 'menu') { $('sb').classList.toggle('on'); $('ov').classList.toggle('on'); }
+  else if (!C) return;
   else if (a === 'home') { S.view = 'home'; closeMenu(); renderAll(); }
   else if (a === 'continue') { const nx = FLAT().find(l => !D()[l.id]) || FLAT()[0]; goLesson(nx.id); }
   else if (a === 'openmod') {
@@ -748,6 +913,7 @@ document.addEventListener('input', e => {
 }));
 document.addEventListener('focusout', e => { if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') buscarCep(e.target); });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') fecharQr();
   if (e.key === 'Escape') { TB.open = false; renderToolbox(); renderProgress(); closeMenu(); }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('role') === 'button') { e.preventDefault(); e.target.click(); }
 });
@@ -759,6 +925,7 @@ async function iniciar(){
     CURSOS = await PORTAL.carregarCursos(false);
     [ALUNO, EMAIL_SESSAO] = await Promise.all([DB.alunoAtual(), DB.emailDaSessao()]);
     if (ALUNO) [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
+    await checarMaster();
   } catch(e){
     console.error(e);
     $('main').innerHTML = '<div class="empty">Não foi possível carregar o portal. Verifique a internet e recarregue a página.</div>';
@@ -778,5 +945,19 @@ async function iniciar(){
 }
 window.addEventListener('focus', () => { checarLinkEmail(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checarLinkEmail(); });
+/* Painel flutuante (notebook): abre ao aproximar o mouse da borda esquerda e fecha ao afastar. */
+let FECHA_SB = null;
+const sbFlutuante = () => document.body.classList.contains('sb-flut') && innerWidth > 900 && !$('qr-modal');
+document.addEventListener('mousemove', e => {
+  if (!sbFlutuante()) return;
+  const sb = $('sb'), aberto = sb.classList.contains('on');
+  if (!aberto && e.clientX <= 36) { clearTimeout(FECHA_SB); FECHA_SB = null; sb.classList.add('on'); return; }
+  if (!aberto) return;
+  if (e.clientX > sb.getBoundingClientRect().right + 40) {
+    if (!FECHA_SB) FECHA_SB = setTimeout(() => { FECHA_SB = null; closeMenu(); }, 250);
+  } else { clearTimeout(FECHA_SB); FECHA_SB = null; }
+});
+document.documentElement.addEventListener('mouseleave', () => { if (sbFlutuante()) closeMenu(); });
+if ('serviceWorker' in navigator) window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(e => console.error(e)); });
 iniciar();
 })();

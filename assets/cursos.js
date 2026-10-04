@@ -11,6 +11,19 @@ PORTAL.paleta = i => PALETA[((i % PALETA.length) + PALETA.length) % PALETA.lengt
 /* Rascunhos só aparecem no computador local (localhost) ou com ?previa na URL. */
 PORTAL.modoPrevia = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || new URLSearchParams(location.search).has('previa');
 
+/* Botão de olho dos campos de senha: <span class="pw"><input type="password"> + PORTAL.olho</span> */
+PORTAL.olho = '<button type="button" class="olho" aria-label="Mostrar senha" title="Mostrar senha">👁️</button>';
+document.addEventListener('click', e => {
+  const b = e.target.closest('.olho'); if (!b) return;
+  e.preventDefault();
+  const i = b.parentElement.querySelector('input'), ver = i.type === 'password';
+  i.type = ver ? 'text' : 'password';
+  b.textContent = ver ? '🙈' : '👁️';
+  b.title = ver ? 'Esconder senha' : 'Mostrar senha';
+  b.setAttribute('aria-label', b.title);
+  i.focus();
+});
+
 function carregarScript(src){
   return new Promise(res => {
     const s = document.createElement('script');
@@ -21,11 +34,23 @@ function carregarScript(src){
   });
 }
 
+/* Status: "disponivel" (aberto a todos; "publicado" é o nome antigo), "em_breve" (aparece na trilha sem abrir),
+   "rascunho" (só na prévia) e "arquivado" (fora do ar, histórico preservado).
+   Na prévia, um curso "em_breve" que já tem curso.js abre normalmente, para testar antes de liberar. */
+PORTAL.disponivel = c => c.status === 'disponivel' || c.status === 'publicado';
+PORTAL.niveis = [
+  { id:'iniciante', titulo:'Iniciante', cores:['#22C55E','#14B8A6'] },
+  { id:'intermediario', titulo:'Intermediário', cores:['#F59E0B','#F97316'] },
+  { id:'avancado', titulo:'Avançado', cores:['#EF4444','#EC4899'] }
+];
+PORTAL.catalogo = [];
+
 /* Retorna os cursos do catálogo já com o conteúdo carregado.
    todos=true inclui rascunhos e arquivados (usado no painel do master). */
 PORTAL.carregarCursos = async function(todos){
   const lista = await fetch('cursos/catalogo.json', { cache:'no-store' }).then(r => r.json());
-  const visiveis = lista.filter(c => todos || c.status === 'publicado' || (PORTAL.modoPrevia && c.status === 'rascunho'));
+  PORTAL.catalogo = lista.slice().sort((a, b) => (a.ordem || 99) - (b.ordem || 99));
+  const visiveis = lista.filter(c => PORTAL.disponivel(c) || (c.status === 'em_breve' ? PORTAL.modoPrevia : todos || (PORTAL.modoPrevia && c.status === 'rascunho')));
   await Promise.all(visiveis.map(c => carregarScript('cursos/' + c.id + '/curso.js?v=' + (c.versao || 1))));
   return visiveis.filter(c => PORTAL.cursos[c.id]).map((c, i) => {
     const conteudo = PORTAL.cursos[c.id];
