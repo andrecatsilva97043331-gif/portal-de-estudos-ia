@@ -33,6 +33,7 @@ Status: `disponivel` (aberto a todos; `publicado` é o nome antigo e equivale), 
   "nivel": "iniciante",
   "ordem": 11,
   "status": "em_breve",
+  "recomendado_antes": ["ia-do-zero"],
   "versao": 1
 }
 ```

@@ -714,7 +714,7 @@ function renderHome(){
       <div class="chips"><span class="chip">⚡ ${x} XP</span><span class="chip">🏅 ${level(x)}</span><span class="chip">📘 ${n} de ${total} lições</span></div>
       <button class="next" data-act="continue">${n===0?'Começar agora':(n===total?'Revisar o curso':'Continuar estudando')} ➜</button></div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>concluído</span></div></div>
-    </section>
+    </section>${avisoRecomendado()}
     <div class="grid">${C.conteudo.modulos.map((m,i) => {
       const lock = !unlocked(m.lessons[0].id), fin = modDone(m);
       return `<div class="mc ${lock?'lock':''} ${fin?'fin':''}" role="button" tabindex="0" data-act="openmod" data-mod="${m.id}" style="${tstyle(m.id)};--d:${i*0.5}s">
@@ -725,6 +725,19 @@ function renderHome(){
       </div>`; }).join('')}</div>`;
   setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pct); }, 60);
   countUp($('bignum'), pct);
+}
+
+/* "recomendado_antes" no catálogo: só sugestão, nunca bloqueia o curso. */
+function avisoRecomendado(){
+  const itens = (C.recomendado_antes || []).map(id => {
+    const m = PORTAL.catalogo.find(x => x.id === id), c = cursoPorId(id);
+    if (!m) return '';
+    const feito = c && pctCurso(c) === 100 ? '✅ ' : '';
+    return c && (PORTAL.disponivel(c) || PORTAL.modoPrevia || MASTER)
+      ? `<button class="link inl" type="button" data-act="curso" data-id="${esc(id)}">${feito}${esc(m.titulo)}</button>`
+      : `<span>${feito}${esc(m.titulo)} <small>(Em breve)</small></span>`;
+  }).filter(Boolean);
+  return itens.length ? `<p class="recom">📌 <b>Recomendado antes:</b> ${itens.join(', ')}. <small>É só uma sugestão: você pode seguir direto.</small></p>` : '';
 }
 
 function renderModuloConcluido(){

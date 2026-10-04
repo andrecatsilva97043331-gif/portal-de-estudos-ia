@@ -41,6 +41,15 @@ for (const meta of catalogo) {
     ordens.add(meta.ordem);
   }
 
+  if (meta.recomendado_antes !== undefined) {
+    const rec = meta.recomendado_antes;
+    if (!Array.isArray(rec) || rec.some(r => typeof r !== 'string')) erro(onde, '"recomendado_antes" deve ser uma lista de ids');
+    else rec.forEach(r => {
+      if (r === meta.id) erro(onde, '"recomendado_antes" não pode citar o próprio curso');
+      else if (!catalogo.some(m => m.id === r)) erro(onde, '"recomendado_antes" cita "' + r + '", que não está no catálogo');
+    });
+  }
+
   const arq = path.join(raiz, 'cursos', meta.id, 'curso.js');
   if (!fs.existsSync(arq)) {
     if (meta.status === 'em_breve') console.log('… ' + meta.id + ' [em_breve]: aguardando conteúdo');

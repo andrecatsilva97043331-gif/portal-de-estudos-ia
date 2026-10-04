@@ -204,6 +204,8 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .link{background:none; border:0; color:var(--muted); text-decoration:underline; font-size:14px; padding:6px 0;}
 .link.inl{color:var(--c); padding:0; font-size:inherit;}
 .link:disabled{opacity:.55; text-decoration:none; cursor:default;}
+.recom{--c:#22d3ee; margin:0 0 14px; padding:10px 14px; border-radius:12px; border:1px solid var(--line); font-size:14px; color:var(--muted);}
+.recom b{color:var(--text);}
 
 /* ---------- Confirmação de e-mail e WhatsApp ---------- */
 .hbtns{display:flex; flex-wrap:wrap; gap:10px; align-items:center;}
