@@ -120,6 +120,7 @@ function renderCursos(){
   $('main').innerHTML = avisoTrilha() + topo + `<section class="trilha" id="trilha">
       <h2 class="sec-t">Trilha de IA</h2>
       <p class="tsub">Do zero ao avançado em 3 níveis. Siga na ordem ou escolha só o curso de que você precisa.</p>
+      ${chamadaTeste()}
       ${niveis || '<div class="empty">Nenhum curso publicado ainda.</div>'}
     </section>
     ${outros ? `<h2 class="sec-t">Outros cursos</h2><div class="grid">${outros}</div>` : ''}`;
@@ -167,6 +168,86 @@ function abrirQr(){
   </div>`);
 }
 function fecharQr(){ const m = $('qr-modal'); if (m) m.remove(); }
+
+/* Teste rápido de nível: 5 perguntas (0 a 2 pontos cada) que sugerem o curso inicial da trilha. */
+const CHAVE_NIVEL = 'portal-estudos-nivel-v1';
+const PERGUNTAS_NIVEL = [
+  { q:'Com que frequência você usa IA, como ChatGPT ou Gemini?',
+    o:['Nunca usei', 'Algumas vezes, para curiosidades', 'Todo dia, no trabalho ou nos estudos'] },
+  { q:'Quando a resposta da IA não fica boa, o que você faz?',
+    o:['Aceito como veio ou desisto', 'Peço de novo com outras palavras', 'Dou contexto, um exemplo e o formato que quero'] },
+  { q:'Você já criou alguma automação, como um formulário que envia dados para uma planilha ou para o WhatsApp?',
+    o:['Não sei bem o que é isso', 'Já vi, mas nunca montei', 'Sim, já montei uma'] },
+  { q:'Já usou IA para criar um site, um app ou um código?',
+    o:['Nunca', 'Tentei, seguindo um tutorial', 'Sim, e coloquei no ar'] },
+  { q:'Quais destes termos você já entende bem?',
+    o:['Nenhum ainda', '"API" e "prompt de sistema"', '"Agente com ferramentas", "RAG" e "embeddings"'] }
+];
+const SUGESTAO_POR_PONTOS = [1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9];
+let TN = null;
+
+const lerNivel = () => { try { return JSON.parse(localStorage.getItem(CHAVE_NIVEL)) || null; } catch(e){ return null; } };
+function resultadoNivel(pts){
+  const trilha = PORTAL.catalogo.filter(m => m.ordem && PORTAL.niveis.some(nv => nv.id === m.nivel));
+  let alvo = trilha.find(m => m.ordem === SUGESTAO_POR_PONTOS[pts]) || trilha[0];
+  while (alvo) {
+    const c = cursoPorId(alvo.id);
+    if (!(c && MATR.includes(c.id) && pctCurso(c) === 100)) break;
+    alvo = trilha.find(m => m.ordem === alvo.ordem + 1) || null;
+  }
+  if (!alvo) return null;
+  const agora = cursoPorId(alvo.id) ? null : trilha.filter(m => cursoPorId(m.id))
+    .sort((a, b) => Math.abs(a.ordem - alvo.ordem) - Math.abs(b.ordem - alvo.ordem) || a.ordem - b.ordem)[0] || null;
+  return { alvo, agora, nivel: PORTAL.niveis.find(nv => nv.id === alvo.nivel) };
+}
+function telaTeste(){
+  if (TN.i < PERGUNTAS_NIVEL.length) {
+    const p = PERGUNTAS_NIVEL[TN.i];
+    return `<div class="tn-prog">${PERGUNTAS_NIVEL.map((_, k) => `<i class="${k < TN.i ? 'ok' : k === TN.i ? 'cur' : ''}"></i>`).join('')}</div>
+      <div class="eyebrow">Pergunta ${TN.i + 1} de ${PERGUNTAS_NIVEL.length}</div>
+      <h2 class="tn-q" id="tn-tit">${p.q}</h2>
+      <div class="tn-opts">${p.o.map((t, v) => `<button class="tn-op ${TN.resp[TN.i] === v ? 'sel' : ''}" type="button" data-act="tn-resp" data-v="${v}"><b>${'ABC'[v]}</b><span>${esc(t)}</span></button>`).join('')}</div>
+      ${TN.i ? '<button class="link tn-volta" type="button" data-act="tn-volta">← Pergunta anterior</button>' : ''}`;
+  }
+  const pts = TN.resp.reduce((s, v) => s + v, 0), r = resultadoNivel(pts);
+  if (!r) return `<h2 class="tn-q" id="tn-tit">Você já concluiu a trilha! 🏆</h2><p class="tn-txt">Revise os cursos quando quiser.</p>`;
+  try { localStorage.setItem(CHAVE_NIVEL, JSON.stringify({ nivel:r.nivel.id, curso:r.alvo.id, pts, em:Date.now() })); } catch(e){}
+  const pronto = !!cursoPorId(r.alvo.id);
+  return `<div class="eyebrow">Seu resultado</div>
+    <h2 class="tn-q" id="tn-tit">Seu nível: <span class="tn-niv" style="--c:${r.nivel.cores[0]};--c2:${r.nivel.cores[1]}">${ICONE_NIVEL[r.nivel.id]} ${r.nivel.titulo}</span></h2>
+    <p class="tn-txt">Seu ponto de partida na trilha é:</p>
+    <div class="tn-curso" style="--c:${(r.alvo.cores || r.nivel.cores)[0]};--c2:${(r.alvo.cores || r.nivel.cores)[1]}">
+      <span class="tn-ic">${r.alvo.icone || '📘'}</span>
+      <div><b>${r.alvo.ordem}. ${esc(r.alvo.titulo)}</b><small>${esc(r.alvo.descricao)}</small></div>
+      ${pronto ? '' : '<span class="pctpill novo">🔜 Em breve</span>'}
+    </div>
+    ${pronto ? `<button class="next" type="button" data-act="tn-curso" data-id="${esc(r.alvo.id)}">Começar agora ➜</button>`
+      : r.agora ? `<p class="tn-txt">Enquanto ele não chega, já dá para estudar:</p>
+        <button class="next" type="button" data-act="tn-curso" data-id="${esc(r.agora.id)}">${r.agora.icone || '📘'} Começar ${esc(r.agora.titulo)} ➜</button>` : ''}
+    <div class="tn-acoes"><button class="ghost" type="button" data-act="tn-trilha" data-nivel="${r.nivel.id}">Ver na trilha</button><button class="link" type="button" data-act="tn-refazer">Refazer o teste</button></div>`;
+}
+function chamadaTeste(){
+  const salvo = lerNivel(), m = salvo && PORTAL.catalogo.find(x => x.id === salvo.curso), nv = salvo && PORTAL.niveis.find(x => x.id === salvo.nivel);
+  if (m && nv) return `<div class="tn-chamada feito" style="--c:${nv.cores[0]};--c2:${nv.cores[1]}"><span class="tn-alvo">🎯</span>
+    <div><b>Seu nível: ${nv.titulo}</b><small>Ponto de partida: ${m.ordem}. ${esc(m.titulo)}</small></div>
+    <button class="ghost" type="button" data-act="ver-nivel" data-nivel="${nv.id}">Ver</button><button class="link" type="button" data-act="teste-nivel">Refazer</button></div>`;
+  return `<button class="tn-chamada" type="button" data-act="teste-nivel"><span class="tn-alvo">🎯</span>
+    <div><b>Não sabe por onde começar?</b><small>Responda 5 perguntas rápidas e descubra seu nível e o curso ideal para você.</small></div><span class="tn-ir">Descobrir meu nível ➜</span></button>`;
+}
+function desenharTeste(){ const c = document.querySelector('#tn-modal .tn-corpo'); if (c) c.innerHTML = telaTeste(); }
+function abrirTeste(){
+  if ($('tn-modal')) return;
+  closeMenu();
+  TN = { i:0, resp:[] };
+  document.body.insertAdjacentHTML('beforeend', `<div class="qr-modal tn-modal" id="tn-modal" data-act="fechar-teste" role="dialog" aria-modal="true" aria-labelledby="tn-tit">
+    <div class="qr-box tn-box"><button class="nfechar" type="button" data-act="fechar-teste" aria-label="Fechar">✕</button><div class="tn-corpo"></div></div></div>`);
+  desenharTeste();
+}
+function fecharTeste(){
+  const m = $('tn-modal'); if (!m) return;
+  m.remove(); TN = null;
+  if (S.view === 'cursos') renderMain(true);
+}
 
 const CHAVE_AVISO_TRILHA = 'portal-estudos-aviso-trilha-v1';
 function avisoTrilha(){
@@ -370,6 +451,7 @@ function sidebarPortal(){
   const outros = CURSOS.filter(c => !PORTAL.niveis.some(nv => nv.id === c.nivel))
     .map(c => `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${c.icone}</span><span>${esc(c.titulo)}</span></button>`).join('');
   return `<button class="homebtn cur" type="button" data-act="topo"><span class="hi">🏠</span>Início</button>
+    <button class="homebtn" type="button" data-act="teste-nivel"><span class="hi">🎯</span>Descobrir meu nível</button>
     <div class="sbsec">Trilha de IA</div>${niveis}
     ${outros ? `<div class="sbsec">Outros cursos</div>${outros}` : ''}
     <div class="sbsec">App e conta</div>
@@ -858,6 +940,16 @@ document.addEventListener('click', e => {
   else if (a === 'instalar') instalarApp();
   else if (a === 'qr') abrirQr();
   else if (a === 'fechar-qr') { if (t === e.target || t.classList.contains('nfechar')) fecharQr(); }
+  else if (a === 'teste-nivel') abrirTeste();
+  else if (a === 'fechar-teste') { if (t === e.target || t.classList.contains('nfechar')) fecharTeste(); }
+  else if (a === 'tn-resp' && TN && !TN.espera) {
+    TN.resp[TN.i] = +t.dataset.v; TN.espera = true; t.classList.add('sel');
+    setTimeout(() => { if (TN) { TN.espera = false; TN.i++; desenharTeste(); } }, 220);
+  }
+  else if (a === 'tn-volta' && TN) { TN.i = Math.max(0, TN.i - 1); desenharTeste(); }
+  else if (a === 'tn-refazer' && TN) { TN = { i:0, resp:[] }; desenharTeste(); }
+  else if (a === 'tn-curso') { const id = t.dataset.id; fecharTeste(); abrirCurso(id); }
+  else if (a === 'tn-trilha') { const nv = t.dataset.nivel; fecharTeste(); setTimeout(() => { const s = $('nivel-' + nv); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }, 80); }
   else if (a === 'topo') { closeMenu(); window.scrollTo({ top:0, behavior:'smooth' }); }
   else if (a === 'ver-nivel') { closeMenu(); const s = $('nivel-' + t.dataset.nivel); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
   else if (a === 'ver-trilha') { const s = $('trilha'); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
@@ -913,7 +1005,7 @@ document.addEventListener('input', e => {
 }));
 document.addEventListener('focusout', e => { if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') buscarCep(e.target); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') fecharQr();
+  if (e.key === 'Escape') { fecharQr(); fecharTeste(); }
   if (e.key === 'Escape') { TB.open = false; renderToolbox(); renderProgress(); closeMenu(); }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('role') === 'button') { e.preventDefault(); e.target.click(); }
 });
@@ -947,7 +1039,7 @@ window.addEventListener('focus', () => { checarLinkEmail(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checarLinkEmail(); });
 /* Painel flutuante (notebook): abre ao aproximar o mouse da borda esquerda e fecha ao afastar. */
 let FECHA_SB = null;
-const sbFlutuante = () => document.body.classList.contains('sb-flut') && innerWidth > 900 && !$('qr-modal');
+const sbFlutuante = () => document.body.classList.contains('sb-flut') && innerWidth > 900 && !$('qr-modal') && !$('tn-modal');
 document.addEventListener('mousemove', e => {
   if (!sbFlutuante()) return;
   const sb = $('sb'), aberto = sb.classList.contains('on');
