@@ -23,6 +23,9 @@ function linkWhats(tel, pais){
 }
 
 const simNao = v => v === true ? 'Sim' : v === false ? 'Não' : '-';
+const selos = a => a.email_verificado && a.whatsapp_verificado
+  ? '<span class="act hoje" title="E-mail e WhatsApp confirmados">✓ Confirmado</span>'
+  : `<span class="act pend-v" title="Falta confirmar ${a.email_verificado ? 'o WhatsApp' : 'o e-mail'}">⏳ ${a.email_verificado ? 'Falta WhatsApp' : a.whatsapp_verificado ? 'Falta e-mail' : 'Não confirmado'}</span>`;
 function situacao(a){
   const s = [];
   if (a.trabalhando === true) s.push('Trabalhando');
@@ -49,7 +52,7 @@ function linhas(){
     const cursos = DADOS.matriculas.filter(m => m.aluno_id === a.id).map(m => Object.assign({ curso:m.curso_id, iniciado:m.iniciado_em }, progressoDe(a.id, m.curso_id)));
     return { a, cursos };
   }).filter(r =>
-    (!q || [r.a.nome, r.a.telefone, r.a.estado, r.a.pais, r.a.cep, r.a.profissao, r.a.ocupacao, r.a.objetivo].some(v => String(v || '').toLowerCase().includes(q))) &&
+    (!q || [r.a.nome, r.a.email, r.a.telefone, r.a.estado, r.a.pais, r.a.cep, r.a.profissao, r.a.ocupacao, r.a.objetivo].some(v => String(v || '').toLowerCase().includes(q))) &&
     (!F.curso || r.cursos.some(c => c.curso === F.curso))
   );
 }
@@ -153,7 +156,7 @@ function renderPainel(){
   const taxa = pcts.length ? Math.round(concluidos / pcts.length * 100) : 0;
   const opCursos = CURSOS.map(c => `<option value="${esc(c.id)}" ${F.curso===c.id?'selected':''}>${esc(c.titulo)}${c.status !== 'publicado' ? ' (' + c.status + ')' : ''}</option>`).join('');
   const stats = [
-    ['👥', DADOS.alunos.length, '', 'alunos cadastrados', '+' + novos + ' nos últimos 7 dias'],
+    ['👥', DADOS.alunos.length, '', 'alunos cadastrados', '+' + novos + ' em 7 dias · ' + DADOS.alunos.filter(a => a.email_verificado && a.whatsapp_verificado).length + ' confirmados'],
     ['⚡', ativos, '', 'ativos nos últimos 7 dias', DADOS.alunos.length ? Math.round(ativos / DADOS.alunos.length * 100) + '% da base' : '-'],
     ['📈', media, '%', 'progresso médio', DADOS.matriculas.length + ' matrículas'],
     ['🏆', concluidos, '', 'cursos concluídos', taxa + '% de conclusão']
@@ -163,7 +166,7 @@ function renderPainel(){
       <span class="live"><i></i>${DB.modo === 'demo' ? 'Demonstração' : 'Dados ao vivo'}</span></div>
     <div class="stats">${stats.map((s, i) => `<div class="stat rise" style="${cor(i + 1)};--d:${i * 0.06}s"><div class="sico">${s[0]}</div><b data-n="${s[1]}" data-suf="${s[2]}">0</b><span>${s[3]}</span><small>${s[4]}</small></div>`).join('')}</div>
     <div class="tools">
-      <input class="inp" id="busca" type="search" placeholder="Buscar por nome, telefone, estado, profissão ou objetivo" value="${esc(F.busca)}">
+      <input class="inp" id="busca" type="search" placeholder="Buscar por nome, e-mail, telefone, estado, profissão ou objetivo" value="${esc(F.busca)}">
       <select class="inp" id="filtro-curso"><option value="">Todos os cursos</option>${opCursos}</select>
       <button class="sbtn" data-act="convite">🔗 Copiar link de convite</button>
       <button class="sbtn" data-act="csv">⬇️ Exportar planilha</button>
@@ -191,7 +194,7 @@ function renderTabela(){
       return `<tr data-act="aluno" data-id="${esc(a.id)}">
         <td><div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><div><b>${esc(a.nome)}</b><br><small>${esc(a.idade)} anos · desde ${data(a.criado_em)}</small></div></div></td>
         <td class="hide-m">${esc(a.ocupacao || a.profissao || '-')}<br><small>${esc(situacao(a))}${a.objetivo ? '<br>🎯 ' + esc(a.objetivo) : ''}</small></td>
-        <td>${wa ? `<a href="${wa}" target="_blank" rel="noopener" data-act="link">${esc(a.telefone)}</a>` : esc(a.telefone)}</td>
+        <td>${wa ? `<a href="${wa}" target="_blank" rel="noopener" data-act="link">${esc(a.telefone)}</a>` : esc(a.telefone)}${a.email ? '<br><small>' + esc(a.email) + '</small>' : ''}<br>${selos(a)}</td>
         <td class="hide-m">${esc(a.estado)} · ${esc(a.pais)}<br><small>CEP ${esc(a.cep)}</small></td>
         <td>${cursos.length ? cursos.map(c => {
           const cc = cursoPorId(c.curso), cor = cc ? '--c:' + cc.cores[0] + ';--c2:' + cc.cores[1] : '';
@@ -219,7 +222,9 @@ function abrirAluno(id){
     <div class="db det">
       <div class="row2">
         <span>Idade</span><b>${esc(a.idade)} anos</b>
-        <span>WhatsApp</span><b>${wa ? `<a href="${wa}" target="_blank" rel="noopener" style="color:var(--ok)">${esc(a.telefone)}</a>` : esc(a.telefone)}</b>
+        <span>WhatsApp</span><b>${wa ? `<a href="${wa}" target="_blank" rel="noopener" style="color:var(--ok)">${esc(a.telefone)}</a>` : esc(a.telefone)} ${a.whatsapp_verificado ? '✅' : '⏳'}</b>
+        <span>E-mail</span><b>${a.email ? esc(a.email) + (a.email_verificado ? ' ✅' : ' ⏳') : '-'}</b>
+        <span>Confirmação</span><b>${selos(a)}</b>
         <span>País</span><b>${esc(a.pais)}</b>
         <span>Estado</span><b>${esc(a.estado)}</b>
         <span>CEP</span><b>${esc(a.cep)}</b>
@@ -245,10 +250,10 @@ function copiar(txt){
 }
 
 function exportarCsv(){
-  const cab = ['Nome','Idade','Telefone','País','Estado','CEP','Profissão','Ocupação atual','Trabalhando','Estudante','Objetivo','Objetivo (detalhe)','Cadastro','Último acesso','Curso','Lições concluídas','Total de lições','Progresso (%)','Iniciado em'];
+  const cab = ['Nome','E-mail','E-mail confirmado','WhatsApp confirmado','Idade','Telefone','País','Estado','CEP','Profissão','Ocupação atual','Trabalhando','Estudante','Objetivo','Objetivo (detalhe)','Cadastro','Último acesso','Curso','Lições concluídas','Total de lições','Progresso (%)','Iniciado em'];
   const out = [cab];
   linhas().forEach(({ a, cursos }) => {
-    const base = [a.nome, a.idade, a.telefone, a.pais, a.estado, a.cep, a.profissao, a.ocupacao, simNao(a.trabalhando), simNao(a.estudante), a.objetivo, a.objetivo_detalhe, dataHora(a.criado_em), dataHora(a.ultimo_acesso)];
+    const base = [a.nome, a.email, simNao(!!a.email_verificado), simNao(!!a.whatsapp_verificado), a.idade, a.telefone, a.pais, a.estado, a.cep, a.profissao, a.ocupacao, simNao(a.trabalhando), simNao(a.estudante), a.objetivo, a.objetivo_detalhe, dataHora(a.criado_em), dataHora(a.ultimo_acesso)];
     const lista = F.curso ? cursos.filter(c => c.curso === F.curso) : cursos;
     if (!lista.length) out.push(base.concat(['', '', '', '', '']));
     lista.forEach(c => out.push(base.concat([tituloCurso(c.curso), c.feitas, c.total, c.pct, dataHora(c.iniciado)])));
