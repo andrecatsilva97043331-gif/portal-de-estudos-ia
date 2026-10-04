@@ -84,6 +84,22 @@ a.logo{text-decoration:none;}
 .demo-code{margin-top:12px; font-size:13px; color:var(--muted); padding:10px 12px; border-radius:12px; border:1px dashed var(--line); background:var(--s1);}
 .demo-code b{color:var(--yellow); font-size:16px; letter-spacing:.15em;}
 .vacts{display:flex; justify-content:space-between; gap:10px; margin-top:8px;}
+.wa-btn{background:linear-gradient(135deg,#25d366,#128c7e); color:#04140c; text-decoration:none; box-shadow:0 12px 30px -12px #25d366;}
+.codigo-w{font:800 40px/1 var(--font-d, inherit); letter-spacing:.3em; color:#25d366; text-align:center; padding:16px 0 18px .3em; margin-bottom:14px; border-radius:14px; background:var(--s2); border:1px dashed color-mix(in srgb,#25d366 50%,var(--line));}
+.ok-nota{color:var(--ok);}
+.vform > .next, .vform > .ghost{margin-top:14px;}
+.pend.wa-pend{border-color:color-mix(in srgb,#25d366 45%,var(--line)); background:color-mix(in srgb,#25d366 8%,#0a0a0f);}
+.pend.wa-pend > b{color:#25d366;}
+.pend.wa-pend .link{justify-self:start;}
+
+/* ---------- Confirmações de WhatsApp (painel) ---------- */
+.confs{display:grid; gap:10px;}
+.conf{display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center; padding:12px; border-radius:14px; background:var(--s1); border:1px solid var(--line);}
+.conf.pediu{border-color:color-mix(in srgb,#25d366 45%,var(--line));}
+.conf .cod{font:800 20px/1 var(--font-d, inherit); letter-spacing:.2em; color:#25d366;}
+.conf small{color:var(--muted);}
+.conf .avbtns{justify-content:flex-end;}
+@media (max-width: 640px){ .conf{grid-template-columns:1fr auto;} .conf .avbtns{grid-column:1/-1; justify-content:flex-start;} }
 
 /* ---------- Painel do master ---------- */
 .adm{max-width:1280px; margin:0 auto; padding:20px 16px 60px;}

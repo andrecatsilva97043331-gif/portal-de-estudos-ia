@@ -5,7 +5,7 @@ const cfg = window.PORTAL_CONFIG || {};
 const USA_SUPABASE = !!(cfg.supabaseUrl && cfg.supabaseAnonKey);
 const CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 const agora = () => new Date().toISOString();
-const CAMPOS = ['nome','idade','telefone','pais','estado','cep','profissao','ocupacao','trabalhando','estudante','objetivo','objetivo_detalhe','aceita_contato'];
+const CAMPOS = ['nome','idade','telefone','pais','estado','cep','profissao','ocupacao','trabalhando','estudante','objetivo','objetivo_detalhe','aceita_contato','codigo_whats'];
 
 function carregarScript(src){
   return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
@@ -78,6 +78,13 @@ function bancoSupabase(){
       aluno.email_verificado = true;
       return aluno;
     },
+    async marcarPedidoWhats(){
+      const id = await uid(), quando = agora();
+      ok(await sb.from('alunos').update({ whatsapp_solicitado_em:quando }).eq('id', id));
+      return quando;
+    },
+    async notificarInscricao(){ try { await funcao({ acao:'notificar-inscricao' }); } catch(e){ console.warn(e); } },
+    async confirmarWhatsapp(alunoId, okConf){ ok(await sb.rpc('confirmar_whatsapp', { p_aluno:alunoId, p_ok:okConf !== false })); },
     async enviarCodigoWhats(){ await funcao({ acao:'enviar-codigo' }); return {}; },
     async verificarCodigoWhats(codigo){ await funcao({ acao:'verificar-codigo', codigo }); },
     async sair(){ await sb.auth.signOut(); },
@@ -199,6 +206,17 @@ function bancoDemo(){
       Object.assign(a, soCampos(dados), { email:d.emailSessao, email_verificado:true, ultimo_acesso:agora() });
       d.eu = a.id;
       gravar(d); return a;
+    },
+    async marcarPedidoWhats(){
+      const d = ler(), a = d.alunos.find(x => x.id === d.eu), quando = agora();
+      if (a) a.whatsapp_solicitado_em = quando;
+      gravar(d); return quando;
+    },
+    async notificarInscricao(){ const d = ler(), a = d.alunos.find(x => x.id === d.eu); if (a && !a.inscricao_notificada_em) { a.inscricao_notificada_em = agora(); gravar(d); } },
+    async confirmarWhatsapp(alunoId, okConf){
+      const d = ler(), a = d.alunos.find(x => x.id === alunoId); if (!a) return;
+      a.whatsapp_verificado = okConf !== false; a.whatsapp_verificado_em = okConf !== false ? agora() : null;
+      gravar(d);
     },
     async enviarCodigoWhats(){
       const d = ler(), codigo = novoCodigo();

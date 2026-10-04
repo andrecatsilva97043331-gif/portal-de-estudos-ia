@@ -4,6 +4,8 @@ window.PORTAL_CONFIG = {
   supabaseUrl: 'https://kpqzyvvbocmcyohjyqmr.supabase.co',
   supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwcXp5dnZib2NtY3lvaGp5cW1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwNjkyOTUsImV4cCI6MjEwNjY0NTI5NX0.rZhwvSL4Re7Fz9glZAs9aeLX26YAGds-Ebz9EwARZJU',
   senhaMasterDemo: 'master',
+  // WhatsApp do master: o aluno confirma o número mandando uma mensagem com código para cá (grátis).
+  whatsappPortal: '5521999195921',
   // true quando houver SMTP próprio configurado no Supabase: o aluno confirma o e-mail com código de 6 números.
   // false: o aluno cria uma senha no cadastro e entra com e-mail e senha.
   confirmarEmailPorCodigo: false,

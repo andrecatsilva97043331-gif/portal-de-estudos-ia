@@ -48,7 +48,6 @@ export async function enviarModelo(para: string, modelo: string, parametros: str
 Deno.serve(async req => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return erro('Método não permitido.', 405);
-  if (!env('WHATSAPP_TOKEN') || !env('WHATSAPP_PHONE_ID')) return erro('O envio por WhatsApp ainda não foi configurado no portal.', 503);
 
   const url = env('SUPABASE_URL');
   const usuario = createClient(url, env('SUPABASE_ANON_KEY'), { global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } } });
@@ -57,6 +56,30 @@ Deno.serve(async req => {
 
   const admin = createClient(url, env('SUPABASE_SERVICE_ROLE_KEY'));
   const corpo = await req.json().catch(() => ({}));
+
+  if (corpo.acao === 'notificar-inscricao') {
+    if (!env('CALLMEBOT_PHONE') || !env('CALLMEBOT_APIKEY')) return resposta({ ok: false, motivo: 'callmebot-nao-configurado' });
+    const { data: a } = await admin.from('alunos').select('id,nome,telefone,pais,estado,profissao,objetivo,codigo_whats,inscricao_notificada_em').eq('id', user.id).maybeSingle();
+    if (!a) return erro('Cadastro não encontrado.', 404);
+    if (a.inscricao_notificada_em) return resposta({ ok: true, jaNotificado: true });
+    const { data: m } = await admin.from('matriculas').select('curso_id').eq('aluno_id', a.id);
+    const texto = [
+      '🎓 Nova inscrição no Portal de Estudos',
+      `Nome: ${a.nome}`,
+      `WhatsApp: ${a.telefone}`,
+      `Local: ${a.estado} · ${a.pais}`,
+      a.profissao ? `Profissão: ${a.profissao}` : '',
+      a.objetivo ? `Objetivo: ${a.objetivo}` : '',
+      m && m.length ? `Curso: ${m.map(x => x.curso_id).join(', ')}` : '',
+      a.codigo_whats ? `Código de confirmação: ${a.codigo_whats}` : ''
+    ].filter(Boolean).join('\n');
+    const r = await fetch(`https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(env('CALLMEBOT_PHONE'))}&text=${encodeURIComponent(texto)}&apikey=${encodeURIComponent(env('CALLMEBOT_APIKEY'))}`);
+    if (!r.ok) { console.error('CallMeBot', r.status, await r.text()); return resposta({ ok: false, motivo: 'falha-callmebot' }); }
+    await admin.from('alunos').update({ inscricao_notificada_em: new Date().toISOString() }).eq('id', a.id);
+    return resposta({ ok: true });
+  }
+
+  if (!env('WHATSAPP_TOKEN') || !env('WHATSAPP_PHONE_ID')) return erro('O envio por WhatsApp ainda não foi configurado no portal.', 503);
 
   if (corpo.acao === 'enviar-aviso') {
     const { data: master } = await admin.from('masters').select('user_id').eq('user_id', user.id).maybeSingle();

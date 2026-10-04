@@ -16,8 +16,9 @@ let TB = { open:false, mod:1 };
 let C = null;
 let EMAIL_SESSAO = null;
 let VER = {};
-const VIEWS_PORTAL = ['cursos','cadastro','verificar','entrar'];
+const VIEWS_PORTAL = ['cursos','cadastro','verificar','entrar','confirmar-whats'];
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const WA_PORTAL = String((window.PORTAL_CONFIG || {}).whatsappPortal || '').replace(/\D/g, '');
 const MODO_SENHA = () => !DB.codigoEmail;
 const pedeConfirmacao = () => DB.codigoEmail || DB.exigirWhatsapp;
 function textoObrigatorio(){
@@ -68,6 +69,9 @@ function renderCursos(){
       <div class="chips"><span class="chip">⚡ ${feitas * 100} XP</span><span class="chip">📘 ${feitas} lições concluídas</span><span class="chip">🎓 ${meus.length} ${meus.length === 1 ? 'curso' : 'cursos'}</span>${concluidos ? `<span class="chip">🏆 ${concluidos} concluído${concluidos > 1 ? 's' : ''}</span>` : ''}</div>
       ${!DB.verificado(ALUNO) ? `<div class="pend"><b>⚠️ Falta confirmar seu ${ALUNO.email_verificado ? 'WhatsApp' : 'e-mail'}</b><span>${textoObrigatorio()}</span><button class="next" data-act="verificar">Confirmar agora ➜</button></div>`
         : seguir ? `<button class="next" data-act="curso" data-id="${esc(seguir.id)}" style="${ccor(seguir)}">Continuar ${esc(seguir.titulo)} ➜</button>` : ''}
+      ${DB.verificado(ALUNO) && !ALUNO.whatsapp_verificado && WA_PORTAL ? `<div class="pend wa-pend"><b>📲 Confirme seu WhatsApp</b>
+        <span>${ALUNO.whatsapp_solicitado_em ? 'Mensagem enviada em ' + new Date(ALUNO.whatsapp_solicitado_em).toLocaleDateString('pt-BR') + '. Assim que conferirmos, seu WhatsApp aparece como confirmado.' : 'Envie uma mensagem pronta com seu código <b>' + esc(ALUNO.codigo_whats || '') + '</b> para confirmarmos que o número é seu.'}</span>
+        <a class="${ALUNO.whatsapp_solicitado_em ? 'link' : 'next wa-btn'}" href="${linkConfirmacao()}" target="_blank" rel="noopener" data-act="pedir-whats">${ALUNO.whatsapp_solicitado_em ? 'Enviar de novo' : '📲 Enviar pelo WhatsApp'}</a></div>` : ''}
       <button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>dos seus cursos</span></div></div>
     </section>`;
@@ -200,6 +204,37 @@ function contarReenvio(){
   const s = Math.max(0, Math.ceil(((VER.cooldownAte || 0) - Date.now()) / 1000));
   b.disabled = s > 0; b.textContent = s ? 'Reenviar em ' + s + 's' : 'Reenviar código';
   if (s) VER.timer = setTimeout(contarReenvio, 1000);
+}
+
+function linkConfirmacao(){
+  const msg = 'Olá! Quero confirmar meu WhatsApp no Portal de Estudos.\nNome: ' + (ALUNO ? ALUNO.nome : '') + '\nCódigo: ' + (ALUNO && ALUNO.codigo_whats || '');
+  return 'https://wa.me/' + WA_PORTAL + '?text=' + encodeURIComponent(msg);
+}
+
+function renderConfirmarWhats(){
+  const enviado = !!ALUNO.whatsapp_solicitado_em;
+  $('main').removeAttribute('style');
+  $('main').innerHTML = `<div class="form vform">
+    <div class="eyebrow">Último passo · 10 segundos</div>
+    <h1 class="h1" style="margin-bottom:6px">Confirme seu <span class="grad">WhatsApp</span></h1>
+    <p class="hp">Toque no botão: o WhatsApp vai abrir com uma mensagem pronta para a equipe do Portal de Estudos. É só enviar. Assim confirmamos que o número <b>${esc(ALUNO.telefone)}</b> é seu e podemos te mandar avisos sobre seus estudos.</p>
+    <div class="card fcard rise" style="--c:#25d366;--c2:#128c7e">
+      <h3 class="fsec"><span class="fico">📲</span>Seu código de confirmação</h3>
+      <div class="codigo-w">${esc(ALUNO.codigo_whats || '')}</div>
+      <a class="next wa-btn" href="${linkConfirmacao()}" target="_blank" rel="noopener" data-act="pedir-whats">📲 Enviar confirmação pelo WhatsApp</a>
+      ${enviado ? '<p class="nota ok-nota">✅ Pronto! Assim que conferirmos, seu WhatsApp aparece como confirmado. Seu curso já está liberado.</p>' : '<p class="nota">Seu curso já está liberado: você pode confirmar agora ou depois, pela página inicial.</p>'}
+    </div>
+    <button class="${enviado ? 'next' : 'ghost'}" type="button" data-act="ir-curso">${enviado ? 'Ir para o curso ➜' : 'Fazer depois e ir para o curso'}</button>
+  </div>`;
+}
+
+async function aposCadastro(curso){
+  [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
+  if (curso && cursoPorId(curso) && !MATR.includes(curso)) { await DB.matricular(curso); MATR.push(curso); }
+  DB.notificarInscricao();
+  if (WA_PORTAL && !ALUNO.whatsapp_verificado) { VER = { curso }; S.view = 'confirmar-whats'; closeMenu(); renderAll(); return; }
+  VER = { curso };
+  await liberarAcesso();
 }
 
 function renderEntrar(){
@@ -378,6 +413,7 @@ function renderMain(keep){
   else if (S.view === 'cadastro') renderCadastro();
   else if (S.view === 'verificar') renderVerificar();
   else if (S.view === 'entrar') renderEntrar();
+  else if (S.view === 'confirmar-whats') renderConfirmarWhats();
   else if (S.view === 'home') renderHome();
   else if (S.view === 'moduleDone') renderModuloConcluido();
   else renderLicao();
@@ -481,6 +517,7 @@ async function enviarCadastro(form){
   err.textContent = msg;
   if (msg) return;
   const btn = $('cad-ok'); btn.disabled = true; btn.textContent = 'Salvando…';
+  dados.codigo_whats = (ALUNO && ALUNO.codigo_whats) || String(1000 + Math.floor(Math.random() * 9000));
   if (f.senha && !EMAIL_SESSAO) {
     try { await DB.criarConta(email, f.senha.value); EMAIL_SESSAO = email; }
     catch(e){ console.error(e); err.textContent = e.message; btn.disabled = false; btn.textContent = textoBotaoCadastro(); return; }
@@ -489,7 +526,7 @@ async function enviarCadastro(form){
     try {
       ALUNO = await DB.cadastrar(dados);
       VER = { dados, curso, email };
-      if (DB.verificado(ALUNO)) { [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]); await liberarAcesso(); }
+      if (DB.verificado(ALUNO)) await aposCadastro(curso);
       else iniciarVerificacao({ curso, dados });
     } catch(e){
       console.error(e);
@@ -540,6 +577,7 @@ async function continuarAposEmail(){
   if (!ALUNO) { toast('E-mail confirmado ✓ Agora complete seu cadastro.'); S.escolhido = VER.curso || S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); return; }
   [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
   if (!DB.verificado(ALUNO)) { toast('E-mail confirmado ✓'); VER.etapa = 'whats'; VER.cooldownAte = 0; S.view = 'verificar'; renderAll(); enviarCodigo(); return; }
+  if (VER.dados) { limparPendente(); await aposCadastro(VER.curso); return; }
   await liberarAcesso();
 }
 
@@ -653,6 +691,11 @@ document.addEventListener('click', e => {
     S.view = 'cadastro'; renderAll();
   }
   else if (a === 'sair') sair();
+  else if (a === 'pedir-whats') {
+    DB.marcarPedidoWhats().then(q => { ALUNO.whatsapp_solicitado_em = q; setTimeout(() => renderMain(true), 400); })
+      .catch(err => console.error(err));
+  }
+  else if (a === 'ir-curso') liberarAcesso();
   else if (a === 'curso') abrirCurso(t.dataset.id);
   else if (!C) return;
   else if (a === 'menu') { $('sb').classList.toggle('on'); $('ov').classList.toggle('on'); }

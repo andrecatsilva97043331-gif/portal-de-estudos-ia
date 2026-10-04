@@ -28,11 +28,16 @@ alter table public.alunos add column if not exists whatsapp_verificado boolean n
 alter table public.alunos add column if not exists whatsapp_verificado_em timestamptz;
 create unique index if not exists alunos_email_unico on public.alunos (lower(email));
 
+-- Confirmação gratuita: o aluno manda uma mensagem com o código para o WhatsApp do master, que confere e confirma no painel.
+alter table public.alunos add column if not exists codigo_whats text check (char_length(codigo_whats) <= 8);
+alter table public.alunos add column if not exists whatsapp_solicitado_em timestamptz;
+alter table public.alunos add column if not exists inscricao_notificada_em timestamptz;
+
 -- O aluno só grava os próprios dados de perfil; a confirmação do WhatsApp só o servidor marca.
 revoke insert, update on public.alunos from anon, authenticated;
-grant insert (id, email, nome, idade, telefone, pais, estado, cep, profissao, ocupacao, trabalhando, estudante, objetivo, objetivo_detalhe, aceita_contato, ultimo_acesso)
+grant insert (id, email, nome, idade, telefone, pais, estado, cep, profissao, ocupacao, trabalhando, estudante, objetivo, objetivo_detalhe, aceita_contato, ultimo_acesso, codigo_whats, whatsapp_solicitado_em)
   on public.alunos to authenticated;
-grant update (id, email, nome, idade, telefone, pais, estado, cep, profissao, ocupacao, trabalhando, estudante, objetivo, objetivo_detalhe, aceita_contato, ultimo_acesso)
+grant update (id, email, nome, idade, telefone, pais, estado, cep, profissao, ocupacao, trabalhando, estudante, objetivo, objetivo_detalhe, aceita_contato, ultimo_acesso, codigo_whats, whatsapp_solicitado_em)
   on public.alunos to authenticated;
 
 -- Trocou o telefone? Precisa confirmar o WhatsApp de novo.
@@ -109,6 +114,16 @@ returns boolean language sql stable security definer set search_path = public as
 $$;
 revoke all on function public.aluno_verificado() from public;
 grant execute on function public.aluno_verificado() to authenticated;
+
+-- Só o master marca (ou desmarca) o WhatsApp do aluno como confirmado.
+create or replace function public.confirmar_whatsapp(p_aluno uuid, p_ok boolean default true)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_master() then raise exception 'Apenas o master pode confirmar.'; end if;
+  update public.alunos set whatsapp_verificado = p_ok, whatsapp_verificado_em = case when p_ok then now() end where id = p_aluno;
+end $$;
+revoke all on function public.confirmar_whatsapp(uuid, boolean) from public;
+grant execute on function public.confirmar_whatsapp(uuid, boolean) to authenticated;
 
 alter table public.alunos     enable row level security;
 alter table public.masters    enable row level security;

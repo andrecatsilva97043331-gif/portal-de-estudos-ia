@@ -300,13 +300,38 @@ function renderPainel(){
       <button class="sbtn" data-act="csv">⬇️ Exportar planilha</button>
       <button class="sbtn" data-act="atualizar">🔄 Atualizar</button>
     </div>
+    <div id="confirmacoes"></div>
     <div class="charts" id="graficos"></div>
     <h2 class="sec-t">📲 Central de avisos no WhatsApp</h2>
     <div class="card avc rise" id="avisos"></div>
     <h2 class="sec-t" id="titulo-tabela">Alunos</h2>
     <div class="card tcard" id="tabela"></div>`;
   document.querySelectorAll('.stat b[data-n]').forEach(contar);
+  renderConfirmacoes();
   renderTabela();
+}
+
+function renderConfirmacoes(){
+  const el = $('confirmacoes'); if (!el) return;
+  const pend = DADOS.alunos.filter(a => !a.whatsapp_verificado);
+  const pediram = pend.filter(a => a.whatsapp_solicitado_em).sort((x, y) => String(y.whatsapp_solicitado_em).localeCompare(String(x.whatsapp_solicitado_em)));
+  const faltam = pend.length - pediram.length;
+  if (!pend.length) { el.innerHTML = ''; return; }
+  el.innerHTML = `<h2 class="sec-t">✅ Confirmações de WhatsApp <small style="color:var(--muted);font-weight:400">· ${pediram.length} aguardando você</small></h2>
+    <div class="card avc rise">
+      <p class="nota" style="margin:0 0 12px">Quando o aluno toca em "Enviar confirmação", chega no seu WhatsApp uma mensagem com o código. Confira se o <b>número de quem mandou</b> e o <b>código</b> batem com os daqui e clique em Confirmar.</p>
+      <div class="confs">${pediram.map(a => {
+        const wa = linkWhats(a.telefone, a.pais);
+        const ok = 'Olá, ' + String(a.nome || '').split(' ')[0] + '! Seu WhatsApp foi confirmado no Portal de Estudos ✅ Bons estudos!';
+        return `<div class="conf pediu">
+          <div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><div><b>${esc(a.nome)}</b><br><small>${esc(a.telefone)} · pediu ${dataHora(a.whatsapp_solicitado_em)}</small></div></div>
+          <span class="cod" title="Código que o aluno enviou">${esc(a.codigo_whats || '-')}</span>
+          <div class="avbtns"><button class="sbtn wa" data-act="confirmar-whats" data-id="${esc(a.id)}">✅ Confirmar</button>
+            ${wa ? `<a class="sbtn" href="${wa}?text=${encodeURIComponent(ok)}" target="_blank" rel="noopener" data-act="link">Responder</a>` : ''}</div>
+        </div>`;
+      }).join('') || '<div class="empty">Nenhum pedido novo. Assim que um aluno enviar a mensagem, ele aparece aqui.</div>'}</div>
+      ${faltam ? `<p class="nota">${faltam} aluno${faltam > 1 ? 's' : ''} ainda não enviou a mensagem de confirmação. Na Central de avisos você pode lembrá-los.</p>` : ''}
+    </div>`;
 }
 
 function renderTabela(){
@@ -412,6 +437,15 @@ document.addEventListener('click', e => {
     const texto = montarMensagem(modelos()[AV.seg], p.vars);
     if (a === 'copiar-msg') { copiar(texto); toast('Mensagem copiada'); return; }
     setTimeout(() => registrar([{ aluno_id:p.a.id, tipo:AV.seg, canal:'wa.me', texto }]), 50);
+    return;
+  }
+  if (a === 'confirmar-whats') {
+    t.disabled = true; t.textContent = 'Confirmando…';
+    DB.confirmarWhatsapp(t.dataset.id, true).then(() => {
+      const al = DADOS.alunos.find(x => x.id === t.dataset.id);
+      if (al) { al.whatsapp_verificado = true; al.whatsapp_verificado_em = new Date().toISOString(); }
+      renderConfirmacoes(); renderTabela(); toast('WhatsApp confirmado ✅');
+    }).catch(err => { console.error(err); t.disabled = false; t.textContent = '✅ Confirmar'; toast('Não foi possível confirmar agora.'); });
     return;
   }
   if (a === 'seg') { AV.seg = t.dataset.seg; renderAvisos(linhas()); }

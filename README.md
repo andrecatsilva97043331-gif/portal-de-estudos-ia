@@ -15,7 +15,14 @@ Sem o Supabase configurado, o portal roda em **modo demonstração**: os dados f
 
 - **Projeto:** `portal-estudos` (organização "Portal de Estudos", região São Paulo). A senha do banco está em `.env.local`, só neste computador.
 - **Acesso do aluno:** e-mail e **senha** criados no cadastro, sem código por e-mail (`confirmarEmailPorCodigo: false` em `config.js`), porque ainda não há SMTP próprio.
-- **WhatsApp:** confirmação **temporariamente dispensada**. Para voltar a exigir, depois de configurar a API da Meta, rode no SQL Editor:
+- **WhatsApp (grátis, confirmação pelo master):** o curso é liberado na hora. Logo depois do cadastro, o aluno toca em **"Enviar confirmação pelo WhatsApp"**: abre o WhatsApp dele com uma mensagem pronta, com um código de 4 números, para o número do master (`whatsappPortal` em `config.js`). No painel, o bloco **"Confirmações de WhatsApp"** mostra quem pediu e o código; confira o número de quem mandou e clique em **Confirmar**. Só o master consegue confirmar, e a regra está no banco.
+- **Aviso de nova inscrição no WhatsApp do master (grátis, CallMeBot):**
+  1. Veja em https://www.callmebot.com/blog/free-api-whatsapp-messages/ o número atual do robô e salve nos seus contatos.
+  2. Mande para ele, do seu WhatsApp: `I allow callmebot to send me messages`. Ele responde com a sua **apikey**.
+  3. Neste computador, na pasta do projeto, rode (trocando a apikey):
+     `npx supabase secrets set CALLMEBOT_PHONE=+5521999195921 CALLMEBOT_APIKEY=SUA-APIKEY --project-ref kpqzyvvbocmcyohjyqmr`
+  A partir daí, cada inscrição gera uma mensagem no seu WhatsApp com nome, telefone, local, profissão, objetivo, curso e código.
+- A exigência do WhatsApp para acessar o curso está **desligada** (`config_portal.exigir_whatsapp = false`). Para exigir confirmação automática no futuro (API da Meta), rode no SQL Editor:
   `update public.config_portal set exigir_whatsapp = true;`
 - **Para ligar o código por e-mail:** configure o SMTP próprio (veja abaixo), troque `enable_confirmations` para `true` em `supabase/config.toml`, descomente os modelos de e-mail, rode `npx supabase config push` e mude `confirmarEmailPorCodigo` para `true` em `config.js`.
 
