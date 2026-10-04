@@ -748,7 +748,7 @@ function renderModuloConcluido(){
   $('main').innerHTML = `<div class="crumb">Módulo ${mod.id}: ${mod.title}</div>
     <div class="done-box"><div class="trophy">🏆</div>
     <h2>${next ? 'Módulo ' + mod.id + ' concluído!' : 'Curso concluído!'}</h2>
-    <p>${msg}${tem ? ' Os prompts deste módulo foram liberados no Code Toolbox.' : ''}</p>
+    <p>${msg}${tem ? ' As missões de prompt deste módulo foram liberadas no Code Toolbox: agora é a sua vez de escrever.' : ''}</p>
     <div class="row">${tem ? `<button class="next alt" data-act="tool" data-mod="${mod.id}">🧰 Abrir Code Toolbox</button>` : ''}
     ${next ? `<button class="next" data-act="go" data-id="${next.lessons[0].id}" style="${tstyle(next.id)}">Ir para o Módulo ${next.id} ➜</button>` : `<button class="next" data-act="cursos">Ver outros cursos</button>`}</div></div>`;
 }
@@ -845,6 +845,10 @@ function navLicao(){
   </nav>`;
 }
 
+const chaveMeuPrompt = (mod, k) => ['portal-meu-prompt', ALUNO ? ALUNO.id : (MASTER ? 'master' : ''), C.id, mod, k].join(':');
+const lerMeuPrompt = (mod, k) => { try { return localStorage.getItem(chaveMeuPrompt(mod, k)) || ''; } catch(e){ return ''; } };
+const gravarMeuPrompt = (mod, k, txt) => { try { localStorage.setItem(chaveMeuPrompt(mod, k), txt); } catch(e){} };
+
 function renderToolbox(){
   const d = $('drawer');
   if (!C || !temToolbox()) { TB.open = false; d.classList.remove('on'); $('shade').classList.remove('on'); return; }
@@ -855,10 +859,10 @@ function renderToolbox(){
   const mod = modOf(TB.mod);
   let body;
   if (!mod || !modDone(mod) || !prompts()[mod.id]) {
-    body = `<div class="lockmsg"><div style="font-size:40px">🔒</div><p>Conclua todas as lições do módulo para liberar os prompts.</p></div>`;
+    body = `<div class="lockmsg"><div style="font-size:40px">🔒</div><p>Conclua todas as lições do módulo para liberar as missões de prompt.</p></div>`;
   } else {
-    body = `<div style="${tstyle(mod.id)}"><p style="margin:0 0 14px; color:var(--muted); font-size:14px">${C.conteudo.dicaPrompts || 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole no Cursor.'}</p>` +
-      prompts()[mod.id].map((p,k) => `<div class="pr"><div class="prh"><b>${p.title}</b><button class="cp" data-act="copy" data-k="${k}">Copiar</button></div><div class="prd">${p.desc}</div><pre>${esc(p.text)}</pre></div>`).join('') + `</div>`;
+    body = `<div style="${tstyle(mod.id)}"><p style="margin:0 0 14px; color:var(--muted); font-size:14px">Não há prompt pronto: escreva o seu, com as suas palavras e um caso real seu, usando o que aprendeu neste módulo. Depois teste no assistente de IA, veja o resultado e melhore até ficar bom.</p>` +
+      prompts()[mod.id].map((p,k) => `<div class="pr"><div class="prh"><b>🎯 ${p.title}</b><button class="cp" data-act="copy" data-k="${k}">Copiar</button></div><div class="prd">${p.desc}</div><textarea class="meu-prompt" data-k="${k}" rows="6" placeholder="Escreva aqui o seu prompt...">${esc(lerMeuPrompt(mod.id, k))}</textarea></div>`).join('') + `</div>`;
   }
   d.innerHTML = `<div class="dh"><h2>🧰 Code Toolbox</h2><button class="x" data-act="toolclose" aria-label="Fechar">✕</button></div>
     <div class="tabs">${tabs}</div><div class="db">${body}</div>`;
@@ -1198,7 +1202,11 @@ document.addEventListener('click', e => {
   }
   else if (a === 'toolclose') { TB.open = false; renderToolbox(); renderProgress(); }
   else if (a === 'tbmod') { TB.mod = parseInt(t.dataset.mod,10); renderToolbox(); }
-  else if (a === 'copy') { const k = parseInt(t.dataset.k,10); copyText(prompts()[TB.mod][k].text, t); }
+  else if (a === 'copy') {
+    const k = parseInt(t.dataset.k,10), txt = lerMeuPrompt(TB.mod, k).trim();
+    if (!txt) { toast('✍️ Escreva o seu prompt antes de copiar'); return; }
+    copyText(txt, t);
+  }
   else if (a === 'reset') {
     if (!confirm('Apagar todo o seu progresso neste curso?')) return;
     DB.reiniciar(C.id).then(() => { PROG[C.id] = {}; SESSION = {}; S.view = 'home'; renderAll(); })
@@ -1220,6 +1228,7 @@ document.addEventListener('input', e => {
     e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
     if (e.target.value.length === 6) e.target.form.requestSubmit ? e.target.form.requestSubmit() : confirmarCodigo(e.target.form);
   }
+  else if (e.target.classList.contains('meu-prompt')) gravarMeuPrompt(TB.mod, parseInt(e.target.dataset.k, 10), e.target.value);
   else if (S.view === 'lesson' && $('main').contains(e.target)) rodarGancho();
 });
 ['input','change'].forEach(tipo => document.addEventListener(tipo, e => {
