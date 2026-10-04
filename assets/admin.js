@@ -59,7 +59,9 @@ function renderLogin(msg){
   $('btn-sair').hidden = true;
   const demo = DB.modo === 'demo';
   $('main').innerHTML = `<form class="form" id="f-login" style="max-width:420px; margin-top:40px">
-    <h1 class="h1" style="margin-bottom:6px">Entrar como master</h1>
+    <div class="orb mini rise" aria-hidden="true"><span>🛡️</span></div>
+    <div class="eyebrow">Área restrita</div>
+    <h1 class="h1" style="margin-bottom:6px">Entrar como <span class="grad">master</span></h1>
     <p class="hp">${demo ? 'Modo demonstração: use qualquer e-mail e a senha definida em <code>config.js</code> (padrão: <b>master</b>).' : 'Acesso restrito ao administrador do portal.'}</p>
     <div class="card">
       <label class="fl" style="margin-bottom:12px">E-mail<input name="email" type="email" autocomplete="username" required></label>
@@ -70,19 +72,96 @@ function renderLogin(msg){
   </form>`;
 }
 
+/* ============ VISUAL ============ */
+const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cor = i => { const p = PORTAL.paleta(i); return '--c:' + p[0] + ';--c2:' + p[1]; };
+function corDe(txt){ let h = 0; for (const ch of String(txt)) h = (h * 31 + ch.charCodeAt(0)) | 0; return cor(Math.abs(h)); }
+function iniciais(nome){ const p = String(nome || '?').trim().split(/\s+/); return (p[0][0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase(); }
+function atividade(iso){
+  if (!iso) return ['off', 'Sem acesso'];
+  const d = Math.floor((Date.now() - new Date(iso).getTime()) / DIA);
+  if (d < 1) return ['hoje', 'Ativo hoje'];
+  if (d < 7) return ['semana', 'Há ' + d + (d === 1 ? ' dia' : ' dias')];
+  return ['off', 'Inativo há ' + d + ' dias'];
+}
+function contar(el){
+  const to = parseFloat(el.dataset.n), suf = el.dataset.suf || '';
+  if (reduced() || !to) { el.textContent = to + suf; return; }
+  const t0 = performance.now();
+  (function f(t){ const k = Math.min(1, (t - t0) / 900); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))) + suf; if (k < 1) requestAnimationFrame(f); })(t0);
+}
+const grafico = (titulo, sub, corpo, i) => `<div class="chart rise" style="${cor(i)};--d:${0.05 + i * 0.06}s"><div class="ch-h"><b>${titulo}</b><small>${sub}</small></div>${corpo}</div>`;
+const vazio = msg => `<div class="ch-vazio">${msg}</div>`;
+
+function grafCadastros(rs){
+  const dias = [];
+  for (let i = 13; i >= 0; i--) { const d = new Date(Date.now() - i * DIA); dias.push({ chave:d.toDateString(), rot:d.getDate(), txt:d.toLocaleDateString('pt-BR'), n:0 }); }
+  rs.forEach(({ a }) => { const d = dias.find(x => x.chave === new Date(a.criado_em).toDateString()); if (d) d.n++; });
+  const max = Math.max(1, ...dias.map(d => d.n)), total = dias.reduce((s, d) => s + d.n, 0);
+  return grafico('Novos cadastros', total + ' nos últimos 14 dias',
+    `<div class="vbars">${dias.map(d => `<div class="vb" title="${d.txt}: ${d.n}">${d.n ? `<em>${d.n}</em>` : ''}<i style="height:${Math.max(3, d.n / max * 100)}%"></i><span>${d.rot}</span></div>`).join('')}</div>`, 0);
+}
+
+function grafFunil(rs){
+  const contagem = id => DADOS.matriculas.filter(m => m.curso_id === id).length;
+  const c = cursoPorId(F.curso) || CURSOS.slice().sort((x, y) => contagem(y.id) - contagem(x.id))[0];
+  if (!c) return grafico('Funil de lições', 'Nenhum curso no catálogo', vazio('Sem dados ainda.'), 1);
+  const turma = rs.filter(r => r.cursos.some(x => x.curso === c.id)).map(r => r.a.id);
+  if (!turma.length) return grafico('Funil de lições · ' + esc(c.titulo), 'Onde os alunos param', vazio('Nenhum aluno neste curso ainda.'), 1);
+  const feitas = {};
+  DADOS.progresso.forEach(p => { if (p.curso_id === c.id && turma.includes(p.aluno_id)) feitas[p.licao_id] = (feitas[p.licao_id] || 0) + 1; });
+  return grafico('Funil de lições · ' + esc(c.titulo), turma.length + (turma.length === 1 ? ' aluno' : ' alunos') + ' · quantos concluíram cada lição',
+    `<div class="hbars funil">${c.licoes.map(l => { const n = feitas[l.id] || 0, p = Math.round(n / turma.length * 100);
+      return `<div class="hb" title="${esc(l.id + ' ' + l.title)}: ${n} de ${turma.length}"><span>${esc(l.id)}</span><div class="hbt"><i style="width:${p}%"></i></div><em>${p}%</em></div>`; }).join('')}</div>`, 1);
+}
+
+function grafObjetivos(rs){
+  const n = {};
+  rs.forEach(({ a }) => { if (a.objetivo) n[a.objetivo] = (n[a.objetivo] || 0) + 1; });
+  const itens = Object.entries(n).sort((x, y) => y[1] - x[1]);
+  if (!itens.length) return grafico('Objetivos dos alunos', 'O que eles querem com o curso', vazio('Nenhum objetivo informado ainda.'), 2);
+  const max = itens[0][1];
+  return grafico('Objetivos dos alunos', 'O que eles querem com o curso',
+    `<div class="hbars">${itens.map(([k, v], i) => `<div class="hb larga" style="${cor(i)}"><span>${esc(k)}</span><div class="hbt"><i style="width:${v / max * 100}%"></i></div><em>${v}</em></div>`).join('')}</div>`, 2);
+}
+
+function grafSituacao(rs){
+  const cats = [['Trabalha e estuda','#22d3ee'],['Só trabalha','#4ade80'],['Só estuda','#c084fc'],['Nem trabalha nem estuda','#fbbf24'],['Não informado','#3a3a4a']];
+  const n = [0, 0, 0, 0, 0];
+  rs.forEach(({ a }) => {
+    if (a.trabalhando == null || a.estudante == null) n[4]++;
+    else n[a.trabalhando ? (a.estudante ? 0 : 1) : (a.estudante ? 2 : 3)]++;
+  });
+  const total = rs.length;
+  if (!total) return grafico('Situação dos alunos', 'Trabalho e estudo', vazio('Sem alunos ainda.'), 3);
+  let acc = 0;
+  const fatias = cats.map((c, i) => { const ini = acc; acc += n[i] / total * 100; return `${c[1]} ${ini}% ${acc}%`; }).join(',');
+  return grafico('Situação dos alunos', 'Trabalho e estudo',
+    `<div class="donut-w"><div class="donut" style="background:conic-gradient(${fatias})"><div><b>${total}</b><span>alunos</span></div></div>
+    <ul class="leg">${cats.map((c, i) => n[i] ? `<li><i style="background:${c[1]}"></i>${c[0]}<b>${n[i]}</b></li>` : '').join('')}</ul></div>`, 3);
+}
+
 function renderPainel(){
   $('btn-sair').hidden = false;
   const agora = Date.now();
-  const ativos = DADOS.alunos.filter(a => a.ultimo_acesso && agora - new Date(a.ultimo_acesso).getTime() < 7 * DIA).length;
-  const concluidos = DADOS.matriculas.filter(m => progressoDe(m.aluno_id, m.curso_id).pct === 100).length;
+  const recente = (iso, dias) => iso && agora - new Date(iso).getTime() < dias * DIA;
+  const ativos = DADOS.alunos.filter(a => recente(a.ultimo_acesso, 7)).length;
+  const novos = DADOS.alunos.filter(a => recente(a.criado_em, 7)).length;
+  const pcts = DADOS.matriculas.map(m => progressoDe(m.aluno_id, m.curso_id).pct);
+  const media = pcts.length ? Math.round(pcts.reduce((s, p) => s + p, 0) / pcts.length) : 0;
+  const concluidos = pcts.filter(p => p === 100).length;
+  const taxa = pcts.length ? Math.round(concluidos / pcts.length * 100) : 0;
   const opCursos = CURSOS.map(c => `<option value="${esc(c.id)}" ${F.curso===c.id?'selected':''}>${esc(c.titulo)}${c.status !== 'publicado' ? ' (' + c.status + ')' : ''}</option>`).join('');
+  const stats = [
+    ['👥', DADOS.alunos.length, '', 'alunos cadastrados', '+' + novos + ' nos últimos 7 dias'],
+    ['⚡', ativos, '', 'ativos nos últimos 7 dias', DADOS.alunos.length ? Math.round(ativos / DADOS.alunos.length * 100) + '% da base' : '-'],
+    ['📈', media, '%', 'progresso médio', DADOS.matriculas.length + ' matrículas'],
+    ['🏆', concluidos, '', 'cursos concluídos', taxa + '% de conclusão']
+  ];
   $('main').innerHTML = `
-    <div class="stats">
-      <div class="stat"><b>${DADOS.alunos.length}</b><span>alunos cadastrados</span></div>
-      <div class="stat"><b>${DADOS.matriculas.length}</b><span>matrículas em cursos</span></div>
-      <div class="stat"><b>${concluidos}</b><span>cursos concluídos</span></div>
-      <div class="stat"><b>${ativos}</b><span>ativos nos últimos 7 dias</span></div>
-    </div>
+    <div class="adm-h rise"><div><div class="eyebrow">Painel do master</div><h1 class="h1">Visão geral dos <span class="grad">seus alunos</span></h1></div>
+      <span class="live"><i></i>${DB.modo === 'demo' ? 'Demonstração' : 'Dados ao vivo'}</span></div>
+    <div class="stats">${stats.map((s, i) => `<div class="stat rise" style="${cor(i + 1)};--d:${i * 0.06}s"><div class="sico">${s[0]}</div><b data-n="${s[1]}" data-suf="${s[2]}">0</b><span>${s[3]}</span><small>${s[4]}</small></div>`).join('')}</div>
     <div class="tools">
       <input class="inp" id="busca" type="search" placeholder="Buscar por nome, telefone, estado, profissão ou objetivo" value="${esc(F.busca)}">
       <select class="inp" id="filtro-curso"><option value="">Todos os cursos</option>${opCursos}</select>
@@ -90,22 +169,27 @@ function renderPainel(){
       <button class="sbtn" data-act="csv">⬇️ Exportar planilha</button>
       <button class="sbtn" data-act="atualizar">🔄 Atualizar</button>
     </div>
-    <div class="card" style="padding:0; overflow:auto" id="tabela"></div>`;
+    <div class="charts" id="graficos"></div>
+    <h2 class="sec-t" id="titulo-tabela">Alunos</h2>
+    <div class="card tcard" id="tabela"></div>`;
+  document.querySelectorAll('.stat b[data-n]').forEach(contar);
   renderTabela();
 }
 
 function renderTabela(){
   const rs = linhas();
+  $('graficos').innerHTML = grafCadastros(rs) + grafFunil(rs) + grafObjetivos(rs) + grafSituacao(rs);
+  $('titulo-tabela').textContent = 'Alunos (' + rs.length + ')';
   if (!rs.length) {
     $('tabela').innerHTML = `<div class="empty">${DADOS.alunos.length ? 'Nenhum aluno encontrado com esse filtro.' : 'Nenhum aluno cadastrado ainda. Envie o link de convite para começar.'}</div>`;
     return;
   }
   $('tabela').innerHTML = `<table class="atbl"><thead><tr>
-      <th>Aluno</th><th class="hide-m">Perfil</th><th>Contato</th><th class="hide-m">Local</th><th>Cursos e progresso</th><th class="hide-m">Último acesso</th>
+      <th>Aluno</th><th class="hide-m">Perfil</th><th>Contato</th><th class="hide-m">Local</th><th>Cursos e progresso</th><th class="hide-m">Atividade</th>
     </tr></thead><tbody>${rs.map(({ a, cursos }) => {
-      const wa = linkWhats(a.telefone, a.pais);
+      const wa = linkWhats(a.telefone, a.pais), at = atividade(a.ultimo_acesso);
       return `<tr data-act="aluno" data-id="${esc(a.id)}">
-        <td><b>${esc(a.nome)}</b><br><small>${esc(a.idade)} anos · desde ${data(a.criado_em)}</small></td>
+        <td><div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><div><b>${esc(a.nome)}</b><br><small>${esc(a.idade)} anos · desde ${data(a.criado_em)}</small></div></div></td>
         <td class="hide-m">${esc(a.ocupacao || a.profissao || '-')}<br><small>${esc(situacao(a))}${a.objetivo ? '<br>🎯 ' + esc(a.objetivo) : ''}</small></td>
         <td>${wa ? `<a href="${wa}" target="_blank" rel="noopener" data-act="link">${esc(a.telefone)}</a>` : esc(a.telefone)}</td>
         <td class="hide-m">${esc(a.estado)} · ${esc(a.pais)}<br><small>CEP ${esc(a.cep)}</small></td>
@@ -113,7 +197,7 @@ function renderTabela(){
           const cc = cursoPorId(c.curso), cor = cc ? '--c:' + cc.cores[0] + ';--c2:' + cc.cores[1] : '';
           return `<div class="cprog" style="${cor}"><span>${esc(tituloCurso(c.curso))}</span><em>${c.feitas}/${c.total} · ${c.pct}%</em><div class="cbar" style="grid-column:1/-1"><i style="width:${c.pct}%"></i></div></div>`;
         }).join('') : '<small>Sem matrícula</small>'}</td>
-        <td class="hide-m">${dataHora(a.ultimo_acesso)}</td>
+        <td class="hide-m"><span class="act ${at[0]}">${at[1]}</span><br><small>${dataHora(a.ultimo_acesso)}</small></td>
       </tr>`;
     }).join('')}</tbody></table>`;
 }
@@ -131,7 +215,7 @@ function abrirAluno(id){
       <div class="row2" style="margin-bottom:8px"><span>Iniciado em</span><b>${dataHora(m.iniciado_em)}</b><span>Lições</span><b>${p.feitas} de ${p.total}</b></div>
       <ul class="lst">${itens}</ul>`;
   }).join('');
-  $('drawer').innerHTML = `<div class="dh"><h2>${esc(a.nome)}</h2><button class="x" data-act="fechar" aria-label="Fechar">✕</button></div>
+  $('drawer').innerHTML = `<div class="dh"><div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><h2>${esc(a.nome)}</h2></div><button class="x" data-act="fechar" aria-label="Fechar">✕</button></div>
     <div class="db det">
       <div class="row2">
         <span>Idade</span><b>${esc(a.idade)} anos</b>
