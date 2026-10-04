@@ -7,7 +7,7 @@
     "cores": ["#22C55E", "#14B8A6"],
     "nivel": "iniciante",
     "ordem": 1,
-    "status": "em_breve",
+    "status": "disponivel",
     "versao": 1
   },
   {
@@ -106,6 +106,90 @@
     "cores": ["#EF4444", "#EC4899"],
     "nivel": "avancado",
     "ordem": 10,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "base-profissional",
+    "titulo": "Base Profissional",
+    "descricao": "Aprender o básico para trabalhar com IA e atender clientes com segurança: dados, direitos de uso, combinados e proteção contra golpes.",
+    "icone": "🧱",
+    "cores": ["#3B82F6", "#6366F1"],
+    "trilha": "renda",
+    "grupo": "fundamentos",
+    "ordem": 11,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "posts-para-redes-sociais",
+    "titulo": "Posts para Redes Sociais com IA",
+    "descricao": "Planejar, escrever e entregar posts para o negócio de um cliente com ajuda de IA, com revisão e honestidade.",
+    "icone": "📣",
+    "cores": ["#06B6D4", "#3B82F6"],
+    "trilha": "renda",
+    "grupo": "servicos",
+    "ordem": 12,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "pacotes-whatsapp-linkedin",
+    "titulo": "Pacotes de Mensagens para WhatsApp e LinkedIn",
+    "descricao": "Criar pacotes de mensagens semi-prontas para o negócio de um cliente, com tom humano e uso responsável.",
+    "icone": "💬",
+    "cores": ["#06B6D4", "#3B82F6"],
+    "trilha": "renda",
+    "grupo": "servicos",
+    "ordem": 13,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "sites-simples-com-ia",
+    "titulo": "Sites Simples com IA",
+    "descricao": "Criar e colocar no ar um site simples para o negócio de um cliente, testado, seguro e bem entregue.",
+    "icone": "🌐",
+    "cores": ["#06B6D4", "#3B82F6"],
+    "trilha": "renda",
+    "grupo": "servicos",
+    "ordem": 14,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "seu-primeiro-servico",
+    "titulo": "Seu Primeiro Serviço com IA",
+    "descricao": "Descobrir o que você sabe fazer, escolher um serviço e um nicho, montar uma oferta clara e testar com um primeiro cliente.",
+    "icone": "🧩",
+    "cores": ["#10B981", "#84CC16"],
+    "trilha": "renda",
+    "grupo": "negocio",
+    "ordem": 15,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "primeiros-clientes",
+    "titulo": "Primeiros Clientes",
+    "descricao": "Encontrar os primeiros clientes, conversar, propor, negociar com respeito, entregar, cobrar com educação e conquistar indicações.",
+    "icone": "🤝",
+    "cores": ["#10B981", "#84CC16"],
+    "trilha": "renda",
+    "grupo": "negocio",
+    "ordem": 16,
+    "status": "em_breve",
+    "versao": 1
+  },
+  {
+    "id": "formalizando-mei-e-financas",
+    "titulo": "Formalizando: MEI e Organização Financeira",
+    "descricao": "Entender quando formalizar, como funciona o MEI na prática e como organizar entradas, notas e impostos do seu serviço.",
+    "icone": "🏛️",
+    "cores": ["#10B981", "#84CC16"],
+    "trilha": "renda",
+    "grupo": "negocio",
+    "ordem": 17,
     "status": "em_breve",
     "versao": 1
   }

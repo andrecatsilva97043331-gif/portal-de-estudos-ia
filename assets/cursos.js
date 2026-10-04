@@ -43,6 +43,12 @@ PORTAL.niveis = [
   { id:'intermediario', titulo:'Intermediário', cores:['#F59E0B','#F97316'] },
   { id:'avancado', titulo:'Avançado', cores:['#EF4444','#EC4899'] }
 ];
+/* Trilha "Renda com IA": cursos com "trilha": "renda" no catálogo, agrupados por "grupo" (fora dos níveis e do teste de nível). */
+PORTAL.gruposRenda = [
+  { id:'fundamentos', titulo:'Fundamentos', icone:'🧱', cores:['#3B82F6','#6366F1'] },
+  { id:'servicos', titulo:'Serviços', icone:'🛠️', cores:['#06B6D4','#3B82F6'] },
+  { id:'negocio', titulo:'Negócio', icone:'📈', cores:['#10B981','#84CC16'] }
+];
 PORTAL.catalogo = [];
 
 /* Retorna os cursos do catálogo já com o conteúdo carregado.

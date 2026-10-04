@@ -6,6 +6,8 @@ const vm = require('vm');
 const raiz = path.join(__dirname, '..');
 const STATUS = ['disponivel', 'em_breve', 'rascunho', 'arquivado', 'publicado'];
 const NIVEIS = ['iniciante', 'intermediario', 'avancado'];
+const TRILHAS = ['renda'];
+const GRUPOS_RENDA = ['fundamentos', 'servicos', 'negocio'];
 const ordens = new Set();
 const erros = [];
 const avisos = [];
@@ -26,7 +28,12 @@ for (const meta of catalogo) {
   if (!meta.descricao) erro(onde, 'falta "descricao"');
   if (!STATUS.includes(meta.status)) erro(onde, 'status deve ser ' + STATUS.join(', '));
   if (meta.cores && !(Array.isArray(meta.cores) && meta.cores.length === 2)) erro(onde, '"cores" deve ter 2 cores');
-  if (meta.nivel === undefined) avisos.push(onde + ': sem "nivel", fica fora da Trilha de IA');
+  if (meta.trilha !== undefined && !TRILHAS.includes(meta.trilha)) erro(onde, 'trilha deve ser ' + TRILHAS.join(', ') + ' (sem o campo = Trilha de IA)');
+  if (meta.trilha === 'renda') {
+    if (meta.nivel !== undefined) erro(onde, 'curso da trilha renda não usa "nivel"');
+    if (!GRUPOS_RENDA.includes(meta.grupo)) erro(onde, 'grupo deve ser ' + GRUPOS_RENDA.join(', '));
+  } else if (meta.grupo !== undefined) erro(onde, '"grupo" só vale para a trilha renda');
+  else if (meta.nivel === undefined) avisos.push(onde + ': sem "nivel", fica fora da Trilha de IA');
   else if (!NIVEIS.includes(meta.nivel)) erro(onde, 'nivel deve ser ' + NIVEIS.join(', '));
   if (meta.ordem !== undefined) {
     if (!Number.isInteger(meta.ordem) || meta.ordem < 1) erro(onde, '"ordem" deve ser um número inteiro a partir de 1');

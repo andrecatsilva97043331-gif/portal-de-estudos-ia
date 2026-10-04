@@ -64,6 +64,7 @@ PORTAL.registrarCurso({
   ],
   conclusaoModulo: { 1: 'Mensagem ao concluir o módulo 1.' },   // opcional
   prompts: { 1: [ { title: 'Título', desc: 'Para que serve', text: 'Texto do prompt' } ] }, // opcional: libera o Code Toolbox
+  dicaPrompts: 'Copie e cole em qualquer assistente de IA.', // opcional: frase do topo do Code Toolbox (padrão: "...cole no Cursor.")
   cores: { 1: ['#ff5a5f', '#ff9a3c'] },                          // opcional: cor de cada módulo
   iconesLicao: { '1.1': '🗃️' },                                  // opcional
   niveis: [[1500, 'Mestre'], [900, 'Avançado'], [300, 'Intermediário'], [0, 'Iniciante']], // opcional

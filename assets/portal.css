@@ -115,6 +115,7 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .tn-chamada small{display:block; color:var(--muted); font-size:13.5px; line-height:1.45; margin-top:2px;}
 .tn-alvo{flex:none; width:44px; height:44px; border-radius:14px; display:grid; place-items:center; font-size:22px; background:rgba(245,158,11,.12);}
 .tn-ir{flex:none; font-weight:800; font-size:14px; padding:10px 14px; border-radius:12px; color:#000; background:linear-gradient(90deg,#22C55E,#F59E0B);}
+.tn-chamada.renda{background:linear-gradient(#0b0b12,#0b0b12) padding-box, linear-gradient(90deg,#3B82F6,#06B6D4,#10B981) border-box; box-shadow:0 10px 40px -24px #06B6D4;}
 .tn-chamada.feito{cursor:default; background:linear-gradient(#0b0b12,#0b0b12) padding-box, linear-gradient(90deg,var(--c),var(--c2)) border-box;}
 .tn-chamada.feito .tn-alvo{background:color-mix(in srgb, var(--c) 18%, transparent);}
 .tn-chamada.feito .ghost{padding:8px 14px;}
@@ -165,6 +166,7 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .mc.breve .mtile{transform:none;}
 .mc.breve .mfoot{color:var(--muted);}
 .pctpill{font-family:var(--font-d); font-weight:800; font-size:14px; padding:5px 12px; border-radius:99px; color:#000; background:linear-gradient(135deg,var(--c),var(--c2)); box-shadow:0 6px 20px -8px var(--c);}
+.raviso{margin:0 2px 16px; padding:12px 14px; border-radius:16px; border:1px solid color-mix(in srgb,#fbbf24 40%,var(--line)); background:color-mix(in srgb,#fbbf24 7%,#0a0a0f); color:var(--text); font-size:13.5px; line-height:1.5;}
 .pctpill.novo{background:var(--s2); color:var(--text); border:1px solid color-mix(in srgb,var(--c) 50%,transparent); box-shadow:none;}
 
 /* ---------- Formulários ---------- */

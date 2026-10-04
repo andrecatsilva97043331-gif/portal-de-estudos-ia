@@ -99,10 +99,10 @@ function renderCursos(){
       <div class="mfoot"><span>${c.conteudo.modulos.length} módulos · ${c.total} lições</span><span class="mst">${acao}</span></div>
     </div>`;
   };
-  const emBreve = (m, i) => `<div class="mc lock breve rise" aria-disabled="true" style="${ccor(Object.assign({ cores:PORTAL.paleta(i) }, m))};--d:${0.15 + i * 0.06}s">
+  const emBreve = (m, i, num = m.ordem) => `<div class="mc lock breve rise" aria-disabled="true" style="${ccor(Object.assign({ cores:PORTAL.paleta(i) }, m))};--d:${0.15 + i * 0.06}s">
       <div class="mhead"><div class="mtile">${m.icone || '📘'}</div><span class="pctpill novo">🔜 Em breve</span></div>
       <div><div class="mt">${esc(m.titulo)}</div><div class="ms">${esc(m.descricao)}</div></div>
-      <div class="mfoot"><span>Curso ${m.ordem || ''} da trilha</span></div>
+      <div class="mfoot"><span>Curso ${num || ''} da trilha</span></div>
     </div>`;
   const carregado = id => CURSOS.find(c => c.id === id);
   let n = 0;
@@ -115,14 +115,31 @@ function renderCursos(){
       <div class="nhead"><span class="npill">Nível ${k + 1} · ${nv.titulo}</span><small>${itens.length} ${itens.length === 1 ? 'curso' : 'cursos'} · ${abertos} ${abertos === 1 ? 'disponível' : 'disponíveis'}</small></div>
       <div class="grid">${itens.join('')}</div></div>`;
   }).join('');
-  const outros = CURSOS.filter(c => !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
+  const renda = PORTAL.catalogo.filter(m => m.trilha === 'renda');
+  const gruposRenda = PORTAL.gruposRenda.map(g => {
+    const itens = renda.filter(m => m.grupo === g.id)
+      .map(m => carregado(m.id) ? cartao(carregado(m.id), n++) : m.status === 'em_breve' ? emBreve(m, n++, renda.indexOf(m) + 1) : '').filter(Boolean);
+    if (!itens.length) return '';
+    const abertos = renda.filter(m => m.grupo === g.id && carregado(m.id)).length;
+    return `<div class="nivel" id="nivel-renda-${g.id}" style="--c:${g.cores[0]};--c2:${g.cores[1]}">
+      <div class="nhead"><span class="npill">${g.icone} ${g.titulo}</span><small>${itens.length} ${itens.length === 1 ? 'curso' : 'cursos'} · ${abertos} ${abertos === 1 ? 'disponível' : 'disponíveis'}</small></div>
+      <div class="grid">${itens.join('')}</div></div>`;
+  }).join('');
+  const outros = CURSOS.filter(c => c.trilha !== 'renda' && !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
   $('main').removeAttribute('style');
-  $('main').innerHTML = avisoTrilha() + topo + `<section class="trilha" id="trilha">
+  $('main').innerHTML = avisoRenda() + avisoTrilha() + topo + `<section class="trilha" id="trilha">
       <h2 class="sec-t">Trilha de IA</h2>
       <p class="tsub">Do zero ao avançado em 3 níveis. Siga na ordem ou escolha só o curso de que você precisa.</p>
       ${chamadaTeste()}
       ${niveis || '<div class="empty">Nenhum curso publicado ainda.</div>'}
     </section>
+    ${gruposRenda ? `<section class="trilha" id="renda">
+      <h2 class="sec-t">Renda com IA</h2>
+      <p class="tsub">Aprenda a oferecer serviços com IA, do jeito certo. Escolha qualquer curso, na ordem que fizer sentido para você.</p>
+      <div class="raviso">⚖️ Estes cursos ensinam a oferecer serviços com qualidade e responsabilidade. Não prometem nem garantem ganhos: os resultados dependem de cada pessoa.</div>
+      ${chamadaRenda()}
+      ${gruposRenda}
+    </section>` : ''}
     ${outros ? `<h2 class="sec-t">Outros cursos</h2><div class="grid">${outros}</div>` : ''}`;
   if (pctGeral !== null) {
     setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pctGeral); }, 60);
@@ -209,14 +226,16 @@ function resultadoNivel(pts){
   return { alvo, agora, nivel: PORTAL.niveis.find(nv => nv.id === alvo.nivel) };
 }
 function telaTeste(){
-  if (TN.i < PERGUNTAS_NIVEL.length) {
-    const p = PERGUNTAS_NIVEL[TN.i];
-    return `<div class="tn-prog">${PERGUNTAS_NIVEL.map((_, k) => `<i class="${k < TN.i ? 'ok' : k === TN.i ? 'cur' : ''}"></i>`).join('')}</div>
-      <div class="eyebrow">Pergunta ${TN.i + 1} de ${PERGUNTAS_NIVEL.length}</div>
+  const perguntas = TN.tipo === 'renda' ? PERGUNTAS_RENDA : PERGUNTAS_NIVEL;
+  if (TN.i < perguntas.length) {
+    const p = perguntas[TN.i];
+    return `<div class="tn-prog">${perguntas.map((_, k) => `<i class="${k < TN.i ? 'ok' : k === TN.i ? 'cur' : ''}"></i>`).join('')}</div>
+      <div class="eyebrow">Pergunta ${TN.i + 1} de ${perguntas.length}</div>
       <h2 class="tn-q" id="tn-tit">${p.q}</h2>
       <div class="tn-opts">${p.o.map((t, v) => `<button class="tn-op ${TN.resp[TN.i] === v ? 'sel' : ''}" type="button" data-act="tn-resp" data-v="${v}"><b>${'ABC'[v]}</b><span>${esc(t)}</span></button>`).join('')}</div>
       ${TN.i ? '<button class="link tn-volta" type="button" data-act="tn-volta">← Pergunta anterior</button>' : ''}`;
   }
+  if (TN.tipo === 'renda') return telaResultadoRenda();
   const pts = TN.resp.reduce((s, v) => s + v, 0), r = resultadoNivel(pts);
   if (!r) return `<h2 class="tn-q" id="tn-tit">Você já concluiu a trilha! 🏆</h2><p class="tn-txt">Revise os cursos quando quiser.</p>`;
   try { localStorage.setItem(CHAVE_NIVEL, JSON.stringify({ nivel:r.nivel.id, curso:r.alvo.id, pts, em:Date.now() })); } catch(e){}
@@ -242,11 +261,69 @@ function chamadaTeste(){
   return `<button class="tn-chamada" type="button" data-act="teste-nivel"><span class="tn-alvo">🎯</span>
     <div><b>Não sabe por onde começar?</b><small>Responda 5 perguntas rápidas e descubra seu nível e o curso ideal para você.</small></div><span class="tn-ir">Descobrir meu nível ➜</span></button>`;
 }
+/* Teste "Descubra por onde começar" da trilha Renda com IA: 8 perguntas (0 a 2 pontos cada) que sugerem um grupo e um curso. */
+const CHAVE_RENDA = 'portal-estudos-renda-v1';
+const PERGUNTAS_RENDA = [
+  { q:'Você já usa IA no dia a dia?', o:['Nunca', 'Às vezes', 'Todo dia'] },
+  { q:'Você sabe escrever um pedido com papel, tarefa, contexto e formato?', o:['Não', 'Mais ou menos', 'Sim'] },
+  { q:'Já prestou algum serviço para um cliente?', o:['Nunca', 'Poucas vezes', 'Regularmente'] },
+  { q:'Você sabe o que é a LGPD e por que importa?', o:['Não', 'Já ouvi falar', 'Sei explicar'] },
+  { q:'Já fez um combinado por escrito com um cliente?', o:['Nunca', 'De forma informal', 'Sim, com escopo, prazo e preço'] },
+  { q:'Já criou algo para mostrar como portfólio?', o:['Não', 'Alguns testes', 'Sim'] },
+  { q:'Você sabe quando é preciso emitir nota fiscal?', o:['Não', 'Mais ou menos', 'Sim'] },
+  { q:'O que você quer fazer agora?', o:['Entender o básico', 'Aprender um serviço específico', 'Organizar e crescer o meu serviço'] }
+];
+const lerRenda = () => { try { return JSON.parse(localStorage.getItem(CHAVE_RENDA)) || null; } catch(e){ return null; } };
+function resultadoRenda(pts){
+  const renda = PORTAL.catalogo.filter(m => m.trilha === 'renda');
+  const grupo = PORTAL.gruposRenda[pts <= 5 ? 0 : pts <= 11 ? 1 : 2];
+  const concluido = m => { const c = cursoPorId(m.id); return c && MATR.includes(c.id) && pctCurso(c) === 100; };
+  const inicio = renda.findIndex(m => m.grupo === grupo.id);
+  const alvo = renda.slice(Math.max(0, inicio)).find(m => !concluido(m)) || null;
+  if (!alvo) return null;
+  const pos = renda.indexOf(alvo);
+  const proximoRenda = renda.filter(m => cursoPorId(m.id))
+    .sort((a, b) => Math.abs(renda.indexOf(a) - pos) - Math.abs(renda.indexOf(b) - pos) || renda.indexOf(a) - renda.indexOf(b))[0];
+  const proximoIA = PORTAL.catalogo.find(m => m.trilha !== 'renda' && m.nivel && cursoPorId(m.id));
+  const agora = cursoPorId(alvo.id) ? null : proximoRenda || proximoIA || null;
+  return { alvo, agora, num:pos + 1, grupo: PORTAL.gruposRenda.find(g => g.id === alvo.grupo) || grupo };
+}
+function telaResultadoRenda(){
+  const pts = TN.resp.reduce((s, v) => s + v, 0), r = resultadoRenda(pts);
+  if (!r) return `<h2 class="tn-q" id="tn-tit">Você já concluiu a trilha! 🏆</h2><p class="tn-txt">Revise os cursos quando quiser.</p>`;
+  try { localStorage.setItem(CHAVE_RENDA, JSON.stringify({ grupo:r.grupo.id, curso:r.alvo.id, pts, em:Date.now() })); } catch(e){}
+  const pronto = !!cursoPorId(r.alvo.id), cores = r.alvo.cores || r.grupo.cores;
+  const zero = pts <= 5 && TN.resp[0] === 0 && PORTAL.catalogo.find(m => m.id === 'ia-do-zero');
+  return `<div class="eyebrow">Seu resultado</div>
+    <h2 class="tn-q" id="tn-tit">Comece por: ${r.grupo.icone} <span class="tn-niv" style="--c:${r.grupo.cores[0]};--c2:${r.grupo.cores[1]}">${r.grupo.titulo}</span></h2>
+    ${zero ? `<p class="tn-txt">Como você ainda não usa IA, vale fazer antes o curso ${zero.icone || '📘'} <b>${esc(zero.titulo)}</b>, da Trilha de IA${cursoPorId(zero.id) ? '' : ' (em breve)'}.</p>
+      ${cursoPorId(zero.id) && !(r.agora && r.agora.id === zero.id) ? `<button class="ghost" type="button" data-act="tn-curso" data-id="${esc(zero.id)}">${zero.icone || '📘'} Começar ${esc(zero.titulo)}</button>` : ''}` : ''}
+    <p class="tn-txt">Sugestão de curso na trilha Renda com IA:</p>
+    <div class="tn-curso" style="--c:${cores[0]};--c2:${cores[1]}">
+      <span class="tn-ic">${r.alvo.icone || '📘'}</span>
+      <div><b>${r.num}. ${esc(r.alvo.titulo)}</b><small>${esc(r.alvo.descricao)}</small></div>
+      ${pronto ? '' : '<span class="pctpill novo">🔜 Em breve</span>'}
+    </div>
+    ${pronto ? `<button class="next" type="button" data-act="tn-curso" data-id="${esc(r.alvo.id)}">Começar agora ➜</button>`
+      : r.agora ? `<p class="tn-txt">Enquanto ele não chega, já dá para estudar:</p>
+        <button class="next" type="button" data-act="tn-curso" data-id="${esc(r.agora.id)}">${r.agora.icone || '📘'} Começar ${esc(r.agora.titulo)} ➜</button>` : ''}
+    <p class="tn-txt">Você decide: pode escolher qualquer curso disponível.</p>
+    <div class="tn-acoes"><button class="ghost" type="button" data-act="tn-trilha" data-nivel="renda-${r.grupo.id}">Ver na trilha</button><button class="link" type="button" data-act="tn-refazer">Refazer o teste</button></div>`;
+}
+function chamadaRenda(){
+  const salvo = lerRenda(), renda = PORTAL.catalogo.filter(x => x.trilha === 'renda');
+  const m = salvo && renda.find(x => x.id === salvo.curso), g = salvo && PORTAL.gruposRenda.find(x => x.id === salvo.grupo);
+  if (m && g) return `<div class="tn-chamada feito" style="--c:${g.cores[0]};--c2:${g.cores[1]}"><span class="tn-alvo">🧭</span>
+    <div><b>Comece por: ${g.titulo}</b><small>Sugestão: ${renda.indexOf(m) + 1}. ${esc(m.titulo)}</small></div>
+    <button class="ghost" type="button" data-act="ver-nivel" data-nivel="renda-${g.id}">Ver</button><button class="link" type="button" data-act="teste-renda">Refazer</button></div>`;
+  return `<button class="tn-chamada renda" type="button" data-act="teste-renda"><span class="tn-alvo">🧭</span>
+    <div><b>Descubra por onde começar</b><small>Responda 8 perguntas rápidas e veja uma sugestão de ponto de partida. Você decide.</small></div><span class="tn-ir">Fazer o teste ➜</span></button>`;
+}
 function desenharTeste(){ const c = document.querySelector('#tn-modal .tn-corpo'); if (c) c.innerHTML = telaTeste(); }
-function abrirTeste(){
+function abrirTeste(tipo){
   if ($('tn-modal')) return;
   closeMenu();
-  TN = { i:0, resp:[] };
+  TN = { i:0, resp:[], tipo };
   document.body.insertAdjacentHTML('beforeend', `<div class="qr-modal tn-modal" id="tn-modal" data-act="fechar-teste" role="dialog" aria-modal="true" aria-labelledby="tn-tit">
     <div class="qr-box tn-box"><button class="nfechar" type="button" data-act="fechar-teste" aria-label="Fechar">✕</button><div class="tn-corpo"></div></div></div>`);
   desenharTeste();
@@ -267,6 +344,18 @@ function avisoTrilha(){
     <p class="ncorpo">Nunca usou IA? Já usa e quer ir mais longe? Agora o portal tem uma trilha completa com 3 níveis e 10 cursos curtos, em português, para estudar no celular, com lições de 5 a 8 minutos. Siga a trilha na ordem ou escolha só o curso de que você precisa. Cada lição termina com um desafio prático.</p>
     <div class="nchips"><span class="chip">✅ Já disponível: Arquiteto de Soluções com IA</span><span class="chip">🔜 Os próximos chegam um a um</span><span class="chip">🆓 100% gratuito</span></div>
     <button class="next" type="button" data-act="ver-trilha">Ver a trilha ➜</button>
+  </section>`;
+}
+const CHAVE_AVISO_RENDA = 'portal-estudos-aviso-renda-v1';
+function avisoRenda(){
+  if (!PORTAL.catalogo.some(m => m.trilha === 'renda')) return '';
+  try { if (localStorage.getItem(CHAVE_AVISO_RENDA)) return ''; } catch(e){}
+  return `<section class="novidade rise" id="aviso-renda" role="region" aria-label="Novidade">
+    <button class="nfechar" type="button" data-act="fechar-aviso-renda" aria-label="Fechar aviso">✕</button>
+    <h2 class="ntit">🚀 Novidade: Trilha Renda com IA</h2>
+    <p class="nsub">Aprenda a oferecer serviços com IA, do jeito certo.</p>
+    <p class="ncorpo">Conheça a nova trilha do Portal de Estudos IA: 7 cursos curtos, em português e gratuitos, para quem quer transformar o que sabe em um serviço profissional. Aprenda a cuidar de dados, combinar por escrito, montar sua oferta, atender clientes e organizar o básico do seu negócio. Aqui não há promessa de ganho fácil: o foco é fazer o trabalho bem feito e com responsabilidade. Escolha o curso de que você precisa. Os próximos chegam um a um.</p>
+    <button class="next" type="button" data-act="ver-renda">Ver a trilha ➜</button>
   </section>`;
 }
 
@@ -523,11 +612,31 @@ function sidebarPortal(){
       }).join('')}</div></div>
     </div>`;
   }).join('');
-  const outros = CURSOS.filter(c => !PORTAL.niveis.some(nv => nv.id === c.nivel))
+  const renda = PORTAL.catalogo.filter(m => m.trilha === 'renda');
+  const gruposRenda = PORTAL.gruposRenda.map(g => {
+    const itens = renda.filter(m => m.grupo === g.id && (cursoPorId(m.id) || m.status === 'em_breve'));
+    if (!itens.length) return '';
+    const abertos = itens.map(m => cursoPorId(m.id)).filter(Boolean);
+    const p = abertos.length ? Math.round(abertos.reduce((s, c) => s + (MATR.includes(c.id) ? pctCurso(c) : 0), 0) / abertos.length) : 0;
+    const id = 'renda-' + g.id, aberto = SB_NIVEIS_ABERTOS.has(id);
+    return `<div class="mod sbacc ${aberto ? 'aberto' : ''}" style="--c:${g.cores[0]};--c2:${g.cores[1]};--p:${p}">
+      <button class="modh sbniv" type="button" data-act="sb-nivel" data-nivel="${id}" aria-expanded="${aberto}"><div class="ring"><span class="modic">${g.icone}</span></div>
+        <div class="modt">${g.titulo}<div class="mods">${abertos.length} de ${itens.length} ${itens.length === 1 ? 'disponível' : 'disponíveis'}</div></div><span class="sbseta" aria-hidden="true">▸</span></button>
+      <div class="sbitens"><div class="sbin">${itens.map(m => {
+        const c = cursoPorId(m.id), num = renda.indexOf(m) + 1;
+        if (!c) return `<button class="les" type="button" disabled title="Em breve"><span class="st">🔜</span><span>${num}. ${esc(m.titulo)}</span></button>`;
+        const pct = MATR.includes(c.id) ? pctCurso(c) : null;
+        const st = pct === 100 ? '✅' : pct !== null ? '▶️' : '✨';
+        return `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${st}</span><span>${num}. ${esc(c.titulo)}${pct !== null && pct < 100 ? ` <small class="sbpct">${pct}%</small>` : ''}</span></button>`;
+      }).join('')}</div></div>
+    </div>`;
+  }).join('');
+  const outros = CURSOS.filter(c => c.trilha !== 'renda' && !PORTAL.niveis.some(nv => nv.id === c.nivel))
     .map(c => `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${c.icone}</span><span>${esc(c.titulo)}</span></button>`).join('');
   return `<button class="homebtn cur" type="button" data-act="topo"><span class="hi">🏠</span>Início</button>
     <button class="homebtn" type="button" data-act="teste-nivel"><span class="hi">🎯</span>Descobrir meu nível</button>
     <div class="sbsec">Trilha de IA</div>${niveis}
+    ${gruposRenda ? `<div class="sbsec">Renda com IA</div><button class="homebtn" type="button" data-act="teste-renda"><span class="hi">🧭</span>Descobrir por onde começar</button>${gruposRenda}` : ''}
     ${outros ? `<div class="sbsec">Outros cursos</div>${outros}` : ''}
     <div class="sbsec">App e conta</div>
     <button class="homebtn so-pc" type="button" data-act="qr"><span class="hi">📱</span>Levar para o celular</button>
@@ -727,7 +836,7 @@ function renderToolbox(){
   if (!mod || !modDone(mod) || !prompts()[mod.id]) {
     body = `<div class="lockmsg"><div style="font-size:40px">🔒</div><p>Conclua todas as lições do módulo para liberar os prompts.</p></div>`;
   } else {
-    body = `<div style="${tstyle(mod.id)}"><p style="margin:0 0 14px; color:var(--muted); font-size:14px">Troque o que está entre [COLCHETES] pelos dados do seu caso e cole no Cursor.</p>` +
+    body = `<div style="${tstyle(mod.id)}"><p style="margin:0 0 14px; color:var(--muted); font-size:14px">${C.conteudo.dicaPrompts || 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole no Cursor.'}</p>` +
       prompts()[mod.id].map((p,k) => `<div class="pr"><div class="prh"><b>${p.title}</b><button class="cp" data-act="copy" data-k="${k}">Copiar</button></div><div class="prd">${p.desc}</div><pre>${esc(p.text)}</pre></div>`).join('') + `</div>`;
   }
   d.innerHTML = `<div class="dh"><h2>🧰 Code Toolbox</h2><button class="x" data-act="toolclose" aria-label="Fechar">✕</button></div>
@@ -1027,7 +1136,8 @@ document.addEventListener('click', e => {
     setTimeout(() => { if (TN) { TN.espera = false; TN.i++; desenharTeste(); } }, 220);
   }
   else if (a === 'tn-volta' && TN) { TN.i = Math.max(0, TN.i - 1); desenharTeste(); }
-  else if (a === 'tn-refazer' && TN) { TN = { i:0, resp:[] }; desenharTeste(); }
+  else if (a === 'tn-refazer' && TN) { TN = { i:0, resp:[], tipo:TN.tipo }; desenharTeste(); }
+  else if (a === 'teste-renda') abrirTeste('renda');
   else if (a === 'tn-curso') { const id = t.dataset.id; fecharTeste(); abrirCurso(id); }
   else if (a === 'tn-trilha') { const nv = t.dataset.nivel; fecharTeste(); setTimeout(() => { const s = $('nivel-' + nv); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }, 80); }
   else if (a === 'topo') { closeMenu(); window.scrollTo({ top:0, behavior:'smooth' }); }
@@ -1039,6 +1149,8 @@ document.addEventListener('click', e => {
   else if (a === 'ver-nivel') { closeMenu(); const s = $('nivel-' + t.dataset.nivel); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
   else if (a === 'ver-trilha') { const s = $('trilha'); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
   else if (a === 'fechar-aviso') { try { localStorage.setItem(CHAVE_AVISO_TRILHA, '1'); } catch(e){} const b = $('aviso-trilha'); if (b) b.remove(); }
+  else if (a === 'ver-renda') { closeMenu(); const s = $('renda'); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
+  else if (a === 'fechar-aviso-renda') { try { localStorage.setItem(CHAVE_AVISO_RENDA, '1'); } catch(e){} const b = $('aviso-renda'); if (b) b.remove(); }
   else if (a === 'menu') { $('sb').classList.toggle('on'); $('ov').classList.toggle('on'); }
   else if (!C) return;
   else if (a === 'home') { S.view = 'home'; closeMenu(); renderAll(); }
