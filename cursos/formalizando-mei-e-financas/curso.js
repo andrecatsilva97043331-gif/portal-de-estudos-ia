@@ -107,16 +107,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Perguntas para decidir', desc:'Para decidir se vale formalizar.',
-      text:'Eu faço [SERVIÇO] para [TIPO DE CLIENTE]. Liste perguntas que devo responder para decidir se me formalizo como MEI (atividade permitida, clientes que exigem nota, custo mensal, limite de faturamento) e o que devo conferir no Portal do Empreendedor. Isto não é orientação contábil: lembre-me de confirmar tudo no site oficial e com um contador.' }
+    { title:'Perguntas para decidir', desc:'Para decidir se vale formalizar.' }
   ],
   2: [
-    { title:'Planilha de controle', desc:'Para organizar entradas e saídas.',
-      text:'Monte um modelo de planilha de controle para o meu serviço [SERVIÇO], com as colunas: data, cliente, serviço, valor, forma de pagamento e nota emitida (sim ou não), mais uma aba de saídas (ferramentas, internet, impostos), com resumo mensal e uma linha para reserva de impostos.' }
+    { title:'Planilha de controle', desc:'Para organizar entradas e saídas.' }
   ],
   3: [
-    { title:'Calendário de lembretes', desc:'Para não esquecer prazos.',
-      text:'Crie um calendário de lembretes para um MEI com: pagamento mensal do DAS, declaração anual, revisão mensal da planilha e revisão trimestral de preços. Deixe as datas como [CONFIRMAR NO SITE OFICIAL], porque as regras podem mudar.' }
+    { title:'Calendário de lembretes', desc:'Para não esquecer prazos.' }
   ]
 };
 
@@ -128,7 +125,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

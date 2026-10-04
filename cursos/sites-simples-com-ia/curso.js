@@ -111,16 +111,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Textos do site', desc:'Para escrever o conteúdo de uma página.',
-      text:'Negócio: [NEGÓCIO]. Público: [PÚBLICO]. Fatos reais: [FATOS DO CLIENTE]. Escreva os textos de um site de 1 página: título, subtítulo, 3 benefícios, como funciona em 3 passos, perguntas frequentes e chamada para ação. Não invente depoimentos, preços nem garantias.' }
+    { title:'Textos do site', desc:'Para escrever o conteúdo de uma página.' }
   ],
   2: [
-    { title:'Site em partes', desc:'Para montar com a IA em etapas.',
-      text:'Vamos criar um site de 1 página para [NEGÓCIO] em etapas. Primeiro, a estrutura (seções). Depois eu peço cada parte. Layout pensado primeiro para celular, cores [CORES], botão de WhatsApp. Explique em linguagem simples o que cada parte faz e como eu testo. Não coloque senhas nem chaves no código.' }
+    { title:'Site em partes', desc:'Para montar com a IA em etapas.' }
   ],
   3: [
-    { title:'Checklist de testes', desc:'Para testar antes de entregar.',
-      text:'Meu site é de [TIPO]. Monte um checklist de testes de celular, computador, velocidade, acessibilidade básica, links, formulário e privacidade. Para cada item, diga como conferir sem ferramentas pagas.' }
+    { title:'Checklist de testes', desc:'Para testar antes de entregar.' }
   ]
 };
 
@@ -132,7 +129,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

@@ -113,16 +113,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Checklist de privacidade', desc:'Para revisar um projeto antes de lançar.',
-      text:'Meu projeto faz [DESCRIÇÃO] e coleta [DADOS]. Liste riscos de privacidade, o que posso evitar coletar, o que preciso informar ao usuário e que perguntas levar a um profissional jurídico. Isto não é consultoria jurídica: aponte apenas pontos de atenção.' }
+    { title:'Checklist de privacidade', desc:'Para revisar um projeto antes de lançar.' }
   ],
   2: [
-    { title:'Estimativa de custo', desc:'Para calcular o custo por usuário.',
-      text:'Meu app terá [N] usuários por mês, com [N] pedidos por usuário e textos de cerca de [TAMANHO]. Ajude-me a montar uma planilha de estimativa de custo por usuário, com cenários baixo, médio e alto, e sugira formas de reduzir o gasto. Lembre-me de conferir os preços no site do fornecedor.' }
+    { title:'Estimativa de custo', desc:'Para calcular o custo por usuário.' }
   ],
   3: [
-    { title:'Conjunto de testes', desc:'Para avaliar a qualidade antes de mudar.',
-      text:'Meu assistente faz [TAREFA]. Crie 30 casos de teste com a resposta esperada: 20 comuns, 5 difíceis e 5 de risco (dados pessoais, pedidos perigosos ou fora do escopo). Defina critérios de avaliação: correção, segurança e tom.' }
+    { title:'Conjunto de testes', desc:'Para avaliar a qualidade antes de mudar.' }
   ]
 };
 
@@ -134,7 +131,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

@@ -120,16 +120,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Minha oferta em uma frase', desc:'Para definir nicho e oferta.',
-      text:'Eu sei fazer [HABILIDADES] com IA. Meu possível cliente é [TIPO DE CLIENTE]. Ajude-me a escrever a frase "Eu ajudo [CLIENTE] a [RESULTADO] por meio de [O QUE FAÇO]", com 3 variações, e liste 5 perguntas para testar com pessoas desse público. Não prometa ganhos.' }
+    { title:'Minha oferta em uma frase', desc:'Para definir nicho e oferta.' }
   ],
   2: [
-    { title:'Proposta de uma página', desc:'Para montar uma proposta clara.',
-      text:'Monte uma proposta de 1 página para [CLIENTE] com: problema, o que farei, o que NÃO está incluído, entregáveis, prazo, preço de [VALOR], forma de pagamento, [N] revisões incluídas e validade de [DIAS] dias. Use linguagem simples e deixe campos [ENTRE COLCHETES] para eu preencher.' }
+    { title:'Proposta de uma página', desc:'Para montar uma proposta clara.' }
   ],
   3: [
-    { title:'Checklist do combinado', desc:'Para revisar antes de começar.',
-      text:'Este é o resumo do combinado com meu cliente: [RESUMO SEM DADOS PESSOAIS]. Aponte o que está faltando (escopo, prazo, pagamento, direitos, tratamento de dados, aceite) e quais pontos devo levar a um profissional jurídico ou a um contador. Não é consultoria jurídica.' }
+    { title:'Checklist do combinado', desc:'Para revisar antes de começar.' }
   ]
 };
 
@@ -141,7 +138,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

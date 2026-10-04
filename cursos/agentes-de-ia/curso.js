@@ -123,16 +123,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Ficha do agente', desc:'Para desenhar um agente com segurança.',
-      text:'Quero um agente para [TAREFA]. Monte uma ficha com: objetivo em 1 frase, ferramentas mínimas (leitura e escrita separadas), memória (o que guardar e por quanto tempo) e regras do que NUNCA fazer e de quando pedir ajuda humana. Diga também se uma automação simples resolveria.' }
+    { title:'Ficha do agente', desc:'Para desenhar um agente com segurança.' }
   ],
   2: [
-    { title:'Auditoria de permissões', desc:'Para revisar o que o agente pode fazer.',
-      text:'Estas são as ferramentas do meu agente: [LISTA]. Para cada uma, diga o risco, se é leitura ou escrita, se é reversível e a permissão mínima necessária. Aponte o que deve exigir aprovação humana.' }
+    { title:'Auditoria de permissões', desc:'Para revisar o que o agente pode fazer.' }
   ],
   3: [
-    { title:'Casos de teste', desc:'Para testar antes de liberar.',
-      text:'Meu agente faz [TAREFA] e lê [FONTES]. Crie 20 casos de teste: 10 normais, 5 estranhos e 5 tentativas de manipulação (instruções escondidas no conteúdo). Para cada caso, diga o comportamento esperado.' }
+    { title:'Casos de teste', desc:'Para testar antes de liberar.' }
   ]
 };
 
@@ -144,7 +141,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

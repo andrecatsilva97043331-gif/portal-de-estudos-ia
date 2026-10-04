@@ -118,16 +118,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'E-mail em 4 passos', desc:'Para escrever e-mails e mensagens profissionais.',
-      text:'Escreva um e-mail para [DESTINATÁRIO] sobre [ASSUNTO]. Tom [TOM]. Até [N] linhas. Dê 2 versões: uma curta e uma completa. Não invente dados: use [CAMPOS] para o que eu preencher.' }
+    { title:'E-mail em 4 passos', desc:'Para escrever e-mails e mensagens profissionais.' }
   ],
   2: [
-    { title:'Plano da semana', desc:'Para organizar tarefas e horários.',
-      text:'Estas são minhas tarefas: [LISTA]. Meus horários livres: [HORÁRIOS]. Organize por urgente e importante, monte um plano para a semana e deixe 20% do tempo livre para imprevistos.' }
+    { title:'Plano da semana', desc:'Para organizar tarefas e horários.' }
   ],
   3: [
-    { title:'Treino de estudo', desc:'Para estudar com perguntas.',
-      text:'Quero estudar [ASSUNTO]. Faça 10 perguntas, uma por vez, espere minha resposta, corrija e explique de outro jeito se eu errar. No fim, crie 10 cartões de estudo.' }
+    { title:'Treino de estudo', desc:'Para estudar com perguntas.' }
   ]
 };
 
@@ -139,7 +136,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

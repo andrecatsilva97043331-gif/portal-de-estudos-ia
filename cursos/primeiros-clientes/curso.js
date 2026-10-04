@@ -109,16 +109,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Roteiro de primeira conversa', desc:'Para ouvir antes de oferecer.',
-      text:'Meu serviço é [SERVIÇO] para [NICHO]. Crie um roteiro de conversa de 15 minutos com 10 perguntas abertas para entender o problema do cliente, um jeito de resumir o que ouvi e uma transição natural para apresentar a minha oferta. Não prometa resultados.' }
+    { title:'Roteiro de primeira conversa', desc:'Para ouvir antes de oferecer.' }
   ],
   2: [
-    { title:'Proposta com 3 opções', desc:'Para montar uma proposta clara.',
-      text:'Monte uma proposta de 1 página para [CLIENTE] com 3 opções (básica, completa e premium) para [SERVIÇO]: o que inclui cada uma, o que NÃO inclui, prazo, preço de [VALORES], revisões, forma de pagamento e validade de [DIAS] dias. Use linguagem simples e campos [ENTRE COLCHETES].' }
+    { title:'Proposta com 3 opções', desc:'Para montar uma proposta clara.' }
   ],
   3: [
-    { title:'Cobrança educada', desc:'Para lembrar o pagamento com respeito.',
-      text:'Escreva 3 mensagens de cobrança para o cliente [NOME]: um lembrete antes do vencimento, outro no dia e uma mensagem firme e cordial após o atraso. Tom respeitoso, sem constrangimento, citando o combinado de [SERVIÇO] e o valor de [VALOR].' }
+    { title:'Cobrança educada', desc:'Para lembrar o pagamento com respeito.' }
   ]
 };
 
@@ -130,7 +127,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

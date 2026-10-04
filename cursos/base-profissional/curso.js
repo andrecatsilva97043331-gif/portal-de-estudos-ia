@@ -111,16 +111,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Dados fictícios para teste', desc:'Para testar sem expor pessoas reais.',
-      text:'Crie 10 registros fictícios de clientes (nome, telefone, cidade) para eu testar [TAREFA]. Use nomes e números inventados e deixe claro que são fictícios.' }
+    { title:'Dados fictícios para teste', desc:'Para testar sem expor pessoas reais.' }
   ],
   2: [
-    { title:'Combinado de uma página', desc:'Para registrar o acordo com o cliente.',
-      text:'Monte um combinado de 1 página para o serviço [SERVIÇO] com: o que está incluído, o que NÃO está incluído, prazo, preço de [VALOR], forma de pagamento, [N] revisões e o que o cliente precisa me enviar. Use linguagem simples e deixe campos [ENTRE COLCHETES]. Não é um contrato jurídico.' }
+    { title:'Combinado de uma página', desc:'Para registrar o acordo com o cliente.' }
   ],
   3: [
-    { title:'Checklist antes de cobrar', desc:'Para conferir se você está pronto.',
-      text:'Aqui está o que pretendo oferecer: [DESCRIÇÃO]. Verifique com este checklist: oferta clara, combinado por escrito, cuidado com dados, conteúdo com licença, nenhuma promessa de ganho, revisão antes de entregar e conferência do pagamento. Diga o que está faltando.' }
+    { title:'Checklist antes de cobrar', desc:'Para conferir se você está pronto.' }
   ]
 };
 
@@ -132,7 +129,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

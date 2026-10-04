@@ -96,7 +96,8 @@ function validarCurso(meta, c) {
   const mods = new Set(c.modulos.map(m => String(m.id)));
   Object.entries(c.prompts || {}).forEach(([k, lista]) => {
     if (!mods.has(String(k))) erro(onde, 'prompts do módulo ' + k + ', que não existe');
-    (lista || []).forEach((p, i) => { if (!p.title || !p.desc || !p.text) erro(onde, 'prompt ' + (i + 1) + ' do módulo ' + k + ' precisa de title, desc e text'); });
+    (lista || []).forEach((p, i) => { if (!p.title || !p.desc) erro(onde, 'missão de prompt ' + (i + 1) + ' do módulo ' + k + ' precisa de title e desc');
+      if ('text' in p) erro(onde, 'missão de prompt ' + (i + 1) + ' do módulo ' + k + ' não deve ter "text": o aluno escreve o próprio prompt'); });
   });
   Object.keys(c.aoAbrirLicao || {}).forEach(k => { if (!licoes.has(k)) erro(onde, 'aoAbrirLicao aponta para a lição ' + k + ', que não existe'); });
   Object.keys(c.iconesLicao || {}).forEach(k => { if (!licoes.has(k)) avisos.push(onde + ': iconesLicao tem a lição ' + k + ', que não existe'); });

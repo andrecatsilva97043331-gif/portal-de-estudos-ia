@@ -190,16 +190,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Pedido completo com exemplo', desc:'Para pedir textos no seu estilo.',
-      text:'Você é [PAPEL]. Quero [TAREFA] para [PÚBLICO], com [TAMANHO] e tom [TOM]. Siga o estilo destes exemplos: [EXEMPLO 1] / [EXEMPLO 2]. Não use [O QUE EVITAR].' }
+    { title:'Pedido completo com exemplo', desc:'Para pedir textos no seu estilo.' }
   ],
   2: [
-    { title:'IA que entrevista', desc:'Para quando você não sabe por onde começar.',
-      text:'Quero [OBJETIVO]. Antes de responder, me faça até 5 perguntas que você precisa saber para me ajudar bem. Espere as minhas respostas e depois entregue [FORMATO DO RESULTADO] em etapas.' }
+    { title:'IA que entrevista', desc:'Para quando você não sabe por onde começar.' }
   ],
   3: [
-    { title:'Diagnóstico de prompt', desc:'Para melhorar um prompt que não funcionou.',
-      text:'Este foi o meu prompt: [PROMPT]. Este foi o resultado: [RESULTADO]. Diga o que faltou no prompt (contexto, formato, exemplo ou tamanho do pedido) e reescreva uma versão melhor, explicando a mudança principal.' }
+    { title:'Diagnóstico de prompt', desc:'Para melhorar um prompt que não funcionou.' }
   ]
 };
 
@@ -211,7 +208,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

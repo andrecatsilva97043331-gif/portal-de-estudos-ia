@@ -109,16 +109,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Calendário de 30 dias', desc:'Para planejar os posts do mês.',
-      text:'Negócio: [NEGÓCIO]. Público: [PÚBLICO]. Objetivo: [OBJETIVO]. Monte uma tabela de 30 dias com: dia, pilar (educar, mostrar, relacionar, vender), ideia, formato e chamada para ação. Use no máximo [N] posts por semana. Não invente promoções, preços nem depoimentos.' }
+    { title:'Calendário de 30 dias', desc:'Para planejar os posts do mês.' }
   ],
   2: [
-    { title:'Legendas na voz da marca', desc:'Para escrever no estilo do cliente.',
-      text:'Estes são textos do cliente de que ele gosta: [EXEMPLOS]. Descreva a voz da marca em 3 linhas e escreva 3 versões de legenda sobre [ASSUNTO], com chamada para ação. Deixe [CAMPOS] para preço, horário e endereço. Não invente fatos.' }
+    { title:'Legendas na voz da marca', desc:'Para escrever no estilo do cliente.' }
   ],
   3: [
-    { title:'Revisão antes de publicar', desc:'Para conferir riscos.',
-      text:'Revise estes posts: [POSTS]. Aponte fatos que preciso confirmar com o cliente, promessas exageradas, possíveis problemas de direitos de imagem e, se o setor for [SETOR], pontos de atenção com as regras de publicidade.' }
+    { title:'Revisão antes de publicar', desc:'Para conferir riscos.' }
   ]
 };
 
@@ -130,7 +127,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

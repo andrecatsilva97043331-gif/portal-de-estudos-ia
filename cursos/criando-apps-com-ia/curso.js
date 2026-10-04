@@ -115,16 +115,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Documento de uma página', desc:'Para descrever o app antes de pedir ao Cursor.',
-      text:'Quero criar um app que ajuda [QUEM] a [FAZER O QUÊ] para [RESULTADO]. Monte um documento de 1 página com: objetivo, quem usa, telas, dados guardados, regras e o que NÃO terá na primeira versão. Se faltar informação, faça até 5 perguntas antes.' }
+    { title:'Documento de uma página', desc:'Para descrever o app antes de pedir ao Cursor.' }
   ],
   2: [
-    { title:'Pedido em fatia', desc:'Para pedir uma parte do app ao agente.',
-      text:'Implemente somente [FATIA]. Não altere nada fora desta parte nem arquivos que já funcionam. Ao final, explique em linguagem simples o que mudou e como eu testo no navegador.' }
+    { title:'Pedido em fatia', desc:'Para pedir uma parte do app ao agente.' }
   ],
   3: [
-    { title:'Checagem de segurança', desc:'Para revisar o app antes de publicar.',
-      text:'Revise este app: [DESCRIÇÃO]. Aponte onde estão chaves e senhas, se algum dado de usuário pode ser visto por outros e quais regras de acesso e testes devo fazer antes de publicar. Não peça nem repita chaves reais.' }
+    { title:'Checagem de segurança', desc:'Para revisar o app antes de publicar.' }
   ]
 };
 
@@ -136,7 +133,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso. O documento do módulo 1 serve em qualquer assistente de IA; os pedidos dos módulos 2 e 3, cole no Cursor.',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

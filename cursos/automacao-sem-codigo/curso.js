@@ -117,16 +117,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Candidato a automação', desc:'Para decidir o que vale automatizar.',
-      text:'Descreva: [TAREFA]. Ela acontece [FREQUÊNCIA] e leva [TEMPO] por vez. Diga se vale automatizar, quais regras ela tem, quais casos estranhos podem acontecer e escreva o fluxo no formato: Quando [gatilho], se [condição], então [ação].' }
+    { title:'Candidato a automação', desc:'Para decidir o que vale automatizar.' }
   ],
   2: [
-    { title:'Roteiro do primeiro fluxo', desc:'Para montar passo a passo.',
-      text:'Quero montar na ferramenta [FERRAMENTA] um fluxo em que [GATILHO] e depois [AÇÕES]. Liste os passos, os campos que preciso ligar entre os serviços e 5 testes com dados fictícios. Avise onde devo conferir a documentação oficial.' }
+    { title:'Roteiro do primeiro fluxo', desc:'Para montar passo a passo.' }
   ],
   3: [
-    { title:'Revisão de segurança', desc:'Para checar riscos antes de ligar o fluxo.',
-      text:'Revise este fluxo: [DESCRIÇÃO SEM CHAVES NEM DADOS REAIS]. Aponte riscos de segurança, privacidade e custo, e sugira alertas de erro e um plano B manual.' }
+    { title:'Revisão de segurança', desc:'Para checar riscos antes de ligar o fluxo.' }
   ]
 };
 
@@ -138,7 +135,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

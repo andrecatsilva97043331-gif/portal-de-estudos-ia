@@ -118,16 +118,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Pergunta com base nos meus documentos', desc:'Para obrigar a IA a usar só o que você forneceu.',
-      text:'Responda somente com base nos trechos abaixo. Cite de qual trecho veio cada informação. Se a resposta não estiver nos trechos, diga "não encontrei nos documentos". Trechos: [TRECHOS]. Pergunta: [PERGUNTA].' }
+    { title:'Pergunta com base nos meus documentos', desc:'Para obrigar a IA a usar só o que você forneceu.' }
   ],
   2: [
-    { title:'Auditoria da base', desc:'Para avaliar documentos antes de usar.',
-      text:'Esta é a lista de documentos da minha base: [LISTA COM NOME, DATA E SETOR]. Aponte duplicados, versões antigas, informações possivelmente contraditórias e o que falta para uma boa base de conhecimento.' }
+    { title:'Auditoria da base', desc:'Para avaliar documentos antes de usar.' }
   ],
   3: [
-    { title:'Teste de perguntas', desc:'Para medir a qualidade das respostas.',
-      text:'Com base nestes documentos: [RESUMO DOS DOCUMENTOS], crie 20 perguntas de teste: 15 com resposta nos documentos e 5 sem resposta. Para cada uma, indique a resposta esperada ou "não está nos documentos".' }
+    { title:'Teste de perguntas', desc:'Para medir a qualidade das respostas.' }
   ]
 };
 
@@ -139,7 +136,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

@@ -110,16 +110,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Ideias de serviço', desc:'Para cruzar habilidades e problemas.',
-      text:'Minhas habilidades: [HABILIDADES]. Problemas que já vi em pequenos negócios: [PROBLEMAS]. Sugira 5 serviços simples que eu poderia oferecer e, para cada um, diga a quem serve, o que entrego e que 3 perguntas devo fazer a possíveis clientes para confirmar se há demanda. Não prometa ganhos.' }
+    { title:'Ideias de serviço', desc:'Para cruzar habilidades e problemas.' }
   ],
   2: [
-    { title:'Oferta em um parágrafo', desc:'Para escrever a oferta com clareza.',
-      text:'Escreva a minha oferta no formato: "Eu ajudo [NICHO] a [RESULTADO]. Entrego [ENTREGÁVEIS] em [PRAZO]. Estão incluídas [N] revisões. Não está incluído [LIMITE]." Depois, aponte o que pode ser mal entendido pelo cliente.' }
+    { title:'Oferta em um parágrafo', desc:'Para escrever a oferta com clareza.' }
   ],
   3: [
-    { title:'Pesquisa de feedback', desc:'Para aprender com o cliente-piloto.',
-      text:'Crie 5 perguntas curtas para pedir feedback ao meu cliente-piloto sobre o serviço [SERVIÇO], incluindo uma pergunta sobre o que faltou e outra sobre se ele indicaria. Escreva também uma mensagem educada pedindo autorização para publicar o depoimento dele.' }
+    { title:'Pesquisa de feedback', desc:'Para aprender com o cliente-piloto.' }
   ]
 };
 
@@ -131,7 +128,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

@@ -109,16 +109,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Pacote de mensagens', desc:'Para criar modelos por situação.',
-      text:'Negócio: [NEGÓCIO]. Tom: [TOM]. Crie 10 mensagens de WhatsApp para as situações: boas-vindas, preço, confirmação, lembrete, pós-venda, cobrança educada e retomada de contato. Use campos [NOME], [DATA] e [VALOR]. Dê 2 variações curtas de cada. Não invente promoções.' }
+    { title:'Pacote de mensagens', desc:'Para criar modelos por situação.' }
   ],
   2: [
-    { title:'Post de LinkedIn', desc:'Para criar posts profissionais.',
-      text:'Escreva 3 posts de LinkedIn sobre [TEMA] para [PÚBLICO], com gancho na primeira linha, conteúdo útil e pergunta final. Tom [TOM]. Não invente resultados, clientes nem números.' }
+    { title:'Post de LinkedIn', desc:'Para criar posts profissionais.' }
   ],
   3: [
-    { title:'Revisão de consentimento', desc:'Para checar o uso responsável.',
-      text:'Este é o plano de envio do meu cliente: [DESCRIÇÃO]. Aponte riscos de spam, de falta de consentimento e de privacidade, e sugira como pedir permissão e oferecer descadastro. Lembre-me de conferir as políticas atuais das plataformas.' }
+    { title:'Revisão de consentimento', desc:'Para checar o uso responsável.' }
   ]
 };
 
@@ -130,7 +127,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]

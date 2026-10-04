@@ -181,16 +181,13 @@ const MODDONE = {
 
 const PROMPTS = {
   1: [
-    { title:'Explique como se eu tivesse 10 anos', desc:'Para entender qualquer assunto difícil.',
-      text:'Explique [ASSUNTO] como se eu tivesse 10 anos. Use uma analogia do dia a dia e termine com 3 perguntas para eu testar se entendi.' }
+    { title:'Explique como se eu tivesse 10 anos', desc:'Para entender qualquer assunto difícil.' }
   ],
   2: [
-    { title:'Pedido em 4 partes', desc:'Para transformar um pedido vago em um pedido claro.',
-      text:'Você é [PAPEL]. Quero que você [TAREFA]. O contexto é: [QUEM SOU, PARA QUEM É, PARA QUÊ]. Entregue em [FORMATO: tamanho, tom, lista ou texto]. Se faltar informação, me faça até 3 perguntas antes de responder.' }
+    { title:'Pedido em 4 partes', desc:'Para transformar um pedido vago em um pedido claro.' }
   ],
   3: [
-    { title:'Checagem de resposta', desc:'Para reduzir o risco de erro.',
-      text:'Releia sua resposta anterior. Liste o que você tem certeza, o que pode estar desatualizado e o que eu devo conferir em fonte oficial. Não invente fontes: se não souber, diga "não sei".' }
+    { title:'Checagem de resposta', desc:'Para reduzir o risco de erro.' }
   ]
 };
 
@@ -202,7 +199,6 @@ return {
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
-  dicaPrompts: 'Troque o que está entre [COLCHETES] pelos dados do seu caso e cole em qualquer assistente de IA (ChatGPT, Gemini, Claude...).',
   cores: THEME,
   iconesLicao: LIC,
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]
