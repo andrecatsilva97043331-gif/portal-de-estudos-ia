@@ -2,6 +2,15 @@
 
 **O maior portal de estudos de desenvolvimento em IA.** Portal com vários cursos. O aluno se cadastra (nome, e-mail, idade, telefone/WhatsApp, país, estado, CEP, profissão, ocupação atual, se trabalha, se estuda e objetivo com o curso), confirma o e-mail e o WhatsApp, escolhe um curso e começa na hora. Não pedimos CPF, RG nem documentos com foto. O master acompanha todos os alunos e envia avisos pelo WhatsApp em `admin.html`.
 
+## Endereços
+
+- **Portal dos alunos:** https://andrecatsilva97043331-gif.github.io/portal-de-estudos-ia/
+- **Painel do master:** https://andrecatsilva97043331-gif.github.io/portal-de-estudos-ia/admin.html
+- **Link de convite de um curso:** use o botão "Copiar link de convite" no painel (formato `.../?curso=ID-DO-CURSO`).
+- **Prévia de rascunhos no site publicado:** acrescente `?previa` ao endereço.
+
+Cada `git push` na branch `main` atualiza o site em 1 ou 2 minutos (GitHub Pages).
+
 ## Testar no computador
 
 ```
