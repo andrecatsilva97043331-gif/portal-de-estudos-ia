@@ -60,7 +60,7 @@ function linhas(){
 
 /* ============ TELAS ============ */
 function renderLogin(msg){
-  $('btn-sair').hidden = true; $('btn-aluno').hidden = true;
+  $('btn-sair').hidden = true; $('btn-aluno').hidden = true; $('btn-manual').hidden = true;
   const demo = DB.modo === 'demo';
   $('main').innerHTML = `<form class="form" id="f-login" style="max-width:420px; margin-top:40px">
     <div class="orb mini rise" aria-hidden="true"><span>🛡️</span></div>
@@ -282,8 +282,23 @@ async function enviarApi(){
   } catch(e){ console.error(e); toast(e.message || 'Falha no envio automático.'); }
 }
 
+/* Manual: botão "📖 Manual" no topo e "❓" ao lado de cada seção (conteúdo em assets/manual-master.js). */
+const ajuda = id => `<button class="ajuda" type="button" data-act="manual" data-sec="${id}" title="Como usar esta parte" aria-label="Como usar esta parte">❓</button>`;
+function abrirManual(sec){
+  const m = window.MANUAL_MASTER || [];
+  $('drawer').innerHTML = `<div class="dh"><div class="pessoa"><span class="av" style="${cor(1)}">📖</span><h2>Manual do painel</h2></div><button class="x" data-act="fechar" aria-label="Fechar">✕</button></div>
+    <div class="db manual">
+      <nav class="man-ind">${m.map(s => `<button type="button" data-act="manual-ir" data-sec="${s.id}">${s.titulo}</button>`).join('')}</nav>
+      ${m.map(s => `<section id="man-${s.id}"><h3>${s.titulo}</h3>${s.html}</section>`).join('')}
+    </div>`;
+  $('drawer').classList.add('on'); $('shade').classList.add('on');
+  const alvo = sec && $('man-' + sec);
+  $('drawer').scrollTop = 0;
+  if (alvo) setTimeout(() => alvo.scrollIntoView({ block:'start' }), 30);
+}
+
 function renderPainel(){
-  $('btn-sair').hidden = false; $('btn-aluno').hidden = false;
+  $('btn-sair').hidden = false; $('btn-aluno').hidden = false; $('btn-manual').hidden = false;
   const agora = Date.now();
   const recente = (iso, dias) => iso && agora - new Date(iso).getTime() < dias * DIA;
   const ativos = DADOS.alunos.filter(a => recente(a.ultimo_acesso, 7)).length;
@@ -300,7 +315,7 @@ function renderPainel(){
     ['🏆', concluidos, '', 'cursos concluídos', taxa + '% de conclusão']
   ];
   $('main').innerHTML = `
-    <div class="adm-h rise"><div><div class="eyebrow">Painel do master</div><h1 class="h1">Visão geral dos <span class="grad">seus alunos</span></h1></div>
+    <div class="adm-h rise"><div><div class="eyebrow">Painel do master ${ajuda('inicio')}</div><h1 class="h1">Visão geral dos <span class="grad">seus alunos</span></h1></div>
       <span class="live"><i></i>${DB.modo === 'demo' ? 'Demonstração' : 'Dados ao vivo'}</span></div>
     <div class="stats">${stats.map((s, i) => `<div class="stat rise" style="${cor(i + 1)};--d:${i * 0.06}s"><div class="sico">${s[0]}</div><b data-n="${s[1]}" data-suf="${s[2]}">0</b><span>${s[3]}</span><small>${s[4]}</small></div>`).join('')}</div>
     <div class="tools">
@@ -309,19 +324,21 @@ function renderPainel(){
       <button class="sbtn" data-act="convite">🔗 Copiar link de convite</button>
       <button class="sbtn" data-act="csv">⬇️ Exportar planilha</button>
       <button class="sbtn" data-act="atualizar">🔄 Atualizar</button>
+      ${ajuda('ferramentas')}
     </div>
     <div id="confirmacoes"></div>
+    <h2 class="sec-t">📈 Gráficos ${ajuda('graficos')}</h2>
     <div class="charts" id="graficos"></div>
-    <h2 class="sec-t">📲 Central de avisos no WhatsApp</h2>
+    <h2 class="sec-t">📲 Central de avisos no WhatsApp ${ajuda('avisos')}</h2>
     <div class="card avc rise" id="avisos"></div>
-    <h2 class="sec-t" id="titulo-tabela">Alunos</h2>
+    <h2 class="sec-t"><span id="titulo-tabela">Alunos</span> ${ajuda('alunos')}</h2>
     <div class="card tcard" id="tabela"></div>
-    <h2 class="sec-t" id="titulo-cert">🎓 Certificados emitidos</h2>
+    <h2 class="sec-t"><span id="titulo-cert">🎓 Certificados emitidos</span> ${ajuda('certificados')}</h2>
     <p class="cert-sync" id="cert-sync">${esc(SYNC)}</p>
     <div class="card tcard" id="certificados"></div>
-    <h2 class="sec-t">📣 Divulgação</h2>
+    <h2 class="sec-t">📣 Divulgação ${ajuda('divulgacao')}</h2>
     <div class="card avc rise" id="divulgacao"></div>
-    <h2 class="sec-t" id="titulo-dep">💬 Depoimentos</h2>
+    <h2 class="sec-t"><span id="titulo-dep">💬 Depoimentos</span> ${ajuda('depoimentos')}</h2>
     <div class="card tcard" id="depoimentos"></div>`;
   document.querySelectorAll('.stat b[data-n]').forEach(contar);
   renderConfirmacoes();
@@ -477,7 +494,7 @@ function renderConfirmacoes(){
   const pediram = pend.filter(a => a.whatsapp_solicitado_em).sort((x, y) => String(y.whatsapp_solicitado_em).localeCompare(String(x.whatsapp_solicitado_em)));
   const faltam = pend.length - pediram.length;
   if (!pend.length) { el.innerHTML = ''; return; }
-  el.innerHTML = `<h2 class="sec-t">✅ Confirmações de WhatsApp <small style="color:var(--muted);font-weight:400">· ${pediram.length} aguardando você</small></h2>
+  el.innerHTML = `<h2 class="sec-t">✅ Confirmações de WhatsApp ${ajuda('confirmacoes')} <small style="color:var(--muted);font-weight:400">· ${pediram.length} aguardando você</small></h2>
     <div class="card avc rise">
       <p class="nota" style="margin:0 0 12px">Quando o aluno toca em "Enviar confirmação", chega no seu WhatsApp uma mensagem com o código. Confira se o <b>número de quem mandou</b> e o <b>código</b> batem com os daqui e clique em Confirmar.</p>
       <div class="confs">${pediram.map(a => {
@@ -630,6 +647,8 @@ document.addEventListener('click', e => {
       renderCertificados(); toast(sim ? 'Certificado revogado' : 'Certificado restaurado');
     }).catch(err => { console.error(err); toast('Não foi possível alterar agora.'); });
   }
+  else if (a === 'manual') abrirManual(t.dataset.sec);
+  else if (a === 'manual-ir') { const s = $('man-' + t.dataset.sec); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
   else if (a === 'copiar-rastreio') { copiar(linkRastreio()); toast('Link com rastreio copiado'); }
   else if (a === 'dep-moderar') {
     const id = Number(t.dataset.id), st = t.dataset.st;

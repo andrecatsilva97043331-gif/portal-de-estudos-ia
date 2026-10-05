@@ -216,6 +216,20 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .cert-cta code{font-family:'JetBrains Mono',ui-monospace,monospace; color:var(--c); letter-spacing:.5px;}
 .next.cert-btn{--c:#22d3ee; --c2:#c084fc;}
 .cert-sync{color:var(--muted); font-size:13.5px; margin:-4px 0 10px;}
+
+/* ---------- Manual do painel ---------- */
+.ajuda{display:inline-grid; place-items:center; width:26px; height:26px; margin-left:6px; padding:0; border-radius:50%; border:1px solid var(--line);
+  background:rgba(255,255,255,.06); font-size:13px; line-height:1; vertical-align:middle; cursor:pointer; transition:background .2s, border-color .2s;}
+.ajuda:hover{background:rgba(255,255,255,.14); border-color:var(--muted);}
+.eyebrow .ajuda{width:22px; height:22px; font-size:11px;}
+.manual .man-ind{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 18px;}
+.manual .man-ind button{border:1px solid var(--line); background:rgba(255,255,255,.05); color:var(--text); border-radius:99px; padding:6px 12px; font-size:13px; cursor:pointer;}
+.manual .man-ind button:hover{background:rgba(255,255,255,.12);}
+.manual section{padding:16px 0; border-top:1px solid var(--line); scroll-margin-top:10px;}
+.manual h3{margin:0 0 8px;} .manual h4{margin:14px 0 6px; font-size:15px;}
+.manual p, .manual li{font-size:14.5px; line-height:1.6; color:var(--text);}
+.manual ul, .manual ol{padding-left:20px; margin:6px 0;} .manual li{margin:4px 0;}
+.manual code{font-family:'JetBrains Mono',ui-monospace,monospace; font-size:13px; padding:1px 5px; border-radius:6px; background:rgba(255,255,255,.08);}
 .nivel.final .mc.pfinal{border-style:dashed;}
 .nivel.final .mc.pfinal.lock{opacity:.6;}
 
