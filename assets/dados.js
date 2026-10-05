@@ -11,6 +11,26 @@ function carregarScript(src){
   return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
 }
 function soCampos(d){ const o = {}; CAMPOS.forEach(k => { if (d[k] !== undefined) o[k] = d[k]; }); return o; }
+
+/* Origem do visitante (links com rastreio ?utm_source=instagram&utm_campaign=lancamento, ou o site de onde veio).
+   Vale a primeira visita: fica guardada até o cadastro. */
+const CHAVE_ORIGEM = 'portal-estudos-origem';
+const REDES = [[/instagram/, 'instagram'], [/linkedin|lnkd\.in/, 'linkedin'], [/facebook|fb\.me/, 'facebook'], [/whatsapp|wa\.me/, 'whatsapp'],
+  [/tiktok/, 'tiktok'], [/youtube|youtu\.be/, 'youtube'], [/^t\.co$|twitter|x\.com/, 'x'], [/google\./, 'google']];
+(function guardarOrigem(){
+  try {
+    if (localStorage.getItem(CHAVE_ORIGEM)) return;
+    const p = new URLSearchParams(location.search);
+    let o = [p.get('utm_source') || p.get('origem'), p.get('utm_campaign')].filter(Boolean).join(' · ');
+    if (!o && document.referrer) {
+      const h = new URL(document.referrer).hostname.replace(/^(www|m|l|lm)\./, '');
+      if (h && h !== location.hostname) o = ((REDES.find(r => r[0].test(h)) || [])[1]) || h;
+    }
+    o = o.toLowerCase().replace(/[^a-z0-9 ·._-]/g, '').trim().slice(0, 60);
+    if (o) localStorage.setItem(CHAVE_ORIGEM, o);
+  } catch(e){}
+})();
+const origem = () => { try { return localStorage.getItem(CHAVE_ORIGEM) || null; } catch(e){ return null; } };
 let EXIGIR_WHATS = true;
 /* Volta do link "redefinir senha" do e-mail (o Supabase limpa o endereço logo depois, por isso é lido aqui). */
 let RECUPERANDO = /[#&]type=recovery/.test(location.hash);
@@ -88,7 +108,11 @@ function bancoSupabase(){
     async cadastrar(d){
       const s = await sessao();
       if (!s || !s.user.email_confirmed_at) throw new Error('Confirme o e-mail antes de continuar.');
-      const aluno = ok(await sb.from('alunos').upsert(Object.assign(soCampos(d), { id:s.user.id, email:s.user.email, ultimo_acesso:agora() })).select().single());
+      const linha = Object.assign(soCampos(d), { id:s.user.id, email:s.user.email, ultimo_acesso:agora() });
+      if (origem()) linha.origem = origem();
+      let r = await sb.from('alunos').upsert(linha).select().single();
+      if (r.error && linha.origem && /origem/i.test(r.error.message || '')) { delete linha.origem; r = await sb.from('alunos').upsert(linha).select().single(); }
+      const aluno = ok(r);
       aluno.email_verificado = true;
       return aluno;
     },
@@ -246,7 +270,7 @@ function bancoDemo(){
       const d = ler();
       if (!d.emailSessao) throw new Error('Confirme o e-mail antes de continuar.');
       let a = d.alunos.find(x => x.email === d.emailSessao) || d.alunos.find(x => x.id === d.eu && !x.email);
-      if (!a) { a = { id:novoId(), criado_em:agora(), whatsapp_verificado:false }; d.alunos.push(a); }
+      if (!a) { a = { id:novoId(), criado_em:agora(), whatsapp_verificado:false, origem:origem() }; d.alunos.push(a); }
       if (a.telefone && a.telefone.replace(/\D/g, '') !== String(dados.telefone || '').replace(/\D/g, '')) a.whatsapp_verificado = false;
       Object.assign(a, soCampos(dados), { email:d.emailSessao, email_verificado:true, ultimo_acesso:agora() });
       d.eu = a.id;

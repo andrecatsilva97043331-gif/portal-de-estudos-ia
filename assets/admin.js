@@ -318,11 +318,49 @@ function renderPainel(){
     <div class="card tcard" id="tabela"></div>
     <h2 class="sec-t" id="titulo-cert">🎓 Certificados emitidos</h2>
     <p class="cert-sync" id="cert-sync">${esc(SYNC)}</p>
-    <div class="card tcard" id="certificados"></div>`;
+    <div class="card tcard" id="certificados"></div>
+    <h2 class="sec-t">📣 Divulgação</h2>
+    <div class="card avc rise" id="divulgacao"></div>`;
   document.querySelectorAll('.stat b[data-n]').forEach(contar);
   renderConfirmacoes();
   renderTabela();
   renderCertificados();
+  renderDivulgacao();
+}
+
+/* Links com rastreio: cada post usa um link próprio e o cadastro grava de onde o aluno veio (alunos.origem). */
+const REDES_DIV = [['instagram','📸 Instagram'], ['linkedin','💼 LinkedIn'], ['whatsapp','💬 WhatsApp'], ['facebook','📘 Facebook'], ['tiktok','🎵 TikTok'], ['youtube','▶️ YouTube'], ['outro','🔗 Outro']];
+let DIV = { rede:'instagram', campanha:'', curso:'' };
+function linkRastreio(){
+  const u = new URL('./', location.href);
+  u.searchParams.set('utm_source', DIV.rede);
+  const camp = DIV.campanha.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+  if (camp) u.searchParams.set('utm_campaign', camp);
+  if (DIV.curso) u.searchParams.set('curso', DIV.curso);
+  return u.href;
+}
+function renderDivulgacao(){
+  const el = $('divulgacao'); if (!el) return;
+  const conta = {};
+  DADOS.alunos.forEach(a => {
+    const k = a.origem || '';
+    const c = conta[k] || (conta[k] = { n:0, concluiu:0 });
+    c.n++;
+    if (DADOS.matriculas.some(m => m.aluno_id === a.id && progressoDe(a.id, m.curso_id).pct === 100)) c.concluiu++;
+  });
+  const linhasOrigem = Object.entries(conta).sort((x, y) => y[1].n - x[1].n);
+  const opCursos = CURSOS.filter(c => PORTAL.disponivel(c) && !c.projeto_final).map(c => `<option value="${esc(c.id)}" ${DIV.curso === c.id ? 'selected' : ''}>${esc(c.titulo)}</option>`).join('');
+  el.innerHTML = `<p class="nota" style="margin:0 0 12px">Use um link diferente em cada post. Quem se cadastrar por ele fica registrado com a origem, e você vê abaixo qual rede e qual campanha trazem mais alunos.</p>
+    <div class="tools" style="margin:0 0 10px">
+      <select class="inp" id="div-rede">${REDES_DIV.map(r => `<option value="${r[0]}" ${DIV.rede === r[0] ? 'selected' : ''}>${r[1]}</option>`).join('')}</select>
+      <input class="inp" id="div-campanha" placeholder="Campanha (ex.: lancamento, depoimento-maria)" value="${esc(DIV.campanha)}" maxlength="40">
+      <select class="inp" id="div-curso"><option value="">Página inicial</option>${opCursos}</select>
+    </div>
+    <div class="tools" style="margin:0 0 16px"><code id="div-link" style="flex:1;overflow-wrap:anywhere;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.06)">${esc(linkRastreio())}</code>
+      <button class="sbtn" data-act="copiar-rastreio">🔗 Copiar link</button></div>
+    ${linhasOrigem.length ? `<table class="atbl"><thead><tr><th>De onde vieram</th><th>Alunos</th><th>Concluíram um curso</th></tr></thead><tbody>
+      ${linhasOrigem.map(([k, c]) => `<tr><td>${k ? esc(k) : '<small>Direto ou sem rastreio</small>'}</td><td>${c.n}</td><td>${c.concluiu}</td></tr>`).join('')}</tbody></table>`
+      : '<div class="empty">Nenhum aluno cadastrado ainda.</div>'}`;
 }
 
 /* Envia ao Supabase os cursos publicados e as lições que valem certificado (o servidor confere a conclusão por esta lista). */
@@ -430,6 +468,7 @@ function abrirAluno(id){
         <span>Objetivo</span><b>${esc(a.objetivo || '-')}</b>
         ${a.objetivo_detalhe ? `<span>Em detalhe</span><b style="font-weight:400">${esc(a.objetivo_detalhe)}</b>` : ''}
         <span>Cadastro</span><b>${dataHora(a.criado_em)}</b>
+        <span>Veio de</span><b>${esc(a.origem || 'Direto ou sem rastreio')}</b>
         <span>Último acesso</span><b>${dataHora(a.ultimo_acesso)}</b>
       </div>
       ${cursos || '<p class="empty">Ainda não iniciou nenhum curso.</p>'}
@@ -508,10 +547,12 @@ document.addEventListener('click', e => {
       renderCertificados(); toast(sim ? 'Certificado revogado' : 'Certificado restaurado');
     }).catch(err => { console.error(err); toast('Não foi possível alterar agora.'); });
   }
+  else if (a === 'copiar-rastreio') { copiar(linkRastreio()); toast('Link com rastreio copiado'); }
   else if (a === 'sair') DB.sairMaster().then(() => renderLogin());
 });
 document.addEventListener('input', e => {
   if (e.target.id === 'busca') { F.busca = e.target.value; renderTabela(); }
+  else if (e.target.id === 'div-campanha') { DIV.campanha = e.target.value; $('div-link').textContent = linkRastreio(); }
   else if (e.target.id === 'modelo') {
     salvarModelo(AV.seg, e.target.value);
     (AV.perfis || []).filter(p => p.seg === AV.seg).forEach(p => {
@@ -524,6 +565,8 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('change', e => {
   if (e.target.id === 'filtro-curso') { F.curso = e.target.value; renderTabela(); }
+  else if (e.target.id === 'div-rede') { DIV.rede = e.target.value; $('div-link').textContent = linkRastreio(); }
+  else if (e.target.id === 'div-curso') { DIV.curso = e.target.value; $('div-link').textContent = linkRastreio(); }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') fechar(); });
 document.addEventListener('submit', async e => {
