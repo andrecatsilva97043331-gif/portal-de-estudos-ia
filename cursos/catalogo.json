@@ -8,7 +8,8 @@
     "nivel": "iniciante",
     "ordem": 1,
     "status": "disponivel",
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "prompts-que-funcionam",
@@ -19,6 +20,7 @@
     "nivel": "iniciante",
     "ordem": 2,
     "status": "em_breve",
+    "carga_horaria": 4,
     "versao": 1
   },
   {
@@ -31,6 +33,7 @@
     "ordem": 3,
     "recomendado_antes": ["prompts-que-funcionam"],
     "status": "em_breve",
+    "carga_horaria": 4,
     "versao": 1
   },
   {
@@ -43,6 +46,7 @@
     "ordem": 4,
     "recomendado_antes": ["ia-no-trabalho"],
     "status": "em_breve",
+    "carga_horaria": 6,
     "versao": 1
   },
   {
@@ -55,18 +59,20 @@
     "ordem": 5,
     "recomendado_antes": ["prompts-que-funcionam"],
     "status": "em_breve",
+    "carga_horaria": 6,
     "versao": 1
   },
   {
     "id": "arquiteto-solucoes-ia",
     "titulo": "Arquiteto de Soluções com IA",
-    "descricao": "Do problema do cliente ao fluxo automatizado: 4 módulos práticos, com desafios e prompts prontos para o Cursor.",
+    "descricao": "Do problema do cliente ao fluxo automatizado: 5 módulos práticos, com desafios, projetos e missões de prompt para o Cursor.",
     "icone": "🏗️",
     "cores": ["#22d3ee", "#c084fc"],
     "nivel": "intermediario",
     "ordem": 6,
     "status": "disponivel",
-    "versao": 1
+    "carga_horaria": 6,
+    "versao": 2
   },
   {
     "id": "agentes-de-ia",
@@ -78,6 +84,7 @@
     "ordem": 7,
     "recomendado_antes": ["automacao-sem-codigo", "criando-apps-com-ia"],
     "status": "em_breve",
+    "carga_horaria": 8,
     "versao": 1
   },
   {
@@ -90,6 +97,7 @@
     "ordem": 8,
     "recomendado_antes": ["prompts-que-funcionam", "criando-apps-com-ia"],
     "status": "em_breve",
+    "carga_horaria": 8,
     "versao": 1
   },
   {
@@ -102,6 +110,7 @@
     "ordem": 9,
     "recomendado_antes": ["criando-apps-com-ia", "agentes-de-ia"],
     "status": "em_breve",
+    "carga_horaria": 8,
     "versao": 1
   },
   {
@@ -114,6 +123,7 @@
     "ordem": 10,
     "recomendado_antes": ["ia-em-producao"],
     "status": "em_breve",
+    "carga_horaria": 8,
     "versao": 1
   },
   {
@@ -126,6 +136,7 @@
     "grupo": "fundamentos",
     "ordem": 11,
     "status": "em_breve",
+    "carga_horaria": 4,
     "versao": 1
   },
   {
@@ -139,6 +150,7 @@
     "ordem": 12,
     "recomendado_antes": ["base-profissional", "prompts-que-funcionam"],
     "status": "em_breve",
+    "carga_horaria": 4,
     "versao": 1
   },
   {
@@ -152,6 +164,7 @@
     "ordem": 13,
     "recomendado_antes": ["base-profissional", "posts-para-redes-sociais"],
     "status": "em_breve",
+    "carga_horaria": 4,
     "versao": 1
   },
   {
@@ -165,6 +178,7 @@
     "ordem": 14,
     "recomendado_antes": ["base-profissional", "prompts-que-funcionam"],
     "status": "em_breve",
+    "carga_horaria": 4,
     "versao": 1
   },
   {
@@ -178,6 +192,7 @@
     "ordem": 15,
     "recomendado_antes": ["base-profissional"],
     "status": "em_breve",
+    "carga_horaria": 4,
     "versao": 1
   },
   {
@@ -191,6 +206,7 @@
     "ordem": 16,
     "recomendado_antes": ["seu-primeiro-servico"],
     "status": "em_breve",
+    "carga_horaria": 4,
     "versao": 1
   },
   {
@@ -204,6 +220,7 @@
     "ordem": 17,
     "recomendado_antes": ["seu-primeiro-servico", "primeiros-clientes"],
     "status": "em_breve",
+    "carga_horaria": 4,
     "versao": 1
   }
 ]

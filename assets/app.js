@@ -85,7 +85,7 @@ function renderCursos(){
     topo = `<section class="hero rise">
       <div><div class="eyebrow">Portal de Estudos IA</div>
       <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
-      <p class="hp">Lições curtas, casos de clientes de verdade e prompts prontos para usar. Faça seu cadastro gratuito e comece agora.</p>
+      <p class="hp">Lições curtas, casos de clientes de verdade e projetos práticos. Faça seu cadastro gratuito e comece agora.</p>
       <div class="chips"><span class="chip">🎓 ${CURSOS.length} ${CURSOS.length === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
       <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}</div>
       <div class="orb" aria-hidden="true"><span>📚</span></div>
@@ -348,7 +348,7 @@ function avisoTrilha(){
     <button class="nfechar" type="button" data-act="fechar-aviso" aria-label="Fechar aviso">✕</button>
     <h2 class="ntit">🚀 Novidade: a Trilha de IA do Portal de Estudos IA</h2>
     <p class="nsub">Do zero ao arquiteto, de graça. Escolha seu ponto de partida.</p>
-    <p class="ncorpo">Nunca usou IA? Já usa e quer ir mais longe? Agora o portal tem uma trilha completa com 3 níveis e 10 cursos curtos, em português, para estudar no celular, com lições de 5 a 8 minutos. Siga a trilha na ordem ou escolha só o curso de que você precisa. Cada lição termina com um desafio prático.</p>
+    <p class="ncorpo">Nunca usou IA? Já usa e quer ir mais longe? Agora o portal tem uma trilha completa com 3 níveis e 10 cursos curtos, em português, para estudar no celular, com lições curtas. Siga a trilha na ordem ou escolha só o curso de que você precisa. Cada lição termina com desafios práticos e cada módulo, com um projeto.</p>
     <div class="nchips"><span class="chip">✅ Já disponível: Arquiteto de Soluções com IA</span><span class="chip">🔜 Os próximos chegam um a um</span><span class="chip">🆓 100% gratuito</span></div>
     <button class="next" type="button" data-act="ver-trilha">Ver a trilha ➜</button>
   </section>`;
@@ -759,43 +759,84 @@ function renderLicao(){
   const lessonDots = mod.lessons.map(l => `<i class="${d[l.id]?'on':(l.id===L.id?'now':'')}"></i>`).join('');
   const head = `<div class="lh"><button class="ltile" data-act="spin" aria-label="Ícone da lição">${iconeLicao(L)}</button>
     <div><div class="crumb">Módulo ${mod.id}: ${mod.title} · Lição ${L.id}${L.min?' · '+L.min+' min':''}</div><h1 class="h1">${L.title}</h1></div></div><div class="dots">${lessonDots}</div>`;
+  if (!L.soon && L.projeto) { renderProjeto(L, mod, head); return; }
   if (L.soon || !L.ch) {
     m.innerHTML = head + (L.body || []).join('') + `<div class="card soon"><div style="font-size:46px">🚧</div><h3>Conteúdo em construção</h3><p style="margin:6px auto 0">${L.teaser || ''}</p></div>`;
     return;
   }
-  const ss = SESSION[C.id + ':' + L.id] || { tried:[] };
+  const ss = SESSION[C.id + ':' + L.id] || { tried:[], q:0 };
   const solved = !!d[L.id];
-  const c = L.ch, letters = ['A','B','C','D','E'];
-  const opts = c.opts.map((o,i) => {
-    const tried = ss.tried.includes(i);
-    let cls = '', dis = '';
-    if (solved) { dis = 'disabled'; cls = o.ok ? 'right' : 'dim'; }
-    else if (tried) { dis = 'disabled'; cls = 'wrong' + (i === ss.last ? ' shake' : ''); }
-    return `<button class="opt ${cls}" data-act="ans" data-i="${i}" ${dis}><span class="l l${letters[i]}">${letters[i]}</span><span>${o.t}</span></button>`;
-  }).join('');
-  let fb = '';
-  if (solved) {
-    const right = c.opts.find(o => o.ok);
-    fb = `<div class="fb ok pop"><b>✅ ${C.conteudo.acerto || 'Acertou!'} +100 XP</b><span>${right.why}</span></div>`;
-  } else if (ss.tried.length) {
-    const last = c.opts[ss.tried[ss.tried.length-1]];
-    fb = `<div class="fb no pop"><b>❌ Ainda não.</b><span>${last.why} Tente outra alternativa.</span></div>`;
-  }
-  const i = idxOf(L.id), isLastOfMod = mod.lessons[mod.lessons.length-1].id === L.id;
-  let nav = '';
-  if (solved) {
-    if (isLastOfMod && modDone(mod)) nav = `<button class="next alt" data-act="finish" data-mod="${mod.id}">🎉 Concluir módulo</button>`;
-    else if (FLAT()[i+1]) nav = `<button class="next" data-act="next">Avançar para próxima lição ➜</button>`;
-  }
-  m.innerHTML = head + L.body.join('') + `<section class="os" aria-label="Desafio">
+  const lista = perguntas(L), atual = solved ? lista.length : (ss.q || 0), letters = ['A','B','C','D','E'];
+  const bloco = (c, k) => {
+    const feita = k < atual;
+    const opts = c.opts.map((o,i) => {
+      const tried = !feita && ss.tried.includes(i);
+      let cls = '', dis = '';
+      if (feita) { dis = 'disabled'; cls = o.ok ? 'right' : 'dim'; }
+      else if (tried) { dis = 'disabled'; cls = 'wrong' + (i === ss.last ? ' shake' : ''); }
+      return `<button class="opt ${cls}" data-act="ans" data-i="${i}" ${dis}><span class="l l${letters[i]}">${letters[i]}</span><span>${o.t}</span></button>`;
+    }).join('');
+    let fb = '';
+    if (feita) {
+      const ultima = k === lista.length - 1;
+      fb = `<div class="fb ok pop"><b>✅ ${ultima ? (C.conteudo.acerto || 'Acertou!') + ' +100 XP' : 'Certo!'}</b><span>${c.opts.find(o => o.ok).why}</span></div>`;
+    } else if (ss.tried.length) {
+      fb = `<div class="fb no pop"><b>❌ Ainda não.</b><span>${c.opts[ss.tried[ss.tried.length-1]].why} Tente outra alternativa.</span></div>`;
+    }
+    return `<section class="os" aria-label="Desafio">
+      ${lista.length > 1 ? `<div class="pnum">Pergunta ${k + 1} de ${lista.length}</div>` : ''}
       <div class="who">${c.who} diz:</div>
       <div class="says">"${c.says}"</div>
       <div class="q">${c.q}</div>
       ${opts}
-      <div id="fb">${fb}</div>
-      ${nav}
+      <div ${k === Math.min(atual, lista.length - 1) ? 'id="fb"' : ''}>${fb}</div>
     </section>`;
+  };
+  m.innerHTML = head + L.body.join('') + lista.slice(0, Math.min(atual + 1, lista.length)).map(bloco).join('') + navConcluida(L, mod, solved);
   rodarGancho();
+}
+
+const perguntas = L => Array.isArray(L.ch) ? L.ch : [L.ch];
+
+function navConcluida(L, mod, solved){
+  if (!solved) return '';
+  const i = idxOf(L.id), isLastOfMod = mod.lessons[mod.lessons.length-1].id === L.id;
+  if (isLastOfMod && modDone(mod)) return `<button class="next alt" data-act="finish" data-mod="${mod.id}">🎉 Concluir módulo</button>`;
+  if (FLAT()[i+1]) return `<button class="next" data-act="next">Avançar para próxima lição ➜</button>`;
+  return '';
+}
+
+/* Projeto prático: o aluno escreve a entrega e confere a checklist antes de concluir. */
+const chaveProjeto = (L, parte) => ['portal-projeto', ALUNO ? ALUNO.id : (MASTER ? 'master' : ''), C.id, L.id, parte].join(':');
+const lerProjeto = (L, parte, padrao) => { try { const v = localStorage.getItem(chaveProjeto(L, parte)); return v === null ? padrao : JSON.parse(v); } catch(e){ return padrao; } };
+const gravarProjeto = (L, parte, v) => { try { localStorage.setItem(chaveProjeto(L, parte), JSON.stringify(v)); } catch(e){} };
+const minimoProjeto = L => L.projeto.minimo || 200;
+
+function renderProjeto(L, mod, head){
+  const p = L.projeto, solved = !!D()[L.id];
+  const texto = lerProjeto(L, 'texto', ''), marcados = lerProjeto(L, 'checklist', []);
+  $('main').innerHTML = head + (L.body || []).join('') + `<section class="os projeto" aria-label="Projeto prático">
+      ${L.min ? `<div class="pnum">⏱️ Cerca de ${L.min} min</div>` : ''}
+      <div class="q">${p.entrega}</div>
+      <ol class="ppassos">${p.passos.map(x => `<li>${x}</li>`).join('')}</ol>
+      <label class="plabel" for="meu-projeto">Sua entrega</label>
+      <textarea id="meu-projeto" class="meu-projeto" rows="9" placeholder="Escreva aqui o resultado do seu projeto, com as suas palavras...">${esc(texto)}</textarea>
+      <div class="pconta" id="pconta">${texto.trim().length} de pelo menos ${minimoProjeto(L)} caracteres</div>
+      <div class="plabel">Antes de concluir, confira:</div>
+      ${p.checklist.map((x, k) => `<label class="pcheck"><input type="checkbox" class="proj-check" data-k="${k}" ${marcados.includes(k) ? 'checked' : ''}><span>${x}</span></label>`).join('')}
+      <div id="fb">${solved ? `<div class="fb ok pop"><b>✅ Projeto concluído! +100 XP</b><span>Guarde a sua entrega: ela é a prova prática do que você aprendeu.</span></div>` : ''}</div>
+      ${solved ? navConcluida(L, mod, true) : `<button class="next" data-act="projeto-ok">✅ Concluir projeto</button>`}
+    </section>`;
+}
+
+async function concluirProjeto(){
+  const L = byId(S.cur), texto = lerProjeto(L, 'texto', '').trim(), marcados = lerProjeto(L, 'checklist', []);
+  if (texto.length < minimoProjeto(L)) { toast('✍️ Escreva a sua entrega: pelo menos ' + minimoProjeto(L) + ' caracteres'); return; }
+  if (marcados.length < L.projeto.checklist.length) { toast('☑️ Confira todos os itens da lista antes de concluir'); return; }
+  D()[L.id] = true; renderAll(true); confetti();
+  const mod = modOf(L.mod); if (modDone(mod)) toast('🏆 Módulo ' + mod.id + ' completo!');
+  try { await DB.concluirLicao(C.id, L.id); }
+  catch(e){ console.error(e); toast('⚠️ Não foi possível salvar o progresso. Verifique a internet.'); }
 }
 
 function rodarGancho(){
@@ -1120,8 +1161,16 @@ function copyText(txt, btn){
 
 async function responder(i){
   const L = byId(S.cur), key = C.id + ':' + L.id;
-  const ss = SESSION[key] = SESSION[key] || { tried:[] };
-  if (L.ch.opts[i].ok) {
+  const ss = SESSION[key] = SESSION[key] || { tried:[], q:0 };
+  const lista = perguntas(L), q = ss.q || 0;
+  if (lista[q].opts[i].ok && q < lista.length - 1) {
+    ss.q = q + 1; ss.tried = []; ss.last = null; renderMain(true);
+    const novas = document.querySelectorAll('#main section.os'); const nova = novas[novas.length - 1];
+    if (nova && nova.scrollIntoView) nova.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block:'start' });
+    return;
+  }
+  if (lista[q].opts[i].ok) {
+    ss.q = lista.length;
     D()[L.id] = true; renderAll(true); confetti();
     const mod = modOf(L.mod); if (modDone(mod)) toast('🏆 Módulo ' + mod.id + ' completo!');
     try { await DB.concluirLicao(C.id, L.id); }
@@ -1191,6 +1240,7 @@ document.addEventListener('click', e => {
   else if (a === 'go') { const id = t.dataset.id; if (unlocked(id)) goLesson(id); }
   else if (a === 'spin') { t.classList.remove('spin'); void t.offsetWidth; t.classList.add('spin'); setTimeout(() => t.classList.remove('spin'), 750); }
   else if (a === 'ans') responder(parseInt(t.dataset.i,10));
+  else if (a === 'projeto-ok') concluirProjeto();
   else if (a === 'next') { const i = idxOf(S.cur); if (FLAT()[i+1]) goLesson(FLAT()[i+1].id); }
   else if (a === 'finish') { S.view = 'moduleDone'; S.modDone = parseInt(t.dataset.mod,10); renderAll(); confetti(); }
   else if (a === 'tool') {
@@ -1229,6 +1279,15 @@ document.addEventListener('input', e => {
     if (e.target.value.length === 6) e.target.form.requestSubmit ? e.target.form.requestSubmit() : confirmarCodigo(e.target.form);
   }
   else if (e.target.classList.contains('meu-prompt')) gravarMeuPrompt(TB.mod, parseInt(e.target.dataset.k, 10), e.target.value);
+  else if (e.target.id === 'meu-projeto') {
+    const L = byId(S.cur); gravarProjeto(L, 'texto', e.target.value);
+    const c = $('pconta'); if (c) c.textContent = e.target.value.trim().length + ' de pelo menos ' + minimoProjeto(L) + ' caracteres';
+  }
+  else if (e.target.classList.contains('proj-check')) {
+    const L = byId(S.cur), k = parseInt(e.target.dataset.k, 10), lista = lerProjeto(L, 'checklist', []).filter(x => x !== k);
+    if (e.target.checked) lista.push(k);
+    gravarProjeto(L, 'checklist', lista);
+  }
   else if (S.view === 'lesson' && $('main').contains(e.target)) rodarGancho();
 });
 ['input','change'].forEach(tipo => document.addEventListener(tipo, e => {

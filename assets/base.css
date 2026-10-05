@@ -159,6 +159,18 @@ button{font-family:inherit; cursor:pointer;}
 .os .who{font-weight:600; margin-bottom:6px; color:#ffe9a8;}
 .os .says{background:var(--s2); border-radius:14px; padding:10px 14px; font-style:italic; margin:8px 0 12px; border-left:4px solid var(--yellow);}
 .os .q{font-family:var(--font-d); font-weight:700; font-size:18px; margin:6px 0 12px;}
+.os .pnum{font-family:var(--font-d); font-weight:800; font-size:13px; letter-spacing:.5px; color:var(--yellow); margin-bottom:8px;}
+.os.projeto{background:linear-gradient(160deg,color-mix(in srgb,var(--c) 12%,#000),#050507 70%); border-color:color-mix(in srgb,var(--c) 65%,transparent); box-shadow:0 0 40px -18px var(--c);}
+.os.projeto::before{content:"🛠️ Projeto prático"; background:linear-gradient(135deg,var(--c),var(--c2)); color:#000;}
+.os.projeto .pnum{color:var(--c);}
+.ppassos{margin:4px 0 14px; padding-left:22px; line-height:1.6;}
+.ppassos li{margin:4px 0;}
+.plabel{display:block; font-family:var(--font-d); font-weight:700; font-size:14px; margin:14px 0 6px;}
+.meu-projeto{display:block; width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:#030305; color:var(--text); font:15px/1.6 var(--font-b); resize:vertical; min-height:180px;}
+.meu-projeto:focus{outline:2px solid var(--c); outline-offset:-1px;}
+.pconta{font-size:13px; color:var(--muted); margin-top:6px;}
+.pcheck{display:flex; gap:10px; align-items:flex-start; padding:7px 0; cursor:pointer;}
+.pcheck input{margin-top:3px; width:18px; height:18px; accent-color:var(--c); flex:none;}
 .opt{display:flex; gap:12px; align-items:flex-start; width:100%; text-align:left; background:var(--s1); color:var(--text); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:9px; font-size:15px; line-height:1.4; transition:transform .2s, border-color .2s, box-shadow .2s;}
 .opt:hover:not([disabled]){border-color:var(--c); transform:translateY(-2px) scale(1.01); box-shadow:0 10px 26px -14px var(--c);}
 .opt:active:not([disabled]){transform:scale(.98);}

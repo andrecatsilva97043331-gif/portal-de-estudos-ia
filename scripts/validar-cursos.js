@@ -41,6 +41,9 @@ for (const meta of catalogo) {
     ordens.add(meta.ordem);
   }
 
+  if (meta.carga_horaria !== undefined && !(Number.isInteger(meta.carga_horaria) && meta.carga_horaria >= 1 && meta.carga_horaria <= 40))
+    erro(onde, '"carga_horaria" deve ser um número inteiro de horas (1 a 40)');
+
   if (meta.recomendado_antes !== undefined) {
     const rec = meta.recomendado_antes;
     if (!Array.isArray(rec) || rec.some(r => typeof r !== 'string')) erro(onde, '"recomendado_antes" deve ser uma lista de ids');
@@ -70,6 +73,7 @@ function validarCurso(meta, c) {
   if (c.id !== meta.id) erro(onde, 'id no curso.js ("' + c.id + '") difere do catálogo');
   if (!Array.isArray(c.modulos) || !c.modulos.length) { erro(onde, 'precisa de pelo menos 1 módulo'); return; }
   const licoes = new Set();
+  let minutos = 0;
   c.modulos.forEach((m, i) => {
     const om = onde + ' módulo ' + (m.id != null ? m.id : i + 1);
     if (m.id !== i + 1) erro(om, 'ids dos módulos devem ser 1, 2, 3... em ordem');
@@ -83,16 +87,34 @@ function validarCurso(meta, c) {
       licoes.add(l.id);
       if (!l.title) erro(ol, 'falta "title"');
       if (l.soon) { avisos.push(ol + ': marcada como em construção'); return; }
+      if (!Number.isFinite(l.min) || l.min <= 0) erro(ol, 'falta "min" (minutos estimados, contando leitura e prática)');
+      else minutos += l.min;
+      if (l.projeto) {
+        const p = l.projeto;
+        if (l.ch) erro(ol, 'lição de projeto não usa "ch"');
+        if (l.body !== undefined && (!Array.isArray(l.body) || l.body.some(b => typeof b !== 'string'))) erro(ol, '"body" deve ser uma lista de textos HTML');
+        if (!p.entrega) erro(ol, 'projeto sem "entrega" (o que o aluno deve produzir)');
+        if (!Array.isArray(p.passos) || p.passos.length < 2) erro(ol, 'projeto precisa de pelo menos 2 "passos"');
+        if (!Array.isArray(p.checklist) || p.checklist.length < 2) erro(ol, 'projeto precisa de pelo menos 2 itens na "checklist"');
+        if (p.minimo !== undefined && !(Number.isInteger(p.minimo) && p.minimo > 0)) erro(ol, '"minimo" deve ser um número inteiro de caracteres');
+        return;
+      }
       if (!Array.isArray(l.body) || !l.body.length || l.body.some(b => typeof b !== 'string')) erro(ol, '"body" deve ser uma lista de textos HTML');
-      const ch = l.ch;
-      if (!ch) { erro(ol, 'falta o desafio "ch"'); return; }
-      ['who', 'says', 'q'].forEach(k => { if (!ch[k]) erro(ol, 'desafio sem "' + k + '"'); });
-      if (!Array.isArray(ch.opts) || ch.opts.length < 2 || ch.opts.length > 5) { erro(ol, 'desafio deve ter de 2 a 5 alternativas'); return; }
-      const certas = ch.opts.filter(o => o.ok === true).length;
-      if (certas !== 1) erro(ol, 'desafio deve ter exatamente 1 alternativa certa (tem ' + certas + ')');
-      ch.opts.forEach((o, k) => { if (!o.t || !o.why) erro(ol, 'alternativa ' + (k + 1) + ' precisa de "t" e "why"'); });
+      if (!l.ch) { erro(ol, 'falta o desafio "ch"'); return; }
+      const lista = Array.isArray(l.ch) ? l.ch : [l.ch];
+      if (!lista.length || lista.length > 6) { erro(ol, '"ch" deve ter de 1 a 6 perguntas'); return; }
+      lista.forEach((ch, n) => {
+        const oq = lista.length > 1 ? ol + ' pergunta ' + (n + 1) : ol;
+        ['who', 'says', 'q'].forEach(k => { if (!ch[k]) erro(oq, 'desafio sem "' + k + '"'); });
+        if (!Array.isArray(ch.opts) || ch.opts.length < 2 || ch.opts.length > 5) { erro(oq, 'desafio deve ter de 2 a 5 alternativas'); return; }
+        const certas = ch.opts.filter(o => o.ok === true).length;
+        if (certas !== 1) erro(oq, 'desafio deve ter exatamente 1 alternativa certa (tem ' + certas + ')');
+        ch.opts.forEach((o, k) => { if (!o.t || !o.why) erro(oq, 'alternativa ' + (k + 1) + ' precisa de "t" e "why"'); });
+      });
     });
   });
+  if (meta.carga_horaria !== undefined && minutos < meta.carga_horaria * 60 * 0.9)
+    erro(onde, 'carga_horaria de ' + meta.carga_horaria + ' h, mas o conteúdo soma só ' + minutos + ' min (precisa de pelo menos ' + Math.ceil(meta.carga_horaria * 54) + ' min)');
   const mods = new Set(c.modulos.map(m => String(m.id)));
   Object.entries(c.prompts || {}).forEach(([k, lista]) => {
     if (!mods.has(String(k))) erro(onde, 'prompts do módulo ' + k + ', que não existe');
@@ -101,7 +123,7 @@ function validarCurso(meta, c) {
   });
   Object.keys(c.aoAbrirLicao || {}).forEach(k => { if (!licoes.has(k)) erro(onde, 'aoAbrirLicao aponta para a lição ' + k + ', que não existe'); });
   Object.keys(c.iconesLicao || {}).forEach(k => { if (!licoes.has(k)) avisos.push(onde + ': iconesLicao tem a lição ' + k + ', que não existe'); });
-  console.log('✔ ' + meta.id + ' [' + meta.status + ']: ' + c.modulos.length + ' módulos, ' + licoes.size + ' lições');
+  console.log('✔ ' + meta.id + ' [' + meta.status + ']: ' + c.modulos.length + ' módulos, ' + licoes.size + ' lições, ' + minutos + ' min' + (meta.carga_horaria ? ' (carga ' + meta.carga_horaria + ' h)' : ''));
 }
 
 avisos.forEach(a => console.log('⚠ ' + a));

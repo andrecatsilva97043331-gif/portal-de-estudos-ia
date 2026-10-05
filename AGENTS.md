@@ -34,9 +34,12 @@ Status: `disponivel` (aberto a todos; `publicado` é o nome antigo e equivale), 
   "ordem": 11,
   "status": "em_breve",
   "recomendado_antes": ["ia-do-zero"],
+  "carga_horaria": 4,
   "versao": 1
 }
 ```
+
+- `carga_horaria`: horas do certificado. Padrão: iniciante 4, intermediário 6, avançado 8, Renda com IA 4. O `npm run validar` exige que a soma dos `min` das lições e projetos chegue a pelo menos 90% disso: amplie o conteúdo (mais lições, perguntas e projetos), nunca infle os minutos.
 
 - `nivel`: `iniciante` (verde), `intermediario` (amarelo/laranja) ou `avancado` (vermelho/rosa). Sem `nivel`, o curso aparece em "Outros cursos", fora da trilha.
 - `ordem`: posição na Trilha de IA (1, 2, 3...), sem repetir.
@@ -74,5 +77,19 @@ PORTAL.registrarCurso({
 ```
 
 - Módulos numerados 1, 2, 3...; lições com id `"<módulo>.<n>"`; cada desafio com exatamente uma alternativa certa.
+- `min` é obrigatório e realista: tempo de leitura (cerca de 150 palavras por minuto) + 2 min por pergunta; no projeto, o tempo real da tarefa.
+- Várias perguntas por lição: `ch` pode ser uma lista (`ch: [ {...}, {...}, {...} ]`, até 6). Elas aparecem em sequência e a lição só conclui quando todas forem acertadas.
+- Projeto prático: lição sem `ch`, com `projeto`. O aluno escreve a entrega (mínimo de caracteres) e confere a checklist para concluir. Use no fim de cada módulo. Não crie módulo "Projeto final" dentro do curso: o certificado do curso sai ao concluir 100% das lições e projetos de módulo; o projeto final existe uma vez só, para o certificado da trilha completa.
+
+```js
+{ id: '1.5', title: 'Projeto: seu primeiro plano', min: 25,
+  body: [`<div class="card"><p>Contexto do projeto.</p></div>`], // opcional
+  projeto: {
+    entrega: 'O que o aluno vai produzir, numa frase.',
+    passos: ['Passo 1', 'Passo 2', 'Passo 3'],
+    checklist: ['Critério que o aluno confere 1', 'Critério 2'],
+    minimo: 300 // opcional: caracteres mínimos da entrega (padrão 200)
+  } }
+```
 - Classes visuais disponíveis no `body`: `card`, `card analogy`, `term`, `feyn`, `why-chain`, `golden` (lista numerada), `flows`/`flow old`/`flow new`/`node`, `pipe`, `tw` + `tbl` (tabela), `code`, `calc`/`res` (simuladores). Veja o exemplo completo em `cursos/arquiteto-solucoes-ia/curso.js`.
 - Uma lição ainda sem conteúdo pode usar `soon: true, teaser: 'texto'`.
