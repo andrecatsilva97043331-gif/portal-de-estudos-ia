@@ -105,14 +105,13 @@ button.bc:hover{color:var(--text); background:var(--s2);}
 .qr-passos li{display:flex; gap:10px; align-items:flex-start; font-size:14px; line-height:1.45; color:var(--muted);}
 .qr-passos li > b{flex:none; width:24px; height:24px; border-radius:8px; display:grid; place-items:center; font-size:13px; color:#000; background:linear-gradient(135deg,#22d3ee,#c084fc);}
 .qr-passos li span b{color:var(--text);}
-.chips:has(.qr-mini){align-items:center;}
-.qr-mini{display:inline-flex; align-items:center; gap:14px; padding:10px 16px 10px 10px; border-radius:20px; border:1px solid #242431; background:radial-gradient(circle at 30% 0%, #15152a, #050508 75%); box-shadow:0 18px 50px -22px #22d3ee, 0 0 0 1px rgba(192,132,252,.15) inset; color:var(--muted); font:inherit; font-size:13px; line-height:1.35; text-align:left; cursor:pointer; transition:box-shadow .2s, transform .2s;}
-.qr-mini:hover{transform:translateY(-2px); box-shadow:0 18px 50px -14px #22d3ee, 0 0 0 1px rgba(192,132,252,.3) inset;}
-.qr-mini .qr-moldura{display:block; flex:none; width:112px; height:112px; margin:0; padding:3px; border-radius:16px; box-shadow:0 0 24px -4px #22d3ee, 0 0 44px -14px #c084fc;}
-.qr-mini .qr-in{display:grid; border-radius:13px;}
-.qr-mini .qr-in img{width:98px; height:98px;}
-.qr-mini .qr-scan{left:5px; right:5px; top:5px; height:16px; animation-name:qrscanmini;}
-@keyframes qrscanmini{from{top:5px;} to{top:calc(100% - 21px);}}
+@media (hover: hover), (pointer: fine){ .so-cel{display:none !important;} }
+.qr-card{display:block; padding:18px 20px 22px; border-radius:24px; border:1px solid #242431; background:radial-gradient(circle at 50% 0%, #15152a, #050508 70%); box-shadow:0 24px 60px -26px #22d3ee, 0 0 0 1px rgba(192,132,252,.15) inset; color:var(--text); font:inherit; text-align:center; cursor:pointer; transition:transform .2s, box-shadow .2s;}
+.qr-card:hover{transform:translateY(-3px); box-shadow:0 24px 60px -16px #22d3ee, 0 0 0 1px rgba(192,132,252,.3) inset;}
+.qr-card .qr-tit{display:block; font-size:22px; margin:0 0 14px;}
+.qr-card .qr-moldura{display:block; width:196px; height:196px; margin:0 auto; border-radius:22px;}
+.qr-card .qr-in{display:grid; border-radius:18px;}
+.qr-card .qr-in img{width:174px; height:174px;}
 .qr-url{margin:0; font-size:12px; color:var(--muted); word-break:break-all;}
 
 /* ---------- Teste rápido de nível ---------- */
