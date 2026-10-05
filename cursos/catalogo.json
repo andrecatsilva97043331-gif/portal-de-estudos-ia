@@ -230,7 +230,7 @@
     "icone": "🏁",
     "cores": ["#22d3ee", "#c084fc"],
     "projeto_final": "ia",
-    "status": "em_breve",
+    "status": "disponivel",
     "carga_horaria": 4,
     "versao": 1
   },
@@ -241,7 +241,7 @@
     "icone": "🏁",
     "cores": ["#10B981", "#3B82F6"],
     "projeto_final": "renda",
-    "status": "em_breve",
+    "status": "disponivel",
     "carga_horaria": 4,
     "versao": 1
   }
