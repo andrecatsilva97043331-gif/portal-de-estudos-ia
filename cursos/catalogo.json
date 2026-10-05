@@ -52,7 +52,7 @@
   {
     "id": "criando-apps-com-ia",
     "titulo": "Criando Apps com IA",
-    "descricao": "Sair da ideia e chegar a um app no ar usando o Cursor.",
+    "descricao": "Tire sua ideia do papel e coloque um app no ar, com a IA trabalhando como sua equipe de desenvolvimento.",
     "icone": "📱",
     "cores": ["#F59E0B", "#F97316"],
     "nivel": "intermediario",
@@ -65,7 +65,7 @@
   {
     "id": "arquiteto-solucoes-ia",
     "titulo": "Arquiteto de Soluções com IA",
-    "descricao": "Do problema do cliente ao fluxo automatizado: 5 módulos práticos, com desafios, projetos e missões de prompt para o Cursor.",
+    "descricao": "Do problema do cliente ao fluxo automatizado: 5 módulos práticos, com desafios, projetos e missões de prompt.",
     "icone": "🏗️",
     "cores": ["#22d3ee", "#c084fc"],
     "nivel": "intermediario",

@@ -883,6 +883,7 @@ const LIC = { '1.1':'💡','1.2':'📝','1.3':'🗺️','1.4':'🏠','1.5':'🛠
 
 return {
   id: 'criando-apps-com-ia',
+  habilidades: ['Da ideia ao plano', 'Desenvolvimento com IA', 'Publicação segura', 'Manutenção e evolução'],
   modulos: MODULES,
   conclusaoModulo: MODDONE,
   prompts: PROMPTS,
