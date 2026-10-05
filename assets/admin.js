@@ -334,22 +334,33 @@ function renderPainel(){
 /* Depoimentos: o aluno envia ao concluir um curso; aqui o master aprova e gera a imagem e a legenda do post. */
 function nomePublico(nome){ const p = String(nome || '').trim().split(/\s+/); return p[0] + (p.length > 1 ? ' ' + p[p.length - 1][0].toUpperCase() + '.' : ''); }
 const SITUACAO_DEP = { pendente:'⏳ Aguardando', aprovado:'✅ Aprovado', recusado:'🚫 Recusado' };
+/* Enquanto não chega depoimento real, o painel mostra estes exemplos (não gravam nada) para testar imagem e legendas. */
+const EXEMPLOS_DEP = [
+  { id:'ex1', exemplo:true, nome:'Ana Paula', estado:'MG', curso_id:'ia-do-zero', status:'aprovado', autoriza_publicar:true,
+    texto:'Exemplo de depoimento: eu achava que IA era coisa de programador. Em poucas semanas já uso no dia a dia para organizar minha rotina e estudar melhor.' },
+  { id:'ex2', exemplo:true, nome:'Carlos Mendes', estado:'BA', curso_id:'seu-primeiro-servico', status:'aprovado', autoriza_publicar:true,
+    texto:'Exemplo de depoimento: montei meu primeiro pacote de serviço com IA, aprendi a precificar e a explicar para o cliente o que entrego.' },
+  { id:'ex3', exemplo:true, nome:'Juliana Rocha', estado:'SP', curso_id:'prompts-que-funcionam', status:'aprovado', autoriza_publicar:true,
+    texto:'Exemplo de depoimento: os desafios com casos reais fizeram toda a diferença. Hoje escrevo prompts claros e economizo horas no trabalho.' }
+];
 function renderDepoimentos(){
   const el = $('depoimentos'); if (!el) return;
-  const lista = (DADOS.depoimentos || []).slice().sort((x, y) => (x.status === 'pendente' ? 0 : 1) - (y.status === 'pendente' ? 0 : 1));
-  const pend = lista.filter(d => d.status === 'pendente').length;
-  $('titulo-dep').innerHTML = '💬 Depoimentos (' + lista.length + ')' + (pend ? ' <small style="color:var(--muted);font-weight:400">· ' + pend + ' aguardando você</small>' : '');
-  if (!lista.length) { el.innerHTML = '<div class="empty">Nenhum depoimento ainda. O aluno pode escrever o dele quando conclui 100% de um curso.</div>'; return; }
-  el.innerHTML = `<table class="atbl"><thead><tr><th>Aluno</th><th>Depoimento</th><th>Situação</th><th></th></tr></thead><tbody>
+  const reais = (DADOS.depoimentos || []).slice().sort((x, y) => (x.status === 'pendente' ? 0 : 1) - (y.status === 'pendente' ? 0 : 1));
+  const exemplo = !reais.length, lista = exemplo ? EXEMPLOS_DEP : reais;
+  const pend = reais.filter(d => d.status === 'pendente').length;
+  $('titulo-dep').innerHTML = exemplo ? '💬 Depoimentos <span class="badge">EXEMPLOS · SÓ VOCÊ VÊ</span>'
+    : '💬 Depoimentos (' + reais.length + ')' + (pend ? ' <small style="color:var(--muted);font-weight:400">· ' + pend + ' aguardando você</small>' : '');
+  el.innerHTML = `${exemplo ? '<p class="nota" style="margin:12px 14px 0">Nenhum depoimento real ainda. Estes exemplos servem para você testar a imagem e as legendas; eles somem quando chegar o primeiro depoimento de um aluno, que aparece aqui com os botões Aprovar e Recusar.</p>' : ''}
+    <table class="atbl"><thead><tr><th>Aluno</th><th>Depoimento</th><th>Situação</th><th></th></tr></thead><tbody>
     ${lista.map(d => {
-      const a = DADOS.alunos.find(x => x.id === d.aluno_id) || {}, publicavel = d.status === 'aprovado' && d.autoriza_publicar;
+      const a = d.exemplo ? { nome:d.nome, estado:d.estado } : DADOS.alunos.find(x => x.id === d.aluno_id) || {}, publicavel = d.status === 'aprovado' && d.autoriza_publicar;
       return `<tr>
-        <td>${esc(a.nome || '-')}<br><small>${esc(tituloCurso(d.curso_id))}<br>${dataHora(d.criado_em)}</small></td>
+        <td>${esc(a.nome || '-')}<br><small>${esc(tituloCurso(d.curso_id))}<br>${d.exemplo ? 'Exemplo' : dataHora(d.criado_em)}</small></td>
         <td style="max-width:420px">“${esc(d.texto)}”<br><small>${d.autoriza_publicar ? '✅ Autorizou publicar como ' + esc(nomePublico(a.nome)) + (a.estado ? ' · ' + esc(a.estado) : '') : '🔒 Não autorizou publicar: só para você ler'}</small></td>
         <td>${SITUACAO_DEP[d.status] || esc(d.status)}</td>
         <td><div class="avbtns">
-          ${d.status !== 'aprovado' ? `<button class="sbtn wa" data-act="dep-moderar" data-id="${d.id}" data-st="aprovado">✅ Aprovar</button>` : ''}
-          ${d.status !== 'recusado' ? `<button class="sbtn" data-act="dep-moderar" data-id="${d.id}" data-st="recusado">🚫 Recusar</button>` : ''}
+          ${!d.exemplo && d.status !== 'aprovado' ? `<button class="sbtn wa" data-act="dep-moderar" data-id="${d.id}" data-st="aprovado">✅ Aprovar</button>` : ''}
+          ${!d.exemplo && d.status !== 'recusado' ? `<button class="sbtn" data-act="dep-moderar" data-id="${d.id}" data-st="recusado">🚫 Recusar</button>` : ''}
           ${publicavel ? `<button class="sbtn" data-act="dep-imagem" data-id="${d.id}">🖼️ Baixar imagem</button>
             <button class="sbtn" data-act="dep-legenda" data-id="${d.id}" data-rede="instagram">📋 Legenda Instagram</button>
             <button class="sbtn" data-act="dep-legenda" data-id="${d.id}" data-rede="linkedin">📋 Legenda LinkedIn</button>` : ''}
@@ -358,8 +369,8 @@ function renderDepoimentos(){
     }).join('')}</tbody></table>`;
 }
 function dadosPost(id){
-  const d = (DADOS.depoimentos || []).find(x => String(x.id) === String(id)); if (!d) return null;
-  const a = DADOS.alunos.find(x => x.id === d.aluno_id) || {}, c = cursoPorId(d.curso_id) || { titulo:d.curso_id, icone:'🎓', cores:['#22d3ee', '#c084fc'] };
+  const d = (DADOS.depoimentos || []).concat(EXEMPLOS_DEP).find(x => String(x.id) === String(id)); if (!d) return null;
+  const a = d.exemplo ? { nome:d.nome, estado:d.estado } : DADOS.alunos.find(x => x.id === d.aluno_id) || {}, c = cursoPorId(d.curso_id) || { titulo:d.curso_id, icone:'🎓', cores:['#22d3ee', '#c084fc'] };
   return { d, c, nome:nomePublico(a.nome), estado:a.estado || '' };
 }
 function legendaPost(id, rede){
