@@ -92,7 +92,7 @@ function renderCursos(){
       <div><div class="eyebrow">Portal de Estudos IA</div>
       <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
       <p class="hp">Lições curtas, casos de clientes de verdade e projetos práticos. Faça seu cadastro gratuito e comece agora.</p>
-      <div class="chips"><span class="chip">🎓 ${CURSOS.length} ${CURSOS.length === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span><button class="qr-mini so-pc" type="button" data-act="qr" title="Ver o QR maior"><img src="assets/qr-app.svg" alt="QR code do Portal de Estudos IA" width="78" height="78"><span>Escaneie com a<br>câmera do celular</span></button></div>
+      <div class="chips"><span class="chip">🎓 ${CURSOS.length} ${CURSOS.length === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span><button class="qr-mini so-pc" type="button" data-act="qr" title="Ver o QR maior"><span class="qr-moldura"><span class="qr-in"><img src="assets/qr-app.svg" alt="QR code do Portal de Estudos IA" width="96" height="96"><i class="qr-scan" aria-hidden="true"></i></span></span><span>Escaneie com a<br>câmera do celular</span></button></div>
       <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}</div>
       <div class="orb" aria-hidden="true"><span>📚</span></div>
     </section>
