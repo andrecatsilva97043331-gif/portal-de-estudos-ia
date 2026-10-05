@@ -55,7 +55,7 @@ const FLAT = () => C.licoes;
 const byId = id => C.licoes.find(l => l.id === id);
 const modOf = id => C.conteudo.modulos.find(m => m.id === id);
 const idxOf = id => C.licoes.findIndex(l => l.id === id);
-function unlocked(id){ const i = idxOf(id), d = D(); for (let k=0;k<i;k++){ if(!d[C.licoes[k].id]) return false; } return true; }
+function unlocked(id){ if (MASTER) return true; const i = idxOf(id), d = D(); for (let k=0;k<i;k++){ if(!d[C.licoes[k].id]) return false; } return true; }
 function modDone(m){ return m.lessons.every(l => D()[l.id]); }
 function modCount(m){ return m.lessons.filter(l => D()[l.id]).length; }
 function modPct(m){ return Math.round(modCount(m) / m.lessons.length * 100); }
@@ -64,6 +64,17 @@ function level(x){ return ((C.conteudo.niveis || NIVEIS_PADRAO).find(n => x >= n
 function tstyle(id){ const t = (C.conteudo.cores || {})[id] || PORTAL.paleta(id - 1); return '--c:' + t[0] + ';--c2:' + t[1]; }
 const prompts = () => C.conteudo.prompts || {};
 const temToolbox = () => Object.keys(prompts()).length > 0;
+const toolLivre = m => MASTER || modDone(m);
+/* Master sem cadastro de aluno confirmado: o progresso fica só neste navegador. */
+const masterLocal = () => MASTER && !(ALUNO && DB.verificado(ALUNO));
+const CHAVE_PROG_MASTER = 'portal-estudos-progresso-master';
+const lerProgMaster = () => { try { return JSON.parse(localStorage.getItem(CHAVE_PROG_MASTER)) || {}; } catch(e){ return {}; } };
+const gravarProgMaster = () => { try { localStorage.setItem(CHAVE_PROG_MASTER, JSON.stringify(PROG)); } catch(e){} };
+function prepararMaster(){ if (masterLocal()) { PROG = lerProgMaster(); MATR = Object.keys(PROG); } }
+async function salvarLicao(curso, licao){
+  if (masterLocal()) { gravarProgMaster(); return; }
+  await DB.concluirLicao(curso, licao);
+}
 const iconeLicao = L => (C.conteudo.iconesLicao || {})[L.id] || L.icon || modOf(L.mod).icon;
 
 /* ============ RENDER: PORTAL ============ */
@@ -87,6 +98,15 @@ function renderCursos(){
         : seguir ? `<button class="next" data-act="curso" data-id="${esc(seguir.id)}" style="${ccor(seguir)}">Continuar ${esc(seguir.titulo)} ➜</button>` : ''}
       <div class="hbtns">${botaoInstalar()}<button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>${dicaIos()}${botaoIndicar()}</div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>dos seus cursos</span></div></div>
+    </section>`;
+  } else if (MASTER) {
+    topo = `<section class="hero rise">
+      <div><div class="eyebrow">Modo master</div>
+      <h1 class="hh">Olá, <span class="grad">Master</span>! 🛡️</h1>
+      <p class="hp">Tudo liberado para testar na prática: cursos em prévia, lições fora de ordem, desafios, projetos, Toolbox e projetos finais. O seu progresso de teste fica salvo neste navegador.</p>
+      <div class="chips"><span class="chip">🎓 ${totalCursos} ${totalCursos === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🔓 Sem bloqueios</span></div>
+      <div class="hbtns"><a class="next" href="admin.html">🛡️ Painel do Master</a><button class="link" data-act="sair">Sair</button></div>${botaoIndicar()}</div>
+      <div class="orb" aria-hidden="true"><span>🛡️</span></div>
     </section>`;
   } else {
     topo = `<section class="hero rise">
@@ -173,7 +193,7 @@ function renderCursos(){
   };
   const outros = CURSOS.filter(c => !c.projeto_final && c.trilha !== 'renda' && !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
   $('main').removeAttribute('style');
-  $('main').innerHTML = avisoRenda() + avisoTrilha() + topo + `<section class="trilha" id="trilha">
+  $('main').innerHTML = avisoRenda() + avisoTrilha() + topo + barraAtalhos() + `<section class="trilha" id="trilha">
       <h2 class="sec-t">Trilha de IA</h2>
       <p class="tsub">Do zero ao avançado em 3 níveis. Siga na ordem ou escolha só o curso de que você precisa.</p>
       ${chamadaTeste()}
@@ -191,11 +211,50 @@ function renderCursos(){
     ${outros ? `<h2 class="sec-t">Outros cursos</h2><div class="grid">${outros}</div>` : ''}
     <section class="vitrine-dep" id="vitrine-dep" hidden></section>`;
   preencherVitrine();
+  desenharAbasLaterais(); medirTopo(); observarSecoes();
   if (pctGeral !== null) {
     setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pctGeral); }, 60);
     countUp($('bignum'), pctGeral);
   }
 }
+
+/* Atalhos da página inicial: abas na lateral (computador) e barra fixa de botões (celular). */
+function secoesHome(){
+  const tem = f => PORTAL.catalogo.some(m => f(m) && (cursoPorId(m.id) || m.status === 'em_breve'));
+  const ia = PORTAL.niveis.filter(nv => tem(m => m.nivel === nv.id)).map(nv => ({ id:nv.id, ic:ICONE_NIVEL[nv.id], t:nv.titulo, cores:nv.cores, dica:'Trilha de IA · ' + nv.titulo }));
+  const renda = PORTAL.gruposRenda.filter(g => tem(m => m.trilha === 'renda' && m.grupo === g.id)).map(g => ({ id:'renda-' + g.id, ic:g.icone, t:g.titulo, cores:g.cores, dica:'Renda com IA · ' + g.titulo, renda:true }));
+  return ia.concat(renda);
+}
+function barraAtalhos(){
+  const s = secoesHome(); if (!s.length) return '';
+  const chip = x => `<button class="atalho" type="button" data-act="ver-nivel" data-nivel="${x.id}" style="--c:${x.cores[0]};--c2:${x.cores[1]}" title="${x.dica}">${x.ic} ${x.t}</button>`;
+  const ia = s.filter(x => !x.renda), renda = s.filter(x => x.renda);
+  return `<nav class="atalhos" id="atalhos" aria-label="Ir para uma parte da página">
+    <button class="atalho" type="button" data-act="teste-nivel" style="--c:#c084fc;--c2:#22d3ee">🎯 Meu nível</button><span class="atalho-sep"></span>
+    ${ia.map(chip).join('')}${renda.length ? '<span class="atalho-sep"></span>' + renda.map(x => chip(Object.assign({}, x, { t:'Renda · ' + x.t }))).join('') : ''}
+  </nav>`;
+}
+function desenharAbasLaterais(){
+  const aba = (x, act, extra) => `<button class="sbz-t ${extra || ''}" type="button" data-act="${act}" data-nivel="${x.id}" style="--c:${x.cores[0]};--c2:${x.cores[1]}" title="${x.dica}" aria-label="${x.dica}"><span><i>${x.ic}</i><span class="sbz-tx">${x.t}</span></span></button>`;
+  const s = secoesHome(), renda = s.filter(x => x.renda);
+  $('sbz').innerHTML = `<button class="sbz-t sbz-menu" type="button" data-act="menu" title="Abrir o painel da trilha" aria-label="Abrir o painel da trilha"><span><i>☰</i><span class="sbz-tx">Trilha</span></span></button>`
+    + s.filter(x => !x.renda).map(x => aba(x, 'ver-nivel')).join('')
+    + (renda.length ? aba({ id:'renda', ic:'💼', t:'Renda com IA', cores:[renda[0].cores[0], renda[renda.length - 1].cores[1]], dica:'Renda com IA' }, 'ver-renda', 'sbz-renda') : '');
+}
+function medirTopo(){ document.documentElement.style.setProperty('--topo', document.querySelector('.top').offsetHeight + 'px'); }
+let OBS_SECOES = null;
+function observarSecoes(){
+  if (OBS_SECOES) OBS_SECOES.disconnect();
+  if (!window.IntersectionObserver) return;
+  OBS_SECOES = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) marcarAtalho(e.target.id.slice(6)); }), { rootMargin:'-30% 0px -60% 0px' });
+  document.querySelectorAll('#main .nivel[id^="nivel-"]').forEach(s => OBS_SECOES.observe(s));
+}
+function marcarAtalho(id){
+  document.querySelectorAll('.sbz-t[data-nivel], .atalho[data-nivel]').forEach(b => b.classList.toggle('on', b.dataset.nivel === id || (b.dataset.nivel === 'renda' && id.startsWith('renda-'))));
+  const bar = $('atalhos'), b = bar && bar.querySelector(`[data-nivel="${id}"]`);
+  if (b) bar.scrollTo({ left:b.offsetLeft - (bar.clientWidth - b.offsetWidth) / 2, behavior:reduced() ? 'auto' : 'smooth' });
+}
+window.addEventListener('resize', medirTopo);
 
 /* ============ INSTALAR COMO APP ============ */
 let PEDIDO_INSTALAR = null;
@@ -238,6 +297,27 @@ function mensagemIndicacao(){
 }
 function indicarAmigo(){ window.open('https://wa.me/?text=' + encodeURIComponent(mensagemIndicacao()), '_blank', 'noopener'); }
 const botaoIndicar = () => `<button class="indica" type="button" data-act="indicar"><span class="ind-ic" aria-hidden="true">🎁</span><span class="ind-tx"><b>Indique um amigo</b><small>Envie o convite pelo WhatsApp</small></span><span class="ind-seta" aria-hidden="true">➜</span></button>`;
+
+/* Ícone Cursos do rodapé (celular): lista compacta com os ícones dos cursos. */
+function abrirListaCursos(){
+  if (fecharListaCursos()) return;
+  closeMenu();
+  const item = c => {
+    const pct = MATR.includes(c.id) ? pctCurso(c) : null;
+    const info = pct === 100 ? '✅' : pct !== null ? pct + '%' : PORTAL.disponivel(c) ? '' : 'Prévia';
+    return `<button class="cl-it" type="button" data-act="curso" data-id="${esc(c.id)}" style="${ccor(c)}"><span class="cl-ic">${c.icone}</span><span>${esc(c.titulo)}</span>${info ? `<small>${info}</small>` : ''}</button>`;
+  };
+  const ia = CURSOS.filter(c => !c.projeto_final && PORTAL.trilhaDe(c) === 'ia').sort((a, b) => (a.ordem || 99) - (b.ordem || 99));
+  const renda = CURSOS.filter(c => !c.projeto_final && PORTAL.trilhaDe(c) === 'renda');
+  const finais = CURSOS.filter(c => c.projeto_final);
+  const outros = CURSOS.filter(c => !ia.includes(c) && !renda.includes(c) && !finais.includes(c));
+  const sec = (t, l) => l.length ? `<div class="cl-sec">${t}</div>${l.map(item).join('')}` : '';
+  document.body.insertAdjacentHTML('beforeend', `<div class="cl-modal" id="cl-modal" data-act="fechar-cl"><div class="cl-box" data-act="cl-box" role="menu" aria-label="Cursos">
+    ${sec('Trilha de IA', ia)}${sec('Renda com IA', renda)}${sec('Projetos finais', finais)}${sec('Outros cursos', outros)}
+    <button class="cl-it cl-todos" type="button" data-act="cursos">🏠 Ver página inicial</button>
+  </div></div>`);
+}
+function fecharListaCursos(){ const m = $('cl-modal'); if (m) m.remove(); return !!m; }
 
 /* QR code para abrir o portal no celular (imagem fixa em assets/qr-app.svg). */
 function abrirQr(){
@@ -706,19 +786,22 @@ function sidebarPortal(){
     ${linkContato('homebtn')}
     ${MASTER ? '<a class="homebtn" href="admin.html"><span class="hi">🛡️</span>Painel do Master</a>' : ''}
     <button class="homebtn inst" type="button" data-act="instalar" ${podeInstalar() ? '' : 'hidden'}><span class="hi">📲</span>Instalar o app</button>${dicaIos()}
-    ${ALUNO ? `<button class="homebtn" type="button" data-act="sair"><span class="hi">👋</span>Sair (${esc(ALUNO.nome.split(' ')[0])})</button>`
+    ${ALUNO || MASTER ? `<button class="homebtn" type="button" data-act="sair"><span class="hi">👋</span>Sair (${ALUNO ? esc(ALUNO.nome.split(' ')[0]) : 'Master'})</button>`
       : `<button class="homebtn" type="button" data-act="cadastro"><span class="hi">📝</span>Criar meu cadastro</button><button class="homebtn" type="button" data-act="entrar"><span class="hi">🔑</span>Já tenho cadastro</button>`}`;
 }
 
 function renderSidebar(){
-  if (!C || VIEWS_PORTAL.includes(S.view)) { $('sb').innerHTML = S.view === 'cursos' ? sidebarPortal() : ''; return; }
+  if (!C || VIEWS_PORTAL.includes(S.view)) {
+    if (S.view !== 'cursos') closeMenu();
+    $('sb').innerHTML = S.view === 'cursos' ? sidebarPortal() : ''; return;
+  }
   const d = D();
   $('sb').innerHTML = `<button class="homebtn" data-act="cursos"><span class="hi">🎓</span>Todos os cursos</button>
   <button class="homebtn ${S.view==='home'?'cur':''}" data-act="home"><span class="hi">🏠</span>Início do curso</button>` +
   C.conteudo.modulos.map(m => {
-    const done = modDone(m), open = unlocked(m.lessons[0].id);
+    const done = modDone(m), open = unlocked(m.lessons[0].id), livre = toolLivre(m);
     const status = done ? 'Concluído' : (open ? modCount(m) + ' de ' + m.lessons.length + ' lições' : 'Bloqueado');
-    const tool = prompts()[m.id] ? `<button class="modtool" data-act="tool" data-mod="${m.id}" ${done?'':'disabled'} title="${done?'Abrir prompts do módulo':'Conclua o módulo para liberar'}" aria-label="Toolbox do módulo ${m.id}">${done?'🧰':'🔒'}</button>` : '';
+    const tool = prompts()[m.id] ? `<button class="modtool" data-act="tool" data-mod="${m.id}" ${livre?'':'disabled'} title="${livre?'Abrir prompts do módulo':'Conclua o módulo para liberar'}" aria-label="Toolbox do módulo ${m.id}">${livre?'🧰':'🔒'}</button>` : '';
     return `<div class="mod" style="${tstyle(m.id)};--p:${modPct(m)}">
       <div class="modh"><div class="ring"><span class="modic">${m.icon}</span></div>
         <div class="modt">Módulo ${m.id}: ${m.title}<div class="mods">${status}</div></div>${tool}</div>
@@ -996,7 +1079,7 @@ async function concluirProjeto(){
   if (marcados.length < L.projeto.checklist.length) { toast('☑️ Confira todos os itens da lista antes de concluir'); return; }
   D()[L.id] = true; renderAll(true); confetti();
   const mod = modOf(L.mod); if (modDone(mod)) toast('🏆 Módulo ' + mod.id + ' completo!');
-  try { await DB.concluirLicao(C.id, L.id); }
+  try { await salvarLicao(C.id, L.id); }
   catch(e){ console.error(e); toast('⚠️ Não foi possível salvar o progresso. Verifique a internet.'); }
 }
 
@@ -1055,12 +1138,12 @@ function renderToolbox(){
   const d = $('drawer');
   if (!C || !temToolbox()) { TB.open = false; d.classList.remove('on'); $('shade').classList.remove('on'); return; }
   const tabs = C.conteudo.modulos.filter(m => prompts()[m.id]).map(m => {
-    const ok = modDone(m);
+    const ok = toolLivre(m);
     return `<button class="tab ${TB.mod===m.id?'on':''}" style="${tstyle(m.id)}" data-act="tbmod" data-mod="${m.id}" ${ok?'':'disabled'}>${ok?m.icon+' ':'🔒 '}Módulo ${m.id}</button>`;
   }).join('');
   const mod = modOf(TB.mod);
   let body;
-  if (!mod || !modDone(mod) || !prompts()[mod.id]) {
+  if (!mod || !toolLivre(mod) || !prompts()[mod.id]) {
     body = `<div class="lockmsg"><div style="font-size:40px">🔒</div><p>Conclua todas as lições do módulo para liberar as missões de prompt.</p></div>`;
   } else {
     body = `<div style="${tstyle(mod.id)}"><p style="margin:0 0 14px; color:var(--muted); font-size:14px">Não há prompt pronto: escreva o seu, com as suas palavras e um caso real seu, usando o que aprendeu neste módulo. Depois teste no assistente de IA, veja o resultado e melhore até ficar bom.</p>` +
@@ -1088,7 +1171,7 @@ window.addEventListener('popstate', e => {
   const c = st.curso ? cursoPorId(st.curso) : null;
   let view = st.view;
   if (view === 'verificar' || view === 'confirmar-whats') view = 'cursos';
-  if (!VIEWS_PORTAL.includes(view) && (!c || !ALUNO || !MATR.includes(c.id))) view = 'cursos';
+  if (!VIEWS_PORTAL.includes(view) && (!c || !(MASTER || (ALUNO && MATR.includes(c.id))))) view = 'cursos';
   if (c && !VIEWS_PORTAL.includes(view)) C = c;
   if (view === 'lesson' && !(st.cur && unlocked(st.cur))) view = 'home';
   S.view = view; S.cur = st.cur; S.modDone = st.modDone; TB.open = false; closeMenu();
@@ -1121,9 +1204,10 @@ function irParaCursos(){ S.view = 'cursos'; TB.open = false; closeMenu(); render
 async function abrirCurso(id){
   const c = cursoPorId(id); if (!c || !(PORTAL.disponivel(c) || PORTAL.modoPrevia || MASTER)) return;
   if (c.projeto_final && !trilhaLiberada(c.projeto_final)) { toast('🔒 Conclua todos os cursos da ' + PORTAL.trilhas[c.projeto_final] + ' para liberar o projeto final'); return; }
-  if (!ALUNO) { S.escolhido = id; S.view = 'cadastro'; renderAll(); return; }
-  if (!DB.verificado(ALUNO)) { iniciarVerificacao({ curso:id }); return; }
-  if (!MATR.includes(id)) {
+  if (masterLocal()) { if (!MATR.includes(id)) MATR.push(id); }
+  else if (!ALUNO) { S.escolhido = id; S.view = 'cadastro'; closeMenu(); renderAll(); return; }
+  else if (!DB.verificado(ALUNO)) { iniciarVerificacao({ curso:id }); return; }
+  else if (!MATR.includes(id)) {
     try { await DB.matricular(id); MATR.push(id); }
     catch(e){ console.error(e); toast('Não foi possível iniciar o curso. Verifique a internet.'); return; }
   }
@@ -1229,10 +1313,11 @@ async function continuarAposEmail(){
   EMAIL_SESSAO = VER.email;
   if (VER.dados) ALUNO = await DB.cadastrar(VER.dados);
   else ALUNO = await DB.alunoAtual();
-  if (!ALUNO) { toast('E-mail confirmado ✓ Agora complete seu cadastro.'); S.escolhido = VER.curso || S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); return; }
-  [MATR, PROG, CERTS] = await Promise.all([DB.matriculas(), DB.progresso(), DB.meusCertificados()]);
   await checarMaster();
-  if (!DB.verificado(ALUNO)) { toast('E-mail confirmado ✓'); VER.etapa = 'whats'; VER.cooldownAte = 0; S.view = 'verificar'; renderAll(); enviarCodigo(); return; }
+  if (!ALUNO && !MASTER) { toast('E-mail confirmado ✓ Agora complete seu cadastro.'); S.escolhido = VER.curso || S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); return; }
+  if (ALUNO) [MATR, PROG, CERTS] = await Promise.all([DB.matriculas(), DB.progresso(), DB.meusCertificados()]);
+  prepararMaster();
+  if (!MASTER && !DB.verificado(ALUNO)) { toast('E-mail confirmado ✓'); VER.etapa = 'whats'; VER.cooldownAte = 0; S.view = 'verificar'; renderAll(); enviarCodigo(); return; }
   if (VER.dados) { limparPendente(); await aposCadastro(VER.curso); return; }
   await liberarAcesso();
 }
@@ -1267,7 +1352,7 @@ async function confirmarCodigo(form){
 }
 
 async function liberarAcesso(){
-  const curso = VER.curso, nome = ALUNO.nome.split(' ')[0];
+  const curso = VER.curso, nome = ALUNO ? ALUNO.nome.split(' ')[0] : 'Master';
   VER = {}; limparPendente();
   confetti();
   toast((curso ? (pedeConfirmacao() ? 'Tudo confirmado! Bom estudo, ' : 'Tudo pronto! Bom estudo, ') : 'Bem-vindo de volta, ') + nome + ' 🎉');
@@ -1336,7 +1421,7 @@ async function responder(i){
     ss.q = lista.length;
     D()[L.id] = true; renderAll(true); confetti();
     const mod = modOf(L.mod); if (modDone(mod)) toast('🏆 Módulo ' + mod.id + ' completo!');
-    try { await DB.concluirLicao(C.id, L.id); }
+    try { await salvarLicao(C.id, L.id); }
     catch(e){ console.error(e); toast('⚠️ Não foi possível salvar o progresso. Verifique a internet.'); }
   } else { if (!ss.tried.includes(i)) ss.tried.push(i); ss.last = i; renderMain(true); }
   const fb = $('fb'); if (fb && fb.scrollIntoView) fb.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block:'center' });
@@ -1345,7 +1430,9 @@ async function responder(i){
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-act]'); if (!t) return;
   const a = t.dataset.act;
-  if (a === 'cursos') irParaCursos();
+  if (a !== 'cursos-lista' && a !== 'cl-box') fecharListaCursos();
+  if (a === 'cursos-lista') abrirListaCursos();
+  else if (a === 'cursos') irParaCursos();
   else if (a === 'cadastro') { S.escolhido = S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); }
   else if (a === 'entrar') { VER = {}; S.view = 'entrar'; renderAll(); }
   else if (a === 'esqueci') { S.view = 'esqueci'; renderAll(); }
@@ -1391,6 +1478,7 @@ document.addEventListener('click', e => {
   else if (a === 'fechar-aviso') { try { localStorage.setItem(CHAVE_AVISO_TRILHA, '1'); } catch(e){} const b = $('aviso-trilha'); if (b) b.remove(); }
   else if (a === 'ver-renda') { closeMenu(); const s = $('renda'); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
   else if (a === 'fechar-aviso-renda') { try { localStorage.setItem(CHAVE_AVISO_RENDA, '1'); } catch(e){} const b = $('aviso-renda'); if (b) b.remove(); }
+  else if (a === 'menu' && t.classList.contains('sbz-menu')) $('sb').classList.add('on');
   else if (a === 'menu') { $('sb').classList.toggle('on'); $('ov').classList.toggle('on'); }
   else if (a === 'certificado') abrirCertificado(t);
   else if (a === 'dep-editar') { DEP_EDITAR = true; preencherDepoimento(); }
@@ -1413,7 +1501,7 @@ document.addEventListener('click', e => {
     if (!temToolbox()) return;
     const m = t.dataset.mod ? parseInt(t.dataset.mod,10) : null;
     if (m) TB.mod = m;
-    else { const last = C.conteudo.modulos.filter(x => modDone(x) && prompts()[x.id]).pop(); if (!last) { toast('🔒 Conclua um módulo para liberar o Toolbox'); return; } TB.mod = last.id; }
+    else { const last = C.conteudo.modulos.filter(x => toolLivre(x) && prompts()[x.id]).pop(); if (!last) { toast('🔒 Conclua um módulo para liberar o Toolbox'); return; } TB.mod = last.id; }
     TB.open = true; closeMenu(); renderToolbox(); renderProgress();
   }
   else if (a === 'toolclose') { TB.open = false; renderToolbox(); renderProgress(); }
@@ -1425,7 +1513,7 @@ document.addEventListener('click', e => {
   }
   else if (a === 'reset') {
     if (!confirm('Apagar todo o seu progresso neste curso?')) return;
-    DB.reiniciar(C.id).then(() => { PROG[C.id] = {}; SESSION = {}; S.view = 'home'; renderAll(); })
+    (masterLocal() ? Promise.resolve() : DB.reiniciar(C.id)).then(() => { PROG[C.id] = {}; SESSION = {}; if (masterLocal()) gravarProgMaster(); S.view = 'home'; renderAll(); })
       .catch(err => { console.error(err); toast('Não foi possível reiniciar agora.'); });
   }
 });
@@ -1463,7 +1551,7 @@ document.addEventListener('input', e => {
 }));
 document.addEventListener('focusout', e => { if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') buscarCep(e.target); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { fecharQr(); fecharTeste(); }
+  if (e.key === 'Escape') { fecharQr(); fecharTeste(); fecharListaCursos(); }
   if (e.key === 'Escape') { TB.open = false; renderToolbox(); renderProgress(); closeMenu(); }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('role') === 'button') { e.preventDefault(); e.target.click(); }
 });
@@ -1476,6 +1564,7 @@ async function iniciar(){
     [ALUNO, EMAIL_SESSAO] = await Promise.all([DB.alunoAtual(), DB.emailDaSessao()]);
     if (ALUNO) [MATR, PROG, CERTS] = await Promise.all([DB.matriculas(), DB.progresso(), DB.meusCertificados()]);
     await checarMaster();
+    prepararMaster();
   } catch(e){
     console.error(e);
     $('main').innerHTML = '<div class="empty">Não foi possível carregar o portal. Verifique a internet e recarregue a página.</div>';
@@ -1503,7 +1592,7 @@ const sbFlutuante = () => document.body.classList.contains('sb-flut') && innerWi
 document.addEventListener('mousemove', e => {
   if (!sbFlutuante()) return;
   const sb = $('sb'), aberto = sb.classList.contains('on');
-  if (!aberto && e.clientX <= 36) { clearTimeout(FECHA_SB); FECHA_SB = null; sb.classList.add('on'); return; }
+  if (!aberto && e.target.closest && e.target.closest('.sbz-menu')) { clearTimeout(FECHA_SB); FECHA_SB = null; sb.classList.add('on'); return; }
   if (!aberto) return;
   if (e.clientX > sb.getBoundingClientRect().right + 40) {
     if (!FECHA_SB) FECHA_SB = setTimeout(() => { FECHA_SB = null; closeMenu(); }, 250);

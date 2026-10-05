@@ -64,11 +64,29 @@ button.bc:hover{color:var(--text); background:var(--s2);}
 .sbz{display:none;}
 @media (min-width: 901px){
   body.sb-flut .app{grid-template-columns:minmax(0,1fr);}
-  body.sb-flut .sbz{display:flex; position:fixed; left:0; top:calc(env(safe-area-inset-top,0px) + 74px); bottom:0; width:26px; z-index:44; padding:0; border:0; background:transparent; cursor:pointer; align-items:flex-start;}
-  body.sb-flut .sbz span{margin-top:16px; writing-mode:vertical-rl; transform:rotate(180deg); padding:14px 5px; border-radius:0 12px 12px 0; font-size:12.5px; font-weight:800; letter-spacing:.06em; color:#000; background:linear-gradient(180deg,#22C55E,#F59E0B,#EC4899); box-shadow:0 8px 24px -8px #F59E0B;}
+  body.sb-flut .sbz{display:flex; flex-direction:column; gap:6px; position:fixed; left:0; top:calc(env(safe-area-inset-top,0px) + 90px); bottom:16px; width:30px; z-index:44;}
+  body.sb-flut .app{padding-left:48px;}
+  .sbz-t{flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center; padding:8px 0; border:0; border-radius:0 12px 12px 0; color:#000; background:linear-gradient(180deg,var(--c),var(--c2)); box-shadow:0 8px 24px -10px var(--c); cursor:pointer; overflow:hidden; opacity:.78; transition:opacity .2s, transform .2s;}
+  .sbz-t span{writing-mode:vertical-rl; transform:rotate(180deg); font-size:11.5px; font-weight:800; letter-spacing:.05em; white-space:nowrap;}
+  .sbz-t i{font-style:normal; display:inline-block; transform:rotate(180deg); margin-bottom:5px;}
+  .sbz-t:hover, .sbz-t:focus-visible, .sbz-t.on{opacity:1; transform:translateX(3px);}
+  .sbz-menu{opacity:1; background:linear-gradient(180deg,#22C55E,#F59E0B,#EC4899);}
+  .sbz-renda{margin-top:8px;}
+  @media (max-height: 600px){ .sbz-t .sbz-tx{display:none;} .sbz-t i{margin:0;} }
   body.sb-flut .sb{position:fixed; left:0; top:calc(env(safe-area-inset-top,0px) + 74px); bottom:16px; width:316px; max-height:none; align-self:stretch; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; z-index:45; border-radius:0 20px 20px 0; transform:translateX(-105%); transition:transform .25s ease, box-shadow .25s;}
   body.sb-flut .sb:has(:focus-visible), body.sb-flut .sb.on{transform:none; box-shadow:18px 0 50px -20px rgba(0,0,0,.9);}
 }
+
+/* Celular e telas estreitas: atalhos fixos logo abaixo do topo, para pular direto a cada parte da página inicial. */
+.atalhos{display:none;}
+@media (max-width: 900px){
+  .atalhos{display:flex; gap:8px; position:sticky; top:calc(env(safe-area-inset-top,0px) + var(--topo,62px)); z-index:29; margin:0 0 18px; padding:8px; overflow-x:auto; scrollbar-width:none; border:1px solid var(--line); border-radius:16px; background:rgba(4,4,8,.86); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);}
+  .atalhos::-webkit-scrollbar{display:none;}
+  html:has(.atalhos){scroll-padding-top:calc(env(safe-area-inset-top,0px) + var(--topo,62px) + 64px);}
+}
+.atalho{flex:none; display:flex; align-items:center; gap:6px; padding:7px 12px; border-radius:99px; border:1px solid color-mix(in srgb,var(--c) 45%,transparent); background:color-mix(in srgb,var(--c) 12%,#050507); color:var(--text); font:inherit; font-size:13px; font-weight:700; white-space:nowrap; cursor:pointer; transition:background .2s, color .2s;}
+.atalho.on{background:linear-gradient(135deg,var(--c),var(--c2)); color:#000; border-color:transparent;}
+.atalho-sep{flex:none; width:1px; margin:4px 2px; background:var(--line);}
 
 /* ---------- Níveis do painel lateral: abrem e fecham no clique ---------- */
 .sbacc .modh{width:100%;}
@@ -186,11 +204,10 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 @keyframes indbrilho{0%,55%{left:-60%;} 100%{left:130%;}}
 @keyframes indpulso{0%,100%{box-shadow:0 0 18px -6px #25d366;} 50%{box-shadow:0 0 28px -2px #25d366;}}
 .bn .bn-indica{color:var(--text);}
-.bn .bn-indica span{display:grid; place-items:center; width:42px; height:42px; margin-top:-20px; border-radius:50%; font-size:20px; background:linear-gradient(135deg,#25d366,#22d3ee); box-shadow:0 0 0 4px #000, 0 0 22px -2px #25d366; animation:indpulso 2s ease-in-out infinite;}
 .ind-res{display:flex; align-items:center; gap:14px; margin:0 0 16px; padding:14px 16px; border-radius:16px; border:1px solid rgba(37,211,102,.35); background:linear-gradient(135deg,rgba(37,211,102,.12),rgba(34,211,238,.06));}
 .ind-res b{font-family:var(--font-d); font-size:18px;}
 .ind-res small{display:block; margin-top:2px; font-size:12.5px; color:var(--muted);}
-@media (prefers-reduced-motion: reduce){ .indica::before, .indica::after, .ind-ic, .bn .bn-indica span{animation:none;} }
+@media (prefers-reduced-motion: reduce){ .indica::before, .indica::after, .ind-ic{animation:none;} }
 /* ---------- Cards das trilhas (compactos) ---------- */
 .trilha .grid{grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px;}
 .trilha .mc{min-height:0; padding:14px; gap:9px; border-radius:18px;}
@@ -442,6 +459,16 @@ a.sbtn{text-decoration:none; display:inline-flex; align-items:center;}
 .lst{list-style:none; margin:0; padding:0; font-size:14px;}
 .lst li{display:flex; gap:8px; padding:4px 0;}
 .lst li small{color:var(--muted); margin-left:auto;}
+
+/* ---------- Lista rápida de cursos (ícone Cursos do rodapé, no celular) ---------- */
+.cl-modal{position:fixed; inset:0; z-index:34; background:rgba(0,0,0,.35);}
+.cl-box{position:absolute; left:10px; right:10px; bottom:calc(env(safe-area-inset-bottom,0px) + 74px); max-height:min(62vh,520px); overflow-y:auto; overscroll-behavior:contain; padding:10px; border:1px solid var(--line); border-radius:20px; background:rgba(8,8,12,.97); box-shadow:0 -10px 40px -12px rgba(0,0,0,.9); animation:rise .22s ease both;}
+.cl-sec{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:8px 8px 4px;}
+.cl-it{display:flex; align-items:center; gap:10px; width:100%; padding:7px 8px; border:0; border-radius:12px; background:transparent; color:var(--text); font:inherit; font-size:14px; font-weight:600; text-align:left; cursor:pointer;}
+.cl-it:active, .cl-it:hover{background:var(--s2);}
+.cl-ic{flex:none; width:30px; height:30px; display:grid; place-items:center; border-radius:9px; font-size:16px; background:linear-gradient(135deg,var(--c),var(--c2));}
+.cl-it small{margin-left:auto; flex:none; color:var(--muted); font-size:12px; font-weight:600;}
+.cl-todos{margin-top:6px; border-top:1px solid var(--line); border-radius:0 0 12px 12px; padding-top:10px; color:var(--muted);}
 
 @media (max-width: 900px){
   .fgrid{grid-template-columns:1fr;}
