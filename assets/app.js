@@ -713,8 +713,10 @@ function renderProgress(){
   $('bn-menu').innerHTML = noCurso ? '<span>📚</span>Lições' : '<span>🧭</span>Trilha';
   $('bn-tool').classList.toggle('off', !tb);
   $('bn-sair').classList.toggle('off', !(ALUNO || MASTER));
+  $('bn-entrar').classList.toggle('off', !!(ALUNO || MASTER));
   const on = (id, v) => $(id).classList.toggle('on', v);
-  on('bn-cursos', !noCurso); on('bn-home', noCurso && S.view !== 'lesson'); on('bn-menu', noCurso && S.view === 'lesson'); on('bn-tool', TB.open);
+  on('bn-entrar', S.view === 'entrar');
+  on('bn-cursos', !noCurso && S.view !== 'entrar'); on('bn-home', noCurso && S.view !== 'lesson'); on('bn-menu', noCurso && S.view === 'lesson'); on('bn-tool', TB.open);
   if (!noCurso) return;
   const n = C.licoes.filter(l => D()[l.id]).length, pct = Math.round(n / C.total * 100);
   $('pb').style.width = pct + '%';
