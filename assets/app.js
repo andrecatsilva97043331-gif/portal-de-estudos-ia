@@ -69,6 +69,7 @@ const iconeLicao = L => (C.conteudo.iconesLicao || {})[L.id] || L.icon || modOf(
 /* ============ RENDER: PORTAL ============ */
 function renderCursos(){
   const totalLicoes = CURSOS.reduce((s, c) => s + c.total, 0);
+  const totalCursos = CURSOS.filter(c => !c.projeto_final).length;
   let topo, pctGeral = null;
   if (ALUNO) {
     const meus = CURSOS.filter(c => MATR.includes(c.id));
@@ -92,7 +93,7 @@ function renderCursos(){
       <div><div class="eyebrow">Portal de Estudos IA</div>
       <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
       <p class="hp">Lições curtas, casos de clientes de verdade e projetos práticos. Faça seu cadastro gratuito e comece agora.</p>
-      <div class="chips"><span class="chip">🎓 ${CURSOS.length} ${CURSOS.length === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
+      <div class="chips"><span class="chip">🎓 ${totalCursos} ${totalCursos === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
       <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}${botaoIndicar()}</div>
       <button class="qr-card so-pc" type="button" data-act="qr" title="Ver o QR maior"><span class="qr-tit">Estude no <span class="grad">celular</span></span><span class="qr-moldura"><span class="qr-in"><img src="assets/qr-app.svg" alt="QR code do Portal de Estudos IA" width="170" height="170"><i class="qr-scan" aria-hidden="true"></i></span></span></button>
       <div class="orb so-cel" aria-hidden="true"><span>📚</span></div>
@@ -153,6 +154,14 @@ function renderCursos(){
     const pf = projetoFinal(t); if (!pf) return '';
     const lista = cursosDaTrilha(t), feitos = lista.filter(completo).length, livre = trilhaLiberada(t), cert = certDe('trilha', t);
     const horas = lista.concat(pf).reduce((s, c) => s + (c.carga_horaria || 0), 0);
+    if (!ALUNO && !MASTER) return `<div class="nivel final" style="${ccor(pf)}">
+      <div class="nhead"><span class="npill">🏁 Projeto final</span><small>Fecha a ${PORTAL.trilhas[t]}</small></div>
+      <div class="grid"><div class="mc pfinal vit rise" role="button" tabindex="0" data-act="cadastro" style="${ccor(pf)}">
+        <div class="mhead"><div class="mtile">${pf.icone}</div><span class="pctpill novo">🆓 Gratuito</span></div>
+        <div><div class="mt">${esc(pf.titulo)}</div><div class="ms">${esc(pf.descricao)}</div></div>
+        <div class="vit-ap"><small>Como funciona</small><span>📚 Conclua os ${lista.length} cursos</span><span>🛠️ Faça o projeto final</span><span>🎓 Certificado da trilha</span></div>
+        <div class="mfoot"><span>🎓 Certificado da ${PORTAL.trilhas[t]} · ${horas} horas</span><span class="mst">🔐 Entre para estudar</span></div>
+      </div></div></div>`;
     const selo = cert ? '🎓 Certificado emitido' : !livre ? '🔒 Bloqueado' : MATR.includes(pf.id) ? pctCurso(pf) + '%' : '✨ Liberado';
     return `<div class="nivel final" style="${ccor(pf)}">
       <div class="nhead"><span class="npill">🏁 Projeto final</span><small>${feitos} de ${lista.length} cursos concluídos</small></div>

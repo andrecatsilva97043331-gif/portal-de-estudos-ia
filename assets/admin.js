@@ -449,8 +449,13 @@ function renderDivulgacao(){
     if (DADOS.matriculas.some(m => m.aluno_id === a.id && progressoDe(a.id, m.curso_id).pct === 100)) c.concluiu++;
   });
   const linhasOrigem = Object.entries(conta).sort((x, y) => y[1].n - x[1].n);
+  const ehIndicacao = k => /^indicacao/.test(k);
+  const ind = linhasOrigem.filter(([k]) => ehIndicacao(k)).reduce((s, [, c]) => ({ n:s.n + c.n, concluiu:s.concluiu + c.concluiu }), { n:0, concluiu:0 });
+  const indNovos = DADOS.alunos.filter(a => ehIndicacao(a.origem || '') && a.criado_em && Date.now() - new Date(a.criado_em).getTime() < 7 * DIA).length;
+  const nomeOrigem = k => ehIndicacao(k) ? '🎁 Indicação de amigo' : esc(k);
   const opCursos = CURSOS.filter(c => PORTAL.disponivel(c) && !c.projeto_final).map(c => `<option value="${esc(c.id)}" ${DIV.curso === c.id ? 'selected' : ''}>${esc(c.titulo)}</option>`).join('');
-  el.innerHTML = `<p class="nota" style="margin:0 0 12px">Use um link diferente em cada post. Quem se cadastrar por ele fica registrado com a origem, e você vê abaixo qual rede e qual campanha trazem mais alunos.</p>
+  el.innerHTML = `<div class="ind-res"><span class="ind-ic" aria-hidden="true">🎁</span><div><b>${ind.n}</b> ${ind.n === 1 ? 'aluno se cadastrou' : 'alunos se cadastraram'} pelo botão <b>Indique um amigo</b><small>+${indNovos} nos últimos 7 dias · ${ind.concluiu} ${ind.concluiu === 1 ? 'concluiu' : 'concluíram'} um curso</small></div></div>
+    <p class="nota" style="margin:0 0 12px">Use um link diferente em cada post. Quem se cadastrar por ele fica registrado com a origem, e você vê abaixo qual rede e qual campanha trazem mais alunos.</p>
     <div class="tools" style="margin:0 0 10px">
       <select class="inp" id="div-rede">${REDES_DIV.map(r => `<option value="${r[0]}" ${DIV.rede === r[0] ? 'selected' : ''}>${r[1]}</option>`).join('')}</select>
       <input class="inp" id="div-campanha" placeholder="Campanha (ex.: lancamento, depoimento-maria)" value="${esc(DIV.campanha)}" maxlength="40">
@@ -459,7 +464,7 @@ function renderDivulgacao(){
     <div class="tools" style="margin:0 0 16px"><code id="div-link" style="flex:1;overflow-wrap:anywhere;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.06)">${esc(linkRastreio())}</code>
       <button class="sbtn" data-act="copiar-rastreio">🔗 Copiar link</button></div>
     ${linhasOrigem.length ? `<table class="atbl"><thead><tr><th>De onde vieram</th><th>Alunos</th><th>Concluíram um curso</th></tr></thead><tbody>
-      ${linhasOrigem.map(([k, c]) => `<tr><td>${k ? esc(k) : '<small>Direto ou sem rastreio</small>'}</td><td>${c.n}</td><td>${c.concluiu}</td></tr>`).join('')}</tbody></table>`
+      ${linhasOrigem.map(([k, c]) => `<tr><td>${k ? nomeOrigem(k) : '<small>Direto ou sem rastreio</small>'}</td><td>${c.n}</td><td>${c.concluiu}</td></tr>`).join('')}</tbody></table>`
       : '<div class="empty">Nenhum aluno cadastrado ainda.</div>'}`;
 }
 
