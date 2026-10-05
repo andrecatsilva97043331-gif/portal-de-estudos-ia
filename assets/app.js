@@ -84,7 +84,7 @@ function renderCursos(){
       <div class="chips"><span class="chip">⚡ ${feitas * 100} XP</span><span class="chip">📘 ${feitas} lições concluídas</span><span class="chip">🎓 ${meus.length} ${meus.length === 1 ? 'curso' : 'cursos'}</span>${concluidos ? `<span class="chip">🏆 ${concluidos} concluído${concluidos > 1 ? 's' : ''}</span>` : ''}</div>
       ${!DB.verificado(ALUNO) ? `<div class="pend"><b>⚠️ Falta confirmar seu ${ALUNO.email_verificado ? 'WhatsApp' : 'e-mail'}</b><span>${textoObrigatorio()}</span><button class="next" data-act="verificar">Confirmar agora ➜</button></div>`
         : seguir ? `<button class="next" data-act="curso" data-id="${esc(seguir.id)}" style="${ccor(seguir)}">Continuar ${esc(seguir.titulo)} ➜</button>` : ''}
-      <div class="hbtns">${botaoInstalar()}<button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>${dicaIos()}</div>
+      <div class="hbtns">${botaoInstalar()}<button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>${dicaIos()}${botaoIndicar()}</div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>dos seus cursos</span></div></div>
     </section>`;
   } else {
@@ -93,7 +93,7 @@ function renderCursos(){
       <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
       <p class="hp">Lições curtas, casos de clientes de verdade e projetos práticos. Faça seu cadastro gratuito e comece agora.</p>
       <div class="chips"><span class="chip">🎓 ${CURSOS.length} ${CURSOS.length === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
-      <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}</div>
+      <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}${botaoIndicar()}</div>
       <button class="qr-card so-pc" type="button" data-act="qr" title="Ver o QR maior"><span class="qr-tit">Estude no <span class="grad">celular</span></span><span class="qr-moldura"><span class="qr-in"><img src="assets/qr-app.svg" alt="QR code do Portal de Estudos IA" width="170" height="170"><i class="qr-scan" aria-hidden="true"></i></span></span></button>
       <div class="orb so-cel" aria-hidden="true"><span>📚</span></div>
     </section>
@@ -102,7 +102,17 @@ function renderCursos(){
         .map((s, i) => `<div class="step rise" style="--d:${0.1 + i * 0.08}s;${'--c:' + PORTAL.paleta(i)[0] + ';--c2:' + PORTAL.paleta(i)[1]}"><div class="stile">${s[0]}</div><div><b>${i + 1}. ${s[1]}</b><p>${s[2]}</p></div></div>`).join('')}
     </div>`;
   }
+  const vitrine = (c, i) => {
+    const mods = c.conteudo.modulos;
+    return `<div class="mc vit rise" role="button" tabindex="0" data-act="curso" data-id="${esc(c.id)}" style="${ccor(c)};--d:${0.15 + i * 0.08}s">
+      <div class="mhead"><div class="mtile">${c.icone}</div><span class="pctpill novo">🆓 Gratuito</span></div>
+      <div><div class="mt">${esc(c.titulo)}</div><div class="ms">${esc(c.descricao)}</div></div>
+      <div class="vit-ap"><small>Você vai aprender</small>${mods.slice(0, 3).map(m => `<span>${m.icon} ${esc(m.title)}</span>`).join('')}${mods.length > 3 ? `<span class="vit-mais">+ ${mods.length - 3} ${mods.length - 3 === 1 ? 'módulo' : 'módulos'}</span>` : ''}</div>
+      <div class="mfoot"><span>${c.total} lições${c.carga_horaria ? ' · ' + c.carga_horaria + 'h' : ''} · 🎓 certificado</span><span class="mst">🔐 Entre para estudar</span></div>
+    </div>`;
+  };
   const cartao = (c, i) => {
+    if (!ALUNO && !MASTER) return vitrine(c, i);
     const matr = MATR.includes(c.id), pct = pctCurso(c), fim = matr && pct === 100, d = PROG[c.id] || {};
     const acao = fim ? '✅ Concluído' : matr ? '▶ Continuar' : '✨ Iniciar curso';
     const dots = c.conteudo.modulos.map(m => `<i class="${m.lessons.every(l => d[l.id]) ? 'on' : ''}" title="Módulo ${m.id}: ${esc(m.title)}"></i>`).join('');
@@ -204,6 +214,22 @@ function linkContato(cls){
   return `<a class="${cls}" href="https://wa.me/${n}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener"><span class="hi">💬</span>Falar com o gestor</a>`;
 }
 
+/* Indique um amigo: abre o WhatsApp para o aluno escolher o contato, com link rastreado (origem "indicacao · amigo"). */
+function mensagemIndicacao(){
+  const base = (document.querySelector('meta[property="og:url"]') || {}).content || (location.origin + location.pathname);
+  const u = new URL(base);
+  u.searchParams.set('utm_source', 'indicacao');
+  u.searchParams.set('utm_campaign', 'amigo');
+  const abre = ALUNO ? `Estou estudando Inteligência Artificial no Portal de Estudos IA e lembrei de você!` : `Achei um portal que ensina Inteligência Artificial e lembrei de você!`;
+  return `🚀 *Oportunidade: aprenda IA de graça!*\n\n${abre}\n\n`
+    + `São ${CURSOS.filter(c => !c.projeto_final).length} cursos, do zero ao avançado, direto no celular:\n`
+    + `✅ Lições curtas e práticas\n✅ Desafios com casos reais\n✅ Projetos para o seu portfólio\n✅ Certificado com validação online\n✅ 100% gratuito, sem pegadinha\n\n`
+    + `A IA já está mudando o mercado de trabalho, e quem aprende agora sai na frente. 💡\n\n`
+    + `Cadastro em 2 minutos. Bora estudar junto? 👇\n${u}`;
+}
+function indicarAmigo(){ window.open('https://wa.me/?text=' + encodeURIComponent(mensagemIndicacao()), '_blank', 'noopener'); }
+const botaoIndicar = () => `<button class="indica" type="button" data-act="indicar"><span class="ind-ic" aria-hidden="true">🎁</span><span class="ind-tx"><b>Indique um amigo</b><small>Envie o convite pelo WhatsApp</small></span><span class="ind-seta" aria-hidden="true">➜</span></button>`;
+
 /* QR code para abrir o portal no celular (imagem fixa em assets/qr-app.svg). */
 function abrirQr(){
   if ($('qr-modal')) return;
@@ -284,7 +310,7 @@ function telaTeste(){
     <div class="tn-acoes"><button class="ghost" type="button" data-act="tn-trilha" data-nivel="${r.nivel.id}">Ver na trilha</button><button class="link" type="button" data-act="tn-refazer">Refazer o teste</button></div>`;
 }
 function chamadaTeste(){
-  const salvo = lerNivel(), m = salvo && PORTAL.catalogo.find(x => x.id === salvo.curso), nv = salvo && PORTAL.niveis.find(x => x.id === salvo.nivel);
+  const salvo = ALUNO && lerNivel(), m = salvo && PORTAL.catalogo.find(x => x.id === salvo.curso), nv = salvo && PORTAL.niveis.find(x => x.id === salvo.nivel);
   if (m && nv) return `<div class="tn-chamada feito" style="--c:${nv.cores[0]};--c2:${nv.cores[1]}"><span class="tn-alvo">🎯</span>
     <div><b>Seu nível: ${nv.titulo}</b><small>Ponto de partida: ${m.ordem}. ${esc(m.titulo)}</small></div>
     <button class="ghost" type="button" data-act="ver-nivel" data-nivel="${nv.id}">Ver</button><button class="link" type="button" data-act="teste-nivel">Refazer</button></div>`;
@@ -341,7 +367,7 @@ function telaResultadoRenda(){
     <div class="tn-acoes"><button class="ghost" type="button" data-act="tn-trilha" data-nivel="renda-${r.grupo.id}">Ver na trilha</button><button class="link" type="button" data-act="tn-refazer">Refazer o teste</button></div>`;
 }
 function chamadaRenda(){
-  const salvo = lerRenda(), renda = PORTAL.catalogo.filter(x => x.trilha === 'renda');
+  const salvo = ALUNO && lerRenda(), renda = PORTAL.catalogo.filter(x => x.trilha === 'renda');
   const m = salvo && renda.find(x => x.id === salvo.curso), g = salvo && PORTAL.gruposRenda.find(x => x.id === salvo.grupo);
   if (m && g) return `<div class="tn-chamada feito" style="--c:${g.cores[0]};--c2:${g.cores[1]}"><span class="tn-alvo">🧭</span>
     <div><b>Comece por: ${g.titulo}</b><small>Sugestão: ${renda.indexOf(m) + 1}. ${esc(m.titulo)}</small></div>
@@ -390,12 +416,11 @@ function avisoRenda(){
 }
 
 function renderCadastro(){
-  const opcoes = CURSOS.map(c => `<option value="${esc(c.id)}" ${S.escolhido===c.id?'selected':''}>${esc(c.titulo)}</option>`).join('');
   $('main').removeAttribute('style');
   $('main').innerHTML = `<form class="form" id="f-cad" novalidate>
     <div class="eyebrow">Cadastro gratuito</div>
     <h1 class="h1" style="margin-bottom:6px">Comece a <span class="grad">estudar agora</span></h1>
-    <p class="hp">Preencha seus dados${MODO_SENHA() ? ', crie sua senha' : ''} e escolha o curso${pedeConfirmacao() ? '. Depois é só confirmar ' + [DB.codigoEmail && 'o e-mail', DB.exigirWhatsapp && 'o WhatsApp'].filter(Boolean).join(' e ') : ''}. <button class="link inl" type="button" data-act="entrar">Já tenho cadastro</button></p>
+    <p class="hp">Preencha seus dados${MODO_SENHA() ? ' e crie sua senha' : ''}${pedeConfirmacao() ? '. Depois é só confirmar ' + [DB.codigoEmail && 'o e-mail', DB.exigirWhatsapp && 'o WhatsApp'].filter(Boolean).join(' e ') : ''}. <button class="link inl" type="button" data-act="entrar">Já tenho cadastro</button></p>
     <div class="obrig">🛡️ <span>${textoObrigatorio()}</span></div>
     <div class="fprog-w"><div class="fprog"><i id="fprog"></i></div><span id="fprog-t">0% preenchido</span></div>
     <div class="card fcard rise" style="--c:#22d3ee;--c2:#3b82f6"><h3 class="fsec"><span class="fico">📇</span>Seus dados</h3><div class="fgrid">
@@ -420,10 +445,8 @@ function renderCadastro(){
       <label class="fl wide">Principal objetivo com o curso<select name="objetivo" required><option value="">Selecione</option>${OBJETIVOS.map(o => `<option>${o}</option>`).join('')}</select></label>
       <label class="fl wide">Conte um pouco mais (opcional)<textarea name="objetivo_detalhe" maxlength="300" rows="3" placeholder="O que você espera conseguir fazer depois do curso?"></textarea></label>
     </div></div>
-    <div class="card fcard rise" style="--c:#4ade80;--c2:#a3e635;--d:.16s"><h3 class="fsec"><span class="fico">🎓</span>Curso</h3>
-    <div class="fgrid">
-      <label class="fl wide">Escolha o curso<select name="curso" required>${opcoes}</select></label>
-    </div>
+    <div class="card fcard rise" style="--c:#4ade80;--c2:#a3e635;--d:.16s"><h3 class="fsec"><span class="fico">📜</span>Termo de adesão</h3>
+    <input type="hidden" name="curso" value="${esc(S.escolhido || (CURSOS[0] && CURSOS[0].id) || '')}">
     <p class="nota">🔒 Não pedimos CPF, RG nem nenhum documento com foto.</p>
     <label class="check"><input type="checkbox" name="lgpd" required><span>Autorizo o uso destes dados pelo Portal de Estudos IA para acompanhar meu progresso nos cursos e para receber códigos de confirmação e avisos sobre meus estudos por e-mail e WhatsApp.</span></label>
     <div class="err" id="cad-err" role="alert"></div>
@@ -602,7 +625,7 @@ async function salvarNovaSenha(form){
 }
 
 const textoBotaoCadastro = () => pedeConfirmacao() ? 'Continuar para a confirmação ➜' : 'Cadastrar e iniciar o curso ➜';
-const OBRIGATORIOS = ['nome','email','senha','senha2','idade','telefone','pais','cep','estado','profissao','ocupacao','trabalhando','estudante','objetivo','curso','lgpd'];
+const OBRIGATORIOS = ['nome','email','senha','senha2','idade','telefone','pais','cep','estado','profissao','ocupacao','trabalhando','estudante','objetivo','lgpd'];
 function atualizarPreenchimento(){
   const f = $('f-cad'); if (!f) return;
   const campos = OBRIGATORIOS.filter(n => f.elements[n]);
@@ -637,7 +660,7 @@ function sidebarPortal(){
         const c = cursoPorId(m.id);
         if (!c) return `<button class="les" type="button" disabled title="Em breve"><span class="st">🔜</span><span>${m.ordem ? m.ordem + '. ' : ''}${esc(m.titulo)}</span></button>`;
         const pct = MATR.includes(c.id) ? pctCurso(c) : null;
-        const st = pct === 100 ? '✅' : pct !== null ? '▶️' : '✨';
+        const st = !ALUNO && !MASTER ? '🔒' : pct === 100 ? '✅' : pct !== null ? '▶️' : '✨';
         return `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${st}</span><span>${m.ordem ? m.ordem + '. ' : ''}${esc(c.titulo)}${pct !== null && pct < 100 ? ` <small class="sbpct">${pct}%</small>` : ''}${PORTAL.disponivel(c) ? '' : ` <small class="sbpct">${seloPrevia()}</small>`}</span></button>`;
       }).join('')}</div></div>
     </div>`;
@@ -656,7 +679,7 @@ function sidebarPortal(){
         const c = cursoPorId(m.id), num = renda.indexOf(m) + 1;
         if (!c) return `<button class="les" type="button" disabled title="Em breve"><span class="st">🔜</span><span>${num}. ${esc(m.titulo)}</span></button>`;
         const pct = MATR.includes(c.id) ? pctCurso(c) : null;
-        const st = pct === 100 ? '✅' : pct !== null ? '▶️' : '✨';
+        const st = !ALUNO && !MASTER ? '🔒' : pct === 100 ? '✅' : pct !== null ? '▶️' : '✨';
         return `<button class="les" type="button" data-act="curso" data-id="${esc(c.id)}"><span class="st">${st}</span><span>${num}. ${esc(c.titulo)}${pct !== null && pct < 100 ? ` <small class="sbpct">${pct}%</small>` : ''}${PORTAL.disponivel(c) ? '' : ` <small class="sbpct">${seloPrevia()}</small>`}</span></button>`;
       }).join('')}</div></div>
     </div>`;
@@ -669,6 +692,7 @@ function sidebarPortal(){
     ${gruposRenda ? `<div class="sbsec">Renda com IA</div><button class="homebtn" type="button" data-act="teste-renda"><span class="hi">🧭</span>Descobrir por onde começar</button>${gruposRenda}` : ''}
     ${outros ? `<div class="sbsec">Outros cursos</div>${outros}` : ''}
     <div class="sbsec">App e conta</div>
+    <button class="homebtn" type="button" data-act="indicar"><span class="hi">🎁</span>Indicar um amigo</button>
     <button class="homebtn so-pc" type="button" data-act="qr"><span class="hi">📱</span>Levar para o celular</button>
     ${linkContato('homebtn')}
     ${MASTER ? '<a class="homebtn" href="admin.html"><span class="hi">🛡️</span>Painel do Master</a>' : ''}
@@ -714,6 +738,7 @@ function renderProgress(){
   $('bn-tool').classList.toggle('off', !tb);
   $('bn-sair').classList.toggle('off', !(ALUNO || MASTER));
   $('bn-entrar').classList.toggle('off', !!(ALUNO || MASTER));
+  $('bn-indica').classList.toggle('off', noCurso);
   const on = (id, v) => $(id).classList.toggle('on', v);
   on('bn-entrar', S.view === 'entrar');
   on('bn-cursos', !noCurso && S.view !== 'entrar'); on('bn-home', noCurso && S.view !== 'lesson'); on('bn-menu', noCurso && S.view === 'lesson'); on('bn-tool', TB.open);
@@ -1262,6 +1287,7 @@ async function pedirEntrada(form){
 async function sair(){
   try { await DB.sair(); if (MASTER) await DB.sairMaster(); } catch(e){ console.error(e); }
   ALUNO = null; EMAIL_SESSAO = null; MATR = []; PROG = {}; CERTS = []; C = null; VER = {}; MASTER = false; limparPendente();
+  try { localStorage.removeItem(CHAVE_NIVEL); localStorage.removeItem(CHAVE_RENDA); } catch(e){}
   await ajustarPrevia();
   irParaCursos(); toast('Você saiu da sua conta.');
 }
@@ -1332,6 +1358,7 @@ document.addEventListener('click', e => {
   else if (a === 'curso') abrirCurso(t.dataset.id);
   else if (a === 'instalar') instalarApp();
   else if (a === 'qr') abrirQr();
+  else if (a === 'indicar') indicarAmigo();
   else if (a === 'fechar-qr') { if (t === e.target || t.classList.contains('nfechar')) fecharQr(); }
   else if (a === 'teste-nivel') abrirTeste();
   else if (a === 'fechar-teste') { if (t === e.target || t.classList.contains('nfechar')) fecharTeste(); }

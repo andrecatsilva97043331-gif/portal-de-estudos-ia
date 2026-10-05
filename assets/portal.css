@@ -169,6 +169,43 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .nhead{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin:0 2px 14px;}
 .npill{font-family:var(--font-d); font-weight:800; font-size:14px; padding:6px 14px; border-radius:99px; color:#000; background:linear-gradient(135deg,var(--c),var(--c2)); box-shadow:0 6px 20px -8px var(--c);}
 .nhead small{color:var(--muted); font-size:13px;}
+/* ---------- Indique um amigo ---------- */
+@property --ind-ang{syntax:'<angle>'; inherits:false; initial-value:0deg;}
+.indica{position:relative; isolation:isolate; display:flex; align-items:center; gap:14px; width:100%; max-width:420px; margin-top:18px; padding:14px 18px; border:0; border-radius:18px; background:#06060c; color:var(--text); font:inherit; text-align:left; cursor:pointer; overflow:hidden; box-shadow:0 0 0 1px rgba(255,255,255,.04), 0 14px 40px -16px #25d366, 0 0 50px -24px #c084fc; transition:transform .2s, box-shadow .2s;}
+.indica::before{content:''; position:absolute; inset:0; z-index:-2; border-radius:inherit; padding:2px; background:conic-gradient(from var(--ind-ang), #25d366, #22d3ee, #c084fc, #ec4899, #25d366); -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:indgira 3.5s linear infinite;}
+.indica::after{content:''; position:absolute; top:0; bottom:0; left:-60%; width:40%; z-index:-1; background:linear-gradient(100deg, transparent, rgba(255,255,255,.12), transparent); transform:skewX(-20deg); animation:indbrilho 3.2s ease-in-out infinite;}
+.indica:hover{transform:translateY(-2px); box-shadow:0 0 0 1px rgba(255,255,255,.06), 0 18px 46px -12px #25d366, 0 0 60px -20px #c084fc;}
+.indica:active{transform:scale(.98);}
+.ind-ic{flex:none; width:44px; height:44px; display:grid; place-items:center; font-size:22px; border-radius:14px; background:linear-gradient(135deg,#25d366,#22d3ee); box-shadow:0 0 22px -4px #25d366; animation:indpulso 2s ease-in-out infinite;}
+.ind-tx{flex:1; display:flex; flex-direction:column; gap:2px; min-width:0;}
+.ind-tx b{font-family:var(--font-d); font-size:17px; font-weight:800; letter-spacing:.01em;}
+.ind-tx small{font-size:12.5px; color:var(--muted);}
+.ind-seta{flex:none; font-size:18px; color:#25d366; transition:transform .2s;}
+.indica:hover .ind-seta{transform:translateX(4px);}
+@keyframes indgira{to{--ind-ang:360deg;}}
+@keyframes indbrilho{0%,55%{left:-60%;} 100%{left:130%;}}
+@keyframes indpulso{0%,100%{box-shadow:0 0 18px -6px #25d366;} 50%{box-shadow:0 0 28px -2px #25d366;}}
+.bn .bn-indica{color:var(--text);}
+.bn .bn-indica span{display:grid; place-items:center; width:42px; height:42px; margin-top:-20px; border-radius:50%; font-size:20px; background:linear-gradient(135deg,#25d366,#22d3ee); box-shadow:0 0 0 4px #000, 0 0 22px -2px #25d366; animation:indpulso 2s ease-in-out infinite;}
+@media (prefers-reduced-motion: reduce){ .indica::before, .indica::after, .ind-ic, .bn .bn-indica span{animation:none;} }
+/* ---------- Cards das trilhas (compactos) ---------- */
+.trilha .grid{grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px;}
+.trilha .mc{min-height:0; padding:14px; gap:9px; border-radius:18px;}
+.trilha .mtile{width:46px; height:46px; border-radius:14px; font-size:23px;}
+.trilha .mt{font-size:16.5px;}
+.trilha .ms{font-size:13px; line-height:1.45;}
+.trilha .mfoot{flex-wrap:wrap; gap:4px 10px; font-size:12.5px;}
+.trilha .pctpill{font-size:12px; padding:4px 10px;}
+.trilha .mc.pfinal{max-width:none;}
+.trilha > .sec-t{display:flex; align-items:center; gap:12px; margin:26px 2px 16px; font-size:clamp(24px, 4vw, 32px); letter-spacing:.06em; text-transform:uppercase; background:linear-gradient(90deg,#22d3ee,#c084fc 55%,#ec4899); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 18px rgba(34,211,238,.35));}
+.trilha > .sec-t::after{content:''; flex:1; height:2px; border-radius:2px; background:linear-gradient(90deg,#c084fc,transparent);}
+#renda > .sec-t{background-image:linear-gradient(90deg,#10B981,#84CC16 50%,#22d3ee); filter:drop-shadow(0 0 18px rgba(16,185,129,.35));}
+#renda > .sec-t::after{background:linear-gradient(90deg,#84CC16,transparent);}
+.vit-ap{display:flex; flex-wrap:wrap; gap:5px; margin-top:auto;}
+.vit-ap small{flex-basis:100%; font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--c);}
+.vit-ap span{font-size:11.5px; padding:3px 9px; border-radius:99px; background:#0d0d14; border:1px solid color-mix(in srgb,var(--c) 30%,#1d1d27); color:var(--muted);}
+.vit-ap .vit-mais{border-style:dashed; color:var(--text);}
+.mc.vit .mst{background:linear-gradient(135deg,var(--c),var(--c2)); -webkit-background-clip:text; background-clip:text; color:transparent;}
 .mc.breve{min-height:0; cursor:default; filter:grayscale(.55); opacity:.72;}
 .mc.breve .mtile{transform:none;}
 .mc.breve .mfoot{color:var(--muted);}
