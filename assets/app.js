@@ -168,7 +168,9 @@ function renderCursos(){
       ${gruposRenda}
       ${cartaoFinal('renda')}
     </section>` : ''}
-    ${outros ? `<h2 class="sec-t">Outros cursos</h2><div class="grid">${outros}</div>` : ''}`;
+    ${outros ? `<h2 class="sec-t">Outros cursos</h2><div class="grid">${outros}</div>` : ''}
+    <section class="vitrine-dep" id="vitrine-dep" hidden></section>`;
+  preencherVitrine();
   if (pctGeral !== null) {
     setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pctGeral); }, 60);
     countUp($('bignum'), pctGeral);
@@ -735,7 +737,7 @@ function renderHome(){
       <div class="chips"><span class="chip">⚡ ${x} XP</span><span class="chip">🏅 ${level(x)}</span><span class="chip">📘 ${n} de ${total} lições</span></div>
       <button class="next" data-act="continue">${n===0?'Começar agora':(n===total?'Revisar o curso':'Continuar estudando')} ➜</button></div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>concluído</span></div></div>
-    </section>${blocoCertificado()}${avisoRecomendado()}
+    </section>${blocoCertificado()}${blocoDepoimento()}${avisoRecomendado()}
     <div class="grid">${C.conteudo.modulos.map((m,i) => {
       const lock = !unlocked(m.lessons[0].id), fin = modDone(m);
       return `<div class="mc ${lock?'lock':''} ${fin?'fin':''}" role="button" tabindex="0" data-act="openmod" data-mod="${m.id}" style="${tstyle(m.id)};--d:${i*0.5}s">
@@ -782,6 +784,72 @@ async function abrirCertificado(btn){
   location.href = PORTAL.cert.link(cert.codigo) + '&meu=1';
 }
 
+/* Vitrine pública: depoimentos aprovados e autorizados (primeiro nome, inicial do sobrenome e estado). */
+let VITRINE = null;
+/* Só o master vê, para conferir o visual enquanto não há depoimento real aprovado. */
+const EXEMPLOS_VITRINE = [
+  { nome:'Ana P.', estado:'MG', curso_id:'ia-do-zero', texto:'Exemplo de depoimento: eu achava que IA era coisa de programador. Em poucas semanas já uso no dia a dia para organizar minha rotina e estudar melhor.' },
+  { nome:'Carlos M.', estado:'BA', curso_id:'seu-primeiro-servico', texto:'Exemplo de depoimento: montei meu primeiro pacote de serviço com IA, aprendi a precificar e a explicar para o cliente o que entrego.' },
+  { nome:'Juliana R.', estado:'SP', curso_id:'prompts-que-funcionam', texto:'Exemplo de depoimento: os desafios com casos reais fizeram toda a diferença. Hoje escrevo prompts claros e economizo horas no trabalho.' }
+];
+async function preencherVitrine(){
+  if (VITRINE === null) { try { VITRINE = await DB.depoimentosPublicos(); } catch(e){ VITRINE = []; } }
+  const el = $('vitrine-dep'), exemplo = !VITRINE.length && MASTER, lista = exemplo ? EXEMPLOS_VITRINE : VITRINE;
+  if (!el || !lista.length) return;
+  el.innerHTML = `<h2 class="sec-t">💬 Quem já concluiu${exemplo ? ' <span class="badge">PRÉVIA · SÓ MASTER</span>' : ''}</h2>
+    <p class="tsub">${exemplo ? 'Exemplos para você ver o visual. Alunos e visitantes não veem esta seção até o primeiro depoimento real ser aprovado.' : 'Pessoas reais que começaram do zero e hoje aplicam o que aprenderam. A próxima história pode ser a sua.'}</p>
+    <div class="deps">${lista.slice(0, 6).map(d => {
+      const c = cursoPorId(d.curso_id);
+      return `<figure class="dep rise" style="${c ? ccor(c) : ''}"><blockquote>“${esc(d.texto)}”</blockquote>
+        <figcaption><b>${esc(d.nome)}${d.estado ? ' · ' + esc(d.estado) : ''}</b><small>Concluiu ${c ? c.icone + ' ' + esc(c.titulo) : esc(d.curso_id)}</small></figcaption></figure>`;
+    }).join('')}</div>`;
+  el.hidden = false;
+}
+
+/* Depoimento: ao concluir 100% do curso, o aluno conta como foi; o master aprova antes de publicar. */
+let DEPS = [], DEPS_DE = null, DEP_EDITAR = false;
+async function carregarDepoimentos(){
+  if (!ALUNO) return [];
+  if (DEPS_DE !== ALUNO.id) { DEPS_DE = ALUNO.id; try { DEPS = await DB.meusDepoimentos(); } catch(e){ DEPS = []; } }
+  return DEPS;
+}
+function blocoDepoimento(){
+  if (!ALUNO || !completo(C)) return '';
+  DEP_EDITAR = false;
+  setTimeout(preencherDepoimento, 0);
+  return `<div class="card dep-box rise" id="dep-box"></div>`;
+}
+async function preencherDepoimento(){
+  const curso = C && C.id; if (!curso || !$('dep-box')) return;
+  const meu = (await carregarDepoimentos()).find(d => d.curso_id === curso), el = $('dep-box');
+  if (!el || !C || C.id !== curso) return;
+  if (meu && !DEP_EDITAR) {
+    const st = meu.status === 'aprovado' && meu.autoriza_publicar ? '✅ Seu depoimento foi publicado. Obrigado por inspirar outras pessoas!'
+      : meu.status === 'pendente' ? '⏳ Recebemos seu depoimento. Ele será revisado antes de ser publicado.' : '✅ Recebemos seu depoimento. Obrigado!';
+    el.innerHTML = `<h3>💬 Seu depoimento</h3><p class="dep-txt">“${esc(meu.texto)}”</p><p class="nota">${st}</p>
+      <button class="ghost" type="button" data-act="dep-editar">✏️ Editar depoimento</button>`;
+    return;
+  }
+  el.innerHTML = `<h3>💬 Conte como foi este curso</h3>
+    <p class="nota">Seu depoimento pode inspirar outras pessoas a começar e a crescer na vida. Conte o que você aprendeu e o que mudou para você.</p>
+    <form id="f-depoimento">
+      <textarea name="texto" class="meu-projeto" rows="4" minlength="40" maxlength="600" required placeholder="Ex.: Eu nunca tinha usado IA e hoje já monto minhas propostas em minutos...">${esc(meu ? meu.texto : '')}</textarea>
+      <div class="pconta" id="dep-conta">${meu ? meu.texto.length : 0} de 40 a 600 caracteres</div>
+      <label class="pcheck"><input type="checkbox" name="autoriza" ${meu && meu.autoriza_publicar ? 'checked' : ''}><span>Autorizo publicar este depoimento no site e nas redes sociais do Portal de Estudos IA, com meu primeiro nome, a inicial do sobrenome e meu estado.</span></label>
+      <button class="next" type="submit">Enviar depoimento ➜</button>
+    </form>`;
+}
+async function enviarDepoimento(f){
+  const texto = f.texto.value.trim(), btn = f.querySelector('button[type=submit]');
+  if (texto.length < 40) { toast('✍️ Escreva pelo menos 40 caracteres'); return; }
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    await DB.enviarDepoimento(C.id, texto, f.autoriza.checked);
+    DEPS = DEPS.filter(d => d.curso_id !== C.id).concat({ curso_id:C.id, texto, autoriza_publicar:f.autoriza.checked, status:'pendente' });
+    DEP_EDITAR = false; preencherDepoimento(); toast('💬 Depoimento enviado. Obrigado!');
+  } catch(e){ console.error(e); toast(e.message || 'Não foi possível enviar agora.'); btn.disabled = false; btn.textContent = 'Enviar depoimento ➜'; }
+}
+
 /* "recomendado_antes" no catálogo: só sugestão, nunca bloqueia o curso. */
 function avisoRecomendado(){
   const itens = (C.recomendado_antes || []).map(id => {
@@ -806,7 +874,8 @@ function renderModuloConcluido(){
     <p>${msg}${tem ? ' As missões de prompt deste módulo foram liberadas no Code Toolbox: agora é a sua vez de escrever.' : ''}</p>
     <div class="row">${tem ? `<button class="next alt" data-act="tool" data-mod="${mod.id}">🧰 Abrir Code Toolbox</button>` : ''}
     ${next ? `<button class="next" data-act="go" data-id="${next.lessons[0].id}" style="${tstyle(next.id)}">Ir para o Módulo ${next.id} ➜</button>`
-      : `${ALUNO && completo(C) ? botaoCertificado() : ''}<button class="next${ALUNO && completo(C) ? ' alt' : ''}" data-act="cursos">Ver outros cursos</button>`}</div></div>`;
+      : `${ALUNO && completo(C) ? botaoCertificado() : ''}<button class="next${ALUNO && completo(C) ? ' alt' : ''}" data-act="cursos">Ver outros cursos</button>`}</div></div>
+    ${next ? '' : blocoDepoimento()}`;
 }
 
 function renderLicao(){
@@ -1286,6 +1355,7 @@ document.addEventListener('click', e => {
   else if (a === 'fechar-aviso-renda') { try { localStorage.setItem(CHAVE_AVISO_RENDA, '1'); } catch(e){} const b = $('aviso-renda'); if (b) b.remove(); }
   else if (a === 'menu') { $('sb').classList.toggle('on'); $('ov').classList.toggle('on'); }
   else if (a === 'certificado') abrirCertificado(t);
+  else if (a === 'dep-editar') { DEP_EDITAR = true; preencherDepoimento(); }
   else if (!C) return;
   else if (a === 'home') { S.view = 'home'; closeMenu(); renderAll(); }
   else if (a === 'continue') { const nx = FLAT().find(l => !D()[l.id]) || FLAT()[0]; goLesson(nx.id); }
@@ -1328,6 +1398,7 @@ document.addEventListener('submit', e => {
   else if (id === 'f-entrar') { e.preventDefault(); pedirEntrada(e.target); }
   else if (id === 'f-esqueci') { e.preventDefault(); pedirNovaSenha(e.target); }
   else if (id === 'f-nova') { e.preventDefault(); salvarNovaSenha(e.target); }
+  else if (id === 'f-depoimento') { e.preventDefault(); enviarDepoimento(e.target); }
 });
 document.addEventListener('input', e => {
   if (e.target.name === 'pais' && e.target.form && e.target.form.id === 'f-cad') renderEstado();
@@ -1336,6 +1407,7 @@ document.addEventListener('input', e => {
     e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
     if (e.target.value.length === 6) e.target.form.requestSubmit ? e.target.form.requestSubmit() : confirmarCodigo(e.target.form);
   }
+  else if (e.target.form && e.target.form.id === 'f-depoimento' && e.target.name === 'texto') { const c = $('dep-conta'); if (c) c.textContent = e.target.value.trim().length + ' de 40 a 600 caracteres'; }
   else if (e.target.classList.contains('meu-prompt')) gravarMeuPrompt(TB.mod, parseInt(e.target.dataset.k, 10), e.target.value);
   else if (e.target.id === 'meu-projeto') {
     const L = byId(S.cur); gravarProjeto(L, 'texto', e.target.value);

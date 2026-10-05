@@ -185,6 +185,18 @@ function bancoSupabase(){
       ok(await sb.from('certificados_cursos').delete().not('curso_id', 'in', '(' + lista.map(c => c.curso_id).join(',') + ')'));
     },
     async revogarCertificado(codigo, sim){ ok(await sb.from('certificados').update({ revogado:!!sim }).eq('codigo', codigo)); },
+    async meusDepoimentos(){
+      const id = await uid(); if (!id) return [];
+      const r = await sb.from('depoimentos').select('curso_id,texto,autoriza_publicar,status').eq('aluno_id', id);
+      return r.error ? [] : r.data;
+    },
+    async enviarDepoimento(curso, texto, autoriza){
+      const r = await sb.rpc('enviar_depoimento', { p_curso:curso, p_texto:texto, p_autoriza:!!autoriza });
+      if (r.error) throw new Error(/function|schema cache/i.test(r.error.message) ? 'Os depoimentos ainda estão sendo preparados. Tente de novo mais tarde.' : r.error.message);
+    },
+    async depoimentosPainel(){ const r = await sb.from('depoimentos').select('*').order('criado_em', { ascending:false }); return r.error ? [] : r.data; },
+    async moderarDepoimento(id, status){ ok(await sb.rpc('moderar_depoimento', { p_id:id, p_status:status })); },
+    async depoimentosPublicos(){ const r = await sb.rpc('depoimentos_publicos'); return r.error ? [] : r.data; },
     async registrarAvisos(lista){
       ok(await sb.from('avisos').insert(lista.map(v => ({ aluno_id:v.aluno_id, tipo:v.tipo, canal:v.canal, texto:v.texto }))));
     },
@@ -344,6 +356,28 @@ function bancoDemo(){
     async validarCertificado(codigo){ const k = String(codigo).trim().toUpperCase(); return (ler().certificados || []).find(c => c.codigo === k) || null; },
     async sincronizarCertificados(){},
     async revogarCertificado(codigo, sim){ const d = ler(), c = (d.certificados || []).find(x => x.codigo === codigo); if (c) { c.revogado = !!sim; gravar(d); } },
+    async meusDepoimentos(){ const d = ler(); return (d.depoimentos || []).filter(x => x.aluno_id === d.eu); },
+    async enviarDepoimento(curso, texto, autoriza){
+      const d = ler(); exigirVerificado(d); d.depoimentos = d.depoimentos || [];
+      const t = String(texto || '').trim();
+      if (t.length < 40 || t.length > 600) throw new Error('O depoimento precisa ter entre 40 e 600 caracteres.');
+      let x = d.depoimentos.find(v => v.aluno_id === d.eu && v.curso_id === curso);
+      if (!x) { x = { id:Date.now(), aluno_id:d.eu, curso_id:curso }; d.depoimentos.push(x); }
+      Object.assign(x, { texto:t, autoriza_publicar:!!autoriza, status:'pendente', criado_em:agora(), moderado_em:null });
+      gravar(d);
+    },
+    async depoimentosPainel(){ return (ler().depoimentos || []).slice().reverse(); },
+    async moderarDepoimento(id, status){
+      const d = ler(), x = (d.depoimentos || []).find(v => v.id === id);
+      if (x) { x.status = status; x.moderado_em = status === 'pendente' ? null : agora(); gravar(d); }
+    },
+    async depoimentosPublicos(){
+      const d = ler();
+      return (d.depoimentos || []).filter(x => x.status === 'aprovado' && x.autoriza_publicar).map(x => {
+        const a = d.alunos.find(y => y.id === x.aluno_id) || {}, p = String(a.nome || '').trim().split(/\s+/);
+        return { nome:p[0] + (p.length > 1 ? ' ' + p[p.length - 1][0].toUpperCase() + '.' : ''), estado:a.estado, curso_id:x.curso_id, texto:x.texto, data:x.moderado_em };
+      }).reverse().slice(0, 12);
+    },
     async registrarAvisos(lista){
       const d = ler(); d.avisos = d.avisos || [];
       lista.forEach(v => d.avisos.push(Object.assign({ enviado_em:agora() }, v)));

@@ -320,12 +320,84 @@ function renderPainel(){
     <p class="cert-sync" id="cert-sync">${esc(SYNC)}</p>
     <div class="card tcard" id="certificados"></div>
     <h2 class="sec-t">📣 Divulgação</h2>
-    <div class="card avc rise" id="divulgacao"></div>`;
+    <div class="card avc rise" id="divulgacao"></div>
+    <h2 class="sec-t" id="titulo-dep">💬 Depoimentos</h2>
+    <div class="card tcard" id="depoimentos"></div>`;
   document.querySelectorAll('.stat b[data-n]').forEach(contar);
   renderConfirmacoes();
   renderTabela();
   renderCertificados();
   renderDivulgacao();
+  renderDepoimentos();
+}
+
+/* Depoimentos: o aluno envia ao concluir um curso; aqui o master aprova e gera a imagem e a legenda do post. */
+function nomePublico(nome){ const p = String(nome || '').trim().split(/\s+/); return p[0] + (p.length > 1 ? ' ' + p[p.length - 1][0].toUpperCase() + '.' : ''); }
+const SITUACAO_DEP = { pendente:'⏳ Aguardando', aprovado:'✅ Aprovado', recusado:'🚫 Recusado' };
+function renderDepoimentos(){
+  const el = $('depoimentos'); if (!el) return;
+  const lista = (DADOS.depoimentos || []).slice().sort((x, y) => (x.status === 'pendente' ? 0 : 1) - (y.status === 'pendente' ? 0 : 1));
+  const pend = lista.filter(d => d.status === 'pendente').length;
+  $('titulo-dep').innerHTML = '💬 Depoimentos (' + lista.length + ')' + (pend ? ' <small style="color:var(--muted);font-weight:400">· ' + pend + ' aguardando você</small>' : '');
+  if (!lista.length) { el.innerHTML = '<div class="empty">Nenhum depoimento ainda. O aluno pode escrever o dele quando conclui 100% de um curso.</div>'; return; }
+  el.innerHTML = `<table class="atbl"><thead><tr><th>Aluno</th><th>Depoimento</th><th>Situação</th><th></th></tr></thead><tbody>
+    ${lista.map(d => {
+      const a = DADOS.alunos.find(x => x.id === d.aluno_id) || {}, publicavel = d.status === 'aprovado' && d.autoriza_publicar;
+      return `<tr>
+        <td>${esc(a.nome || '-')}<br><small>${esc(tituloCurso(d.curso_id))}<br>${dataHora(d.criado_em)}</small></td>
+        <td style="max-width:420px">“${esc(d.texto)}”<br><small>${d.autoriza_publicar ? '✅ Autorizou publicar como ' + esc(nomePublico(a.nome)) + (a.estado ? ' · ' + esc(a.estado) : '') : '🔒 Não autorizou publicar: só para você ler'}</small></td>
+        <td>${SITUACAO_DEP[d.status] || esc(d.status)}</td>
+        <td><div class="avbtns">
+          ${d.status !== 'aprovado' ? `<button class="sbtn wa" data-act="dep-moderar" data-id="${d.id}" data-st="aprovado">✅ Aprovar</button>` : ''}
+          ${d.status !== 'recusado' ? `<button class="sbtn" data-act="dep-moderar" data-id="${d.id}" data-st="recusado">🚫 Recusar</button>` : ''}
+          ${publicavel ? `<button class="sbtn" data-act="dep-imagem" data-id="${d.id}">🖼️ Baixar imagem</button>
+            <button class="sbtn" data-act="dep-legenda" data-id="${d.id}" data-rede="instagram">📋 Legenda Instagram</button>
+            <button class="sbtn" data-act="dep-legenda" data-id="${d.id}" data-rede="linkedin">📋 Legenda LinkedIn</button>` : ''}
+        </div></td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+}
+function dadosPost(id){
+  const d = (DADOS.depoimentos || []).find(x => String(x.id) === String(id)); if (!d) return null;
+  const a = DADOS.alunos.find(x => x.id === d.aluno_id) || {}, c = cursoPorId(d.curso_id) || { titulo:d.curso_id, icone:'🎓', cores:['#22d3ee', '#c084fc'] };
+  return { d, c, nome:nomePublico(a.nome), estado:a.estado || '' };
+}
+function legendaPost(id, rede){
+  const p = dadosPost(id); if (!p) return '';
+  const u = new URL('./', location.href);
+  u.searchParams.set('utm_source', rede);
+  u.searchParams.set('utm_campaign', 'depoimento');
+  return '💬 “' + p.d.texto + '”\n\n— ' + p.nome + (p.estado ? ', ' + p.estado : '') + ', concluiu o curso ' + p.c.titulo + ' no Portal de Estudos IA.\n\n'
+    + 'Quer começar também? Os cursos são gratuitos, com projetos práticos e certificado com QR de validação.\n'
+    + (rede === 'instagram' ? '👉 Link na bio.' : '👉 ' + u.href) + '\n\n#InteligenciaArtificial #IA #Carreira #Estudos #PortalDeEstudosIA';
+}
+const IMG_CDN = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js';
+function carregarScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+async function baixarImagemPost(id, btn){
+  const p = dadosPost(id); if (!p) return;
+  const txt = btn.textContent; btn.disabled = true; btn.textContent = 'Gerando…';
+  const tam = p.d.texto.length > 380 ? 34 : p.d.texto.length > 220 ? 40 : 48;
+  const no = document.createElement('div');
+  no.style.cssText = 'position:fixed;left:-10000px;top:0;';
+  no.innerHTML = `<div id="post-dep" style="width:1080px;height:1080px;box-sizing:border-box;padding:90px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;
+      font-family:'IBM Plex Sans',system-ui,sans-serif;background:radial-gradient(circle at 15% 10%,${p.c.cores[0]}55,transparent 45%),radial-gradient(circle at 90% 95%,${p.c.cores[1]}55,transparent 45%),#07070c;">
+    <div style="display:flex;align-items:center;gap:18px"><img src="assets/icone.svg" style="width:64px;height:64px"><b style="font-family:'Bricolage Grotesque',sans-serif;font-size:30px">Portal de Estudos IA</b></div>
+    <div><div style="font-family:'Bricolage Grotesque',sans-serif;font-size:160px;line-height:.6;color:${p.c.cores[0]}">“</div>
+      <p style="font-size:${tam}px;line-height:1.35;margin:10px 0 0;font-weight:500">${esc(p.d.texto)}</p></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:24px">
+      <div><b style="font-family:'Bricolage Grotesque',sans-serif;font-size:38px">${esc(p.nome)}${p.estado ? ' · ' + esc(p.estado) : ''}</b>
+        <div style="font-size:26px;color:#c9c9d6;margin-top:6px">Concluiu ${esc(p.c.icone)} ${esc(p.c.titulo)}</div></div>
+      <div style="padding:16px 26px;border-radius:999px;font-weight:700;font-size:24px;background:linear-gradient(135deg,${p.c.cores[0]},${p.c.cores[1]});color:#07070c">Cursos gratuitos</div>
+    </div></div>`;
+  document.body.appendChild(no);
+  try {
+    if (!window.htmlToImage) await carregarScript(IMG_CDN);
+    const url = await window.htmlToImage.toPng(no.firstElementChild, { width:1080, height:1080, pixelRatio:1, cacheBust:true });
+    const el = document.createElement('a'); el.href = url; el.download = 'depoimento-' + p.nome.split(' ')[0].toLowerCase() + '-' + p.d.curso_id + '.png';
+    document.body.appendChild(el); el.click(); el.remove();
+    toast('Imagem baixada');
+  } catch(e){ console.error(e); toast('Não foi possível gerar a imagem agora.'); }
+  finally { no.remove(); btn.disabled = false; btn.textContent = txt; }
 }
 
 /* Links com rastreio: cada post usa um link próprio e o cadastro grava de onde o aluno veio (alunos.origem). */
@@ -502,7 +574,7 @@ function exportarCsv(){
 }
 
 async function carregarDados(){
-  try { DADOS = await DB.painel(); renderPainel(); sincronizarCertificados(); }
+  try { DADOS = await DB.painel(); DADOS.depoimentos = await DB.depoimentosPainel().catch(() => []); renderPainel(); sincronizarCertificados(); }
   catch(e){ console.error(e); $('main').innerHTML = '<div class="empty">Não foi possível carregar os dados. Verifique a internet e clique em atualizar.</div>'; }
 }
 
@@ -548,6 +620,16 @@ document.addEventListener('click', e => {
     }).catch(err => { console.error(err); toast('Não foi possível alterar agora.'); });
   }
   else if (a === 'copiar-rastreio') { copiar(linkRastreio()); toast('Link com rastreio copiado'); }
+  else if (a === 'dep-moderar') {
+    const id = Number(t.dataset.id), st = t.dataset.st;
+    t.disabled = true;
+    DB.moderarDepoimento(id, st).then(() => {
+      const d = (DADOS.depoimentos || []).find(x => x.id === id); if (d) d.status = st;
+      renderDepoimentos(); toast(st === 'aprovado' ? 'Depoimento aprovado ✅' : 'Depoimento recusado');
+    }).catch(err => { console.error(err); t.disabled = false; toast('Não foi possível alterar agora.'); });
+  }
+  else if (a === 'dep-imagem') baixarImagemPost(t.dataset.id, t);
+  else if (a === 'dep-legenda') { copiar(legendaPost(t.dataset.id, t.dataset.rede)); toast('Legenda copiada'); }
   else if (a === 'sair') DB.sairMaster().then(() => renderLogin());
 });
 document.addEventListener('input', e => {

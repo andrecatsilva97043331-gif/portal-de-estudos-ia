@@ -219,6 +219,20 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .nivel.final .mc.pfinal{border-style:dashed;}
 .nivel.final .mc.pfinal.lock{opacity:.6;}
 
+/* ---------- Depoimentos ---------- */
+.dep-box{margin:0 0 16px;}
+.dep-box h3{margin:0 0 6px;}
+.dep-box form{display:grid; gap:10px;}
+.dep-box .next{justify-self:start;}
+.dep-txt{font-style:italic; margin:8px 0; line-height:1.55;}
+.done-box + .dep-box{margin-top:18px;}
+.vitrine-dep{margin-top:28px;}
+.deps{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px;}
+.dep{--c:#22d3ee; --c2:#c084fc; margin:0; padding:18px 20px; border-radius:18px; display:flex; flex-direction:column; justify-content:space-between; gap:14px;
+  border:1px solid color-mix(in srgb,var(--c) 35%,var(--line)); background:linear-gradient(135deg,color-mix(in srgb,var(--c) 10%,#07070c),color-mix(in srgb,var(--c2) 8%,#07070c));}
+.dep blockquote{margin:0; font-size:15px; line-height:1.55;}
+.dep figcaption{display:grid; gap:2px;} .dep figcaption small{color:var(--muted);}
+
 /* ---------- Confirmação de e-mail e WhatsApp ---------- */
 .hbtns{display:flex; flex-wrap:wrap; gap:10px; align-items:center;}
 .ghost{background:transparent; color:var(--text); border:1px solid var(--line); border-radius:14px; padding:12px 20px; font-weight:700; font-size:15px; transition:border-color .2s, background .2s;}
