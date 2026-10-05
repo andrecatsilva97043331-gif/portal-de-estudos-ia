@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Validar certificado · Portal de Estudos IA</title>
+<meta name="description" content="Confira a autenticidade de um certificado do Portal de Estudos IA pelo ID da credencial.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="assets/icone.svg">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Dancing+Script:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/certificado.css">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0; min-height:100vh; background:#020204; color:#f5f5fa; font-family:'Sora',system-ui,sans-serif;
+    background-image:radial-gradient(700px 400px at 90% -10%,rgba(34,211,238,.12),transparent 70%),radial-gradient(600px 400px at 0% 110%,rgba(192,132,252,.10),transparent 70%);}
+  a{color:#22d3ee;}
+  .topo-v{display:flex; align-items:center; justify-content:space-between; gap:12px; max-width:1180px; margin:0 auto; padding:16px 20px;}
+  .topo-v img{height:44px; border-radius:10px; display:block;}
+  .topo-v a.volta{font-size:14px; color:#9d9db5; text-decoration:none; border:1px solid rgba(255,255,255,.12); padding:9px 14px; border-radius:12px;}
+  main{max-width:1180px; margin:0 auto; padding:8px 20px 60px;}
+  h1{font-size:clamp(24px,4vw,34px); margin:10px 0 6px; letter-spacing:-.5px;}
+  .sub{color:#9d9db5; margin:0 0 22px; line-height:1.55;}
+  .busca{display:flex; gap:10px; flex-wrap:wrap; max-width:560px;}
+  .busca input{flex:1; min-width:220px; font:600 17px 'JetBrains Mono',monospace; letter-spacing:1px; text-transform:uppercase; color:#fff; background:#0a0a12; border:1px solid rgba(255,255,255,.14); border-radius:14px; padding:13px 16px;}
+  .busca input:focus{outline:none; border-color:#22d3ee;}
+  .btn{display:inline-flex; align-items:center; gap:8px; border:0; border-radius:14px; padding:12px 18px; font:700 15px 'Sora',sans-serif; cursor:pointer; color:#04040a; background:linear-gradient(135deg,#22d3ee,#c084fc); text-decoration:none;}
+  .btn.sec{color:#f5f5fa; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);}
+  .btn.li{color:#fff; background:#0a66c2;}
+  .btn:disabled{opacity:.6; cursor:default;}
+  .status{display:flex; gap:14px; align-items:flex-start; padding:18px 20px; border-radius:18px; margin:0 0 20px; border:1px solid;}
+  .status .ico{font-size:30px; line-height:1;}
+  .status > div > b{display:block; font-size:18px; margin-bottom:4px;}
+  .status span{color:#b9b9cc; font-size:14.5px; line-height:1.55;}
+  .status span b{color:#f5f5fa;}
+  .status.ok{border-color:rgba(74,222,128,.45); background:rgba(74,222,128,.07);} .status.ok > div > b{color:#4ade80;}
+  .status.mau{border-color:rgba(255,90,95,.45); background:rgba(255,90,95,.07);} .status.mau > div > b{color:#ff7a7f;}
+  .dados{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin:0 0 22px;}
+  .dados div{padding:12px 14px; border-radius:14px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09);}
+  .dados small{display:block; font:600 10.5px 'JetBrains Mono',monospace; letter-spacing:1.8px; text-transform:uppercase; color:#7a7a92;}
+  .dados strong{display:block; margin-top:5px; font-size:15.5px;}
+  .abas{display:flex; gap:8px; margin:0 0 12px;}
+  .abas button{font:600 14px 'Sora',sans-serif; color:#b9b9cc; background:transparent; border:1px solid rgba(255,255,255,.14); border-radius:99px; padding:8px 16px; cursor:pointer;}
+  .abas button.on{color:#04040a; background:#22d3ee; border-color:#22d3ee;}
+  .vista{position:relative; width:100%; margin:0 auto 18px; border-radius:14px; overflow:hidden; box-shadow:0 30px 80px -30px rgba(34,211,238,.35);}
+  .vista.q{max-width:640px;}
+  .cert-escala{transform-origin:0 0; position:absolute; left:0; top:0;}
+  .acoes{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 10px;}
+  .dica{color:#7a7a92; font-size:13px; line-height:1.5;}
+  .carregando{color:#9d9db5; padding:40px 0;}
+  #imprimir{display:none;}
+  @media print{
+    @page{size:1123px 794px; margin:0;}
+    body{background:#05050a;}
+    body > *:not(#imprimir){display:none !important;}
+    #imprimir{display:block;}
+  }
+</style>
+</head>
+<body>
+<header class="topo-v">
+  <a href="./" aria-label="Ir para o Portal de Estudos IA"><img src="assets/logo.svg" alt="Portal de Estudos IA"></a>
+  <a class="volta" href="./">← Ir para o portal</a>
+</header>
+<main id="main"><div class="carregando">Carregando…</div></main>
+<div id="imprimir"></div>
+
+<script src="config.js"></script>
+<script src="assets/dados.js"></script>
+<script src="assets/certificado.js"></script>
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const IMG_CDN = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js';
+const params = new URLSearchParams(location.search);
+const meu = params.has('meu');
+let CERT = null, FORMATO = 'h';
+
+const formBusca = (valor, erro) => `<form class="busca" id="f-busca">
+    <input name="c" value="${esc(valor || '')}" placeholder="CIA-2026-XXXXXXXX" autocomplete="off" aria-label="ID da credencial" required>
+    <button class="btn" type="submit">Validar</button></form>${erro ? `<p class="dica" style="color:#ff7a7f">${erro}</p>` : ''}`;
+
+function telaBusca(valor, erro){
+  $('main').innerHTML = `<h1>Validar certificado</h1>
+    <p class="sub">Digite o <b>ID da credencial</b> que aparece no certificado (ou escaneie o QR) para conferir se ele é autêntico.</p>${formBusca(valor, erro)}`;
+}
+
+function dataLonga(iso){ return new Date(iso).toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' }); }
+
+function linkLinkedin(c){
+  const d = new Date(c.emitido_em), u = new URL('https://www.linkedin.com/profile/add');
+  u.search = new URLSearchParams({ startTask:'CERTIFICATION_NAME', name:c.titulo, organizationName:'Portal de Estudos IA',
+    issueYear:d.getFullYear(), issueMonth:d.getMonth() + 1, certUrl:PORTAL.cert.link(c.codigo), certId:c.codigo }).toString();
+  return u.href;
+}
+
+function telaCertificado(c){
+  const ok = !c.revogado;
+  $('main').innerHTML = `
+    ${meu && ok ? `<h1>🎉 Parabéns, ${esc(c.nome.split(' ')[0])}!</h1><p class="sub">Seu certificado está pronto. Baixe a imagem, salve em PDF ou adicione ao seu perfil do LinkedIn.</p>`
+      : `<h1>Validação de certificado</h1><p class="sub">Resultado da consulta pelo ID da credencial.</p>`}
+    <div class="status ${ok ? 'ok' : 'mau'}"><div class="ico">${ok ? '✅' : '⛔'}</div><div>
+      <b>${ok ? 'Certificado autêntico' : 'Certificado revogado'}</b>
+      <span>${ok ? `Emitido pelo Portal de Estudos IA para <b>${esc(c.nome)}</b>, que concluiu ${c.tipo === 'trilha' ? 'todos os cursos e o projeto final da' : 'o curso'} <b>${esc(c.titulo)}</b>.`
+        : 'Este certificado foi cancelado pelo Portal de Estudos IA e não tem mais validade.'}</span></div></div>
+    <div class="dados">
+      <div><small>Nome</small><strong>${esc(c.nome)}</strong></div>
+      <div><small>${c.tipo === 'trilha' ? 'Trilha' : 'Curso'}</small><strong>${esc(c.titulo)}</strong></div>
+      <div><small>Carga horária</small><strong>${c.carga_horaria} ${Number(c.carga_horaria) === 1 ? 'hora' : 'horas'}${c.detalhe ? ' · ' + esc(c.detalhe) : ''}</strong></div>
+      <div><small>Concluído em</small><strong>${dataLonga(c.emitido_em)}</strong></div>
+      <div><small>ID da credencial</small><strong style="font-family:'JetBrains Mono',monospace;color:#22d3ee">${esc(c.codigo)}</strong></div>
+    </div>
+    <div class="abas" role="tablist">
+      <button type="button" data-f="h" class="${FORMATO === 'h' ? 'on' : ''}">Horizontal · PDF e LinkedIn</button>
+      <button type="button" data-f="q" class="${FORMATO === 'q' ? 'on' : ''}">Quadrado · Instagram e WhatsApp</button>
+    </div>
+    <div class="vista ${FORMATO}" id="vista"><div class="cert-escala" id="escala">${PORTAL.cert.html(c, FORMATO)}</div></div>
+    ${ok ? `<div class="acoes">
+      <button class="btn" type="button" id="baixar">⬇️ Baixar imagem</button>
+      ${FORMATO === 'h' ? '<button class="btn sec" type="button" id="pdf">🖨️ Salvar em PDF</button>' : ''}
+      ${meu ? `<a class="btn li" href="${linkLinkedin(c)}" target="_blank" rel="noopener">in Adicionar ao LinkedIn</a>` : ''}
+      <button class="btn sec" type="button" id="copiar">🔗 Copiar link de validação</button>
+    </div>
+    <p class="dica">Para validar, qualquer pessoa pode escanear o QR do certificado ou abrir este link.</p>` : ''}
+    <div style="margin-top:28px">${formBusca('', '')}</div>`;
+  PORTAL.cert.ajustar($('escala'));
+  escalar();
+}
+
+function escalar(){
+  const v = $('vista'), e = $('escala'); if (!v || !e) return;
+  const w = FORMATO === 'q' ? 1080 : 1123, h = FORMATO === 'q' ? 1080 : 794, k = v.clientWidth / w;
+  e.style.transform = 'scale(' + k + ')'; v.style.height = (h * k) + 'px';
+}
+
+function carregarScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+
+async function baixar(btn){
+  btn.disabled = true; const txt = btn.textContent; btn.textContent = 'Gerando imagem…';
+  try {
+    if (!window.htmlToImage) await carregarScript(IMG_CDN);
+    await document.fonts.ready;
+    const no = document.querySelector('#escala .cert'), w = FORMATO === 'q' ? 1080 : 1123, h = FORMATO === 'q' ? 1080 : 794;
+    const url = await window.htmlToImage.toPng(no, { width:w, height:h, pixelRatio:2, cacheBust:true, style:{ transform:'none' } });
+    const a = document.createElement('a');
+    a.href = url; a.download = 'certificado-' + CERT.codigo + (FORMATO === 'q' ? '-quadrado' : '') + '.png';
+    document.body.appendChild(a); a.click(); a.remove();
+  } catch(e){ console.error(e); alert('Não foi possível gerar a imagem neste navegador. Tente "Salvar em PDF" ou outro navegador.'); }
+  btn.disabled = false; btn.textContent = txt;
+}
+
+function imprimir(){
+  $('imprimir').innerHTML = PORTAL.cert.html(CERT, 'h');
+  PORTAL.cert.ajustar($('imprimir'));
+  document.fonts.ready.then(() => setTimeout(() => window.print(), 150));
+}
+
+async function consultar(codigo){
+  codigo = String(codigo || '').trim().toUpperCase();
+  if (!/^CIA-\d{4}-[A-Z0-9]{8}$/.test(codigo)) { telaBusca(codigo, codigo ? 'Confira o ID: ele tem o formato CIA-2026-XXXXXXXX.' : ''); return; }
+  $('main').innerHTML = '<div class="carregando">Consultando o certificado…</div>';
+  try {
+    const [c] = await Promise.all([DB.validarCertificado(codigo), PORTAL.cert.carregarQr()]);
+    if (!c) { telaBusca(codigo, 'Não encontramos nenhum certificado com este ID. Confira as letras e os números.'); return; }
+    CERT = c; telaCertificado(c);
+  } catch(e){ console.error(e); telaBusca(codigo, 'Não foi possível consultar agora. Verifique a internet e tente de novo.'); }
+}
+
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'f-busca') return;
+  e.preventDefault();
+  const c = e.target.elements.c.value.trim().toUpperCase();
+  history.replaceState(null, '', '?c=' + encodeURIComponent(c));
+  consultar(c);
+});
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.f) { FORMATO = t.dataset.f; telaCertificado(CERT); }
+  else if (t.id === 'baixar') baixar(t);
+  else if (t.id === 'pdf') imprimir();
+  else if (t.id === 'copiar') {
+    const link = PORTAL.cert.link(CERT.codigo);
+    (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(() => { t.textContent = '✅ Link copiado'; }, () => prompt('Copie o link:', link));
+  }
+});
+addEventListener('resize', escalar);
+
+(async () => {
+  try { await DB.iniciar(); } catch(e){ console.error(e); }
+  document.fonts.ready.then(() => { const e = $('escala'); if (e) { PORTAL.cert.ajustar(e); } });
+  consultar(params.get('c'));
+})();
+})();
+</script>
+</body>
+</html>

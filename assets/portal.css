@@ -207,6 +207,18 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .recom{--c:#22d3ee; margin:0 0 14px; padding:10px 14px; border-radius:12px; border:1px solid var(--line); font-size:14px; color:var(--muted);}
 .recom b{color:var(--text);}
 
+/* ---------- Certificado ---------- */
+.cert-cta{--c:#22d3ee; --c2:#c084fc; display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:0 0 16px; padding:16px 18px; border-radius:18px;
+  border:1px solid color-mix(in srgb,var(--c) 40%,var(--line)); background:linear-gradient(135deg,color-mix(in srgb,var(--c) 12%,#07070c),color-mix(in srgb,var(--c2) 10%,#07070c));}
+.cert-cta .cert-ico{width:48px; height:48px; border-radius:14px; display:grid; place-items:center; font-size:26px; background:linear-gradient(135deg,var(--c),var(--c2)); flex:none;}
+.cert-cta > div:nth-child(2){flex:1; min-width:200px; display:grid; gap:4px;}
+.cert-cta b{font-size:16px;} .cert-cta span{font-size:14px; color:var(--muted);}
+.cert-cta code{font-family:'JetBrains Mono',ui-monospace,monospace; color:var(--c); letter-spacing:.5px;}
+.next.cert-btn{--c:#22d3ee; --c2:#c084fc;}
+.cert-sync{color:var(--muted); font-size:13.5px; margin:-4px 0 10px;}
+.nivel.final .mc.pfinal{border-style:dashed;}
+.nivel.final .mc.pfinal.lock{opacity:.6;}
+
 /* ---------- Confirmação de e-mail e WhatsApp ---------- */
 .hbtns{display:flex; flex-wrap:wrap; gap:10px; align-items:center;}
 .ghost{background:transparent; color:var(--text); border:1px solid var(--line); border-radius:14px; padding:12px 20px; font-weight:700; font-size:15px; transition:border-color .2s, background .2s;}

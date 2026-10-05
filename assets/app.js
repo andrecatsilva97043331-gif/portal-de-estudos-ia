@@ -19,6 +19,7 @@ async function ajustarPrevia(){
 const seloPrevia = () => PORTAL.modoPrevia ? 'PRÉVIA · EM BREVE' : 'PRÉVIA · SÓ MASTER';
 let MATR = [];
 let PROG = {};
+let CERTS = [];
 let S = { view:'cursos', cur:null, modDone:null, escolhido:null };
 let SESSION = {};
 let TB = { open:false, mod:1 };
@@ -42,6 +43,11 @@ const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: 
 const cursoPorId = id => CURSOS.find(c => c.id === id);
 const pctCurso = c => { const d = PROG[c.id] || {}; return c.total ? Math.round(c.licoes.filter(l => d[l.id]).length / c.total * 100) : 0; };
 const ccor = c => '--c:' + c.cores[0] + ';--c2:' + c.cores[1];
+const completo = c => c.licoes.every(l => (PROG[c.id] || {})[l.id]);
+const certDe = (tipo, ref) => CERTS.find(c => c.tipo === tipo && c.ref_id === ref);
+const cursosDaTrilha = t => CURSOS.filter(c => !c.projeto_final && PORTAL.trilhaDe(c) === t);
+const projetoFinal = t => CURSOS.find(c => c.projeto_final === t);
+const trilhaLiberada = t => { const l = cursosDaTrilha(t); return (l.length > 0 && l.every(completo)) || PORTAL.modoPrevia || MASTER; };
 
 /* ============ CURSO ABERTO ============ */
 const D = () => PROG[C.id] || (PROG[C.id] = {});
@@ -132,13 +138,27 @@ function renderCursos(){
       <div class="nhead"><span class="npill">${g.icone} ${g.titulo}</span><small>${itens.length} ${itens.length === 1 ? 'curso' : 'cursos'} · ${abertos} ${abertos === 1 ? 'disponível' : 'disponíveis'}</small></div>
       <div class="grid">${itens.join('')}</div></div>`;
   }).join('');
-  const outros = CURSOS.filter(c => c.trilha !== 'renda' && !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
+  const cartaoFinal = t => {
+    const pf = projetoFinal(t); if (!pf) return '';
+    const lista = cursosDaTrilha(t), feitos = lista.filter(completo).length, livre = trilhaLiberada(t), cert = certDe('trilha', t);
+    const horas = lista.concat(pf).reduce((s, c) => s + (c.carga_horaria || 0), 0);
+    const selo = cert ? '🎓 Certificado emitido' : !livre ? '🔒 Bloqueado' : MATR.includes(pf.id) ? pctCurso(pf) + '%' : '✨ Liberado';
+    return `<div class="nivel final" style="${ccor(pf)}">
+      <div class="nhead"><span class="npill">🏁 Projeto final</span><small>${feitos} de ${lista.length} cursos concluídos</small></div>
+      <div class="grid"><div class="mc pfinal rise ${livre ? '' : 'lock'} ${cert ? 'fin' : ''}" role="button" tabindex="0" data-act="curso" data-id="${esc(pf.id)}" style="${ccor(pf)}">
+        <div class="mhead"><div class="mtile">${pf.icone}</div><span class="pctpill">${selo}</span></div>
+        <div><div class="mt">${esc(pf.titulo)}</div><div class="ms">${esc(pf.descricao)}</div></div>
+        <div class="mfoot"><span>🎓 Certificado da ${PORTAL.trilhas[t]} · ${horas} horas</span><span class="mst">${livre ? '▶ Abrir' : 'Conclua todos os cursos da trilha'}</span></div>
+      </div></div></div>`;
+  };
+  const outros = CURSOS.filter(c => !c.projeto_final && c.trilha !== 'renda' && !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
   $('main').removeAttribute('style');
   $('main').innerHTML = avisoRenda() + avisoTrilha() + topo + `<section class="trilha" id="trilha">
       <h2 class="sec-t">Trilha de IA</h2>
       <p class="tsub">Do zero ao avançado em 3 níveis. Siga na ordem ou escolha só o curso de que você precisa.</p>
       ${chamadaTeste()}
       ${niveis || '<div class="empty">Nenhum curso publicado ainda.</div>'}
+      ${niveis ? cartaoFinal('ia') : ''}
     </section>
     ${gruposRenda ? `<section class="trilha" id="renda">
       <h2 class="sec-t">Renda com IA</h2>
@@ -146,6 +166,7 @@ function renderCursos(){
       <div class="raviso">⚖️ Estes cursos ensinam a oferecer serviços com qualidade e responsabilidade. Não prometem nem garantem ganhos: os resultados dependem de cada pessoa.</div>
       ${chamadaRenda()}
       ${gruposRenda}
+      ${cartaoFinal('renda')}
     </section>` : ''}
     ${outros ? `<h2 class="sec-t">Outros cursos</h2><div class="grid">${outros}</div>` : ''}`;
   if (pctGeral !== null) {
@@ -486,7 +507,7 @@ function renderConfirmarWhats(){
 }
 
 async function aposCadastro(curso){
-  [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
+  [MATR, PROG, CERTS] = await Promise.all([DB.matriculas(), DB.progresso(), DB.meusCertificados()]);
   if (curso && cursoPorId(curso) && !MATR.includes(curso)) { await DB.matricular(curso); MATR.push(curso); }
   DB.notificarInscricao();
   if (WA_PORTAL && !ALUNO.whatsapp_verificado) { VER = { curso }; S.view = 'confirmar-whats'; closeMenu(); renderAll(); return; }
@@ -714,7 +735,7 @@ function renderHome(){
       <div class="chips"><span class="chip">⚡ ${x} XP</span><span class="chip">🏅 ${level(x)}</span><span class="chip">📘 ${n} de ${total} lições</span></div>
       <button class="next" data-act="continue">${n===0?'Começar agora':(n===total?'Revisar o curso':'Continuar estudando')} ➜</button></div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>concluído</span></div></div>
-    </section>${avisoRecomendado()}
+    </section>${blocoCertificado()}${avisoRecomendado()}
     <div class="grid">${C.conteudo.modulos.map((m,i) => {
       const lock = !unlocked(m.lessons[0].id), fin = modDone(m);
       return `<div class="mc ${lock?'lock':''} ${fin?'fin':''}" role="button" tabindex="0" data-act="openmod" data-mod="${m.id}" style="${tstyle(m.id)};--d:${i*0.5}s">
@@ -725,6 +746,40 @@ function renderHome(){
       </div>`; }).join('')}</div>`;
   setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pct); }, 60);
   countUp($('bignum'), pct);
+}
+
+/* Certificado: do curso (100% das lições e projetos) ou, no projeto final, da trilha inteira. */
+const refCertificado = () => C.projeto_final ? ['trilha', C.projeto_final] : ['curso', C.id];
+function botaoCertificado(){
+  const [tipo, ref] = refCertificado();
+  return `<button class="next cert-btn" data-act="certificado" data-tipo="${tipo}" data-ref="${esc(ref)}">🎓 ${certDe(tipo, ref) ? 'Ver meu certificado' : 'Emitir meu certificado'} ➜</button>`;
+}
+function blocoCertificado(){
+  if (!ALUNO || !completo(C)) return '';
+  const [tipo, ref] = refCertificado(), cert = certDe(tipo, ref);
+  return `<div class="cert-cta rise"><div class="cert-ico">🎓</div>
+    <div><b>${tipo === 'trilha' ? 'Certificado da ' + PORTAL.trilhas[ref] : 'Certificado do curso'}</b>
+    <span>${cert ? 'ID da credencial: <code>' + esc(cert.codigo) + '</code>' : 'Você concluiu 100%. Emita o seu certificado com ID da credencial e QR de validação.'}</span></div>
+    ${botaoCertificado()}</div>`;
+}
+function infoCertificado(tipo, ref){
+  if (tipo === 'curso') {
+    const d = PORTAL.dadosCertificado(cursoPorId(ref));
+    return { curso_id:d.curso_id, licoes:d.licoes, certificado:{ titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.licoes.length + ' lições', habilidades:d.habilidades } };
+  }
+  const pf = PORTAL.dadosCertificado(projetoFinal(ref)), lista = cursosDaTrilha(ref).map(PORTAL.dadosCertificado).concat(pf), n = lista.length - 1;
+  return { cursos:lista, certificado:{ titulo:PORTAL.trilhas[ref], subtitulo:n + ' cursos + projeto final', icone:pf.icone, cores:pf.cores,
+    carga_horaria:lista.reduce((s, c) => s + c.carga_horaria, 0), detalhe:n + ' cursos', habilidades:pf.habilidades } };
+}
+async function abrirCertificado(btn){
+  const tipo = btn.dataset.tipo, ref = btn.dataset.ref;
+  let cert = certDe(tipo, ref);
+  if (!cert) {
+    btn.disabled = true; btn.textContent = 'Emitindo…';
+    try { cert = await DB.emitirCertificado(tipo, ref, infoCertificado(tipo, ref)); CERTS.push(cert); }
+    catch(e){ console.error(e); toast(e.message || 'Não foi possível emitir agora. Tente de novo.'); btn.disabled = false; btn.textContent = '🎓 Emitir meu certificado ➜'; return; }
+  }
+  location.href = PORTAL.cert.link(cert.codigo) + '&meu=1';
 }
 
 /* "recomendado_antes" no catálogo: só sugestão, nunca bloqueia o curso. */
@@ -747,10 +802,11 @@ function renderModuloConcluido(){
   $('main').setAttribute('style', tstyle(mod.id));
   $('main').innerHTML = `<div class="crumb">Módulo ${mod.id}: ${mod.title}</div>
     <div class="done-box"><div class="trophy">🏆</div>
-    <h2>${next ? 'Módulo ' + mod.id + ' concluído!' : 'Curso concluído!'}</h2>
+    <h2>${next ? 'Módulo ' + mod.id + ' concluído!' : C.projeto_final ? 'Trilha concluída!' : 'Curso concluído!'}</h2>
     <p>${msg}${tem ? ' As missões de prompt deste módulo foram liberadas no Code Toolbox: agora é a sua vez de escrever.' : ''}</p>
     <div class="row">${tem ? `<button class="next alt" data-act="tool" data-mod="${mod.id}">🧰 Abrir Code Toolbox</button>` : ''}
-    ${next ? `<button class="next" data-act="go" data-id="${next.lessons[0].id}" style="${tstyle(next.id)}">Ir para o Módulo ${next.id} ➜</button>` : `<button class="next" data-act="cursos">Ver outros cursos</button>`}</div></div>`;
+    ${next ? `<button class="next" data-act="go" data-id="${next.lessons[0].id}" style="${tstyle(next.id)}">Ir para o Módulo ${next.id} ➜</button>`
+      : `${ALUNO && completo(C) ? botaoCertificado() : ''}<button class="next${ALUNO && completo(C) ? ' alt' : ''}" data-act="cursos">Ver outros cursos</button>`}</div></div>`;
 }
 
 function renderLicao(){
@@ -959,6 +1015,7 @@ function irParaCursos(){ S.view = 'cursos'; TB.open = false; closeMenu(); render
 
 async function abrirCurso(id){
   const c = cursoPorId(id); if (!c || !(PORTAL.disponivel(c) || PORTAL.modoPrevia || MASTER)) return;
+  if (c.projeto_final && !trilhaLiberada(c.projeto_final)) { toast('🔒 Conclua todos os cursos da ' + PORTAL.trilhas[c.projeto_final] + ' para liberar o projeto final'); return; }
   if (!ALUNO) { S.escolhido = id; S.view = 'cadastro'; renderAll(); return; }
   if (!DB.verificado(ALUNO)) { iniciarVerificacao({ curso:id }); return; }
   if (!MATR.includes(id)) {
@@ -1068,7 +1125,7 @@ async function continuarAposEmail(){
   if (VER.dados) ALUNO = await DB.cadastrar(VER.dados);
   else ALUNO = await DB.alunoAtual();
   if (!ALUNO) { toast('E-mail confirmado ✓ Agora complete seu cadastro.'); S.escolhido = VER.curso || S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); return; }
-  [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
+  [MATR, PROG, CERTS] = await Promise.all([DB.matriculas(), DB.progresso(), DB.meusCertificados()]);
   await checarMaster();
   if (!DB.verificado(ALUNO)) { toast('E-mail confirmado ✓'); VER.etapa = 'whats'; VER.cooldownAte = 0; S.view = 'verificar'; renderAll(); enviarCodigo(); return; }
   if (VER.dados) { limparPendente(); await aposCadastro(VER.curso); return; }
@@ -1133,7 +1190,7 @@ async function pedirEntrada(form){
 
 async function sair(){
   try { await DB.sair(); if (MASTER) await DB.sairMaster(); } catch(e){ console.error(e); }
-  ALUNO = null; EMAIL_SESSAO = null; MATR = []; PROG = {}; C = null; VER = {}; MASTER = false; limparPendente();
+  ALUNO = null; EMAIL_SESSAO = null; MATR = []; PROG = {}; CERTS = []; C = null; VER = {}; MASTER = false; limparPendente();
   await ajustarPrevia();
   irParaCursos(); toast('Você saiu da sua conta.');
 }
@@ -1228,6 +1285,7 @@ document.addEventListener('click', e => {
   else if (a === 'ver-renda') { closeMenu(); const s = $('renda'); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }
   else if (a === 'fechar-aviso-renda') { try { localStorage.setItem(CHAVE_AVISO_RENDA, '1'); } catch(e){} const b = $('aviso-renda'); if (b) b.remove(); }
   else if (a === 'menu') { $('sb').classList.toggle('on'); $('ov').classList.toggle('on'); }
+  else if (a === 'certificado') abrirCertificado(t);
   else if (!C) return;
   else if (a === 'home') { S.view = 'home'; closeMenu(); renderAll(); }
   else if (a === 'continue') { const nx = FLAT().find(l => !D()[l.id]) || FLAT()[0]; goLesson(nx.id); }
@@ -1306,7 +1364,7 @@ async function iniciar(){
     await DB.iniciar();
     CURSOS = await PORTAL.carregarCursos(false);
     [ALUNO, EMAIL_SESSAO] = await Promise.all([DB.alunoAtual(), DB.emailDaSessao()]);
-    if (ALUNO) [MATR, PROG] = await Promise.all([DB.matriculas(), DB.progresso()]);
+    if (ALUNO) [MATR, PROG, CERTS] = await Promise.all([DB.matriculas(), DB.progresso(), DB.meusCertificados()]);
     await checarMaster();
   } catch(e){
     console.error(e);

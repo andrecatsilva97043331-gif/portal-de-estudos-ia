@@ -9,6 +9,7 @@ const NIVEIS = ['iniciante', 'intermediario', 'avancado'];
 const TRILHAS = ['renda'];
 const GRUPOS_RENDA = ['fundamentos', 'servicos', 'negocio'];
 const ordens = new Set();
+const projetosFinais = new Set();
 const erros = [];
 const avisos = [];
 const erro = (onde, msg) => erros.push(onde + ': ' + msg);
@@ -29,7 +30,12 @@ for (const meta of catalogo) {
   if (!STATUS.includes(meta.status)) erro(onde, 'status deve ser ' + STATUS.join(', '));
   if (meta.cores && !(Array.isArray(meta.cores) && meta.cores.length === 2)) erro(onde, '"cores" deve ter 2 cores');
   if (meta.trilha !== undefined && !TRILHAS.includes(meta.trilha)) erro(onde, 'trilha deve ser ' + TRILHAS.join(', ') + ' (sem o campo = Trilha de IA)');
-  if (meta.trilha === 'renda') {
+  if (meta.projeto_final !== undefined) {
+    if (!['ia', 'renda'].includes(meta.projeto_final)) erro(onde, '"projeto_final" deve ser ia ou renda (a trilha que ele fecha)');
+    else if (projetosFinais.has(meta.projeto_final)) erro(onde, 'já existe um projeto final da trilha ' + meta.projeto_final);
+    projetosFinais.add(meta.projeto_final);
+    if (meta.nivel !== undefined || meta.trilha !== undefined || meta.grupo !== undefined) erro(onde, 'projeto final não usa "nivel", "trilha" nem "grupo"');
+  } else if (meta.trilha === 'renda') {
     if (meta.nivel !== undefined) erro(onde, 'curso da trilha renda não usa "nivel"');
     if (!GRUPOS_RENDA.includes(meta.grupo)) erro(onde, 'grupo deve ser ' + GRUPOS_RENDA.join(', '));
   } else if (meta.grupo !== undefined) erro(onde, '"grupo" só vale para a trilha renda');
@@ -43,6 +49,7 @@ for (const meta of catalogo) {
 
   if (meta.carga_horaria !== undefined && !(Number.isInteger(meta.carga_horaria) && meta.carga_horaria >= 1 && meta.carga_horaria <= 40))
     erro(onde, '"carga_horaria" deve ser um número inteiro de horas (1 a 40)');
+  else if (meta.carga_horaria === undefined && meta.status !== 'arquivado') erro(onde, 'falta "carga_horaria" (horas do certificado)');
 
   if (meta.recomendado_antes !== undefined) {
     const rec = meta.recomendado_antes;
@@ -115,6 +122,9 @@ function validarCurso(meta, c) {
   });
   if (meta.carga_horaria !== undefined && minutos < meta.carga_horaria * 60 * 0.9)
     erro(onde, 'carga_horaria de ' + meta.carga_horaria + ' h, mas o conteúdo soma só ' + minutos + ' min (precisa de pelo menos ' + Math.ceil(meta.carga_horaria * 54) + ' min)');
+  if (c.habilidades !== undefined && !(Array.isArray(c.habilidades) && c.habilidades.length >= 1 && c.habilidades.length <= 5 && c.habilidades.every(h => typeof h === 'string' && h.length <= 40)))
+    erro(onde, '"habilidades" deve ser uma lista de 1 a 5 textos curtos (até 40 caracteres), que aparecem no certificado');
+  if (meta.projeto_final && c.modulos.some(m => m.lessons.some(l => !l.projeto))) erro(onde, 'o projeto final só deve ter lições de projeto');
   const mods = new Set(c.modulos.map(m => String(m.id)));
   Object.entries(c.prompts || {}).forEach(([k, lista]) => {
     if (!mods.has(String(k))) erro(onde, 'prompts do módulo ' + k + ', que não existe');

@@ -53,6 +53,21 @@ PORTAL.gruposRenda = [
 ];
 PORTAL.catalogo = [];
 
+/* Trilhas com certificado próprio. O projeto final de cada uma é um curso com "projeto_final": "<trilha>" no catálogo. */
+PORTAL.trilhas = { ia:'Trilha de IA', renda:'Trilha Renda com IA' };
+PORTAL.trilhaDe = c => c.projeto_final || (c.trilha === 'renda' ? 'renda' : PORTAL.niveis.some(n => n.id === c.nivel) ? 'ia' : null);
+/* O que vale certificado em um curso já carregado (mesmo formato da tabela certificados_cursos do Supabase). */
+PORTAL.dadosCertificado = c => {
+  const nv = PORTAL.niveis.find(n => n.id === c.nivel), g = PORTAL.gruposRenda.find(x => x.id === c.grupo), t = PORTAL.trilhaDe(c);
+  return {
+    curso_id:c.id, titulo:c.titulo, icone:c.icone || '🎓', cores:(c.cores || []).slice(0, 2),
+    subtitulo:c.projeto_final ? 'Projeto final · ' + PORTAL.trilhas[t] : nv ? 'Trilha de IA · Nível ' + nv.titulo.toLowerCase() : g ? 'Renda com IA · ' + g.titulo : '',
+    trilha:t, projeto_final:!!c.projeto_final, carga_horaria:c.carga_horaria || 1,
+    licoes:c.licoes.map(l => l.id),
+    habilidades:(c.conteudo.habilidades || c.conteudo.modulos.map(m => m.title)).slice(0, 5)
+  };
+};
+
 /* Retorna os cursos do catálogo já com o conteúdo carregado.
    todos=true inclui rascunhos e arquivados (usado no painel do master). */
 PORTAL.carregarCursos = async function(todos){

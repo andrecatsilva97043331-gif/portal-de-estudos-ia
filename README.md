@@ -76,7 +76,7 @@ Todo aviso fica registrado: o painel mostra "Avisado há X dias" e o histórico 
 ## Ligar o banco de dados (Supabase, gratuito)
 
 1. Crie um projeto em https://supabase.com.
-2. **SQL Editor > New query**: cole o conteúdo de `supabase/schema.sql` e clique em **Run**. Pode rodar de novo sempre que o arquivo mudar.
+2. **SQL Editor > New query**: cole o conteúdo de `supabase/schema.sql` e clique em **Run**. Depois faça o mesmo com `supabase/certificados.sql` (certificados de conclusão). Pode rodar de novo sempre que os arquivos mudarem.
 3. **Authentication > Users > Add user**: crie o seu usuário master com e-mail e senha (marque *Auto Confirm User*).
 4. No SQL Editor, rode (trocando o e-mail):
    `insert into public.masters (user_id) select id from auth.users where email = 'SEU-EMAIL@exemplo.com';`

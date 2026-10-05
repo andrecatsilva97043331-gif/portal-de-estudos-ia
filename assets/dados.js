@@ -142,8 +142,25 @@ function bancoSupabase(){
         sb.from('avisos').select('*').order('enviado_em', { ascending:false }).limit(2000).then(ok)
       ]);
       alunos.forEach(a => { a.email_verificado = !!a.email; });
-      return { alunos, matriculas, progresso, avisos };
+      const certificados = await sb.from('certificados').select('*').order('emitido_em', { ascending:false }).then(ok).catch(() => []);
+      return { alunos, matriculas, progresso, avisos, certificados };
     },
+    async emitirCertificado(tipo, ref){
+      const r = await sb.rpc('emitir_certificado', { p_tipo:tipo, p_ref:ref });
+      if (r.error) throw new Error(/function|schema cache/i.test(r.error.message) ? 'Os certificados ainda estão sendo preparados. Tente de novo mais tarde.' : r.error.message);
+      return Array.isArray(r.data) ? r.data[0] : r.data;
+    },
+    async meusCertificados(){
+      const id = await uid(); if (!id) return [];
+      const r = await sb.from('certificados').select('*').eq('aluno_id', id);
+      return r.error ? [] : r.data;
+    },
+    async validarCertificado(codigo){ const r = ok(await sb.rpc('validar_certificado', { p_codigo:codigo })); return (r && r[0]) || null; },
+    async sincronizarCertificados(lista){
+      ok(await sb.from('certificados_cursos').upsert(lista.map(c => Object.assign({}, c, { atualizado_em:agora() })), { onConflict:'curso_id' }));
+      ok(await sb.from('certificados_cursos').delete().not('curso_id', 'in', '(' + lista.map(c => c.curso_id).join(',') + ')'));
+    },
+    async revogarCertificado(codigo, sim){ ok(await sb.from('certificados').update({ revogado:!!sim }).eq('codigo', codigo)); },
     async registrarAvisos(lista){
       ok(await sb.from('avisos').insert(lista.map(v => ({ aluno_id:v.aluno_id, tipo:v.tipo, canal:v.canal, texto:v.texto }))));
     },
@@ -284,7 +301,25 @@ function bancoDemo(){
     },
     async ehMaster(){ return ler().master; },
     async sairMaster(){ const d = ler(); d.master = false; gravar(d); },
-    async painel(){ const d = ler(); return { alunos:d.alunos.slice().reverse(), matriculas:d.matriculas, progresso:d.progresso, avisos:(d.avisos || []).slice().reverse() }; },
+    async painel(){ const d = ler(); return { alunos:d.alunos.slice().reverse(), matriculas:d.matriculas, progresso:d.progresso, avisos:(d.avisos || []).slice().reverse(), certificados:(d.certificados || []).slice().reverse() }; },
+    /* Na demonstração, a lista de lições vem do próprio app (info); no Supabase, o servidor confere com certificados_cursos. */
+    async emitirCertificado(tipo, ref, info){
+      const d = ler(); exigirVerificado(d); d.certificados = d.certificados || [];
+      const existente = d.certificados.find(c => c.aluno_id === d.eu && c.tipo === tipo && c.ref_id === ref);
+      if (existente) return existente;
+      const feitas = curso => d.progresso.filter(p => p.aluno_id === d.eu && p.curso_id === curso).map(p => p.licao_id);
+      const completo = c => c.licoes.every(id => feitas(c.curso_id).includes(id));
+      if (!info || !(tipo === 'curso' ? completo(info) : info.cursos.every(completo))) throw new Error('Conclua todas as lições e projetos para emitir o certificado.');
+      const alfa = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', aleatorio = crypto.getRandomValues(new Uint8Array(8));
+      const a = d.alunos.find(x => x.id === d.eu);
+      const c = Object.assign({ codigo:'CIA-' + new Date().getFullYear() + '-' + Array.from(aleatorio, b => alfa[b % 32]).join(''),
+        aluno_id:d.eu, tipo, ref_id:ref, nome:a.nome, emitido_em:agora(), revogado:false }, info.certificado);
+      d.certificados.push(c); gravar(d); return c;
+    },
+    async meusCertificados(){ const d = ler(); return (d.certificados || []).filter(c => c.aluno_id === d.eu); },
+    async validarCertificado(codigo){ const k = String(codigo).trim().toUpperCase(); return (ler().certificados || []).find(c => c.codigo === k) || null; },
+    async sincronizarCertificados(){},
+    async revogarCertificado(codigo, sim){ const d = ler(), c = (d.certificados || []).find(x => x.codigo === codigo); if (c) { c.revogado = !!sim; gravar(d); } },
     async registrarAvisos(lista){
       const d = ler(); d.avisos = d.avisos || [];
       lista.forEach(v => d.avisos.push(Object.assign({ enviado_em:agora() }, v)));

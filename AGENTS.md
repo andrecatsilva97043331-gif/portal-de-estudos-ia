@@ -41,6 +41,7 @@ Status: `disponivel` (aberto a todos; `publicado` é o nome antigo e equivale), 
 
 - `carga_horaria`: horas do certificado. Padrão: iniciante 4, intermediário 6, avançado 8, Renda com IA 4. O `npm run validar` exige que a soma dos `min` das lições e projetos chegue a pelo menos 90% disso: amplie o conteúdo (mais lições, perguntas e projetos), nunca infle os minutos.
 
+- Certificados: cada curso publicado emite certificado ao concluir 100% das lições e projetos (`supabase/certificados.sql`; o Painel do Master envia a lista de lições ao Supabase sempre que é aberto). O projeto final de cada trilha é um curso com `"projeto_final": "ia"` ou `"renda"` (sem `nivel`, `trilha` nem `grupo`, só lições de `projeto`): ele libera quando o aluno conclui todos os cursos da trilha e emite o certificado da trilha completa. No `curso.js`, `habilidades: ['...']` (até 5) define os selos do certificado; sem o campo, usa os títulos dos módulos. A página pública de validação é `validar.html?c=CIA-AAAA-XXXXXXXX`.
 - `nivel`: `iniciante` (verde), `intermediario` (amarelo/laranja) ou `avancado` (vermelho/rosa). Sem `nivel`, o curso aparece em "Outros cursos", fora da trilha.
 - `ordem`: posição na Trilha de IA (1, 2, 3...), sem repetir.
 

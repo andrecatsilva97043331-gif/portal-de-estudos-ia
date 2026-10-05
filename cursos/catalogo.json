@@ -222,5 +222,27 @@
     "status": "disponivel",
     "carga_horaria": 4,
     "versao": 1
+  },
+  {
+    "id": "projeto-final-ia",
+    "titulo": "Projeto Final da Trilha de IA",
+    "descricao": "Resolva um problema real de ponta a ponta com IA e conquiste o certificado da Trilha de IA completa.",
+    "icone": "🏁",
+    "cores": ["#22d3ee", "#c084fc"],
+    "projeto_final": "ia",
+    "status": "em_breve",
+    "carga_horaria": 4,
+    "versao": 1
+  },
+  {
+    "id": "projeto-final-renda",
+    "titulo": "Projeto Final da Renda com IA",
+    "descricao": "Ofereça e entregue um serviço com IA do jeito certo e conquiste o certificado da Trilha Renda com IA completa.",
+    "icone": "🏁",
+    "cores": ["#10B981", "#3B82F6"],
+    "projeto_final": "renda",
+    "status": "em_breve",
+    "carga_horaria": 4,
+    "versao": 1
   }
 ]

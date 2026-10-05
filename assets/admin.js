@@ -315,10 +315,39 @@ function renderPainel(){
     <h2 class="sec-t">📲 Central de avisos no WhatsApp</h2>
     <div class="card avc rise" id="avisos"></div>
     <h2 class="sec-t" id="titulo-tabela">Alunos</h2>
-    <div class="card tcard" id="tabela"></div>`;
+    <div class="card tcard" id="tabela"></div>
+    <h2 class="sec-t" id="titulo-cert">🎓 Certificados emitidos</h2>
+    <p class="cert-sync" id="cert-sync">${esc(SYNC)}</p>
+    <div class="card tcard" id="certificados"></div>`;
   document.querySelectorAll('.stat b[data-n]').forEach(contar);
   renderConfirmacoes();
   renderTabela();
+  renderCertificados();
+}
+
+/* Envia ao Supabase os cursos publicados e as lições que valem certificado (o servidor confere a conclusão por esta lista). */
+let SYNC = '';
+async function sincronizarCertificados(){
+  const lista = CURSOS.filter(c => PORTAL.disponivel(c)).map(PORTAL.dadosCertificado);
+  try { await DB.sincronizarCertificados(lista); SYNC = '✅ ' + lista.length + ' cursos publicados emitem certificado. A lista é atualizada sozinha sempre que você abre este painel.'; }
+  catch(e){ console.error(e); SYNC = '⚠️ Não foi possível atualizar a lista de cursos com certificado. Confira se o arquivo supabase/certificados.sql já foi rodado no Supabase.'; }
+  const el = $('cert-sync'); if (el) el.textContent = SYNC;
+}
+
+function renderCertificados(){
+  const el = $('certificados'); if (!el) return;
+  const lista = DADOS.certificados || [];
+  $('titulo-cert').textContent = '🎓 Certificados emitidos (' + lista.length + ')';
+  if (!lista.length) { el.innerHTML = '<div class="empty">Nenhum certificado emitido ainda. Ele aparece aqui quando um aluno conclui 100% de um curso e clica em "Emitir meu certificado".</div>'; return; }
+  el.innerHTML = `<table class="atbl"><thead><tr><th>Aluno</th><th>Certificado</th><th>ID da credencial</th><th>Emitido em</th><th>Situação</th><th></th></tr></thead><tbody>
+    ${lista.map(c => `<tr>
+      <td>${esc(c.nome)}</td>
+      <td>${c.tipo === 'trilha' ? '🏁 ' : ''}${esc(c.titulo)}<br><small>${c.carga_horaria} h${c.detalhe ? ' · ' + esc(c.detalhe) : ''}</small></td>
+      <td><a href="validar.html?c=${encodeURIComponent(c.codigo)}" target="_blank" rel="noopener" style="font-family:monospace">${esc(c.codigo)}</a></td>
+      <td>${new Date(c.emitido_em).toLocaleDateString('pt-BR')}</td>
+      <td>${c.revogado ? '⛔ Revogado' : '✅ Válido'}</td>
+      <td><button class="sbtn" data-act="revogar" data-cod="${esc(c.codigo)}" data-rev="${c.revogado ? '0' : '1'}">${c.revogado ? 'Restaurar' : 'Revogar'}</button></td>
+    </tr>`).join('')}</tbody></table>`;
 }
 
 function renderConfirmacoes(){
@@ -434,7 +463,7 @@ function exportarCsv(){
 }
 
 async function carregarDados(){
-  try { DADOS = await DB.painel(); renderPainel(); }
+  try { DADOS = await DB.painel(); renderPainel(); sincronizarCertificados(); }
   catch(e){ console.error(e); $('main').innerHTML = '<div class="empty">Não foi possível carregar os dados. Verifique a internet e clique em atualizar.</div>'; }
 }
 
@@ -470,6 +499,14 @@ document.addEventListener('click', e => {
     if (!id) { toast('Nenhum curso no catálogo.'); return; }
     copiar(linkConvite(id));
     toast('Link de convite copiado: ' + tituloCurso(id));
+  }
+  else if (a === 'revogar') {
+    const sim = t.dataset.rev === '1';
+    if (sim && !confirm('Revogar o certificado ' + t.dataset.cod + '? Ele passa a aparecer como cancelado na página de validação.')) return;
+    DB.revogarCertificado(t.dataset.cod, sim).then(() => {
+      const c = (DADOS.certificados || []).find(x => x.codigo === t.dataset.cod); if (c) c.revogado = sim;
+      renderCertificados(); toast(sim ? 'Certificado revogado' : 'Certificado restaurado');
+    }).catch(err => { console.error(err); toast('Não foi possível alterar agora.'); });
   }
   else if (a === 'sair') DB.sairMaster().then(() => renderLogin());
 });
