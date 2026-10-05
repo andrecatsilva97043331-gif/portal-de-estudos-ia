@@ -349,7 +349,7 @@ function avisoTrilha(){
     <h2 class="ntit">🚀 Novidade: a Trilha de IA do Portal de Estudos IA</h2>
     <p class="nsub">Do zero ao arquiteto, de graça. Escolha seu ponto de partida.</p>
     <p class="ncorpo">Nunca usou IA? Já usa e quer ir mais longe? Agora o portal tem uma trilha completa com 3 níveis e 10 cursos curtos, em português, para estudar no celular, com lições curtas. Siga a trilha na ordem ou escolha só o curso de que você precisa. Cada lição termina com desafios práticos e cada módulo, com um projeto.</p>
-    <div class="nchips"><span class="chip">✅ Já disponível: Arquiteto de Soluções com IA</span><span class="chip">🔜 Os próximos chegam um a um</span><span class="chip">🆓 100% gratuito</span></div>
+    <div class="nchips"><span class="chip">✅ Os 10 cursos já estão disponíveis</span><span class="chip">🛠️ Projetos práticos em cada módulo</span><span class="chip">🆓 100% gratuito</span></div>
     <button class="next" type="button" data-act="ver-trilha">Ver a trilha ➜</button>
   </section>`;
 }
@@ -361,7 +361,7 @@ function avisoRenda(){
     <button class="nfechar" type="button" data-act="fechar-aviso-renda" aria-label="Fechar aviso">✕</button>
     <h2 class="ntit">🚀 Novidade: Trilha Renda com IA</h2>
     <p class="nsub">Aprenda a oferecer serviços com IA, do jeito certo.</p>
-    <p class="ncorpo">Conheça a nova trilha do Portal de Estudos IA: 7 cursos curtos, em português e gratuitos, para quem quer transformar o que sabe em um serviço profissional. Aprenda a cuidar de dados, combinar por escrito, montar sua oferta, atender clientes e organizar o básico do seu negócio. Aqui não há promessa de ganho fácil: o foco é fazer o trabalho bem feito e com responsabilidade. Escolha o curso de que você precisa. Os próximos chegam um a um.</p>
+    <p class="ncorpo">Conheça a nova trilha do Portal de Estudos IA: 7 cursos curtos, em português e gratuitos, para quem quer transformar o que sabe em um serviço profissional. Aprenda a cuidar de dados, combinar por escrito, montar sua oferta, atender clientes e organizar o básico do seu negócio. Aqui não há promessa de ganho fácil: o foco é fazer o trabalho bem feito e com responsabilidade. Os 7 cursos já estão disponíveis: escolha o de que você precisa.</p>
     <button class="next" type="button" data-act="ver-renda">Ver a trilha ➜</button>
   </section>`;
 }
