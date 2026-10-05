@@ -831,7 +831,7 @@ async function preencherDepoimento(){
     return;
   }
   el.innerHTML = `<h3>💬 Conte como foi este curso</h3>
-    <p class="nota">Seu depoimento pode inspirar outras pessoas a começar e a crescer na vida. Conte o que você aprendeu e o que mudou para você.</p>
+    <p class="nota">Seu depoimento pode inspirar outras pessoas a começar e a conquistar novas oportunidades. Conte o que você aprendeu e o que mudou para você.</p>
     <form id="f-depoimento">
       <textarea name="texto" class="meu-projeto" rows="4" minlength="40" maxlength="600" required placeholder="Ex.: Eu nunca tinha usado IA e hoje já monto minhas propostas em minutos...">${esc(meu ? meu.texto : '')}</textarea>
       <div class="pconta" id="dep-conta">${meu ? meu.texto.length : 0} de 40 a 600 caracteres</div>
