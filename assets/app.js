@@ -218,7 +218,6 @@ function abrirQr(){
         <li><b>2</b><span>Toque no link que aparecer.</span></li>
         <li><b>3</b><span>No portal, toque em <b>📲 Instalar o app</b> e pronto: o ícone fica na tela inicial.</span></li>
       </ol>
-      <p class="qr-url">andrecatsilva97043331-gif.github.io/portal-de-estudos-ia</p>
     </div>
   </div>`);
 }
