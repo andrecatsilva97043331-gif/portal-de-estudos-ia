@@ -4,8 +4,8 @@
 
 ## Endereços
 
-- **Portal dos alunos:** https://andrecatsilva97043331-gif.github.io/portal-de-estudos-ia/
-- **Painel do master:** https://andrecatsilva97043331-gif.github.io/portal-de-estudos-ia/admin.html
+- **Portal dos alunos:** https://portaldeestudosia.com.br/
+- **Painel do master:** https://portaldeestudosia.com.br/admin.html
 - **Link de convite de um curso:** use o botão "Copiar link de convite" no painel (formato `.../?curso=ID-DO-CURSO`).
 - **Prévia de cursos `em_breve` no site publicado:** entre com a conta master; o curso aparece com o selo "PRÉVIA · SÓ MASTER" (alunos continuam vendo "Em breve").
 
