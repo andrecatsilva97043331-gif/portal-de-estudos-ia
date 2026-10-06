@@ -1146,8 +1146,8 @@ function renderToolbox(){
   if (!mod || !toolLivre(mod) || !prompts()[mod.id]) {
     body = `<div class="lockmsg"><div style="font-size:40px">🔒</div><p>Conclua todas as lições do módulo para liberar as missões de prompt.</p></div>`;
   } else {
-    body = `<div style="${tstyle(mod.id)}"><p style="margin:0 0 14px; color:var(--muted); font-size:14px">Não há prompt pronto: escreva o seu, com as suas palavras e um caso real seu, usando o que aprendeu neste módulo. Depois teste no assistente de IA, veja o resultado e melhore até ficar bom.</p>` +
-      prompts()[mod.id].map((p,k) => `<div class="pr"><div class="prh"><b>🎯 ${p.title}</b><button class="cp" data-act="copy" data-k="${k}">Copiar</button></div><div class="prd">${p.desc}</div><textarea class="meu-prompt" data-k="${k}" rows="6" placeholder="Escreva aqui o seu prompt...">${esc(lerMeuPrompt(mod.id, k))}</textarea></div>`).join('') + `</div>`;
+    body = `<div style="${tstyle(mod.id)}"><p style="margin:0 0 14px; color:var(--muted); font-size:14px">Não há prompt pronto: escreva o seu, com as suas palavras e um caso real seu, usando o que aprendeu neste módulo. Depois toque em <b>✨ Testar na IA do Google</b> para ver a resposta, volte aqui e melhore o prompt até ficar bom.</p>` +
+      prompts()[mod.id].map((p,k) => `<div class="pr"><div class="prh"><b>🎯 ${p.title}</b><span class="prbt"><button class="cp ia" data-act="testar-ia" data-k="${k}" title="Abre a IA gratuita do Google com o seu prompt">✨ Testar na IA do Google</button><button class="cp" data-act="copy" data-k="${k}">Copiar</button></span></div><div class="prd">${p.desc}</div><textarea class="meu-prompt" data-k="${k}" rows="6" placeholder="Escreva aqui o seu prompt...">${esc(lerMeuPrompt(mod.id, k))}</textarea></div>`).join('') + `</div>`;
   }
   d.innerHTML = `<div class="dh"><h2>🧰 Code Toolbox</h2><button class="x" data-act="toolclose" aria-label="Fechar">✕</button></div>
     <div class="tabs">${tabs}</div><div class="db">${body}</div>`;
@@ -1510,6 +1510,16 @@ document.addEventListener('click', e => {
     const k = parseInt(t.dataset.k,10), txt = lerMeuPrompt(TB.mod, k).trim();
     if (!txt) { toast('✍️ Escreva o seu prompt antes de copiar'); return; }
     copyText(txt, t);
+  }
+  else if (a === 'testar-ia') {
+    const txt = lerMeuPrompt(TB.mod, parseInt(t.dataset.k,10)).trim();
+    if (!txt) { toast('✍️ Escreva o seu prompt antes de testar'); return; }
+    if (txt.length <= 1500) window.open('https://www.google.com/search?udm=50&q=' + encodeURIComponent(txt), '_blank', 'noopener');
+    else {
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).catch(() => {});
+      window.open('https://gemini.google.com/app', '_blank', 'noopener');
+      toast('📋 Prompt longo copiado: cole no Gemini com Ctrl+V (ou toque e segure → Colar)');
+    }
   }
   else if (a === 'reset') {
     if (!confirm('Apagar todo o seu progresso neste curso?')) return;

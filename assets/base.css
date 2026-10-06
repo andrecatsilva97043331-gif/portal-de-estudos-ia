@@ -220,8 +220,12 @@ button{font-family:inherit; cursor:pointer;}
 .prd{padding:8px 14px 0; font-size:14px; color:var(--muted);}
 .cp{border:0; background:linear-gradient(135deg,var(--c),var(--c2)); color:#000; border-radius:10px; padding:6px 12px; font-size:13px; font-weight:800; white-space:nowrap;}
 .cp.done{background:var(--ok);}
+.prbt{display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px;}
+.cp.ia{background:linear-gradient(135deg,#4285F4,#9B72CB,#D96570); color:#fff;}
+@media (max-width: 560px){ .prh{flex-wrap:wrap;} .prbt{width:100%; justify-content:flex-start;} }
 .meu-prompt{display:block; width:100%; margin:10px 0 0; padding:12px 14px; border:0; border-top:1px solid var(--line); background:#030305; color:var(--text); font:14px/1.55 var(--font-b); resize:vertical; min-height:130px;}
-.meu-prompt:focus{outline:2px solid var(--c); outline-offset:-2px;}
+.meu-prompt:focus{outline:none;}
+.pr:focus-within{border-color:var(--c); box-shadow:0 0 0 1px var(--c), 0 10px 30px -18px var(--c);}
 .pr pre{margin:8px 0 0; padding:12px 14px; background:#030305; font-size:13px; line-height:1.55; white-space:pre-wrap; word-break:break-word; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:#d6d6e6; max-height:340px; overflow:auto;}
 .lockmsg{text-align:center; color:var(--muted); padding:30px 10px;}
 
