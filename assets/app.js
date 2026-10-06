@@ -1147,7 +1147,7 @@ function renderToolbox(){
     body = `<div class="lockmsg"><div style="font-size:40px">🔒</div><p>Conclua todas as lições do módulo para liberar as missões de prompt.</p></div>`;
   } else {
     body = `<div style="${tstyle(mod.id)}"><p style="margin:0 0 14px; color:var(--muted); font-size:14px">Não há prompt pronto: escreva o seu, com as suas palavras e um caso real seu, usando o que aprendeu neste módulo. Depois toque em <b>✨ Testar na IA do Google</b> para ver a resposta, volte aqui e melhore o prompt até ficar bom.</p>` +
-      prompts()[mod.id].map((p,k) => `<div class="pr"><div class="prh"><b>🎯 ${p.title}</b><span class="prbt"><button class="cp ia" data-act="testar-ia" data-k="${k}" title="Abre a IA gratuita do Google com o seu prompt">✨ Testar na IA do Google</button><button class="cp" data-act="copy" data-k="${k}">Copiar</button></span></div><div class="prd">${p.desc}</div><textarea class="meu-prompt" data-k="${k}" rows="6" placeholder="Escreva aqui o seu prompt...">${esc(lerMeuPrompt(mod.id, k))}</textarea></div>`).join('') + `</div>`;
+      prompts()[mod.id].map((p,k) => `<div class="pr"><div class="prh"><b>🎯 ${p.title}</b><span class="prbt"><button class="cp ia" data-act="testar-ia" data-k="${k}" title="Abre a IA gratuita do Google com o seu prompt">✨ Testar na IA do Google</button></span></div><div class="prd">${p.desc}</div><textarea class="meu-prompt" data-k="${k}" rows="6" placeholder="Escreva aqui o seu prompt...">${esc(lerMeuPrompt(mod.id, k))}</textarea></div>`).join('') + `</div>`;
   }
   d.innerHTML = `<div class="dh"><h2>🧰 Code Toolbox</h2><button class="x" data-act="toolclose" aria-label="Fechar">✕</button></div>
     <div class="tabs">${tabs}</div><div class="db">${body}</div>`;
@@ -1401,12 +1401,6 @@ async function buscarCep(input){
   } catch(e){ info.textContent = ''; }
 }
 
-function copyText(txt, btn){
-  const ok = () => { btn.textContent = 'Copiado ✓'; btn.classList.add('done'); setTimeout(()=>{ btn.textContent='Copiar'; btn.classList.remove('done'); }, 1800); };
-  const fallback = () => { try { const t = document.createElement('textarea'); t.value = txt; t.style.position='fixed'; t.style.opacity='0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); ok(); } catch(e){ btn.textContent='Selecione e copie'; } };
-  try { navigator.clipboard.writeText(txt).then(ok, fallback); } catch(e){ fallback(); }
-}
-
 async function responder(i){
   const L = byId(S.cur), key = C.id + ':' + L.id;
   const ss = SESSION[key] = SESSION[key] || { tried:[], q:0 };
@@ -1506,11 +1500,6 @@ document.addEventListener('click', e => {
   }
   else if (a === 'toolclose') { TB.open = false; renderToolbox(); renderProgress(); }
   else if (a === 'tbmod') { TB.mod = parseInt(t.dataset.mod,10); renderToolbox(); }
-  else if (a === 'copy') {
-    const k = parseInt(t.dataset.k,10), txt = lerMeuPrompt(TB.mod, k).trim();
-    if (!txt) { toast('✍️ Escreva o seu prompt antes de copiar'); return; }
-    copyText(txt, t);
-  }
   else if (a === 'testar-ia') {
     const txt = lerMeuPrompt(TB.mod, parseInt(t.dataset.k,10)).trim();
     if (!txt) { toast('✍️ Escreva o seu prompt antes de testar'); return; }
