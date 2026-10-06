@@ -135,7 +135,8 @@ html.pc .so-cel{display:none !important;}
 /* ---------- Teste rápido de nível ---------- */
 .tn-chamada{display:flex; align-items:center; gap:14px; width:100%; margin:0 0 22px; padding:14px 16px; text-align:left; color:var(--text); font:inherit; cursor:pointer; border-radius:18px; border:1px solid transparent; background:linear-gradient(#0b0b12,#0b0b12) padding-box, linear-gradient(90deg,#22C55E,#F59E0B,#EC4899) border-box; box-shadow:0 10px 40px -24px #F59E0B; transition:transform .2s, box-shadow .2s;}
 button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px #F59E0B;}
-.tn-chamada > div{flex:1; min-width:0;}
+.tn-chamada{flex-wrap:wrap;}
+.tn-chamada > div{flex:1 1 240px; min-width:0;}
 .tn-chamada b{display:block; font-size:15.5px;}
 .tn-chamada small{display:block; color:var(--muted); font-size:13.5px; line-height:1.45; margin-top:2px;}
 .tn-alvo{flex:none; width:44px; height:44px; border-radius:14px; display:grid; place-items:center; font-size:22px; background:rgba(245,158,11,.12);}
@@ -144,7 +145,14 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .tn-chamada.feito{cursor:default; background:linear-gradient(#0b0b12,#0b0b12) padding-box, linear-gradient(90deg,var(--c),var(--c2)) border-box;}
 .tn-chamada.feito .tn-alvo{background:color-mix(in srgb, var(--c) 18%, transparent);}
 .tn-chamada.feito .ghost{padding:8px 14px;}
-@media (max-width: 600px){ .tn-chamada{flex-wrap:wrap; gap:10px 12px; padding:12px 14px;} .tn-alvo{width:38px; height:38px; font-size:19px;} .tn-ir{margin-left:50px;} }
+@media (max-width: 900px){
+  .tn-chamada{gap:10px 12px; padding:12px 14px;}
+  .tn-alvo{width:38px; height:38px; font-size:19px;}
+  .tn-chamada > div{flex-basis:calc(100% - 52px);}
+  .tn-ir, .tn-chamada.feito .ghost{margin-left:50px;}
+}
+html.cel .tn-chamada > div{flex-basis:calc(100% - 52px);}
+html.cel .tn-ir, html.cel .tn-chamada.feito .ghost{margin-left:50px;}
 .tn-box{box-sizing:border-box; width:min(480px,100%); max-height:calc(100dvh - 40px); overflow-y:auto; text-align:left;}
 .tn-prog{display:flex; gap:6px; margin:4px 40px 16px 0;}
 .tn-prog i{flex:1; height:5px; border-radius:99px; background:#24242f;}
