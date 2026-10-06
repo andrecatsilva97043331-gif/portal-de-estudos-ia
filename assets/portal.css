@@ -106,7 +106,7 @@ button.bc:hover{color:var(--text); background:var(--s2);}
 @supports not selector(::-webkit-scrollbar){ .sb{scrollbar-width:thin; scrollbar-color:rgba(245,158,11,.55) transparent;} }
 
 /* ---------- QR code: levar para o celular ---------- */
-@media (hover: none) and (pointer: coarse){ .so-pc{display:none !important;} }
+html.cel .so-pc{display:none !important;}
 .btn-sair{--yellow:#f87171;}
 .qr-modal{position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:20px; background:rgba(0,0,0,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); animation:qrfade .25s ease both;}
 @keyframes qrfade{from{opacity:0;} to{opacity:1;}}
@@ -123,7 +123,7 @@ button.bc:hover{color:var(--text); background:var(--s2);}
 .qr-passos li{display:flex; gap:10px; align-items:flex-start; font-size:14px; line-height:1.45; color:var(--muted);}
 .qr-passos li > b{flex:none; width:24px; height:24px; border-radius:8px; display:grid; place-items:center; font-size:13px; color:#000; background:linear-gradient(135deg,#22d3ee,#c084fc);}
 .qr-passos li span b{color:var(--text);}
-@media (hover: hover), (pointer: fine){ .so-cel{display:none !important;} }
+html.pc .so-cel{display:none !important;}
 .qr-card{display:block; padding:18px 20px 22px; border-radius:24px; border:1px solid #242431; background:radial-gradient(circle at 50% 0%, #15152a, #050508 70%); box-shadow:0 24px 60px -26px #22d3ee, 0 0 0 1px rgba(192,132,252,.15) inset; color:var(--text); font:inherit; text-align:center; cursor:pointer; transition:transform .2s, box-shadow .2s;}
 .qr-card:hover{transform:translateY(-3px); box-shadow:0 24px 60px -16px #22d3ee, 0 0 0 1px rgba(192,132,252,.3) inset;}
 .qr-card .qr-tit{display:block; font-size:22px; margin:0 0 14px;}
@@ -139,12 +139,12 @@ button.tn-chamada:hover{transform:translateY(-2px); box-shadow:0 14px 44px -18px
 .tn-chamada b{display:block; font-size:15.5px;}
 .tn-chamada small{display:block; color:var(--muted); font-size:13.5px; line-height:1.45; margin-top:2px;}
 .tn-alvo{flex:none; width:44px; height:44px; border-radius:14px; display:grid; place-items:center; font-size:22px; background:rgba(245,158,11,.12);}
-.tn-ir{flex:none; font-weight:800; font-size:14px; padding:10px 14px; border-radius:12px; color:#000; background:linear-gradient(90deg,#22C55E,#F59E0B);}
+.tn-ir{flex:none; font-weight:800; font-size:13px; padding:7px 12px; border-radius:10px; color:#000; background:linear-gradient(90deg,#22C55E,#F59E0B); white-space:nowrap;}
 .tn-chamada.renda{background:linear-gradient(#0b0b12,#0b0b12) padding-box, linear-gradient(90deg,#3B82F6,#06B6D4,#10B981) border-box; box-shadow:0 10px 40px -24px #06B6D4;}
 .tn-chamada.feito{cursor:default; background:linear-gradient(#0b0b12,#0b0b12) padding-box, linear-gradient(90deg,var(--c),var(--c2)) border-box;}
 .tn-chamada.feito .tn-alvo{background:color-mix(in srgb, var(--c) 18%, transparent);}
 .tn-chamada.feito .ghost{padding:8px 14px;}
-@media (max-width: 600px){ .tn-chamada{flex-wrap:wrap;} .tn-ir{width:100%; text-align:center;} }
+@media (max-width: 600px){ .tn-chamada{flex-wrap:wrap; gap:10px 12px; padding:12px 14px;} .tn-alvo{width:38px; height:38px; font-size:19px;} .tn-ir{margin-left:50px;} }
 .tn-box{box-sizing:border-box; width:min(480px,100%); max-height:calc(100dvh - 40px); overflow-y:auto; text-align:left;}
 .tn-prog{display:flex; gap:6px; margin:4px 40px 16px 0;}
 .tn-prog i{flex:1; height:5px; border-radius:99px; background:#24242f;}

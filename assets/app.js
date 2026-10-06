@@ -1586,14 +1586,13 @@ async function iniciar(){
 }
 window.addEventListener('focus', () => { checarLinkEmail(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checarLinkEmail(); });
-/* Painel flutuante (notebook): abre ao aproximar o mouse da borda esquerda e fecha ao afastar. */
+/* Painel flutuante (notebook): abre no clique da aba Trilha e fecha ao afastar o mouse. */
 let FECHA_SB = null;
 const sbFlutuante = () => document.body.classList.contains('sb-flut') && innerWidth > 900 && !$('qr-modal') && !$('tn-modal');
 document.addEventListener('mousemove', e => {
   if (!sbFlutuante()) return;
-  const sb = $('sb'), aberto = sb.classList.contains('on');
-  if (!aberto && e.target.closest && e.target.closest('.sbz-menu')) { clearTimeout(FECHA_SB); FECHA_SB = null; sb.classList.add('on'); return; }
-  if (!aberto) return;
+  if (!$('sb').classList.contains('on')) return;
+  const sb = $('sb');
   if (e.clientX > sb.getBoundingClientRect().right + 40) {
     if (!FECHA_SB) FECHA_SB = setTimeout(() => { FECHA_SB = null; closeMenu(); }, 250);
   } else { clearTimeout(FECHA_SB); FECHA_SB = null; }
