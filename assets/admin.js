@@ -333,8 +333,6 @@ function renderPainel(){
     <div class="card avc rise" id="avisos"></div>
     <h2 class="sec-t"><span id="titulo-tabela">Alunos</span> ${ajuda('alunos')}</h2>
     <div class="card tcard" id="tabela"></div>
-    <h2 class="sec-t">🗺️ Mapa dos alunos</h2>
-    <div class="card mapa-card" id="mapa"></div>
     <h2 class="sec-t"><span id="titulo-cert">🎓 Certificados emitidos</span> ${ajuda('certificados')}</h2>
     <p class="cert-sync" id="cert-sync">${esc(SYNC)}</p>
     <div class="card tcard" id="certificados"></div>
@@ -350,7 +348,6 @@ function renderPainel(){
   renderCertificados();
   renderDivulgacao();
   renderDepoimentos();
-  renderMapa();
   renderPreviaCert();
 }
 
@@ -593,147 +590,6 @@ function abrirAluno(id){
 }
 function fechar(){ $('drawer').classList.remove('on'); $('shade').classList.remove('on'); }
 
-/* ============ MAPA DOS ALUNOS ============ */
-/* Leaflet + OpenStreetMap. O endereço vira coordenada no Nominatim (máximo 1 consulta por segundo) e fica gravado
-   no cadastro (geo_endereco, geo_lat, geo_lng): só consulta de novo se o CEP, o estado ou o país mudarem. */
-const LEAFLET = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.';
-const MAPA = { mapa:null, camada:null, marcadores:{}, vistos:{}, fila:Promise.resolve(), ultima:0, cache:{}, falhou:new Set(), aviso:'', interagiu:false };
-const ehBR = a => /^(br|brasil|brazil)$/i.test(String(a.pais || '').trim());
-function chaveEndereco(a){
-  const cep = String(a.cep || '').trim(), d = cep.replace(/\D/g, '');
-  return [ehBR(a) && d.length === 8 ? d.slice(0, 5) + '-' + d.slice(5) : cep, String(a.estado || '').trim(), String(a.pais || '').trim()].join(' · ');
-}
-const geoChave = a => String(a.geo_endereco || '').split(' | ')[0];
-const geoRotulo = a => String(a.geo_endereco || '').split(' | ')[1] || '';
-const geoPendente = a => geoChave(a) !== chaveEndereco(a);
-const geoOk = a => !geoPendente(a) && a.geo_lat != null && a.geo_lng != null;
-
-function carregarLeaflet(){
-  if (window.L) return Promise.resolve();
-  if (!document.querySelector('link[data-leaflet]')) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = LEAFLET + 'css'; l.dataset.leaflet = ''; document.head.appendChild(l); }
-  return MAPA.carregando || (MAPA.carregando = carregarScript(LEAFLET + 'js').catch(e => { MAPA.carregando = null; throw e; }));
-}
-
-/* Navegadores não deixam trocar o User-Agent: o Nominatim identifica o portal pelo Referer (domínio do site). */
-async function nominatim(params){
-  const espera = MAPA.ultima + 1100 - Date.now(); if (espera > 0) await new Promise(r => setTimeout(r, espera));
-  MAPA.ultima = Date.now();
-  const u = new URL('https://nominatim.openstreetmap.org/search');
-  u.search = new URLSearchParams(Object.assign({ format:'jsonv2', limit:1, 'accept-language':'pt-BR' }, params)).toString();
-  const r = await fetch(u.href, { headers:{ Accept:'application/json' } });
-  if (!r.ok) throw new Error('Nominatim ' + r.status);
-  const [x] = await r.json();
-  return x ? { lat:Number(x.lat), lng:Number(x.lon) } : null;
-}
-
-/* Brasil: o ViaCEP dá rua e cidade do CEP; tenta rua + cidade, depois só a cidade. CEP inexistente = não localizado
-   (a busca por código postal do Nominatim no Brasil devolve lugares errados). Exterior: código postal + país. */
-async function geocodificar(a){
-  const cep = String(a.cep || '').replace(/\D/g, ''), estado = String(a.estado || '').trim(), pais = String(a.pais || '').trim();
-  const buscas = []; let rotulo = '';
-  if (ehBR(a)) {
-    const v = cep.length === 8 ? await fetch('https://viacep.com.br/ws/' + cep + '/json/').then(r => r.json()) : { erro:true };
-    if (!v.erro && v.localidade) {
-      const uf = v.estado || v.uf;
-      rotulo = [v.logradouro, v.bairro, v.localidade + ' - ' + v.uf].filter(Boolean).join(', ');
-      if (v.logradouro) buscas.push({ q:[v.logradouro, v.localidade, uf, 'Brasil'].join(', ') });
-      buscas.push({ q:[v.localidade, uf, 'Brasil'].join(', ') });
-    }
-  } else {
-    buscas.push({ q:[a.cep, estado, pais].filter(Boolean).join(', ') });
-    if (a.cep) buscas.push({ postalcode:String(a.cep).trim(), country:pais });
-  }
-  for (const b of buscas) { const g = await nominatim(b); if (g) return Object.assign(g, { rotulo }); }
-  return { lat:null, lng:null, rotulo };
-}
-
-/* Uma consulta por endereço, em fila: alunos com o mesmo CEP reaproveitam o resultado. Falha de rede devolve null. */
-function localizar(a){
-  const k = chaveEndereco(a);
-  if (!MAPA.cache[k]) MAPA.cache[k] = MAPA.fila = MAPA.fila.then(() => geocodificar(a)).catch(e => { console.error(e); delete MAPA.cache[k]; return null; });
-  return MAPA.cache[k];
-}
-
-async function geocodificarPendentes(){
-  for (const a of DADOS.alunos.filter(x => geoPendente(x) && !MAPA.falhou.has(x.id))) {
-    const g = await localizar(a);
-    if (!g) { MAPA.falhou.add(a.id); desenharMapa(); continue; }
-    if (!geoPendente(a)) continue;
-    const end = chaveEndereco(a) + (g.rotulo ? ' | ' + g.rotulo : '');
-    Object.assign(a, { geo_endereco:end, geo_lat:g.lat, geo_lng:g.lng });
-    DB.salvarGeo(a.id, end, g.lat, g.lng).catch(e => {
-      console.error(e); MAPA.aviso = '⚠️ As localizações não foram gravadas no cadastro (rode supabase/mapa.sql no Supabase). O mapa funciona, mas vai consultar de novo na próxima abertura.'; desenharLista();
-    });
-    desenharMapa();
-  }
-}
-
-function popupAluno(a){
-  const ll = a.geo_lat + ',' + a.geo_lng, rot = geoRotulo(a);
-  return `<div class="mapa-pop"><b>${esc(a.nome)}</b><small>${rot ? esc(rot) + '<br>' : ''}CEP ${esc(chaveEndereco(a))}<br><i>Localização aproximada pelo CEP</i></small>
-    <iframe title="Google Maps: ${esc(a.nome)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${ll}&z=15&output=embed"></iframe>
-    <a class="sbtn" href="https://www.google.com/maps/search/?api=1&query=${ll}" target="_blank" rel="noopener">📍 Abrir no Google Maps</a></div>`;
-}
-
-function desenharLista(){
-  const el = $('mapa-lista'); if (!el) return;
-  const porNome = (x, y) => String(x.nome).localeCompare(String(y.nome), 'pt-BR');
-  const item = (a, sub, ok) => `<${ok ? 'button type="button" data-act="mapa-aluno"' : 'div'} class="mapa-item${ok ? '' : ' off'}" data-id="${esc(a.id)}"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><span><b>${esc(a.nome)}</b><small>${esc(sub)}</small></span></${ok ? 'button' : 'div'}>`;
-  const ok = DADOS.alunos.filter(geoOk).sort(porNome);
-  const nao = DADOS.alunos.filter(a => !geoPendente(a) && !geoOk(a)).sort(porNome);
-  const pend = DADOS.alunos.filter(a => geoPendente(a) && !MAPA.falhou.has(a.id)).length;
-  el.innerHTML = `<div class="mapa-sec">📍 No mapa (${ok.length})</div>
-    ${ok.map(a => item(a, geoRotulo(a) || chaveEndereco(a), true)).join('') || '<p class="nota" style="margin:4px 2px">Nenhum aluno localizado ainda.</p>'}
-    ${nao.length ? `<div class="mapa-sec">⚠️ Endereço não localizado (${nao.length})</div>${nao.map(a => item(a, 'CEP ' + chaveEndereco(a), false)).join('')}` : ''}`;
-  const st = $('mapa-status'); if (!st) return;
-  st.textContent = pend ? `🔎 Localizando ${pend} ${pend === 1 ? 'endereço' : 'endereços'} pelo OpenStreetMap (1 por segundo)…`
-    : MAPA.aviso || (MAPA.falhou.size ? `⚠️ ${MAPA.falhou.size} ${MAPA.falhou.size === 1 ? 'endereço não pôde' : 'endereços não puderam'} ser consultados agora (sem internet ou serviço ocupado). Clique em Atualizar para tentar de novo.`
-    : 'Localização aproximada pelo CEP. Clique num marcador ou num nome para ver o endereço no Google Maps.');
-}
-
-function desenharMapa(){
-  desenharLista();
-  if (!MAPA.mapa || !MAPA.camada) return;
-  const ids = new Set(DADOS.alunos.filter(geoOk).map(a => a.id));
-  Object.keys(MAPA.marcadores).forEach(id => { if (!ids.has(id)) { MAPA.camada.removeLayer(MAPA.marcadores[id]); delete MAPA.marcadores[id]; } });
-  DADOS.alunos.filter(a => ids.has(a.id) && !MAPA.marcadores[a.id]).forEach(a => {
-    const k = a.geo_lat.toFixed(4) + ',' + a.geo_lng.toFixed(4), n = MAPA.vistos[k] = (MAPA.vistos[k] || 0) + 1;
-    const r = n > 1 ? 0.0012 * Math.sqrt(n) : 0, ang = n * 2.4;
-    const m = L.circleMarker([a.geo_lat + r * Math.sin(ang), a.geo_lng + r * Math.cos(ang)], { radius:8, color:'#fff', weight:2, fillColor:'#22d3ee', fillOpacity:.9 })
-      .bindTooltip(esc(a.nome)).bindPopup(() => popupAluno(a), { minWidth:280, maxWidth:300 }).addTo(MAPA.camada);
-    MAPA.marcadores[a.id] = m;
-  });
-  const pts = Object.values(MAPA.marcadores).map(m => m.getLatLng());
-  if (pts.length && !MAPA.interagiu) MAPA.mapa.fitBounds(L.latLngBounds(pts), { padding:[30, 30], maxZoom:12 });
-}
-
-async function renderMapa(){
-  const el = $('mapa'); if (!el) return;
-  el.innerHTML = `<div class="mapa-grid"><div class="mapa-area" id="mapa-area"><div class="empty">Carregando o mapa…</div></div><div class="mapa-lista" id="mapa-lista"></div></div><p class="nota mapa-status" id="mapa-status"></p>`;
-  MAPA.falhou.clear(); MAPA.aviso = '';
-  desenharLista();
-  try { await carregarLeaflet(); }
-  catch(e){ console.error(e); if (el.isConnected) $('mapa-area').innerHTML = '<div class="empty">Não foi possível carregar o mapa. Verifique a internet e clique em Atualizar.</div>'; return; }
-  if (!el.isConnected) return;
-  if (MAPA.mapa) MAPA.mapa.remove();
-  $('mapa-area').innerHTML = '';
-  MAPA.mapa = L.map('mapa-area', { scrollWheelZoom:false }).setView([-14.2, -51.9], 4);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' }).addTo(MAPA.mapa);
-  MAPA.camada = L.layerGroup().addTo(MAPA.mapa);
-  MAPA.marcadores = {}; MAPA.vistos = {}; MAPA.interagiu = false;
-  MAPA.mapa.on('popupopen dragstart', () => { MAPA.interagiu = true; });
-  desenharMapa();
-  geocodificarPendentes();
-}
-
-function focarNoMapa(id){
-  const m = MAPA.marcadores[id]; if (!m || !MAPA.mapa) return;
-  MAPA.interagiu = true;
-  $('mapa-area').scrollIntoView({ behavior:reduced() ? 'auto' : 'smooth', block:'center' });
-  MAPA.mapa.setView(m.getLatLng(), Math.max(MAPA.mapa.getZoom(), 13));
-  m.openPopup();
-}
-
 /* ============ PRÉVIA DO CERTIFICADO ============ */
 /* Mesmo desenho dos certificados emitidos (PORTAL.cert em assets/certificado.js) e os mesmos dados que o aluno recebe
    (PORTAL.dadosCertificado). Só exibe: não grava nada, e o ID de exemplo não existe na validação. */
@@ -831,7 +687,6 @@ document.addEventListener('click', e => {
   if (a === 'seg') { AV.seg = t.dataset.seg; renderAvisos(linhas()); }
   else if (a === 'modelo-padrao') { salvarModelo(AV.seg, MODELOS_PADRAO[AV.seg]); renderAvisos(linhas()); toast('Modelo restaurado'); }
   else if (a === 'enviar-api') enviarApi();
-  else if (a === 'mapa-aluno') focarNoMapa(t.dataset.id);
   else if (a === 'cursos-aluno') { const id = t.dataset.id; CURSOS_ABERTOS.has(id) ? CURSOS_ABERTOS.delete(id) : CURSOS_ABERTOS.add(id); renderTabela(); }
   else if (a === 'aluno') abrirAluno(t.dataset.id);
   else if (a === 'fechar') fechar();

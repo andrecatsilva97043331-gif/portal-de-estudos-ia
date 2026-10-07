@@ -21,6 +21,13 @@
   radial-gradient(520px 420px at 10% 100%, rgba(192,132,252,.18), transparent 70%),
   radial-gradient(700px 300px at 50% 40%, rgba(34,211,238,.07), transparent 70%); }
 
+.cert .moldura { position:absolute; border:1px solid rgba(255,255,255,.12); border-radius:18px; pointer-events:none; }
+.cert.h .moldura { top:16px; right:16px; bottom:16px; left:62px; }
+.cert.q .moldura { top:28px; right:18px; bottom:18px; left:18px; }
+.cert .moldura::before, .cert .moldura::after { content:''; position:absolute; width:58px; height:58px; }
+.cert .moldura::before { top:-1px; left:-1px; border-top:2px solid var(--cy); border-left:2px solid var(--cy); border-top-left-radius:18px; }
+.cert .moldura::after { bottom:-1px; right:-1px; border-bottom:2px solid var(--vi); border-right:2px solid var(--vi); border-bottom-right-radius:18px; }
+
 .cert .faixa { position:absolute; }
 .cert.h .faixa { left:0; top:0; bottom:0; width:46px; background:linear-gradient(180deg, #ff5a5f, #fbbf24 28%, #4ade80 52%, #22d3ee 76%, #c084fc); }
 .cert.h .faixa span { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) rotate(-90deg); white-space:nowrap; font-family:'JetBrains Mono', monospace; font-weight:700; font-size:11.5px; letter-spacing:5px; color:rgba(0,0,0,.72); }
@@ -84,6 +91,17 @@
 .cert .skills span b { color:var(--c1); }
 .cert.h .skills span b { margin-right:6px; }
 .cert.q .skills span b { margin-right:8px; }
+
+.cert .signatario { position:absolute; left:0; text-align:center; }
+.cert.h .signatario { bottom:121px; width:250px; }
+.cert.q .signatario { bottom:205px; width:290px; }
+.cert .signatario .firma { font-family:'Dancing Script', cursive; font-weight:700; line-height:1; color:#f5f5fa; white-space:nowrap; transform:rotate(-4deg); }
+.cert.h .signatario .firma { font-size:34px; }
+.cert.q .signatario .firma { font-size:35px; }
+.cert .signatario .linha { height:1px; margin:8px auto 7px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.55) 15%, rgba(255,255,255,.55) 85%, transparent); }
+.cert .signatario .cargo { font-family:'Sora', sans-serif; color:#9d9db5; white-space:nowrap; letter-spacing:.3px; }
+.cert.h .signatario .cargo { font-size:12px; }
+.cert.q .signatario .cargo { font-size:13px; }
 
 .cert .base { position:absolute; left:0; right:0; bottom:0; display:flex; align-items:stretch; }
 .cert.h .base { gap:18px; }

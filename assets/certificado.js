@@ -7,6 +7,7 @@ const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov'
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const data = iso => { const d = new Date(iso); return String(d.getDate()).padStart(2, '0') + ' ' + MESES[d.getMonth()] + ' ' + d.getFullYear(); };
 const horas = n => n + (Number(n) === 1 ? ' hora' : ' horas');
+const SIGNATARIO = { nome:'André Luiz da Silva', cargo:'CEO e Fundador' };
 
 /* Rede neural decorativa nas laterais, sempre igual para o mesmo formato (semente fixa). */
 function rede(f){
@@ -49,7 +50,7 @@ PORTAL.cert = {
     const verif = f === 'q' ? `<span class="ok">VERIFICADO</span>${qr(PORTAL.cert.link(c.codigo))}`
       : `<div class="txt"><span class="ok">VERIFICADO</span><br>Escaneie para<br>conferir a autenticidade</div>${qr(PORTAL.cert.link(c.codigo))}`;
     return `<div class="cert ${f}${c.revogado ? ' revogado' : ''}" style="--c1:${esc(cores[0])};--c2:${esc(cores[1])}">
-      <div class="aurora"></div><div class="grade"></div>${rede(f)}
+      <div class="aurora"></div><div class="grade"></div>${rede(f)}<div class="moldura"></div>
       <div class="faixa">${f === 'h' ? '<span>PORTAL DE ESTUDOS IA · CREDENCIAL VERIFICADA</span>' : ''}</div>
       <div class="conteudo">
         <div class="topo"><div class="cmd"><i>$</i> ${cmd}</div><img class="logo" src="assets/logo.svg" alt="Portal de Estudos IA"></div>
@@ -62,6 +63,7 @@ PORTAL.cert = {
           <div class="curso"><div class="tile">${esc(c.icone || '🎓')}</div><div><h1>${esc(c.titulo)}</h1><small>${esc(c.subtitulo || '')}</small></div></div>
           <div class="skills">${(c.habilidades || []).slice(0, 5).map(s => `<span><b>✓</b>${esc(s)}</span>`).join('')}</div>
         </div>
+        <div class="signatario"><div class="firma">${esc(SIGNATARIO.nome)}</div><div class="linha"></div><div class="cargo">${esc(SIGNATARIO.nome)} - ${esc(SIGNATARIO.cargo)}</div></div>
         <div class="base">
           <div class="painel">
             <div><small>Concluído em</small><b>${data(c.emitido_em)}</b></div>
