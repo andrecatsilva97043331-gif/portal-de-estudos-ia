@@ -123,6 +123,7 @@ function bancoSupabase(){
     },
     async notificarInscricao(){ try { await funcao({ acao:'notificar-inscricao' }); } catch(e){ console.warn(e); } },
     async confirmarWhatsapp(alunoId, okConf){ ok(await sb.rpc('confirmar_whatsapp', { p_aluno:alunoId, p_ok:okConf !== false })); },
+    async salvarGeo(alunoId, endereco, lat, lng){ ok(await sb.rpc('salvar_geo', { p_aluno:alunoId, p_endereco:endereco, p_lat:lat, p_lng:lng })); },
     async enviarCodigoWhats(){ await funcao({ acao:'enviar-codigo' }); return {}; },
     async verificarCodigoWhats(codigo){ await funcao({ acao:'verificar-codigo', codigo }); },
     async sair(){ await sb.auth.signOut(); },
@@ -298,6 +299,10 @@ function bancoDemo(){
       const d = ler(), a = d.alunos.find(x => x.id === alunoId); if (!a) return;
       a.whatsapp_verificado = okConf !== false; a.whatsapp_verificado_em = okConf !== false ? agora() : null;
       gravar(d);
+    },
+    async salvarGeo(alunoId, endereco, lat, lng){
+      const d = ler(), a = d.alunos.find(x => x.id === alunoId); if (!a) return;
+      Object.assign(a, { geo_endereco:endereco, geo_lat:lat, geo_lng:lng, geo_em:agora() }); gravar(d);
     },
     async enviarCodigoWhats(){
       const d = ler(), codigo = novoCodigo();
