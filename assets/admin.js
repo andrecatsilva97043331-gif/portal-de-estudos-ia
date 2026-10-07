@@ -338,6 +338,8 @@ function renderPainel(){
     <h2 class="sec-t"><span id="titulo-cert">🎓 Certificados emitidos</span> ${ajuda('certificados')}</h2>
     <p class="cert-sync" id="cert-sync">${esc(SYNC)}</p>
     <div class="card tcard" id="certificados"></div>
+    <h2 class="sec-t">🎓 Prévia do certificado <span class="badge">EXEMPLO · SÓ VOCÊ VÊ</span></h2>
+    <div class="card" id="previa-cert"></div>
     <h2 class="sec-t">📣 Divulgação ${ajuda('divulgacao')}</h2>
     <div class="card avc rise" id="divulgacao"></div>
     <h2 class="sec-t"><span id="titulo-dep">💬 Depoimentos</span> ${ajuda('depoimentos')}</h2>
@@ -349,6 +351,7 @@ function renderPainel(){
   renderDivulgacao();
   renderDepoimentos();
   renderMapa();
+  renderPreviaCert();
 }
 
 /* Depoimentos: o aluno envia ao concluir um curso; aqui o master aprova e gera a imagem e a legenda do post. */
@@ -731,6 +734,54 @@ function focarNoMapa(id){
   m.openPopup();
 }
 
+/* ============ PRÉVIA DO CERTIFICADO ============ */
+/* Mesmo desenho dos certificados emitidos (PORTAL.cert em assets/certificado.js) e os mesmos dados que o aluno recebe
+   (PORTAL.dadosCertificado). Só exibe: não grava nada, e o ID de exemplo não existe na validação. */
+const PREVIA = { nome:'André Luiz da Silva', ref:'trilha:ia', formato:'h' };
+function certExemplo(){
+  const [tipo, ref] = PREVIA.ref.split(':');
+  const base = { codigo:'CIA-' + new Date().getFullYear() + '-EXEMPLO0', tipo, ref_id:ref, nome:PREVIA.nome.trim() || 'Nome do aluno', emitido_em:new Date().toISOString(), revogado:false };
+  if (tipo === 'curso') {
+    const d = PORTAL.dadosCertificado(cursoPorId(ref));
+    return Object.assign(base, { titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.licoes.length + ' lições', habilidades:d.habilidades });
+  }
+  const pf = PORTAL.dadosCertificado(CURSOS.find(c => c.projeto_final === ref));
+  const lista = CURSOS.filter(c => !c.projeto_final && PORTAL.trilhaDe(c) === ref && PORTAL.disponivel(c)).map(PORTAL.dadosCertificado).concat(pf), n = lista.length - 1;
+  return Object.assign(base, { titulo:PORTAL.trilhas[ref], subtitulo:n + ' cursos + projeto final', icone:pf.icone, cores:pf.cores,
+    carga_horaria:lista.reduce((s, c) => s + c.carga_horaria, 0), detalhe:n + ' cursos', habilidades:pf.habilidades });
+}
+
+function renderPreviaCert(){
+  const el = $('previa-cert'); if (!el || !PORTAL.cert) return;
+  const op = (v, txt) => `<option value="${esc(v)}" ${PREVIA.ref === v ? 'selected' : ''}>${esc(txt)}</option>`;
+  const trilhas = Object.keys(PORTAL.trilhas).filter(t => CURSOS.some(c => c.projeto_final === t)).map(t => op('trilha:' + t, '🏁 ' + PORTAL.trilhas[t] + ' (trilha completa)'));
+  const cursos = CURSOS.filter(c => !c.projeto_final && PORTAL.disponivel(c)).map(c => op('curso:' + c.id, (c.icone || '🎓') + ' ' + c.titulo));
+  el.innerHTML = `<div class="tools previa-tools">
+      <input class="inp" id="previa-nome" value="${esc(PREVIA.nome)}" maxlength="120" aria-label="Nome no certificado" placeholder="Nome no certificado">
+      <select class="inp" id="previa-ref" aria-label="Certificado"><optgroup label="Trilhas">${trilhas.join('')}</optgroup><optgroup label="Cursos">${cursos.join('')}</optgroup></select>
+      <select class="inp" id="previa-formato" aria-label="Formato"><option value="h" ${PREVIA.formato === 'h' ? 'selected' : ''}>Horizontal · PDF e LinkedIn</option><option value="q" ${PREVIA.formato === 'q' ? 'selected' : ''}>Quadrado · Instagram e WhatsApp</option></select>
+    </div>
+    <div class="previa-vista" id="previa-vista"><div class="previa-escala" id="previa-escala"></div></div>
+    <p class="nota">Este é o mesmo desenho dos certificados emitidos: qualquer alteração no certificado aparece aqui. Não grava nada, e o ID de exemplo não é válido na página de validação.</p>`;
+  desenharPrevia();
+  PORTAL.cert.carregarQr().then(desenharPrevia);
+  document.fonts.ready.then(desenharPrevia);
+}
+
+function desenharPrevia(){
+  const v = $('previa-vista'), e = $('previa-escala'); if (!v || !e) return;
+  v.classList.toggle('q', PREVIA.formato === 'q');
+  e.innerHTML = PORTAL.cert.html(certExemplo(), PREVIA.formato);
+  PORTAL.cert.ajustar(e);
+  escalarPrevia();
+}
+function escalarPrevia(){
+  const v = $('previa-vista'), e = $('previa-escala'); if (!v || !e) return;
+  const q = PREVIA.formato === 'q', k = v.clientWidth / (q ? 1080 : 1123);
+  e.style.transform = 'scale(' + k + ')'; v.style.height = (q ? 1080 : 794) * k + 'px';
+}
+addEventListener('resize', escalarPrevia);
+
 /* ============ AÇÕES ============ */
 function copiar(txt){
   const fallback = () => { const t = document.createElement('textarea'); t.value = txt; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); };
@@ -817,6 +868,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('input', e => {
   if (e.target.id === 'busca') { F.busca = e.target.value; renderTabela(); }
+  else if (e.target.id === 'previa-nome') { PREVIA.nome = e.target.value; desenharPrevia(); }
   else if (e.target.id === 'div-campanha') { DIV.campanha = e.target.value; $('div-link').textContent = linkRastreio(); }
   else if (e.target.id === 'modelo') {
     salvarModelo(AV.seg, e.target.value);
@@ -830,6 +882,8 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('change', e => {
   if (e.target.id === 'filtro-curso') { F.curso = e.target.value; renderTabela(); }
+  else if (e.target.id === 'previa-ref') { PREVIA.ref = e.target.value; desenharPrevia(); }
+  else if (e.target.id === 'previa-formato') { PREVIA.formato = e.target.value; desenharPrevia(); }
   else if (e.target.id === 'div-rede') { DIV.rede = e.target.value; $('div-link').textContent = linkRastreio(); }
   else if (e.target.id === 'div-curso') { DIV.curso = e.target.value; $('div-link').textContent = linkRastreio(); }
 });

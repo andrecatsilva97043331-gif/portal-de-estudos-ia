@@ -457,6 +457,11 @@ a.sbtn{text-decoration:none; display:inline-flex; align-items:center;}
 .atbl tbody tr:hover{background:var(--s1);}
 .atbl small{color:var(--muted);}
 .atbl a{color:var(--ok);}
+/* Prévia do certificado (desenho em assets/certificado.css) */
+.previa-tools{margin-bottom:14px;} .previa-tools .inp{flex:1 1 220px;}
+.previa-vista{position:relative; width:100%; max-width:900px; margin:0 auto; border-radius:14px; overflow:hidden; box-shadow:0 30px 80px -30px rgba(34,211,238,.35);}
+.previa-vista.q{max-width:540px;}
+.previa-escala{position:absolute; left:0; top:0; transform-origin:0 0;}
 /* Mapa dos alunos (Leaflet + OpenStreetMap) */
 .mapa-card{padding:14px;}
 .mapa-grid{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:14px;}
