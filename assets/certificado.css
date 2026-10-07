@@ -96,9 +96,11 @@
 .cert.h .signatario { bottom:116px; width:250px; }
 .cert.q .signatario { bottom:198px; width:290px; }
 .cert .signatario .firma { display:block; position:relative; margin:0 auto; width:auto; filter:drop-shadow(0 0 .6px #fff); }
-.cert.h .signatario .firma { height:110px; margin-bottom:-12px; }
-.cert.q .signatario .firma { height:122px; margin-bottom:-13px; }
+.cert.h .signatario .firma { height:110px; margin-bottom:-47.5px; }
+.cert.q .signatario .firma { height:122px; margin-bottom:-52px; }
 .cert .signatario .linha { height:1px; margin:8px auto 7px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.55) 15%, rgba(255,255,255,.55) 85%, transparent); }
+.cert.h .signatario .linha { margin-bottom:39px; }
+.cert.q .signatario .linha { margin-bottom:44px; }
 .cert .signatario .cargo { font-family:'Sora', sans-serif; color:#9d9db5; white-space:nowrap; letter-spacing:.3px; }
 .cert.h .signatario .cargo { font-size:12px; }
 .cert.q .signatario .cargo { font-size:13px; }
