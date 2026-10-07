@@ -516,6 +516,7 @@ function renderConfirmacoes(){
     </div>`;
 }
 
+const CURSOS_ABERTOS = new Set();
 function renderTabela(){
   const rs = linhas();
   $('graficos').innerHTML = grafCadastros(rs) + grafFunil(rs) + grafObjetivos(rs) + grafSituacao(rs);
@@ -528,16 +529,17 @@ function renderTabela(){
   $('tabela').innerHTML = `<table class="atbl"><thead><tr>
       <th>Aluno</th><th class="hide-m">Perfil</th><th>Contato</th><th class="hide-m">Local</th><th>Cursos e progresso</th><th class="hide-m">Atividade</th>
     </tr></thead><tbody>${rs.map(({ a, cursos }) => {
-      const wa = linkWhats(a.telefone, a.pais), at = atividade(a.ultimo_acesso);
+      const wa = linkWhats(a.telefone, a.pais), at = atividade(a.ultimo_acesso), aberto = CURSOS_ABERTOS.has(a.id);
+      const media = cursos.length ? Math.round(cursos.reduce((s, c) => s + c.pct, 0) / cursos.length) : 0;
       return `<tr data-act="aluno" data-id="${esc(a.id)}">
-        <td><div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><div><b>${esc(a.nome)}</b><br><small>${esc(a.idade)} anos · desde ${data(a.criado_em)}</small></div></div></td>
+        <td><div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><div><button type="button" class="nome-aluno" data-act="cursos-aluno" data-id="${esc(a.id)}" aria-expanded="${aberto}" title="Mostrar ou esconder os cursos">${esc(a.nome)} <span aria-hidden="true">${aberto ? '▾' : '▸'}</span></button><br><small>${esc(a.idade)} anos · desde ${data(a.criado_em)}</small></div></div></td>
         <td class="hide-m">${esc(a.ocupacao || a.profissao || '-')}<br><small>${esc(situacao(a))}${a.objetivo ? '<br>🎯 ' + esc(a.objetivo) : ''}</small></td>
         <td>${wa ? `<a href="${wa}" target="_blank" rel="noopener" data-act="link">${esc(a.telefone)}</a>` : esc(a.telefone)}${a.email ? '<br><small>' + esc(a.email) + '</small>' : ''}<br>${selos(a)}</td>
         <td class="hide-m">${esc(a.estado)} · ${esc(a.pais)}<br><small>CEP ${esc(a.cep)}</small></td>
-        <td>${cursos.length ? cursos.map(c => {
+        <td>${!cursos.length ? '<small>Sem matrícula</small>' : !aberto ? `<small>📚 ${cursos.length} ${cursos.length === 1 ? 'curso' : 'cursos'} · média ${media}%</small>` : cursos.map(c => {
           const cc = cursoPorId(c.curso), cor = cc ? '--c:' + cc.cores[0] + ';--c2:' + cc.cores[1] : '';
           return `<div class="cprog" style="${cor}"><span>${esc(tituloCurso(c.curso))}</span><em>${c.feitas}/${c.total} · ${c.pct}%</em><div class="cbar" style="grid-column:1/-1"><i style="width:${c.pct}%"></i></div></div>`;
-        }).join('') : '<small>Sem matrícula</small>'}</td>
+        }).join('')}</td>
         <td class="hide-m"><span class="act ${at[0]}">${at[1]}</span><br><small>${dataHora(a.ultimo_acesso)}</small></td>
       </tr>`;
     }).join('')}</tbody></table>`;
@@ -634,6 +636,7 @@ document.addEventListener('click', e => {
   if (a === 'seg') { AV.seg = t.dataset.seg; renderAvisos(linhas()); }
   else if (a === 'modelo-padrao') { salvarModelo(AV.seg, MODELOS_PADRAO[AV.seg]); renderAvisos(linhas()); toast('Modelo restaurado'); }
   else if (a === 'enviar-api') enviarApi();
+  else if (a === 'cursos-aluno') { const id = t.dataset.id; CURSOS_ABERTOS.has(id) ? CURSOS_ABERTOS.delete(id) : CURSOS_ABERTOS.add(id); renderTabela(); }
   else if (a === 'aluno') abrirAluno(t.dataset.id);
   else if (a === 'fechar') fechar();
   else if (a === 'atualizar') carregarDados().then(() => toast('Dados atualizados'));

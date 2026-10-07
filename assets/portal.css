@@ -457,6 +457,8 @@ a.sbtn{text-decoration:none; display:inline-flex; align-items:center;}
 .atbl tbody tr:hover{background:var(--s1);}
 .atbl small{color:var(--muted);}
 .atbl a{color:var(--ok);}
+.nome-aluno{all:unset; cursor:pointer; font-weight:700; color:var(--text); border-bottom:1px dashed var(--muted);}
+.nome-aluno:hover,.nome-aluno:focus-visible{color:var(--ok); border-bottom-color:var(--ok);}
 .cprog{display:grid; grid-template-columns:minmax(120px,1fr) 90px; gap:4px 10px; align-items:center; margin-bottom:6px;}
 .cprog span{font-size:13px;}
 .cprog em{font-style:normal; font-size:12px; color:var(--muted); text-align:right;}
