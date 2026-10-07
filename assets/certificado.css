@@ -95,9 +95,9 @@
 .cert .signatario { position:absolute; left:0; text-align:center; }
 .cert.h .signatario { bottom:121px; width:250px; }
 .cert.q .signatario { bottom:205px; width:290px; }
-.cert .signatario .firma { font-family:'Dancing Script', cursive; font-weight:700; line-height:1; color:#f5f5fa; white-space:nowrap; transform:rotate(-4deg); }
-.cert.h .signatario .firma { font-size:34px; }
-.cert.q .signatario .firma { font-size:35px; }
+.cert .signatario .firma { display:block; margin:0 auto; width:auto; }
+.cert.h .signatario .firma { height:106px; }
+.cert.q .signatario .firma { height:118px; }
 .cert .signatario .linha { height:1px; margin:8px auto 7px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.55) 15%, rgba(255,255,255,.55) 85%, transparent); }
 .cert .signatario .cargo { font-family:'Sora', sans-serif; color:#9d9db5; white-space:nowrap; letter-spacing:.3px; }
 .cert.h .signatario .cargo { font-size:12px; }

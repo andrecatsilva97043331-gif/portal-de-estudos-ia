@@ -14,8 +14,8 @@ function rede(f){
   const q = f === 'q', w = q ? 1080 : 1123, h = q ? 1080 : 794, lim = q ? 110 : 100, id = 'cert-' + f;
   let seed = q ? 23 : 11; const r = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
   const nos = [];
-  if (q) { for (let i = 0; i < 18; i++) nos.push([880 + r() * 180, 170 + r() * 560]); for (let i = 0; i < 18; i++) nos.push([20 + r() * 180, 170 + r() * 560]); }
-  else { for (let i = 0; i < 22; i++) nos.push([900 + r() * 210, 130 + r() * 470]); for (let i = 0; i < 18; i++) nos.push([70 + r() * 170, 130 + r() * 470]); }
+  if (q) { for (let i = 0; i < 18; i++) nos.push([880 + r() * 180, 170 + r() * 560]); for (let i = 0; i < 18; i++) nos.push([20 + r() * 180, 170 + r() * 430]); }
+  else { for (let i = 0; i < 22; i++) nos.push([900 + r() * 210, 130 + r() * 470]); for (let i = 0; i < 18; i++) nos.push([70 + r() * 170, 130 + r() * 320]); }
   let s = `<defs><linearGradient id="${id}-lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset=".5" stop-color="#22C55E"/><stop offset="1" stop-color="#c084fc"/></linearGradient>
     <filter id="${id}-br" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${q ? 2.6 : 2.4}" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
   nos.forEach((a, i) => nos.forEach((b, j) => {
@@ -63,7 +63,7 @@ PORTAL.cert = {
           <div class="curso"><div class="tile">${esc(c.icone || '🎓')}</div><div><h1>${esc(c.titulo)}</h1><small>${esc(c.subtitulo || '')}</small></div></div>
           <div class="skills">${(c.habilidades || []).slice(0, 5).map(s => `<span><b>✓</b>${esc(s)}</span>`).join('')}</div>
         </div>
-        <div class="signatario"><div class="firma">${esc(SIGNATARIO.nome)}</div><div class="linha"></div><div class="cargo">${esc(SIGNATARIO.nome)} - ${esc(SIGNATARIO.cargo)}</div></div>
+        <div class="signatario"><img class="firma" src="assets/assinatura.png" alt="Assinatura de ${esc(SIGNATARIO.nome)}"><div class="linha"></div><div class="cargo">${esc(SIGNATARIO.nome)} - ${esc(SIGNATARIO.cargo)}</div></div>
         <div class="base">
           <div class="painel">
             <div><small>Concluído em</small><b>${data(c.emitido_em)}</b></div>
