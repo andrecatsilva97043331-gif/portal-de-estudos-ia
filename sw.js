@@ -1,8 +1,9 @@
 /* Service worker do Portal de Estudos IA: rede primeiro, cópia local só quando estiver sem internet.
    Dados dos alunos (Supabase) e outros domínios nunca passam por aqui. */
-const CACHE = 'portal-estudos-ia-v2';
+const CACHE = 'portal-estudos-ia-v3';
 const BASICO = ['./', 'index.html', 'config.js', 'manifest.webmanifest', 'cursos/catalogo.json',
   'assets/base.css', 'assets/portal.css', 'assets/cursos.js', 'assets/dados.js', 'assets/app.js',
+  'assets/certificado.css', 'assets/certificado.js', 'assets/logo.svg', 'assets/assinatura.png', 'assets/qr-app.svg',
   'assets/icone.svg', 'assets/icone-192.png'];
 
 self.addEventListener('install', e => {

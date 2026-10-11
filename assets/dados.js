@@ -191,7 +191,7 @@ function bancoSupabase(){
     },
     async enviarDepoimento(curso, texto, autoriza){
       const r = await sb.rpc('enviar_depoimento', { p_curso:curso, p_texto:texto, p_autoriza:!!autoriza });
-      if (r.error) throw new Error(/function|schema cache/i.test(r.error.message) ? 'Os depoimentos ainda estão sendo preparados. Tente de novo mais tarde.' : r.error.message);
+      if (r.error) throw new Error(/function|schema cache/i.test(r.error.message) ? 'Ainda estamos preparando esta parte. Tente de novo mais tarde.' : r.error.message);
     },
     async depoimentosPainel(){ const r = await sb.from('depoimentos').select('*').order('criado_em', { ascending:false }); return r.error ? [] : r.data; },
     async moderarDepoimento(id, status){ ok(await sb.rpc('moderar_depoimento', { p_id:id, p_status:status })); },
@@ -345,6 +345,8 @@ function bancoDemo(){
       const feitas = curso => d.progresso.filter(p => p.aluno_id === d.eu && p.curso_id === curso).map(p => p.licao_id);
       const completo = c => c.licoes.every(id => feitas(c.curso_id).includes(id));
       if (!info || !(tipo === 'curso' ? completo(info) : info.cursos.every(completo))) throw new Error('Conclua todas as lições e projetos para emitir o certificado.');
+      const cursoRelato = tipo === 'curso' ? info.curso_id : info.cursos[info.cursos.length - 1].curso_id;
+      if (!(d.depoimentos || []).some(x => x.aluno_id === d.eu && x.curso_id === cursoRelato && x.texto.length >= 300)) throw new Error('Para liberar seu certificado, conte como foi sua experiência no curso.');
       const alfa = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', aleatorio = crypto.getRandomValues(new Uint8Array(8));
       const a = d.alunos.find(x => x.id === d.eu);
       const c = Object.assign({ codigo:'CIA-' + new Date().getFullYear() + '-' + Array.from(aleatorio, b => alfa[b % 32]).join(''),
@@ -358,7 +360,7 @@ function bancoDemo(){
     async enviarDepoimento(curso, texto, autoriza){
       const d = ler(); exigirVerificado(d); d.depoimentos = d.depoimentos || [];
       const t = String(texto || '').trim();
-      if (t.length < 40 || t.length > 600) throw new Error('O depoimento precisa ter entre 40 e 600 caracteres.');
+      if (t.length < 300 || t.length > 600) throw new Error('Conte como foi sua experiência no curso com 300 a 600 caracteres.');
       let x = d.depoimentos.find(v => v.aluno_id === d.eu && v.curso_id === curso);
       if (!x) { x = { id:Date.now(), aluno_id:d.eu, curso_id:curso }; d.depoimentos.push(x); }
       Object.assign(x, { texto:t, autoriza_publicar:!!autoriza, status:'pendente', criado_em:agora(), moderado_em:null });

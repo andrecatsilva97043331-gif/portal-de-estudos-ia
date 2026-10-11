@@ -40,8 +40,9 @@ create or replace function public.enviar_depoimento(p_curso text, p_texto text, 
 returns void language plpgsql security definer set search_path = public as $$
 declare eu uuid := auth.uid();
 begin
-  if eu is null then raise exception 'Entre no portal para enviar o depoimento.'; end if;
-  if not public.curso_completo(eu, p_curso) then raise exception 'Conclua todas as lições e projetos do curso para deixar seu depoimento.'; end if;
+  if eu is null then raise exception 'Entre no portal para enviar seu relato.'; end if;
+  if not public.curso_completo(eu, p_curso) then raise exception 'Conclua todas as lições e projetos do curso para contar como foi sua experiência.'; end if;
+  if char_length(trim(coalesce(p_texto, ''))) < 300 then raise exception 'Conte como foi sua experiência no curso com pelo menos 300 caracteres.'; end if;
   insert into public.depoimentos (aluno_id, curso_id, texto, autoriza_publicar)
   values (eu, p_curso, trim(p_texto), coalesce(p_autoriza, false))
   on conflict (aluno_id, curso_id) do update

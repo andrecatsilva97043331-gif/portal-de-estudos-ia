@@ -216,6 +216,25 @@ html.cel .tn-ir, html.cel .tn-chamada.feito .ghost{margin-left:50px;}
 .ind-res b{font-family:var(--font-d); font-size:18px;}
 .ind-res small{display:block; margin-top:2px; font-size:12.5px; color:var(--muted);}
 @media (prefers-reduced-motion: reduce){ .indica::before, .indica::after, .ind-ic{animation:none;} }
+/* ---------- Tela inicial do visitante: texto e ações à esquerda, certificado à direita ---------- */
+.hero.hero-visita{grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-areas:"txt cert" "acoes cert"; column-gap:36px; row-gap:20px; align-items:start;}
+.hero-visita .hv-txt{grid-area:txt;}
+.hero-visita .hv-acoes{grid-area:acoes; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; align-items:stretch;}
+.hero-visita .indica{margin:0; max-width:none; height:100%;}
+.hero-visita .hero-cert{grid-area:cert; align-self:center; justify-self:end; max-width:640px; margin:0;}
+.hero-visita .qr-card{display:flex; align-items:center; gap:14px; padding:12px 14px 12px 18px; border-radius:18px; text-align:left;}
+.hero-visita .qr-card .qr-tit{font-size:17px; line-height:1.15; margin:0; max-width:84px;}
+.hero-visita .qr-card .qr-moldura{width:92px; height:92px; padding:3px; margin:0; border-radius:16px;}
+.hero-visita .qr-card .qr-in{border-radius:13px;}
+.hero-visita .qr-card .qr-in img{width:84px; height:84px;}
+.hero-visita .qr-card .qr-scan{height:16px;}
+@media (max-width: 900px){
+  .hero.hero-visita{grid-template-columns:1fr; grid-template-areas:"txt" "acoes" "cert";}
+  .hero-visita .hv-acoes{grid-template-columns:1fr;}
+  .hero-visita .indica{max-width:420px;}
+  .hero-visita .qr-card{display:none;}
+  .hero-visita .hero-cert{justify-self:stretch; max-width:560px;}
+}
 /* ---------- Cards das trilhas (compactos) ---------- */
 .trilha .grid{grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px;}
 .trilha .mc{min-height:0; padding:14px; gap:9px; border-radius:18px;}
@@ -312,6 +331,11 @@ html.cel .tn-ir, html.cel .tn-chamada.feito .ghost{margin-left:50px;}
 .dep-box .next{justify-self:start;}
 .dep-txt{font-style:italic; margin:8px 0; line-height:1.55;}
 .done-box + .dep-box{margin-top:18px;}
+.relato-aviso{margin:12px 0 4px; padding:12px 14px; border:2px solid #ff4d4f; border-radius:12px; background:rgba(255,77,79,.14); color:#ff6b6b; font-weight:700; line-height:1.45; animation:relato-pulsa 1.2s ease 2;}
+@keyframes relato-pulsa{0%,100%{box-shadow:0 0 0 0 rgba(255,77,79,0);} 50%{box-shadow:0 0 0 6px rgba(255,77,79,.25);}}
+.relato-conta{margin-top:-4px; text-align:right; font-weight:600;}
+.relato-conta.ok{color:#4ade80;}
+.dep-box textarea{width:100%; box-sizing:border-box;}
 .vitrine-dep{margin-top:28px;}
 .deps{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px;}
 .dep{--c:#22d3ee; --c2:#c084fc; margin:0; padding:18px 20px; border-radius:18px; display:flex; flex-direction:column; justify-content:space-between; gap:14px;
@@ -457,11 +481,6 @@ a.sbtn{text-decoration:none; display:inline-flex; align-items:center;}
 .atbl tbody tr:hover{background:var(--s1);}
 .atbl small{color:var(--muted);}
 .atbl a{color:var(--ok);}
-/* Prévia do certificado (desenho em assets/certificado.css) */
-.previa-tools{margin-bottom:14px;} .previa-tools .inp{flex:1 1 220px;}
-.previa-vista{position:relative; width:100%; max-width:900px; margin:0 auto; border-radius:14px; overflow:hidden; box-shadow:0 30px 80px -30px rgba(34,211,238,.35);}
-.previa-vista.q{max-width:540px;}
-.previa-escala{position:absolute; left:0; top:0; transform-origin:0 0;}
 .nome-aluno{all:unset; cursor:pointer; font-weight:700; color:var(--text); border-bottom:1px dashed var(--muted);}
 .nome-aluno:hover,.nome-aluno:focus-visible{color:var(--ok); border-bottom-color:var(--ok);}
 .cprog{display:grid; grid-template-columns:minmax(120px,1fr) 90px; gap:4px 10px; align-items:center; margin-bottom:6px;}

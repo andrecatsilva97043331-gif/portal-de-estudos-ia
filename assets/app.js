@@ -89,14 +89,14 @@ function renderCursos(){
     const concluidos = meus.filter(c => pctCurso(c) === 100).length;
     const seguir = meus.find(c => pctCurso(c) < 100);
     pctGeral = total ? Math.round(feitas / total * 100) : 0;
-    topo = `<section class="hero rise">
+    topo = `<section class="hero hero-aluno rise">
       <div><div class="eyebrow">Seu painel de estudos</div>
       <h1 class="hh">Olá, <span class="grad">${esc(ALUNO.nome.split(' ')[0])}</span>! 👋</h1>
       <p class="hp">${seguir ? 'Continue de onde parou ou comece um curso novo.' : 'Escolha um curso para começar.'}</p>
       <div class="chips"><span class="chip">⚡ ${feitas * 100} XP</span><span class="chip">📘 ${feitas} lições concluídas</span><span class="chip">🎓 ${meus.length} ${meus.length === 1 ? 'curso' : 'cursos'}</span>${concluidos ? `<span class="chip">🏆 ${concluidos} concluído${concluidos > 1 ? 's' : ''}</span>` : ''}</div>
       ${!DB.verificado(ALUNO) ? `<div class="pend"><b>⚠️ Falta confirmar seu ${ALUNO.email_verificado ? 'WhatsApp' : 'e-mail'}</b><span>${textoObrigatorio()}</span><button class="next" data-act="verificar">Confirmar agora ➜</button></div>`
         : seguir ? `<button class="next" data-act="curso" data-id="${esc(seguir.id)}" style="${ccor(seguir)}">Continuar ${esc(seguir.titulo)} ➜</button>` : ''}
-      <div class="hbtns"><button class="ghost" type="button" data-act="cert-exemplo">🎓 Veja o certificado que você vai ganhar</button>${botaoInstalar()}<button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>${dicaIos()}${botaoIndicar()}</div>
+      <div class="hbtns">${botaoInstalar()}<button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>${dicaIos()}${botaoIndicar()}</div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>dos seus cursos</span></div></div>
     </section>`;
   } else if (MASTER) {
@@ -109,14 +109,20 @@ function renderCursos(){
       <div class="orb" aria-hidden="true"><span>🛡️</span></div>
     </section>`;
   } else {
-    topo = `<section class="hero rise">
-      <div><div class="eyebrow">Portal de Estudos IA</div>
+    topo = `<section class="hero hero-visita rise">
+      <div class="hv-txt"><div class="eyebrow">Portal de Estudos IA</div>
       <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
       <p class="hp">Lições curtas, casos de clientes de verdade e projetos práticos. Faça seu cadastro gratuito e comece agora.</p>
       <div class="chips"><span class="chip">🎓 ${totalCursos} ${totalCursos === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
-      <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}${botaoIndicar()}</div>
-      <button class="qr-card so-pc" type="button" data-act="qr" title="Ver o QR maior"><span class="qr-tit">Estude no <span class="grad">celular</span></span><span class="qr-moldura"><span class="qr-in"><img src="assets/qr-app.svg" alt="QR code do Portal de Estudos IA" width="170" height="170"><i class="qr-scan" aria-hidden="true"></i></span></span></button>
-      <div class="orb so-cel" aria-hidden="true"><span>📚</span></div>
+      <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}</div>
+      <div class="hv-acoes">${botaoIndicar()}
+      <button class="qr-card so-pc" type="button" data-act="qr" title="Ver o QR maior"><span class="qr-tit">Estude no <span class="grad">celular</span></span><span class="qr-moldura"><span class="qr-in"><img src="assets/qr-app.svg" alt="QR code do Portal de Estudos IA" width="170" height="170"><i class="qr-scan" aria-hidden="true"></i></span></span></button></div>
+      ${PORTAL.cert ? `<div class="hero-cert" id="hc"><div class="cert-vista hc-car" id="hc-vista" role="group" aria-roledescription="carrossel" aria-label="Exemplos dos certificados que você pode ganhar">
+          <div class="hc-slot on"><div class="cert-escala"></div></div><div class="hc-slot" aria-hidden="true"><div class="cert-escala"></div></div>
+          <i class="hc-brilho" aria-hidden="true"></i><span class="hc-faiscas" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <button class="hc-seta ant" type="button" aria-label="Certificado anterior">‹</button><button class="hc-seta prox" type="button" aria-label="Próximo certificado">›</button></div>
+        <div class="hc-dots" id="hc-dots"></div>
+        <p class="hc-leg" id="hc-leg" aria-live="polite">🎓 Exemplos de certificados</p></div>` : ''}
     </section>
     <div class="steps">
       ${[['📝','Cadastre-se', pedeConfirmacao() ? 'Leva 2 minutos, não pede documentos e é confirmado por ' + [DB.codigoEmail && 'e-mail', DB.exigirWhatsapp && 'WhatsApp'].filter(Boolean).join(' e ') + '.' : 'Leva 2 minutos e não pede documentos.'],['🎯','Escolha o curso','Comece na hora, no seu ritmo, pelo celular ou computador.'],['🏆','Aprenda com desafios','Cada lição termina com um caso real para você resolver.']]
@@ -212,6 +218,7 @@ function renderCursos(){
     <section class="vitrine-dep" id="vitrine-dep" hidden></section>`;
   preencherVitrine();
   desenharAbasLaterais(); medirTopo(); observarSecoes();
+  if ($('hc-vista')) Promise.all([PORTAL.cert.carregarQr(), document.fonts.ready]).catch(() => {}).then(desenharMiniCert);
   if (pctGeral !== null) {
     setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pctGeral); }, 60);
     countUp($('bignum'), pctGeral);
@@ -339,39 +346,107 @@ function abrirQr(){
 }
 function fecharQr(){ const m = $('qr-modal'); if (m) m.remove(); }
 
-/* Certificado de exemplo (mesmo desenho do PORTAL.cert): só exibe, com marca EXEMPLO e ID que não existe na validação. */
-function certExemplo(){
-  const c = CURSOS.find(x => MATR.includes(x.id) && !x.projeto_final && pctCurso(x) < 100)
-    || PORTAL.catalogo.filter(m => m.nivel).sort((a, b) => a.ordem - b.ordem).map(m => cursoPorId(m.id)).find(Boolean) || CURSOS.find(x => !x.projeto_final);
-  const d = PORTAL.dadosCertificado(c);
-  return { codigo:'CIA-0000-EXEMPLO', tipo:'curso', ref_id:c.id, nome:(ALUNO && ALUNO.nome) || 'Seu Nome Aqui', emitido_em:new Date().toISOString(), revogado:false, exemplo:true,
-    titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.licoes.length + ' lições', habilidades:d.habilidades };
+/* Carrossel de certificados de exemplo na tela inicial (mesmo desenho do PORTAL.cert), com ID que não existe na validação.
+   Entram todos os que um aluno pode ganhar hoje: cada curso disponível e o certificado de cada trilha completa. */
+function dadosExemplo(m, i){
+  const c = cursoPorId(m.id);
+  if (c && c.conteudo) { const d = PORTAL.dadosCertificado(c); return Object.assign(d, { detalhe:d.licoes.length + ' lições' }); }
+  const nv = PORTAL.niveis.find(n => n.id === m.nivel), g = PORTAL.gruposRenda.find(x => x.id === m.grupo), t = PORTAL.trilhaDe(m);
+  return { curso_id:m.id, titulo:m.titulo, icone:m.icone || '🎓', cores:(m.cores || PORTAL.paleta(i)).slice(0, 2), trilha:t, carga_horaria:m.carga_horaria || 1, detalhe:'', habilidades:[],
+    subtitulo:m.projeto_final ? 'Projeto final · ' + PORTAL.trilhas[t] : nv ? 'Trilha de IA · Nível ' + nv.titulo.toLowerCase() : g ? 'Renda com IA · ' + g.titulo : '' };
 }
-function abrirCertExemplo(){
-  if ($('ce-modal') || !PORTAL.cert || !CURSOS.length) return;
-  closeMenu();
-  document.body.insertAdjacentHTML('beforeend', `<div class="qr-modal" id="ce-modal" data-act="fechar-cert-exemplo" role="dialog" aria-modal="true" aria-labelledby="ce-tit">
-    <div class="qr-box ce-box">
-      <button class="nfechar" type="button" data-act="fechar-cert-exemplo" aria-label="Fechar">✕</button>
-      <div class="eyebrow">Certificado de conclusão</div>
-      <h2 class="qr-tit" id="ce-tit">Veja o certificado que <span class="grad">você vai ganhar</span></h2>
-      <p class="ce-txt">Ao concluir 100% das lições e projetos de um curso, você emite um certificado como este, com ID da credencial e QR para qualquer pessoa conferir a autenticidade. Dá para baixar em imagem ou PDF e adicionar ao LinkedIn.</p>
-      <div class="cert-vista" id="ce-vista"><div class="cert-escala" id="ce-escala"></div></div>
-      <p class="ce-nota">Exemplo ilustrativo: não tem validade.</p>
-    </div>
-  </div>`);
-  desenharCertExemplo();
-  PORTAL.cert.carregarQr().then(desenharCertExemplo);
-  document.fonts.ready.then(desenharCertExemplo);
+function certsExemplo(){
+  const base = { codigo:'CIA-0000-EXEMPLO', nome:'Cosmo José da Silva', emitido_em:new Date().toISOString(), revogado:false };
+  const disp = PORTAL.catalogo.filter(PORTAL.disponivel), lista = [];
+  const curso = (m, i) => {
+    const d = dadosExemplo(m, i), nv = PORTAL.niveis.find(n => n.id === m.nivel), g = PORTAL.gruposRenda.find(x => x.id === m.grupo);
+    lista.push(Object.assign({}, base, { tipo:'curso', ref_id:m.id, titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.detalhe, habilidades:d.habilidades,
+      leg:'🎓 Certificado: <b>' + esc(d.titulo) + '</b>' + (nv ? ' · nível ' + nv.titulo.toLowerCase() : g ? ' · Renda com IA' : '') }));
+  };
+  const trilha = t => {
+    const pf = disp.find(m => m.projeto_final === t); if (!pf) return;
+    const cursos = disp.filter(m => !m.projeto_final && PORTAL.trilhaDe(m) === t);
+    const pd = dadosExemplo(pf, 0), soma = cursos.reduce((s, m, i) => s + dadosExemplo(m, i).carga_horaria, 0) + pd.carga_horaria;
+    lista.push(Object.assign({}, base, { tipo:'trilha', ref_id:t, titulo:PORTAL.trilhas[t], subtitulo:cursos.length + ' cursos + projeto final', icone:pd.icone, cores:pd.cores,
+      carga_horaria:soma, detalhe:cursos.length + ' cursos', habilidades:pd.habilidades, leg:'🏆 Trilha completa: <b>' + esc(PORTAL.trilhas[t]) + '</b>' }));
+  };
+  PORTAL.niveis.forEach(nv => disp.filter(m => !m.projeto_final && m.nivel === nv.id && m.trilha !== 'renda').forEach(curso));
+  trilha('ia');
+  PORTAL.gruposRenda.forEach(g => disp.filter(m => !m.projeto_final && m.trilha === 'renda' && m.grupo === g.id).forEach(curso));
+  disp.filter(m => !m.projeto_final && m.trilha === 'renda' && !PORTAL.gruposRenda.some(g => g.id === m.grupo)).forEach(curso);
+  trilha('renda');
+  disp.filter(m => !m.projeto_final && !PORTAL.trilhaDe(m)).forEach(curso);
+  return lista;
 }
-function desenharCertExemplo(){
-  const v = $('ce-vista'), e = $('ce-escala'); if (!v || !e) return;
-  e.innerHTML = PORTAL.cert.html(certExemplo(), 'h');
-  PORTAL.cert.ajustar(e);
-  PORTAL.cert.escalar(v, e);
+const HC = { lista:[], i:0, timer:0, troca:0, hover:false, fora:false, obs:null };
+function hcPintar(slot, k){
+  const e = slot.querySelector('.cert-escala'), v = $('hc-vista');
+  if (slot.dataset.k === String(k)) return;
+  e.innerHTML = PORTAL.cert.html(HC.lista[k], 'h');
+  PORTAL.cert.ajustar(e); PORTAL.cert.escalar(v, e);
+  slot.dataset.k = k;
 }
-function fecharCertExemplo(){ const m = $('ce-modal'); if (m) m.remove(); }
-addEventListener('resize', () => { const v = $('ce-vista'), e = $('ce-escala'); if (v && e) PORTAL.cert.escalar(v, e); });
+function hcLegenda(){
+  const c = HC.lista[HC.i], leg = $('hc-leg'), dots = $('hc-dots'), hc = $('hc');
+  if (leg) leg.innerHTML = `<span>${c.leg}</span><small>${HC.i + 1} de ${HC.lista.length}</small>`;
+  if (dots) dots.querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === HC.i));
+  if (hc) { hc.style.setProperty('--hc1', c.cores[0] || '#22d3ee'); hc.style.setProperty('--hc2', c.cores[1] || '#c084fc'); }
+}
+function hcAgendar(){
+  clearTimeout(HC.timer);
+  if (HC.lista.length < 2 || HC.hover || HC.fora || document.hidden || !$('hc-vista')) return;
+  HC.timer = setTimeout(() => hcIr(HC.i + 1, 1), 3000);
+}
+function hcIr(k, dir){
+  const v = $('hc-vista'); if (!v || !HC.lista.length) return;
+  const n = HC.lista.length; k = ((k % n) + n) % n;
+  if (k === HC.i) return hcAgendar();
+  const slots = v.querySelectorAll('.hc-slot'), atual = v.querySelector('.hc-slot.on'), novo = atual === slots[0] ? slots[1] : slots[0];
+  hcPintar(novo, k);
+  novo.style.transition = 'none'; novo.classList.remove('sai');
+  v.classList.toggle('volta', dir < 0);
+  v.classList.remove('brilha'); void v.offsetWidth; v.classList.add('brilha'); novo.style.transition = '';
+  atual.classList.remove('on'); atual.classList.add('sai'); atual.setAttribute('aria-hidden', 'true');
+  novo.classList.remove('sai'); novo.classList.add('on'); novo.removeAttribute('aria-hidden');
+  HC.i = k; hcLegenda();
+  clearTimeout(HC.troca);
+  HC.troca = setTimeout(() => { atual.classList.remove('sai'); if ($('hc-vista') === v) hcPintar(atual, (HC.i + 1) % n); }, reduced() ? 0 : 950);
+  hcAgendar();
+}
+function desenharMiniCert(){
+  const v = $('hc-vista'); if (!v) return;
+  clearTimeout(HC.timer); clearTimeout(HC.troca); if (HC.obs) HC.obs.disconnect();
+  HC.lista = certsExemplo(); HC.i = 0; HC.hover = false; HC.fora = false;
+  if (!HC.lista.length) { $('hc').hidden = true; return; }
+  const slots = v.querySelectorAll('.hc-slot');
+  hcPintar(slots[0], 0);
+  if (HC.lista.length > 1) hcPintar(slots[1], 1);
+  else v.querySelectorAll('.hc-seta').forEach(b => { b.hidden = true; });
+  $('hc-dots').innerHTML = HC.lista.length > 1 ? HC.lista.map((c, k) => `<button type="button" aria-label="Ver certificado ${k + 1} de ${HC.lista.length}"></button>`).join('') : '';
+  hcLegenda();
+  const hc = $('hc');
+  hc.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { HC.hover = true; hcAgendar(); } });
+  hc.addEventListener('pointerleave', () => { HC.hover = false; hcAgendar(); });
+  hc.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.classList.contains('ant')) hcIr(HC.i - 1, -1);
+    else if (b.classList.contains('prox')) hcIr(HC.i + 1, 1);
+    else if (b.parentElement.id === 'hc-dots') { const k = [...b.parentElement.children].indexOf(b); hcIr(k, k < HC.i ? -1 : 1); }
+  });
+  let x0 = null;
+  v.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive:true });
+  v.addEventListener('touchend', e => {
+    if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) hcIr(HC.i + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+  }, { passive:true });
+  if (window.IntersectionObserver) {
+    HC.obs = new IntersectionObserver(es => { HC.fora = !es[0].isIntersecting; hcAgendar(); });
+    HC.obs.observe(v);
+  }
+  hcAgendar();
+}
+document.addEventListener('visibilitychange', hcAgendar);
+addEventListener('resize', () => { const v = $('hc-vista'); if (v) v.querySelectorAll('.cert-escala').forEach(e => PORTAL.cert.escalar(v, e)); });
 
 /* Teste rápido de nível: 5 perguntas (0 a 2 pontos cada) que sugerem o curso inicial da trilha. */
 const CHAVE_NIVEL = 'portal-estudos-nivel-v1';
@@ -914,7 +989,7 @@ function blocoCertificado(){
   const [tipo, ref] = refCertificado(), cert = certDe(tipo, ref);
   return `<div class="cert-cta rise"><div class="cert-ico">🎓</div>
     <div><b>${tipo === 'trilha' ? 'Certificado da ' + PORTAL.trilhas[ref] : 'Certificado do curso'}</b>
-    <span>${cert ? 'ID da credencial: <code>' + esc(cert.codigo) + '</code>' : 'Você concluiu 100%. Emita o seu certificado com ID da credencial e QR de validação.'}</span></div>
+    <span>${cert ? 'ID da credencial: <code>' + esc(cert.codigo) + '</code>' : 'Você concluiu 100%. Conte como foi sua experiência no curso logo abaixo e emita o seu certificado com ID da credencial e QR de validação.'}</span></div>
     ${botaoCertificado()}</div>`;
 }
 function infoCertificado(tipo, ref){
@@ -930,9 +1005,11 @@ async function abrirCertificado(btn){
   const tipo = btn.dataset.tipo, ref = btn.dataset.ref;
   let cert = certDe(tipo, ref);
   if (!cert) {
+    if (!relatoOk((await carregarDepoimentos()).find(d => d.curso_id === C.id))) { avisarRelato(); return; }
     btn.disabled = true; btn.textContent = 'Emitindo…';
     try { cert = await DB.emitirCertificado(tipo, ref, infoCertificado(tipo, ref)); CERTS.push(cert); }
-    catch(e){ console.error(e); toast(e.message || 'Não foi possível emitir agora. Tente de novo.'); btn.disabled = false; btn.textContent = '🎓 Emitir meu certificado ➜'; return; }
+    catch(e){ console.error(e); btn.disabled = false; btn.textContent = '🎓 Emitir meu certificado ➜';
+      if (/experiência no curso/.test(e.message || '')) avisarRelato(); else toast(e.message || 'Não foi possível emitir agora. Tente de novo.'); return; }
   }
   location.href = PORTAL.cert.link(cert.codigo) + '&meu=1';
 }
@@ -959,8 +1036,18 @@ async function preencherVitrine(){
   el.hidden = false;
 }
 
-/* Depoimento: ao concluir 100% do curso, o aluno conta como foi; o master aprova antes de publicar. */
-let DEPS = [], DEPS_DE = null, DEP_EDITAR = false;
+/* Depoimento: ao concluir 100% do curso, o aluno conta como foi; o master aprova antes de publicar.
+   Na tela do aluno ele se chama "relato" e, com 300 caracteres ou mais, libera a emissão do certificado. */
+let DEPS = [], DEPS_DE = null, DEP_EDITAR = false, RELATO_AVISO = false;
+const RELATO_MIN = 300;
+const relatoOk = d => !!d && String(d.texto || '').trim().length >= RELATO_MIN;
+async function avisarRelato(){
+  DEP_EDITAR = true; RELATO_AVISO = true;
+  await preencherDepoimento();
+  const el = $('dep-box'); if (!el) return;
+  el.scrollIntoView({ behavior:'smooth', block:'center' });
+  const t = el.querySelector('textarea'); if (t) t.focus({ preventScroll:true });
+}
 async function carregarDepoimentos(){
   if (!ALUNO) return [];
   if (DEPS_DE !== ALUNO.id) { DEPS_DE = ALUNO.id; try { DEPS = await DB.meusDepoimentos(); } catch(e){ DEPS = []; } }
@@ -968,7 +1055,7 @@ async function carregarDepoimentos(){
 }
 function blocoDepoimento(){
   if (!ALUNO || !completo(C)) return '';
-  DEP_EDITAR = false;
+  DEP_EDITAR = false; RELATO_AVISO = false;
   setTimeout(preencherDepoimento, 0);
   return `<div class="card dep-box rise" id="dep-box"></div>`;
 }
@@ -976,31 +1063,38 @@ async function preencherDepoimento(){
   const curso = C && C.id; if (!curso || !$('dep-box')) return;
   const meu = (await carregarDepoimentos()).find(d => d.curso_id === curso), el = $('dep-box');
   if (!el || !C || C.id !== curso) return;
-  if (meu && !DEP_EDITAR) {
-    const st = meu.status === 'aprovado' && meu.autoriza_publicar ? '✅ Seu depoimento foi publicado. Obrigado por inspirar outras pessoas!'
-      : meu.status === 'pendente' ? '⏳ Recebemos seu depoimento. Ele será revisado antes de ser publicado.' : '✅ Recebemos seu depoimento. Obrigado!';
-    el.innerHTML = `<h3>💬 Seu depoimento</h3><p class="dep-txt">“${esc(meu.texto)}”</p><p class="nota">${st}</p>
-      <button class="ghost" type="button" data-act="dep-editar">✏️ Editar depoimento</button>`;
+  const temCert = certDe(...refCertificado());
+  if (meu && !DEP_EDITAR && (relatoOk(meu) || temCert)) {
+    const st = meu.status === 'aprovado' && meu.autoriza_publicar ? '✅ Seu relato foi publicado. Obrigado por inspirar outras pessoas!'
+      : '✅ Recebemos seu relato. Obrigado!' + (temCert ? '' : ' Seu certificado está liberado: é só clicar em "Emitir meu certificado".');
+    el.innerHTML = `<h3>💬 Sua experiência no curso</h3><p class="dep-txt">“${esc(meu.texto)}”</p><p class="nota">${st}</p>
+      <button class="ghost" type="button" data-act="dep-editar">✏️ Editar relato</button>`;
     return;
   }
-  el.innerHTML = `<h3>💬 Conte como foi este curso</h3>
-    <p class="nota">Seu depoimento pode inspirar outras pessoas a começar e a conquistar novas oportunidades. Conte o que você aprendeu e o que mudou para você.</p>
-    <form id="f-depoimento">
-      <textarea name="texto" class="meu-projeto" rows="4" minlength="40" maxlength="600" required placeholder="Ex.: Eu nunca tinha usado IA e hoje já monto minhas propostas em minutos...">${esc(meu ? meu.texto : '')}</textarea>
-      <div class="pconta" id="dep-conta">${meu ? meu.texto.length : 0} de 40 a 600 caracteres</div>
-      <label class="pcheck"><input type="checkbox" name="autoriza" ${meu && meu.autoriza_publicar ? 'checked' : ''}><span>Autorizo publicar este depoimento no site e nas redes sociais do Portal de Estudos IA, com meu primeiro nome, a inicial do sobrenome e meu estado.</span></label>
-      <button class="next" type="submit">Enviar depoimento ➜</button>
+  const n = meu ? meu.texto.trim().length : 0;
+  el.innerHTML = `<h3>✍️ Conte como foi sua experiência no curso</h3>
+    <p class="nota">Conte com suas palavras o que você aprendeu, o que mais gostou e como vai usar no dia a dia. Seu relato libera o certificado e pode inspirar outras pessoas a começar.</p>
+    ${RELATO_AVISO && !temCert ? '<p class="relato-aviso" role="alert">⚠️ Para liberar seu certificado, conte como foi sua experiência no curso.</p>' : ''}
+    <form id="f-depoimento" novalidate>
+      <textarea name="texto" class="meu-projeto" rows="5" maxlength="600" placeholder="Ex.: Eu nunca tinha usado IA e hoje já monto minhas propostas em minutos...">${esc(meu ? meu.texto : '')}</textarea>
+      <div class="pconta relato-conta${n >= RELATO_MIN ? ' ok' : ''}" id="dep-conta">${n}/${RELATO_MIN}</div>
+      <label class="pcheck"><input type="checkbox" name="autoriza" ${meu && meu.autoriza_publicar ? 'checked' : ''}><span>Autorizo publicar este relato no site e nas redes sociais do Portal de Estudos IA, com meu primeiro nome, a inicial do sobrenome e meu estado.</span></label>
+      <button class="next" type="submit">Enviar relato ➜</button>
     </form>`;
 }
 async function enviarDepoimento(f){
   const texto = f.texto.value.trim(), btn = f.querySelector('button[type=submit]');
-  if (texto.length < 40) { toast('✍️ Escreva pelo menos 40 caracteres'); return; }
+  if (texto.length < RELATO_MIN) { RELATO_AVISO = true; toast('✍️ Faltam ' + (RELATO_MIN - texto.length) + ' caracteres'); mostrarAvisoRelato(); f.texto.focus(); return; }
   btn.disabled = true; btn.textContent = 'Enviando…';
   try {
     await DB.enviarDepoimento(C.id, texto, f.autoriza.checked);
     DEPS = DEPS.filter(d => d.curso_id !== C.id).concat({ curso_id:C.id, texto, autoriza_publicar:f.autoriza.checked, status:'pendente' });
-    DEP_EDITAR = false; preencherDepoimento(); toast('💬 Depoimento enviado. Obrigado!');
-  } catch(e){ console.error(e); toast(e.message || 'Não foi possível enviar agora.'); btn.disabled = false; btn.textContent = 'Enviar depoimento ➜'; }
+    DEP_EDITAR = false; RELATO_AVISO = false; preencherDepoimento(); toast('💬 Relato enviado. Obrigado!');
+  } catch(e){ console.error(e); toast(e.message || 'Não foi possível enviar agora.'); btn.disabled = false; btn.textContent = 'Enviar relato ➜'; }
+}
+function mostrarAvisoRelato(){
+  const el = $('dep-box'); if (!el || el.querySelector('.relato-aviso')) return;
+  const f = $('f-depoimento'); if (f) f.insertAdjacentHTML('beforebegin', '<p class="relato-aviso" role="alert">⚠️ Para liberar seu certificado, conte como foi sua experiência no curso.</p>');
 }
 
 /* "recomendado_antes" no catálogo: só sugestão, nunca bloqueia o curso. */
@@ -1498,8 +1592,6 @@ document.addEventListener('click', e => {
   else if (a === 'instalar') instalarApp();
   else if (a === 'qr') abrirQr();
   else if (a === 'indicar') indicarAmigo();
-  else if (a === 'cert-exemplo') abrirCertExemplo();
-  else if (a === 'fechar-cert-exemplo') { if (t === e.target || t.classList.contains('nfechar')) fecharCertExemplo(); }
   else if (a === 'fechar-qr') { if (t === e.target || t.classList.contains('nfechar')) fecharQr(); }
   else if (a === 'teste-nivel') abrirTeste();
   else if (a === 'fechar-teste') { if (t === e.target || t.classList.contains('nfechar')) fecharTeste(); }
@@ -1578,7 +1670,7 @@ document.addEventListener('input', e => {
     e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
     if (e.target.value.length === 6) e.target.form.requestSubmit ? e.target.form.requestSubmit() : confirmarCodigo(e.target.form);
   }
-  else if (e.target.form && e.target.form.id === 'f-depoimento' && e.target.name === 'texto') { const c = $('dep-conta'); if (c) c.textContent = e.target.value.trim().length + ' de 40 a 600 caracteres'; }
+  else if (e.target.form && e.target.form.id === 'f-depoimento' && e.target.name === 'texto') { const c = $('dep-conta'), n = e.target.value.trim().length; if (c) { c.textContent = n + '/' + RELATO_MIN; c.classList.toggle('ok', n >= RELATO_MIN); } }
   else if (e.target.classList.contains('meu-prompt')) gravarMeuPrompt(TB.mod, parseInt(e.target.dataset.k, 10), e.target.value);
   else if (e.target.id === 'meu-projeto') {
     const L = byId(S.cur); gravarProjeto(L, 'texto', e.target.value);
@@ -1596,7 +1688,7 @@ document.addEventListener('input', e => {
 }));
 document.addEventListener('focusout', e => { if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') buscarCep(e.target); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { fecharQr(); fecharTeste(); fecharListaCursos(); fecharCertExemplo(); }
+  if (e.key === 'Escape') { fecharQr(); fecharTeste(); fecharListaCursos(); }
   if (e.key === 'Escape') { TB.open = false; renderToolbox(); renderProgress(); closeMenu(); }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('role') === 'button') { e.preventDefault(); e.target.click(); }
 });

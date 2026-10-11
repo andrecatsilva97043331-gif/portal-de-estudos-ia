@@ -79,6 +79,7 @@ $$;
 revoke all on function public.curso_completo(uuid, text) from public, anon, authenticated;
 
 -- Emite (ou devolve, se já existir) o certificado do aluno logado. tipo 'curso' + id do curso, ou 'trilha' + 'ia' / 'renda'.
+-- Para emitir pela primeira vez, o aluno precisa ter o relato (>= 300 caracteres, tabela depoimentos de divulgacao.sql) do curso ou do projeto final.
 create or replace function public.emitir_certificado(p_tipo text, p_ref text)
 returns public.certificados language plpgsql security definer set search_path = public as $$
 declare
@@ -97,6 +98,9 @@ begin
     select * into c from public.certificados_cursos where curso_id = p_ref and not projeto_final;
     if not found then raise exception 'Este curso ainda não emite certificado.'; end if;
     if not public.curso_completo(eu, p_ref) then raise exception 'Conclua todas as lições e projetos do curso para emitir o certificado.'; end if;
+    if not exists (select 1 from public.depoimentos where aluno_id = eu and curso_id = p_ref and char_length(texto) >= 300) then
+      raise exception 'Para liberar seu certificado, conte como foi sua experiência no curso.';
+    end if;
     insert into public.certificados (codigo, aluno_id, tipo, ref_id, nome, titulo, subtitulo, icone, cores, carga_horaria, detalhe, habilidades)
     values (public.novo_codigo_certificado(), eu, 'curso', p_ref, v_nome, c.titulo, c.subtitulo, c.icone, c.cores, c.carga_horaria,
             cardinality(c.licoes) || ' lições', c.habilidades)
@@ -107,6 +111,9 @@ begin
     if not found then raise exception 'O projeto final desta trilha ainda não está disponível.'; end if;
     if exists (select 1 from public.certificados_cursos where trilha = p_ref and not public.curso_completo(eu, curso_id)) then
       raise exception 'Conclua todos os cursos e o projeto final da trilha para emitir o certificado.';
+    end if;
+    if not exists (select 1 from public.depoimentos where aluno_id = eu and curso_id = pf.curso_id and char_length(texto) >= 300) then
+      raise exception 'Para liberar seu certificado, conte como foi sua experiência no curso.';
     end if;
     select sum(carga_horaria), count(*) filter (where not projeto_final) into v_carga, v_n
       from public.certificados_cursos where trilha = p_ref;
