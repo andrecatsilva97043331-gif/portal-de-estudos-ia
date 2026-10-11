@@ -85,6 +85,7 @@
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const IMG_CDN = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js';
+const PDF_CDN = 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';
 const params = new URLSearchParams(location.search);
 const meu = params.has('meu');
 let CERT = null, FORMATO = 'h';
@@ -130,7 +131,7 @@ function telaCertificado(c){
     <div class="vista ${FORMATO}" id="vista"><div class="cert-escala" id="escala">${PORTAL.cert.html(c, FORMATO)}</div></div>
     ${ok ? `<div class="acoes">
       <button class="btn" type="button" id="baixar">⬇️ Baixar imagem</button>
-      ${FORMATO === 'h' ? '<button class="btn sec" type="button" id="pdf">🖨️ Salvar em PDF</button>' : ''}
+      <button class="btn sec" type="button" id="pdf">📄 Baixar PDF</button>
       ${meu ? `<a class="btn li" href="${linkLinkedin(c)}" target="_blank" rel="noopener">in Adicionar ao LinkedIn</a>` : ''}
       <button class="btn sec" type="button" id="copiar">🔗 Copiar link de validação</button>
     </div>
@@ -158,14 +159,24 @@ async function baixar(btn){
     const a = document.createElement('a');
     a.href = url; a.download = 'certificado-' + CERT.codigo + (FORMATO === 'q' ? '-quadrado' : '') + '.png';
     document.body.appendChild(a); a.click(); a.remove();
-  } catch(e){ console.error(e); alert('Não foi possível gerar a imagem neste navegador. Tente "Salvar em PDF" ou outro navegador.'); }
+  } catch(e){ console.error(e); alert('Não foi possível gerar a imagem neste navegador. Tente "Baixar PDF" ou outro navegador.'); }
   btn.disabled = false; btn.textContent = txt;
 }
 
-function imprimir(){
-  $('imprimir').innerHTML = PORTAL.cert.html(CERT, 'h');
-  PORTAL.cert.ajustar($('imprimir'));
-  document.fonts.ready.then(() => setTimeout(() => window.print(), 150));
+/* Uma página só, do tamanho exato do certificado (1 px = 0,75 pt; o horizontal fica no tamanho A4 paisagem), sem margens. */
+async function baixarPdf(btn){
+  btn.disabled = true; const txt = btn.textContent; btn.textContent = 'Gerando PDF…';
+  try {
+    await Promise.all([window.htmlToImage ? 0 : carregarScript(IMG_CDN), window.jspdf ? 0 : carregarScript(PDF_CDN)]);
+    await document.fonts.ready;
+    const no = document.querySelector('#escala .cert'), w = FORMATO === 'q' ? 1080 : 1123, h = FORMATO === 'q' ? 1080 : 794;
+    const img = await window.htmlToImage.toJpeg(no, { width:w, height:h, pixelRatio:2, quality:.95, backgroundColor:'#05050a', cacheBust:true, style:{ transform:'none' } });
+    const pw = w * .75, ph = h * .75;
+    const doc = new window.jspdf.jsPDF({ orientation:w > h ? 'landscape' : 'portrait', unit:'pt', format:[pw, ph], compress:true });
+    doc.addImage(img, 'JPEG', 0, 0, pw, ph);
+    doc.save('certificado-' + CERT.codigo + (FORMATO === 'q' ? '-quadrado' : '') + '.pdf');
+  } catch(e){ console.error(e); alert('Não foi possível gerar o PDF neste navegador. Tente "Baixar imagem" ou outro navegador.'); }
+  btn.disabled = false; btn.textContent = txt;
 }
 
 async function consultar(codigo){
@@ -190,7 +201,7 @@ document.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.f) { FORMATO = t.dataset.f; telaCertificado(CERT); }
   else if (t.id === 'baixar') baixar(t);
-  else if (t.id === 'pdf') imprimir();
+  else if (t.id === 'pdf') baixarPdf(t);
   else if (t.id === 'copiar') {
     const link = PORTAL.cert.link(CERT.codigo);
     (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(() => { t.textContent = '✅ Link copiado'; }, () => prompt('Copie o link:', link));

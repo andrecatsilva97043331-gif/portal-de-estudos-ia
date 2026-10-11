@@ -96,7 +96,7 @@ function renderCursos(){
       <div class="chips"><span class="chip">⚡ ${feitas * 100} XP</span><span class="chip">📘 ${feitas} lições concluídas</span><span class="chip">🎓 ${meus.length} ${meus.length === 1 ? 'curso' : 'cursos'}</span>${concluidos ? `<span class="chip">🏆 ${concluidos} concluído${concluidos > 1 ? 's' : ''}</span>` : ''}</div>
       ${!DB.verificado(ALUNO) ? `<div class="pend"><b>⚠️ Falta confirmar seu ${ALUNO.email_verificado ? 'WhatsApp' : 'e-mail'}</b><span>${textoObrigatorio()}</span><button class="next" data-act="verificar">Confirmar agora ➜</button></div>`
         : seguir ? `<button class="next" data-act="curso" data-id="${esc(seguir.id)}" style="${ccor(seguir)}">Continuar ${esc(seguir.titulo)} ➜</button>` : ''}
-      <div class="hbtns">${botaoInstalar()}<button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>${dicaIos()}${botaoIndicar()}</div>
+      <div class="hbtns"><button class="ghost" type="button" data-act="cert-exemplo">🎓 Veja o certificado que você vai ganhar</button>${botaoInstalar()}<button class="link" data-act="sair">Não é ${esc(ALUNO.nome.split(' ')[0])}? Sair</button></div>${dicaIos()}${botaoIndicar()}</div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>dos seus cursos</span></div></div>
     </section>`;
   } else if (MASTER) {
@@ -338,6 +338,40 @@ function abrirQr(){
   </div>`);
 }
 function fecharQr(){ const m = $('qr-modal'); if (m) m.remove(); }
+
+/* Certificado de exemplo (mesmo desenho do PORTAL.cert): só exibe, com marca EXEMPLO e ID que não existe na validação. */
+function certExemplo(){
+  const c = CURSOS.find(x => MATR.includes(x.id) && !x.projeto_final && pctCurso(x) < 100)
+    || PORTAL.catalogo.filter(m => m.nivel).sort((a, b) => a.ordem - b.ordem).map(m => cursoPorId(m.id)).find(Boolean) || CURSOS.find(x => !x.projeto_final);
+  const d = PORTAL.dadosCertificado(c);
+  return { codigo:'CIA-0000-EXEMPLO', tipo:'curso', ref_id:c.id, nome:(ALUNO && ALUNO.nome) || 'Seu Nome Aqui', emitido_em:new Date().toISOString(), revogado:false, exemplo:true,
+    titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.licoes.length + ' lições', habilidades:d.habilidades };
+}
+function abrirCertExemplo(){
+  if ($('ce-modal') || !PORTAL.cert || !CURSOS.length) return;
+  closeMenu();
+  document.body.insertAdjacentHTML('beforeend', `<div class="qr-modal" id="ce-modal" data-act="fechar-cert-exemplo" role="dialog" aria-modal="true" aria-labelledby="ce-tit">
+    <div class="qr-box ce-box">
+      <button class="nfechar" type="button" data-act="fechar-cert-exemplo" aria-label="Fechar">✕</button>
+      <div class="eyebrow">Certificado de conclusão</div>
+      <h2 class="qr-tit" id="ce-tit">Veja o certificado que <span class="grad">você vai ganhar</span></h2>
+      <p class="ce-txt">Ao concluir 100% das lições e projetos de um curso, você emite um certificado como este, com ID da credencial e QR para qualquer pessoa conferir a autenticidade. Dá para baixar em imagem ou PDF e adicionar ao LinkedIn.</p>
+      <div class="cert-vista" id="ce-vista"><div class="cert-escala" id="ce-escala"></div></div>
+      <p class="ce-nota">Exemplo ilustrativo: não tem validade.</p>
+    </div>
+  </div>`);
+  desenharCertExemplo();
+  PORTAL.cert.carregarQr().then(desenharCertExemplo);
+  document.fonts.ready.then(desenharCertExemplo);
+}
+function desenharCertExemplo(){
+  const v = $('ce-vista'), e = $('ce-escala'); if (!v || !e) return;
+  e.innerHTML = PORTAL.cert.html(certExemplo(), 'h');
+  PORTAL.cert.ajustar(e);
+  PORTAL.cert.escalar(v, e);
+}
+function fecharCertExemplo(){ const m = $('ce-modal'); if (m) m.remove(); }
+addEventListener('resize', () => { const v = $('ce-vista'), e = $('ce-escala'); if (v && e) PORTAL.cert.escalar(v, e); });
 
 /* Teste rápido de nível: 5 perguntas (0 a 2 pontos cada) que sugerem o curso inicial da trilha. */
 const CHAVE_NIVEL = 'portal-estudos-nivel-v1';
@@ -1196,6 +1230,21 @@ function confetti(){
 let toastT;
 function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
 
+/* Contexto da tela para o "Perguntar à IA" (assets/assistente.js): só títulos e enunciado do projeto, nunca o gabarito dos desafios. */
+window.contextoAssistente = () => {
+  const ctx = { logado: !!ALUNO || MASTER, tela: S.view };
+  if (!C || !['home','lesson','moduleDone'].includes(S.view)) return ctx;
+  ctx.curso = C.titulo;
+  const L = S.view === 'lesson' ? byId(S.cur) : null;
+  const m = L ? modOf(L.mod) : S.view === 'moduleDone' ? modOf(S.modDone) : null;
+  if (m) ctx.modulo = 'Módulo ' + m.id + ': ' + m.title;
+  if (L) {
+    ctx.licao = L.id + ' ' + L.title;
+    if (L.projeto && !L.soon) ctx.projeto = { entrega: L.projeto.entrega, passos: (L.projeto.passos || []).slice() };
+  }
+  return ctx;
+};
+
 /* ============ AÇÕES ============ */
 function closeMenu(){ $('sb').classList.remove('on'); $('ov').classList.remove('on'); }
 function goLesson(id){ S.cur = id; S.view = 'lesson'; closeMenu(); renderAll(); }
@@ -1449,6 +1498,8 @@ document.addEventListener('click', e => {
   else if (a === 'instalar') instalarApp();
   else if (a === 'qr') abrirQr();
   else if (a === 'indicar') indicarAmigo();
+  else if (a === 'cert-exemplo') abrirCertExemplo();
+  else if (a === 'fechar-cert-exemplo') { if (t === e.target || t.classList.contains('nfechar')) fecharCertExemplo(); }
   else if (a === 'fechar-qr') { if (t === e.target || t.classList.contains('nfechar')) fecharQr(); }
   else if (a === 'teste-nivel') abrirTeste();
   else if (a === 'fechar-teste') { if (t === e.target || t.classList.contains('nfechar')) fecharTeste(); }
@@ -1503,12 +1554,7 @@ document.addEventListener('click', e => {
   else if (a === 'testar-ia') {
     const txt = lerMeuPrompt(TB.mod, parseInt(t.dataset.k,10)).trim();
     if (!txt) { toast('✍️ Escreva o seu prompt antes de testar'); return; }
-    if (txt.length <= 1500) window.open('https://www.google.com/search?udm=50&q=' + encodeURIComponent(txt), '_blank', 'noopener');
-    else {
-      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).catch(() => {});
-      window.open('https://gemini.google.com/app', '_blank', 'noopener');
-      toast('📋 Prompt longo copiado: cole no Gemini com Ctrl+V (ou toque e segure → Colar)');
-    }
+    abrirNaIA(txt, toast);
   }
   else if (a === 'reset') {
     if (!confirm('Apagar todo o seu progresso neste curso?')) return;
@@ -1550,7 +1596,7 @@ document.addEventListener('input', e => {
 }));
 document.addEventListener('focusout', e => { if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') buscarCep(e.target); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { fecharQr(); fecharTeste(); fecharListaCursos(); }
+  if (e.key === 'Escape') { fecharQr(); fecharTeste(); fecharListaCursos(); fecharCertExemplo(); }
   if (e.key === 'Escape') { TB.open = false; renderToolbox(); renderProgress(); closeMenu(); }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('role') === 'button') { e.preventDefault(); e.target.click(); }
 });

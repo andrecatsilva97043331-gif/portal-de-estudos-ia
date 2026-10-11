@@ -42,12 +42,11 @@ create table if not exists public.certificados (
   unique (aluno_id, tipo, ref_id)
 );
 alter table public.certificados enable row level security;
+-- Certificado conquistado é direito do aluno: ninguém altera nem revoga pela API.
 revoke insert, update, delete on public.certificados from anon, authenticated;
-grant update (revogado) on public.certificados to authenticated;
 drop policy if exists "aluno ou master leem certificados" on public.certificados;
 drop policy if exists "master revoga certificados" on public.certificados;
 create policy "aluno ou master leem certificados" on public.certificados for select to authenticated using (aluno_id = auth.uid() or public.is_master());
-create policy "master revoga certificados" on public.certificados for update to authenticated using (public.is_master()) with check (public.is_master());
 
 -- ID da credencial: CIA-AAAA-XXXXXXXX (sem I, O, 0 e 1, que se confundem).
 create or replace function public.novo_codigo_certificado()

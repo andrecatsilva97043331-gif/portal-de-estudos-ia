@@ -485,14 +485,13 @@ function renderCertificados(){
   const lista = DADOS.certificados || [];
   $('titulo-cert').textContent = '🎓 Certificados emitidos (' + lista.length + ')';
   if (!lista.length) { el.innerHTML = '<div class="empty">Nenhum certificado emitido ainda. Ele aparece aqui quando um aluno conclui 100% de um curso e clica em "Emitir meu certificado".</div>'; return; }
-  el.innerHTML = `<table class="atbl"><thead><tr><th>Aluno</th><th>Certificado</th><th>ID da credencial</th><th>Emitido em</th><th>Situação</th><th></th></tr></thead><tbody>
+  el.innerHTML = `<table class="atbl"><thead><tr><th>Aluno</th><th>Certificado</th><th>ID da credencial</th><th>Emitido em</th><th>Situação</th></tr></thead><tbody>
     ${lista.map(c => `<tr>
       <td>${esc(c.nome)}</td>
       <td>${c.tipo === 'trilha' ? '🏁 ' : ''}${esc(c.titulo)}<br><small>${c.carga_horaria} h${c.detalhe ? ' · ' + esc(c.detalhe) : ''}</small></td>
       <td><a href="validar.html?c=${encodeURIComponent(c.codigo)}" target="_blank" rel="noopener" style="font-family:monospace">${esc(c.codigo)}</a></td>
       <td>${new Date(c.emitido_em).toLocaleDateString('pt-BR')}</td>
       <td>${c.revogado ? '⛔ Revogado' : '✅ Válido'}</td>
-      <td><button class="sbtn" data-act="revogar" data-cod="${esc(c.codigo)}" data-rev="${c.revogado ? '0' : '1'}">${c.revogado ? 'Restaurar' : 'Revogar'}</button></td>
     </tr>`).join('')}</tbody></table>`;
 }
 
@@ -697,14 +696,6 @@ document.addEventListener('click', e => {
     if (!id) { toast('Nenhum curso no catálogo.'); return; }
     copiar(linkConvite(id));
     toast('Link de convite copiado: ' + tituloCurso(id));
-  }
-  else if (a === 'revogar') {
-    const sim = t.dataset.rev === '1';
-    if (sim && !confirm('Revogar o certificado ' + t.dataset.cod + '? Ele passa a aparecer como cancelado na página de validação.')) return;
-    DB.revogarCertificado(t.dataset.cod, sim).then(() => {
-      const c = (DADOS.certificados || []).find(x => x.codigo === t.dataset.cod); if (c) c.revogado = sim;
-      renderCertificados(); toast(sim ? 'Certificado revogado' : 'Certificado restaurado');
-    }).catch(err => { console.error(err); toast('Não foi possível alterar agora.'); });
   }
   else if (a === 'manual') abrirManual(t.dataset.sec);
   else if (a === 'manual-ir') { const s = $('man-' + t.dataset.sec); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }

@@ -184,7 +184,6 @@ function bancoSupabase(){
       ok(await sb.from('certificados_cursos').upsert(lista.map(c => Object.assign({}, c, { atualizado_em:agora() })), { onConflict:'curso_id' }));
       ok(await sb.from('certificados_cursos').delete().not('curso_id', 'in', '(' + lista.map(c => c.curso_id).join(',') + ')'));
     },
-    async revogarCertificado(codigo, sim){ ok(await sb.from('certificados').update({ revogado:!!sim }).eq('codigo', codigo)); },
     async meusDepoimentos(){
       const id = await uid(); if (!id) return [];
       const r = await sb.from('depoimentos').select('curso_id,texto,autoriza_publicar,status').eq('aluno_id', id);
@@ -355,7 +354,6 @@ function bancoDemo(){
     async meusCertificados(){ const d = ler(); return (d.certificados || []).filter(c => c.aluno_id === d.eu); },
     async validarCertificado(codigo){ const k = String(codigo).trim().toUpperCase(); return (ler().certificados || []).find(c => c.codigo === k) || null; },
     async sincronizarCertificados(){},
-    async revogarCertificado(codigo, sim){ const d = ler(), c = (d.certificados || []).find(x => x.codigo === codigo); if (c) { c.revogado = !!sim; gravar(d); } },
     async meusDepoimentos(){ const d = ler(); return (d.depoimentos || []).filter(x => x.aluno_id === d.eu); },
     async enviarDepoimento(curso, texto, autoriza){
       const d = ler(); exigirVerificado(d); d.depoimentos = d.depoimentos || [];

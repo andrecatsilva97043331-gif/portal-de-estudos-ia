@@ -78,7 +78,7 @@ window.MANUAL_MASTER = [
     <ul>
       <li>Lista todos os certificados que os alunos emitiram: nome, curso ou trilha, horas, ID da credencial e data.</li>
       <li><b>Clique no ID</b> para abrir a página pública de validação, a mesma que um recrutador vê ao escanear o QR do certificado.</li>
-      <li><b>Revogar</b> cancela um certificado (por exemplo, se descobrir fraude). A página de validação passa a mostrar que ele foi cancelado. <b>Restaurar</b> desfaz.</li>
+      <li>Certificado conquistado é direito do aluno: não há opção de revogar.</li>
       <li>A linha verde acima da lista confirma quantos cursos emitem certificado. Ela se atualiza sozinha sempre que você abre o painel: por isso, depois de publicar um curso novo ou mudar um curso, abra o painel uma vez.</li>
     </ul>`},
 
@@ -131,7 +131,7 @@ window.MANUAL_MASTER = [
       <li><b>Não vejo o botão Sair no celular, só "Entrar":</b> aquele aparelho ou app não está logado. Toque em Entrar.</li>
       <li><b>O aluno esqueceu a senha:</b> na tela de entrada ele toca em "Esqueci minha senha" e recebe um link por e-mail.</li>
       <li><b>O aluno diz que não consegue abrir o curso:</b> clique nele na tabela e veja os selos. Se estiver "⏳ Falta WhatsApp", confirme em "Confirmações de WhatsApp".</li>
-      <li><b>Achei um certificado falso circulando:</b> abra a página de validação com o ID. Se o ID não existir, a página mostra "Não encontramos". Se for um certificado real usado indevidamente, revogue-o.</li>
+      <li><b>Achei um certificado falso circulando:</b> abra a página de validação com o ID. Se o ID não existir, a página mostra "Não encontramos". Se existir, a página mostra o nome do aluno que conquistou, e quem o usa indevidamente não consegue trocar esse nome.</li>
       <li><b>Mudei algo no Supabase (SQL):</b> o arquivo pode ser rodado de novo sem problema. Não precisa salvar a consulta; é só fechar a aba.</li>
     </ul>`}
 ];

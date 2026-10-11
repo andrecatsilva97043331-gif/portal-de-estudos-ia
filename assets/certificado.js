@@ -49,7 +49,7 @@ PORTAL.cert = {
       : `portal certificar --${trilha ? 'trilha' : 'curso'} <b>${esc(c.ref_id)}</b> --status <b>${trilha ? 'concluída' : 'concluído'}</b>`;
     const verif = f === 'q' ? `<span class="ok">VERIFICADO</span>${qr(PORTAL.cert.link(c.codigo))}`
       : `<div class="txt"><span class="ok">VERIFICADO</span><br>Escaneie para<br>conferir a autenticidade</div>${qr(PORTAL.cert.link(c.codigo))}`;
-    return `<div class="cert ${f}${c.revogado ? ' revogado' : ''}" style="--c1:${esc(cores[0])};--c2:${esc(cores[1])}">
+    return `<div class="cert ${f}${c.revogado ? ' revogado' : ''}${c.exemplo ? ' exemplo' : ''}" style="--c1:${esc(cores[0])};--c2:${esc(cores[1])}">
       <div class="aurora"></div><div class="grade"></div>${rede(f)}<div class="moldura"></div>
       <div class="faixa">${f === 'h' ? '<span>PORTAL DE ESTUDOS IA · CREDENCIAL VERIFICADA</span>' : ''}</div>
       <div class="conteudo">
@@ -86,6 +86,12 @@ PORTAL.cert = {
         while (caixa.scrollWidth > largura && px > minimo) { px -= 2; alvo.style.fontSize = px + 'px'; }
       });
     });
+  },
+  /* Cabe o certificado na largura da caixa: escala o .cert-escala (nunca o .cert) e acerta a altura da caixa. */
+  escalar(vista, escala){
+    const el = escala.querySelector('.cert'); if (!el) return;
+    const k = vista.clientWidth / el.offsetWidth;
+    escala.style.transform = 'scale(' + k + ')'; vista.style.height = el.offsetHeight * k + 'px';
   }
 };
 })();
