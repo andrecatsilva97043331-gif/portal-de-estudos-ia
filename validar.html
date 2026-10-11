@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<script src="assets/migrar.js?v=20261010c"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Validar certificado · Portal de Estudos IA</title>
 <meta name="description" content="Confira a autenticidade de um certificado do Portal de Estudos IA pelo ID da credencial.">
@@ -20,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Dancing+Script:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/certificado.css">
+<link rel="stylesheet" href="assets/certificado.css?v=20261010c">
 <style>
   *{box-sizing:border-box;}
   body{margin:0; min-height:100vh; background:#020204; color:#f5f5fa; font-family:'Sora',system-ui,sans-serif;
@@ -76,9 +77,9 @@
 <main id="main"><div class="carregando">Carregando…</div></main>
 <div id="imprimir"></div>
 
-<script src="config.js"></script>
-<script src="assets/dados.js"></script>
-<script src="assets/certificado.js"></script>
+<script src="config.js?v=20261010c"></script>
+<script src="assets/dados.js?v=20261010c"></script>
+<script src="assets/certificado.js?v=20261010c"></script>
 <script>
 (function(){
 'use strict';
@@ -109,14 +110,12 @@ function linkLinkedin(c){
 }
 
 function telaCertificado(c){
-  const ok = !c.revogado;
   $('main').innerHTML = `
-    ${meu && ok ? `<h1>🎉 Parabéns, ${esc(c.nome.split(' ')[0])}!</h1><p class="sub">Seu certificado está pronto. Baixe a imagem, salve em PDF ou adicione ao seu perfil do LinkedIn.</p>`
+    ${meu ? `<h1>🎉 Parabéns, ${esc(c.nome.split(' ')[0])}!</h1><p class="sub">Seu certificado está pronto. Baixe a imagem, salve em PDF ou adicione ao seu perfil do LinkedIn.</p>`
       : `<h1>Validação de certificado</h1><p class="sub">Resultado da consulta pelo ID da credencial.</p>`}
-    <div class="status ${ok ? 'ok' : 'mau'}"><div class="ico">${ok ? '✅' : '⛔'}</div><div>
-      <b>${ok ? 'Certificado autêntico' : 'Certificado revogado'}</b>
-      <span>${ok ? `Emitido pelo Portal de Estudos IA para <b>${esc(c.nome)}</b>, que concluiu ${c.tipo === 'trilha' ? 'todos os cursos e o projeto final da' : 'o curso'} <b>${esc(c.titulo)}</b>.`
-        : 'Este certificado foi cancelado pelo Portal de Estudos IA e não tem mais validade.'}</span></div></div>
+    <div class="status ok"><div class="ico">✅</div><div>
+      <b>Certificado autêntico</b>
+      <span>Emitido pelo Portal de Estudos IA para <b>${esc(c.nome)}</b>, que concluiu ${c.tipo === 'trilha' ? 'todos os cursos e o projeto final da' : 'o curso'} <b>${esc(c.titulo)}</b>.</span></div></div>
     <div class="dados">
       <div><small>Nome</small><strong>${esc(c.nome)}</strong></div>
       <div><small>${c.tipo === 'trilha' ? 'Trilha' : 'Curso'}</small><strong>${esc(c.titulo)}</strong></div>
@@ -129,13 +128,13 @@ function telaCertificado(c){
       <button type="button" data-f="q" class="${FORMATO === 'q' ? 'on' : ''}">Quadrado · Instagram e WhatsApp</button>
     </div>
     <div class="vista ${FORMATO}" id="vista"><div class="cert-escala" id="escala">${PORTAL.cert.html(c, FORMATO)}</div></div>
-    ${ok ? `<div class="acoes">
+    <div class="acoes">
       <button class="btn" type="button" id="baixar">⬇️ Baixar imagem</button>
       <button class="btn sec" type="button" id="pdf">📄 Baixar PDF</button>
       ${meu ? `<a class="btn li" href="${linkLinkedin(c)}" target="_blank" rel="noopener">in Adicionar ao LinkedIn</a>` : ''}
       <button class="btn sec" type="button" id="copiar">🔗 Copiar link de validação</button>
     </div>
-    <p class="dica">Para validar, qualquer pessoa pode escanear o QR do certificado ou abrir este link.</p>` : ''}
+    <p class="dica">Para validar, qualquer pessoa pode escanear o QR do certificado ou abrir este link.</p>
     <div style="margin-top:28px">${formBusca('', '')}</div>`;
   PORTAL.cert.ajustar($('escala'));
   escalar();

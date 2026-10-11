@@ -41,7 +41,7 @@ PORTAL.cert = {
     return new Promise(res => { const s = document.createElement('script'); s.src = QR_CDN; s.onload = res; s.onerror = res; document.head.appendChild(s); });
   },
   link: codigo => new URL('validar.html?c=' + encodeURIComponent(codigo), location.href).href,
-  /* c: registro de certificados (codigo, tipo, ref_id, nome, titulo, subtitulo, icone, cores, carga_horaria, detalhe, habilidades, emitido_em, revogado).
+  /* c: registro de certificados (codigo, tipo, ref_id, nome, titulo, subtitulo, icone, cores, carga_horaria, detalhe, habilidades, emitido_em).
      f: 'h' (horizontal) ou 'q' (quadrado). */
   html(c, f){
     const trilha = c.tipo === 'trilha', cores = c.cores && c.cores.length >= 2 ? c.cores : ['#22C55E', '#14B8A6'];
@@ -49,7 +49,7 @@ PORTAL.cert = {
       : `portal certificar --${trilha ? 'trilha' : 'curso'} <b>${esc(c.ref_id)}</b> --status <b>${trilha ? 'concluída' : 'concluído'}</b>`;
     const verif = f === 'q' ? `<span class="ok">VERIFICADO</span>${qr(PORTAL.cert.link(c.codigo))}`
       : `<div class="txt"><span class="ok">VERIFICADO</span><br>Escaneie para<br>conferir a autenticidade</div>${qr(PORTAL.cert.link(c.codigo))}`;
-    return `<div class="cert ${f}${c.revogado ? ' revogado' : ''}${c.exemplo ? ' exemplo' : ''}" style="--c1:${esc(cores[0])};--c2:${esc(cores[1])}">
+    return `<div class="cert ${f}${c.exemplo ? ' exemplo' : ''}" style="--c1:${esc(cores[0])};--c2:${esc(cores[1])}">
       <div class="aurora"></div><div class="grade"></div>${rede(f)}<div class="moldura"></div>
       <div class="faixa">${f === 'h' ? '<span>PORTAL DE ESTUDOS IA · CREDENCIAL VERIFICADA</span>' : ''}</div>
       <div class="conteudo">

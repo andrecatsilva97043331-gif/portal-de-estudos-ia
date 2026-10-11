@@ -275,11 +275,26 @@ async function instalarApp(){
   if (PEDIDO_INSTALAR) {
     PEDIDO_INSTALAR.prompt();
     try { await PEDIDO_INSTALAR.userChoice; } catch(e){}
-    PEDIDO_INSTALAR = null; atualizarInstalar();
+    PEDIDO_INSTALAR = null; atualizarInstalar(); fecharAvisoApp();
   } else if (ehIos()) document.querySelectorAll('.dica-ios').forEach(d => { d.hidden = !d.hidden; });
 }
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); PEDIDO_INSTALAR = e; atualizarInstalar(); });
-window.addEventListener('appinstalled', () => { PEDIDO_INSTALAR = null; atualizarInstalar(); toast('App instalado! Procure o ícone "Estudos IA". 🎉'); });
+/* Convite discreto para instalar: sempre para quem veio do endereço antigo (?migrado=1) e uma vez por aparelho para os demais. */
+const MIGRADO = new URLSearchParams(location.search).get('migrado') === '1';
+if (MIGRADO) { const u = new URL(location.href); u.searchParams.delete('migrado'); history.replaceState(history.state, '', u.href); }
+const AVISO_APP = 'portal-aviso-app';
+function avisoApp(){
+  if (instalado() || $('aviso-app') || !(PEDIDO_INSTALAR || ehIos())) return;
+  try { if (!MIGRADO && localStorage.getItem(AVISO_APP)) return; } catch(e){}
+  const d = document.createElement('div');
+  d.id = 'aviso-app'; d.className = 'aviso-app'; d.setAttribute('role', 'status');
+  d.innerHTML = `<span>📲 ${MIGRADO ? 'O portal agora fica em <b>portaldeestudosia.com.br</b>. ' : ''}${PEDIDO_INSTALAR ? 'Instale o app para abrir o portal direto da tela inicial.' : 'Para ter o app no iPhone: toque em <b>Compartilhar</b> (↑) e depois em <b>Adicionar à Tela de Início</b>.'}</span>
+    ${PEDIDO_INSTALAR ? '<button class="next" type="button" data-act="instalar">Instalar</button>' : ''}<button class="x" type="button" data-act="fechar-aviso-app" aria-label="Fechar">✕</button>`;
+  document.body.appendChild(d);
+}
+function fecharAvisoApp(){ const d = $('aviso-app'); if (d) d.remove(); try { localStorage.setItem(AVISO_APP, '1'); } catch(e){} }
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); PEDIDO_INSTALAR = e; atualizarInstalar(); avisoApp(); });
+if (ehIos()) setTimeout(avisoApp, 1500);
+window.addEventListener('appinstalled', () => { PEDIDO_INSTALAR = null; atualizarInstalar(); fecharAvisoApp(); toast('App instalado! Procure o ícone "Estudos IA". 🎉'); });
 
 /* Contato com o gestor do portal pelo WhatsApp (número em config.js: whatsappPortal). */
 function linkContato(cls){
@@ -1590,6 +1605,7 @@ document.addEventListener('click', e => {
   else if (a === 'ir-curso') liberarAcesso();
   else if (a === 'curso') abrirCurso(t.dataset.id);
   else if (a === 'instalar') instalarApp();
+  else if (a === 'fechar-aviso-app') fecharAvisoApp();
   else if (a === 'qr') abrirQr();
   else if (a === 'indicar') indicarAmigo();
   else if (a === 'fechar-qr') { if (t === e.target || t.classList.contains('nfechar')) fecharQr(); }

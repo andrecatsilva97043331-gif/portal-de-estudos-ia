@@ -178,6 +178,10 @@ html.cel .tn-ir, html.cel .tn-chamada.feito .ghost{margin-left:50px;}
 
 /* ---------- Instalar como app ---------- */
 .dica-ios{margin-top:12px; padding:10px 12px; border-radius:14px; border:1px solid color-mix(in srgb,#22d3ee 40%,transparent); background:color-mix(in srgb,#22d3ee 10%,#050507); font-size:13.5px; line-height:1.5; color:var(--text); max-width:460px;}
+.aviso-app{position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 16px); transform:translateX(-50%); z-index:80; display:flex; align-items:center; gap:10px; width:min(560px,calc(100vw - 24px)); padding:10px 10px 10px 14px; border-radius:16px; border:1px solid color-mix(in srgb,#22d3ee 40%,transparent); background:color-mix(in srgb,#22d3ee 10%,#050507); box-shadow:0 14px 40px -20px #000; font-size:13.5px; line-height:1.45; color:var(--text);}
+.aviso-app span{flex:1;}
+.aviso-app .next{padding:8px 14px; white-space:nowrap;}
+.aviso-app .x{background:none; border:0; color:var(--text); opacity:.7; font-size:16px; cursor:pointer; padding:6px;}
 
 /* ---------- Aviso de novidade ---------- */
 .novidade{position:relative; margin-bottom:18px; padding:18px 18px 16px; border-radius:22px; border:1px solid transparent; background:linear-gradient(#07070b,#07070b) padding-box, linear-gradient(90deg,#22C55E,#F59E0B,#EF4444,#EC4899) border-box; box-shadow:0 14px 40px -24px #F59E0B;}
@@ -490,6 +494,9 @@ a.sbtn{text-decoration:none; display:inline-flex; align-items:center;}
 .det h3{margin:16px 0 8px; font-size:17px;}
 .det .row2{display:grid; grid-template-columns:120px 1fr; gap:4px 12px; font-size:14px;}
 .det .row2 span{color:var(--muted);}
+.det .relato{margin:0 0 10px; padding:10px 12px; border-radius:14px; border:1px solid color-mix(in srgb,#22d3ee 35%,transparent); background:color-mix(in srgb,#22d3ee 7%,transparent); font-size:14px;}
+.det .relato p{margin:6px 0; line-height:1.5; white-space:pre-wrap;}
+.det .relato small{color:var(--muted);}
 .lst{list-style:none; margin:0; padding:0; font-size:14px;}
 .lst li{display:flex; gap:8px; padding:4px 0;}
 .lst li small{color:var(--muted); margin-left:auto;}

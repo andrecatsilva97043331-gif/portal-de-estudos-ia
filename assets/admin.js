@@ -553,8 +553,10 @@ function abrirAluno(id){
     const quando = {}; p.lista.forEach(x => { quando[x.licao_id] = x.concluida_em; });
     const itens = c ? c.licoes.map(l => `<li>${quando[l.id] ? '✅' : '⬜'} <span>${esc(l.id)} ${esc(l.title)}</span><small>${quando[l.id] ? dataHora(quando[l.id]) : ''}</small></li>`).join('')
                     : '<li><small>Este curso não está mais no catálogo.</small></li>';
+    const rel = (DADOS.depoimentos || []).find(d => d.aluno_id === id && d.curso_id === m.curso_id);
     return `<h3>${esc(tituloCurso(m.curso_id))} · ${p.pct}%</h3>
       <div class="row2" style="margin-bottom:8px"><span>Iniciado em</span><b>${dataHora(m.iniciado_em)}</b><span>Lições</span><b>${p.feitas} de ${p.total}</b></div>
+      ${rel ? `<div class="relato"><small>💬 Relato do aluno · ${SITUACAO_DEP[rel.status] || esc(rel.status)}${rel.criado_em ? ' · ' + dataHora(rel.criado_em) : ''}</small><p>“${esc(rel.texto)}”</p><small>${rel.autoriza_publicar ? '✅ Autorizou publicar' : '🔒 Não autorizou publicar'}</small></div>` : ''}
       <ul class="lst">${itens}</ul>`;
   }).join('');
   $('drawer').innerHTML = `<div class="dh"><div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><h2>${esc(a.nome)}</h2></div><button class="x" data-act="fechar" aria-label="Fechar">✕</button></div>
