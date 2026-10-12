@@ -124,11 +124,7 @@ function renderCursos(){
           <button class="hc-seta ant" type="button" aria-label="Certificado anterior">‹</button><button class="hc-seta prox" type="button" aria-label="Próximo certificado">›</button></div>
         <div class="hc-dots" id="hc-dots"></div>
         <p class="hc-leg" id="hc-leg" aria-live="polite">🎓 Exemplos de certificados</p></div>` : ''}
-    </section>
-    <div class="steps">
-      ${[['📝','Cadastre-se', pedeConfirmacao() ? 'Leva 2 minutos, não pede documentos e é confirmado por ' + [DB.codigoEmail && 'e-mail', DB.exigirWhatsapp && 'WhatsApp'].filter(Boolean).join(' e ') + '.' : 'Leva 2 minutos e não pede documentos.'],['🎯','Escolha o curso','Comece na hora, no seu ritmo, pelo celular ou computador.'],['🏆','Aprenda com desafios','Cada lição termina com um caso real para você resolver.']]
-        .map((s, i) => `<div class="step rise" style="--d:${0.1 + i * 0.08}s;${'--c:' + PORTAL.paleta(i)[0] + ';--c2:' + PORTAL.paleta(i)[1]}"><div class="stile">${s[0]}</div><div><b>${i + 1}. ${s[1]}</b><p>${s[2]}</p></div></div>`).join('')}
-    </div>`;
+    </section>`;
   }
   const vitrine = (c, i) => {
     const mods = c.conteudo.modulos;
@@ -200,7 +196,7 @@ function renderCursos(){
   };
   const outros = CURSOS.filter(c => !c.projeto_final && c.trilha !== 'renda' && !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
   $('main').removeAttribute('style');
-  $('main').innerHTML = avisoRenda() + avisoTrilha() + topo + barraAtalhos() + `<section class="trilha" id="trilha">
+  $('main').innerHTML = topo + cartaoFundador() + barraAtalhos() + `<section class="trilha" id="trilha">
       <h2 class="sec-t">Trilha de IA</h2>
       <p class="tsub">Do zero ao avançado em 3 níveis. Siga na ordem ou escolha só o curso de que você precisa.</p>
       ${chamadaTeste()}
@@ -319,6 +315,7 @@ function mensagemIndicacao(){
     + `Cadastro em 2 minutos. Bora estudar junto? 👇\n${u}`;
 }
 function indicarAmigo(){ window.open('https://wa.me/?text=' + encodeURIComponent(mensagemIndicacao()), '_blank', 'noopener'); }
+const cartaoFundador = () => `<a class="fundador rise" href="historia.html"><img src="assets/andre.jpg" alt="" width="72" height="72" loading="lazy"><span class="fd-tx"><small>Conheça o fundador</small><b>Do caderno compartilhado ao futuro da IA</b><span>A história de André Luiz, que dividia um caderno e um lápis com uma de suas irmãs para poderem estudar, e hoje fundou o Portal de Estudos IA.</span></span><span class="fd-cta">Ler minha história ➜</span></a>`;
 const botaoIndicar = () => `<button class="indica" type="button" data-act="indicar"><span class="ind-ic" aria-hidden="true">🎁</span><span class="ind-tx"><b>Indique um amigo</b><small>Envie o convite pelo WhatsApp</small></span><span class="ind-seta" aria-hidden="true">➜</span></button>`;
 
 /* Ícone Cursos do rodapé (celular): lista compacta com os ícones dos cursos. */
