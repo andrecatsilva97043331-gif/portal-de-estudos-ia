@@ -95,3 +95,25 @@ PORTAL.registrarCurso({
 ```
 - Classes visuais disponíveis no `body`: `card`, `card analogy`, `term`, `feyn`, `why-chain`, `golden` (lista numerada), `flows`/`flow old`/`flow new`/`node`, `pipe`, `tw` + `tbl` (tabela), `code`, `calc`/`res` (simuladores). Veja o exemplo completo em `cursos/arquiteto-solucoes-ia/curso.js`.
 - Uma lição ainda sem conteúdo pode usar `soon: true, teaser: 'texto'`.
+
+## Ferramentas por módulo (`cursos/<id>/ferramentas.js`)
+
+Apps de IA gratuitos para o aluno praticar ao fim de cada módulo. Aparecem no bloco "🧰 Pratique na ferramenta" da tela de módulo concluído e no botão "Ferramentas do módulo" de cada card na página do curso. Opcional: não conta para progresso nem certificado. Fica fora do `curso.js` (vale também para o `arquiteto-solucoes-ia`).
+
+```js
+PORTAL.registrarFerramentas({
+ 'ia-do-zero': { // mesmo id da pasta; só este curso no arquivo
+ 1: [ // id do módulo; de 1 a 3 ferramentas
+ { nome: 'Teachable Machine', url: 'https://teachablemachine.withgoogle.com/', icone: '🧠',
+ plano: 'Gratuito (Google), sem cadastro', // limites reais, com honestidade
+ para_que: 'Uma frase sobre para que serve.',
+ pratica: ['Passo 1', 'Passo 2', 'Passo 3'], // ou um texto; missão de 5 a 15 min ligada ao módulo
+ nivel_exigido: 'Sem programar', // opcional
+ cuidado: 'Não envie dados pessoais de clientes.' } // opcional: lembrete de privacidade
+ ]
+ }
+});
+```
+
+- Só ferramentas com uso gratuito real (plano grátis sem cartão, ou código aberto/self-host). Missão sem prompt pronto nem gabarito (o validador recusa `text`, `prompt` e `gabarito`): o aluno escreve os próprios pedidos.
+- `url` sempre `https://` e oficial. O `npm run validar` confere curso, módulos e campos.

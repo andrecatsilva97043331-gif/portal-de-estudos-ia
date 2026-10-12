@@ -1,0 +1,82 @@
+PORTAL.registrarFerramentas({
+  'do-projeto-ao-negocio': {
+    1: [
+      { nome: 'Perplexity', url: 'https://www.perplexity.ai/', icone: '🔎', plano: 'Plano gratuito com limite de buscas avançadas',
+        para_que: 'Pesquisar um nicho com fontes: quem são os clientes, que problemas relatam e quem já atende esse público.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Escolha 1 nicho candidato para o seu serviço.', 'Pesquise as dores mais comuns desse público e 3 concorrentes ou alternativas que ele usa hoje.', 'Abra pelo menos 2 fontes e confira se dizem o que a resposta afirma.', 'Escreva a sua oferta em uma frase: para quem, qual resultado e em quanto tempo.'] },
+      { nome: 'ChatGPT', url: 'https://chatgpt.com/', icone: '🎭', plano: 'Plano gratuito com limite de uso',
+        para_que: 'Ensaiar uma conversa de validação com um cliente simulado antes de falar com pessoas reais.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Peça que ele interprete um cliente típico do seu nicho, com rotina e problemas realistas.', 'Faça perguntas sobre o passado e o que a pessoa já tentou, sem apresentar a sua solução.', 'No final, peça que ele aponte as perguntas em que você induziu a resposta.', 'Ajuste o seu roteiro de perguntas para as conversas reais.'],
+        cuidado: 'O ensaio não substitui as conversas reais com clientes; ele só prepara você.' },
+      { nome: 'Calendly', url: 'https://calendly.com/', icone: '📅', plano: 'Plano gratuito (1 tipo de evento)',
+        para_que: 'Facilitar o agendamento das conversas de validação sem troca infinita de mensagens.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Crie um evento de 20 minutos chamado conversa de validação.', 'Defina 2 ou 3 janelas de horário na semana.', 'Envie o link para 3 pessoas do seu nicho junto com uma mensagem curta, escrita por você.', 'Registre quantas aceitaram e o que isso diz sobre o interesse do nicho.'] }
+    ],
+    2: [
+      { nome: 'Google Planilhas', url: 'https://sheets.google.com/', icone: '🧮', plano: 'Gratuito com conta Google',
+        para_que: 'Montar a calculadora de preço por trás da proposta: horas, custos, impostos e margem.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Liste as etapas do serviço e as horas de cada uma.', 'Some custos fixos do mês, ferramentas pagas e impostos.', 'Calcule o preço com a margem desejada e o valor por hora resultante.', 'Monte 3 pacotes (essencial, completo e com acompanhamento mensal) na mesma planilha.'] },
+      { nome: 'Gamma', url: 'https://gamma.app/', icone: '📑', plano: 'Plano gratuito com créditos de IA limitados (e marca d\'água)',
+        para_que: 'Transformar o rascunho da sua proposta em um documento de uma página com visual profissional.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Escreva você mesmo o conteúdo: problema do cliente, solução, entregáveis, prazo, investimento e próximos passos.', 'Peça ao Gamma para formatar em uma página só, sem acrescentar promessas.', 'Revise cada frase e corte o que a IA inventou ou exagerou.', 'Exporte em PDF e leia como se fosse o cliente.'],
+        cuidado: 'Não inclua dados pessoais do cliente; use um cliente típico ou fictício.' },
+      { nome: 'Claude', url: 'https://claude.ai/', icone: '🤝', plano: 'Plano gratuito com limite de uso',
+        para_que: 'Ensaiar uma negociação de preço com um cliente simulado que pede desconto.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Peça que ele interprete um cliente do seu nicho que achou a proposta cara.', 'Responda sem baixar o preço de cara: troque escopo, prazo ou pacote.', 'Ao final, peça uma avaliação de onde você cedeu demais.', 'Anote 3 respostas que você vai usar em negociações reais.'] }
+    ],
+    3: [
+      { nome: 'Trello', url: 'https://trello.com/', icone: '📋', plano: 'Plano gratuito com limites (quadros e colaboradores por área de trabalho)',
+        para_que: 'Desenhar o processo de entrega em colunas, do início ao aceite, e reaproveitar em cada cliente.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Crie um quadro com as colunas do seu roteiro (ex.: combinado assinado, materiais recebidos, em produção, revisão, aceite, suporte).', 'Crie um cartão modelo com a checklist de cada etapa.', 'Simule um cliente fictício passando por todas as colunas.', 'Transforme o quadro em modelo para usar no próximo cliente.'] },
+      { nome: 'Google Gemini', url: 'https://gemini.google.com/', icone: '✨', plano: 'Gratuito com conta Google (há limites de uso)',
+        para_que: 'Revisar a lista de cláusulas do seu combinado em busca de ambiguidades e lacunas.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Escreva você mesmo as cláusulas em linguagem simples: escopo, prazos, revisões, pagamento, suporte e encerramento.', 'Peça que ele aponte frases que um cliente poderia interpretar de outro jeito.', 'Pergunte que situações comuns o combinado não cobre (ex.: atraso de materiais do cliente).', 'Reescreva os pontos fracos e anote o que vale confirmar com um contador ou advogado.'],
+        cuidado: 'Não cole nomes, CPFs ou dados de clientes; a IA não substitui orientação jurídica.' },
+      { nome: 'Portal do Empreendedor (gov.br)', url: 'https://www.gov.br/empresas-e-negocios/pt-br/empreendedor', icone: '🏛️', plano: 'Gratuito (site oficial do governo)',
+        para_que: 'Conferir, na fonte oficial, se a sua atividade pode ser MEI e quais são as obrigações.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Procure a lista de ocupações permitidas e veja se o seu serviço se encaixa.', 'Anote o limite de faturamento anual e as obrigações mensais e anuais.', 'Se não se encaixar, anote a dúvida para levar a um contador.'],
+        cuidado: 'Use só o site oficial; desconfie de sites que cobram para abrir MEI.' }
+    ],
+    4: [
+      { nome: 'Canva', url: 'https://www.canva.com/', icone: '🎨', plano: 'Plano gratuito (recursos de IA com uso limitado)',
+        para_que: 'Montar um estudo de caso visual de uma página para o seu portfólio.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Escolha um projeto seu (real ou do curso) e escreva: situação, problema, o que você fez e resultado.', 'Monte a página com um modelo simples e um número de resultado em destaque.', 'Confira que nenhum dado do cliente aparece sem autorização.', 'Exporte em PDF e imagem para usar no perfil e nas mensagens.'],
+        cuidado: 'Só mostre nome, logo ou números do cliente com autorização por escrito.' },
+      { nome: 'Napkin', url: 'https://www.napkin.ai/', icone: '🖼️', plano: 'Plano gratuito com créditos de IA limitados',
+        para_que: 'Transformar o texto do seu estudo de caso ou da sua conversa de diagnóstico em um diagrama claro.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Cole o texto do seu estudo de caso ou do seu roteiro de diagnóstico.', 'Gere 2 opções de diagrama e escolha a mais fácil de entender.', 'Ajuste textos e cores para ficar fiel ao que aconteceu.', 'Use o diagrama no estudo de caso ou numa publicação.'] },
+      { nome: 'LinkedIn', url: 'https://www.linkedin.com/', icone: '💼', plano: 'Gratuito (o plano Premium é opcional)',
+        para_que: 'Publicar o estudo de caso e criar uma lista de prospecção sem spam.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Ajuste o título do seu perfil para a sua oferta em uma frase.', 'Publique o estudo de caso com o aprendizado principal, sem prometer ganhos.', 'Monte uma lista de 10 pessoas do seu nicho com um motivo real para falar com cada uma.', 'Envie no máximo 3 mensagens personalizadas, escritas por você, e registre as respostas.'],
+        cuidado: 'Nada de mensagens em massa nem promessas de resultado garantido.' }
+    ],
+    5: [
+      { nome: 'Google Planilhas', url: 'https://sheets.google.com/', icone: '💰', plano: 'Gratuito com conta Google',
+        para_que: 'Organizar o fluxo de caixa do mês com reserva, pró-labore e indicadores do negócio.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Crie abas de entradas e saídas com data, categoria e valor (use números fictícios se preferir).', 'Calcule o saldo do mês, a reserva desejada e o pró-labore possível.', 'Acrescente 3 métricas: ticket médio, taxa de fechamento de propostas e horas por projeto.', 'Destaque em vermelho o mês em que o caixa ficaria negativo, se houver.'],
+        cuidado: 'Não registre CPFs nem dados pessoais de clientes na planilha.' },
+      { nome: 'Looker Studio', url: 'https://lookerstudio.google.com/', icone: '📊', plano: 'Gratuito com conta Google',
+        para_que: 'Transformar a planilha em um painel simples do negócio, atualizado sozinho.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Conecte a planilha do exercício anterior como fonte de dados.', 'Crie 3 cartões de número: saldo, faturamento do mês e taxa de fechamento.', 'Acrescente um gráfico de entradas e saídas por mês.', 'Anote qual número você vai olhar toda semana e que decisão ele dispara.'] },
+      { nome: 'Google Gemini: Gems', url: 'https://gemini.google.com/', icone: '🔁', plano: 'Gratuito com conta Google (há limites de uso)',
+        para_que: 'Criar um assistente personalizado para uma tarefa que se repete no seu negócio, como o relatório mensal ao cliente.',
+        nivel_exigido: 'Sem programar',
+        pratica: ['Escolha 1 tarefa repetitiva do seu processo de entrega.', 'Crie um Gem e escreva você mesmo as instruções: papel, formato da saída e o que ele nunca deve fazer.', 'Teste com 2 situações fictícias e ajuste as instruções.', 'Anote quanto tempo a tarefa levava antes e quanto leva agora.'],
+        cuidado: 'Não envie dados pessoais nem documentos confidenciais de clientes.' }
+    ]
+  }
+});

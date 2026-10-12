@@ -511,6 +511,36 @@ a.sbtn{text-decoration:none; display:inline-flex; align-items:center;}
 .cl-it small{margin-left:auto; flex:none; color:var(--muted); font-size:12px; font-weight:600;}
 .cl-todos{margin-top:6px; border-top:1px solid var(--line); border-radius:0 0 12px 12px; padding-top:10px; color:var(--muted);}
 
+/* ---------- Pratique na ferramenta (apps gratuitos de IA por módulo) ---------- */
+.fr-chip{align-self:flex-start; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border:1px solid color-mix(in srgb,var(--c) 55%,var(--line)); border-radius:99px; background:color-mix(in srgb,var(--c) 14%,#050507); color:var(--text); font:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:background .2s, border-color .2s;}
+.fr-chip:hover{background:color-mix(in srgb,var(--c) 26%,#050507); border-color:var(--c);}
+.fr-chip b{min-width:20px; height:20px; display:grid; place-items:center; border-radius:99px; font-size:11.5px; color:#000; background:linear-gradient(135deg,var(--c),var(--c2));}
+.mc.lock .fr-chip{filter:none;}
+.fr-box{margin-top:18px; padding:18px; border:1px solid color-mix(in srgb,var(--c) 45%,var(--line)); border-radius:22px; background:linear-gradient(160deg,color-mix(in srgb,var(--c) 12%,#050507),#050507 60%);}
+.fr-box h3{font-size:21px; font-weight:800; margin:0;}
+.fr-box > .nota, .fr-dlg > .nota{margin:6px 0 14px;}
+.fr-lista{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px;}
+.fr-card{display:flex; flex-direction:column; gap:10px; padding:16px; border:1px solid var(--line); border-radius:18px; background:var(--s1); text-align:left;}
+.fr-top{display:flex; align-items:center; gap:12px;}
+.fr-ic{flex:none; width:46px; height:46px; display:grid; place-items:center; border-radius:14px; font-size:24px; background:linear-gradient(135deg,var(--c),var(--c2));}
+.fr-card h4{font-size:17px; font-weight:800; margin:0 0 4px;}
+.fr-selos{display:flex; flex-wrap:wrap; gap:5px;}
+.fr-plano, .fr-nivel{display:inline-block; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:99px; line-height:1.4;}
+.fr-plano{color:var(--ok); background:color-mix(in srgb,var(--ok) 14%,#000); border:1px solid color-mix(in srgb,var(--ok) 45%,transparent);}
+.fr-nivel{color:var(--muted); background:var(--s2); border:1px solid var(--line);}
+.fr-para{margin:0; font-size:14.5px; color:var(--muted);}
+.fr-missao{padding:10px 12px; border-radius:12px; background:var(--s2); border-left:3px solid var(--c); font-size:14px;}
+.fr-missao b{display:block; margin-bottom:4px;}
+.fr-missao p{margin:0;}
+.fr-missao ol{margin:0; padding-left:20px;}
+.fr-missao li{margin:2px 0;}
+.fr-cuidado{margin:0; font-size:13px; color:var(--muted);}
+.fr-abrir{margin-top:auto; justify-content:center; font-size:15px; padding:11px 16px; text-decoration:none;}
+.fr-modal{grid-template-columns:minmax(0,1fr); place-items:start center; overflow-y:auto; overscroll-behavior:contain;}
+.fr-dlg{position:relative; box-sizing:border-box; width:min(860px,100%); margin:auto 0; padding:24px 20px 20px; border-radius:26px; background:radial-gradient(circle at 50% 0%, #15152a, #050508 70%); border:1px solid #242431; animation:rise .3s cubic-bezier(.2,.8,.2,1) both;}
+.fr-tit{font-family:var(--font-d); font-size:24px; font-weight:800; margin:2px 40px 0 0;}
+@media (max-width: 560px){ .fr-lista{grid-template-columns:1fr;} .fr-box{padding:14px;} .fr-dlg{padding:20px 14px 16px;} .fr-tit{font-size:21px;} }
+
 @media (max-width: 900px){
   .fgrid{grid-template-columns:1fr;}
   .tagline{font-size:9.5px; white-space:normal; max-width:180px;}

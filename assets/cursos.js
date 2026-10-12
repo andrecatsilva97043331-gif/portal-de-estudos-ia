@@ -6,6 +6,9 @@ const PALETA = [['#ff5a5f','#ff9a3c'],['#22d3ee','#3b82f6'],['#c084fc','#ec4899'
 window.PORTAL = window.PORTAL || {};
 PORTAL.cursos = {};
 PORTAL.registrarCurso = c => { PORTAL.cursos[c.id] = c; };
+/* Ferramentas gratuitas de IA sugeridas por módulo (cursos/<id>/ferramentas.js). Opcionais: não contam para progresso nem certificado. */
+PORTAL.ferramentas = {};
+PORTAL.registrarFerramentas = f => { Object.assign(PORTAL.ferramentas, f); };
 PORTAL.paleta = i => PALETA[((i % PALETA.length) + PALETA.length) % PALETA.length];
 
 /* Cursos "em_breve" com curso.js e rascunhos abrem no computador local (localhost) e,
@@ -26,12 +29,12 @@ document.addEventListener('click', e => {
   i.focus();
 });
 
-function carregarScript(src){
+function carregarScript(src, opcional){
   return new Promise(res => {
     const s = document.createElement('script');
     s.src = src;
     s.onload = res;
-    s.onerror = () => { console.error('Falha ao carregar ' + src); res(); };
+    s.onerror = () => { if (!opcional) console.error('Falha ao carregar ' + src); res(); };
     document.head.appendChild(s);
   });
 }
@@ -75,7 +78,8 @@ PORTAL.carregarCursos = async function(todos){
   PORTAL.catalogo = lista.slice().sort((a, b) => (a.ordem || 99) - (b.ordem || 99));
   const previa = PORTAL.modoPrevia || PORTAL.previaMaster;
   const visiveis = lista.filter(c => PORTAL.disponivel(c) || (c.status === 'em_breve' ? previa || todos : todos || (previa && c.status === 'rascunho')));
-  await Promise.all(visiveis.map(c => carregarScript('cursos/' + c.id + '/curso.js?v=' + (c.versao || 1))));
+  await Promise.all(visiveis.flatMap(c => [carregarScript('cursos/' + c.id + '/curso.js?v=' + (c.versao || 1)),
+    carregarScript('cursos/' + c.id + '/ferramentas.js?v=' + (c.versao || 1), true)]));
   return visiveis.filter(c => PORTAL.cursos[c.id]).map((c, i) => {
     const conteudo = PORTAL.cursos[c.id];
     const licoes = conteudo.modulos.flatMap(m => m.lessons.map(l => Object.assign({}, l, { mod:m.id })));

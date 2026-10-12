@@ -73,6 +73,40 @@ for (const meta of catalogo) {
   } catch (e) { erro('cursos/' + meta.id + '/curso.js', 'erro de JavaScript: ' + e.message); continue; }
   if (registrados.length !== 1) { erro('cursos/' + meta.id + '/curso.js', 'deve chamar PORTAL.registrarCurso exatamente 1 vez'); continue; }
   validarCurso(meta, registrados[0]);
+  validarFerramentas(meta, registrados[0]);
+}
+
+/* cursos/<id>/ferramentas.js (opcional): apps gratuitos de IA sugeridos ao fim de cada módulo. */
+function validarFerramentas(meta, c){
+  const arq = path.join(raiz, 'cursos', meta.id, 'ferramentas.js'), onde = 'cursos/' + meta.id + '/ferramentas.js';
+  if (!fs.existsSync(arq)) { if (meta.status !== 'arquivado') avisos.push(onde + ': não existe (curso sem "Pratique na ferramenta")'); return; }
+  const regs = [];
+  try { vm.runInNewContext(fs.readFileSync(arq, 'utf8'), { PORTAL: { registrarFerramentas: f => regs.push(f) } }, { filename: arq }); }
+  catch (e) { erro(onde, 'erro de JavaScript: ' + e.message); return; }
+  if (regs.length !== 1 || !regs[0] || typeof regs[0] !== 'object') { erro(onde, 'deve chamar PORTAL.registrarFerramentas exatamente 1 vez, com um objeto'); return; }
+  const chaves = Object.keys(regs[0]);
+  if (chaves.length !== 1 || chaves[0] !== meta.id) { erro(onde, 'deve registrar só o curso "' + meta.id + '" (registrou: ' + chaves.join(', ') + ')'); return; }
+  const porMod = regs[0][meta.id], mods = new Set(c.modulos.map(m => String(m.id)));
+  let n = 0;
+  Object.entries(porMod || {}).forEach(([k, lista]) => {
+    const om = onde + ' módulo ' + k;
+    if (!mods.has(String(k))) { erro(om, 'módulo não existe no curso.js'); return; }
+    if (!Array.isArray(lista) || lista.length < 1 || lista.length > 3) { erro(om, 'deve ter de 1 a 3 ferramentas'); return; }
+    lista.forEach((f, i) => {
+      const oi = om + ' ferramenta ' + (i + 1) + (f && f.nome ? ' (' + f.nome + ')' : '');
+      ['nome', 'url', 'icone', 'plano', 'para_que'].forEach(campo => { if (typeof f[campo] !== 'string' || !f[campo].trim()) erro(oi, 'falta "' + campo + '"'); });
+      if (typeof f.url === 'string' && !/^https:\/\/[^\s"'<>]+$/.test(f.url)) erro(oi, '"url" deve começar com https:// e não ter espaços');
+      const pr = f.pratica;
+      if (!(typeof pr === 'string' && pr.trim()) && !(Array.isArray(pr) && pr.length >= 2 && pr.every(p => typeof p === 'string' && p.trim())))
+        erro(oi, '"pratica" deve ser um texto ou uma lista de pelo menos 2 passos');
+      ['nivel_exigido', 'cuidado'].forEach(campo => { if (f[campo] !== undefined && (typeof f[campo] !== 'string' || !f[campo].trim())) erro(oi, '"' + campo + '" deve ser um texto'); });
+      ['text', 'prompt', 'gabarito'].forEach(campo => { if (campo in f) erro(oi, 'não use "' + campo + '": o aluno escreve o próprio prompt'); });
+      n++;
+    });
+  });
+  const sem = [...mods].filter(k => !(porMod || {})[k]);
+  if (sem.length) avisos.push(onde + ': módulo(s) ' + sem.join(', ') + ' sem ferramenta');
+  console.log('  🧰 ' + n + ' ferramenta(s) em ' + (mods.size - sem.length) + ' de ' + mods.size + ' módulo(s)');
 }
 
 function validarCurso(meta, c) {

@@ -64,6 +64,7 @@ function level(x){ return ((C.conteudo.niveis || NIVEIS_PADRAO).find(n => x >= n
 function tstyle(id){ const t = (C.conteudo.cores || {})[id] || PORTAL.paleta(id - 1); return '--c:' + t[0] + ';--c2:' + t[1]; }
 const prompts = () => C.conteudo.prompts || {};
 const temToolbox = () => Object.keys(prompts()).length > 0;
+const ferramentas = mod => ((PORTAL.ferramentas || {})[C.id] || {})[mod] || [];
 const toolLivre = m => MASTER || modDone(m);
 /* Master sem cadastro de aluno confirmado: o progresso fica só neste navegador. */
 const masterLocal = () => MASTER && !(ALUNO && DB.verificado(ALUNO));
@@ -393,7 +394,30 @@ function certsExemplo(){
   disp.filter(m => !m.projeto_final && !PORTAL.trilhaDe(m)).forEach(curso);
   return lista;
 }
-const HC = { lista:[], i:0, timer:0, troca:0, hover:false, fora:false, obs:null };
+const HC = { lista:[], i:0, timer:0, troca:0, hover:false, zoom:false, fora:false, obs:null };
+/* Amplia o certificado atual em tela cheia; em tela em pé (celular) gira 90° para aproveitar a altura. */
+function hcZoom(){
+  const c = HC.lista[HC.i]; if (!c) return;
+  HC.zoom = true; hcAgendar();
+  const z = document.createElement('div');
+  z.className = 'hc-zoom'; z.setAttribute('role', 'dialog'); z.setAttribute('aria-modal', 'true'); z.setAttribute('aria-label', 'Certificado ampliado');
+  z.innerHTML = '<div class="hc-zoom-cert"></div><button class="hc-zoom-x" type="button" aria-label="Fechar">✕</button>';
+  const e = z.querySelector('.hc-zoom-cert');
+  e.innerHTML = PORTAL.cert.html(c, 'h');
+  document.body.appendChild(z);
+  PORTAL.cert.ajustar(e);
+  const caber = () => {
+    const w = innerWidth - 24, h = innerHeight - 24, gira = h > w;
+    const s = gira ? Math.min(h / 1123, w / 794) : Math.min(w / 1123, h / 794);
+    e.style.transform = `translate(-50%, -50%)${gira ? ' rotate(90deg)' : ''} scale(${s})`;
+  };
+  const tecla = ev => { if (ev.key === 'Escape') fechar(); };
+  const fechar = () => { z.remove(); removeEventListener('resize', caber); removeEventListener('keydown', tecla); HC.zoom = false; hcAgendar(); };
+  caber();
+  addEventListener('resize', caber); addEventListener('keydown', tecla);
+  z.addEventListener('click', fechar);
+  z.querySelector('.hc-zoom-x').focus();
+}
 function hcPintar(slot, k){
   const e = slot.querySelector('.cert-escala'), v = $('hc-vista');
   if (slot.dataset.k === String(k)) return;
@@ -409,7 +433,7 @@ function hcLegenda(){
 }
 function hcAgendar(){
   clearTimeout(HC.timer);
-  if (HC.lista.length < 2 || HC.hover || HC.fora || document.hidden || !$('hc-vista')) return;
+  if (HC.lista.length < 2 || HC.hover || HC.zoom || HC.fora || document.hidden || !$('hc-vista')) return;
   HC.timer = setTimeout(() => hcIr(HC.i + 1, 1), 3000);
 }
 function hcIr(k, dir){
@@ -443,7 +467,8 @@ function desenharMiniCert(){
   hc.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { HC.hover = true; hcAgendar(); } });
   hc.addEventListener('pointerleave', () => { HC.hover = false; hcAgendar(); });
   hc.addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b) return;
+    const b = e.target.closest('button');
+    if (!b) { if (v.contains(e.target)) hcZoom(); return; }
     if (b.classList.contains('ant')) hcIr(HC.i - 1, -1);
     else if (b.classList.contains('prox')) hcIr(HC.i + 1, 1);
     else if (b.parentElement.id === 'hc-dots') { const k = [...b.parentElement.children].indexOf(b); hcIr(k, k < HC.i ? -1 : 1); }
@@ -988,6 +1013,7 @@ function renderHome(){
         <div><h3>Módulo ${m.id}</h3><div class="mt">${m.title}</div><div class="ms">${m.sub || ''}</div></div>
         <div class="mdots">${m.lessons.map(l => `<i class="${D()[l.id]?'on':''}" title="${esc(l.title)}"></i>`).join('')}</div>
         <div class="mfoot"><span>${modCount(m)} de ${m.lessons.length} lições</span><span class="mst">${fin?'✅ Concluído':lock?'🔒 Bloqueado':'▶ Abrir'}</span></div>
+        ${ferramentas(m.id).length ? `<button class="fr-chip" type="button" data-act="ferramentas" data-mod="${m.id}">🧰 Ferramentas do módulo <b>${ferramentas(m.id).length}</b></button>` : ''}
       </div>`; }).join('')}</div>`;
   setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pct); }, 60);
   countUp($('bignum'), pct);
@@ -1137,8 +1163,43 @@ function renderModuloConcluido(){
     <div class="row">${tem ? `<button class="next alt" data-act="tool" data-mod="${mod.id}">🧰 Abrir Code Toolbox</button>` : ''}
     ${next ? `<button class="next" data-act="go" data-id="${next.lessons[0].id}" style="${tstyle(next.id)}">Ir para o Módulo ${next.id} ➜</button>`
       : `${ALUNO && completo(C) ? botaoCertificado() : ''}<button class="next${ALUNO && completo(C) ? ' alt' : ''}" data-act="cursos">Ver outros cursos</button>`}</div></div>
-    ${next ? '' : blocoDepoimento()}`;
+    ${blocoFerramentas(mod)}${next ? '' : blocoDepoimento()}`;
 }
+
+/* "Pratique na ferramenta": apps gratuitos de IA sugeridos para o módulo (opcional, não conta para o progresso). */
+function cardsFerramentas(lista){
+  return `<div class="fr-lista">${lista.map(f => {
+    const passos = Array.isArray(f.pratica) ? `<ol>${f.pratica.map(p => `<li>${esc(p)}</li>`).join('')}</ol>` : `<p>${esc(f.pratica)}</p>`;
+    return `<article class="fr-card">
+      <div class="fr-top"><span class="fr-ic" aria-hidden="true">${esc(f.icone)}</span>
+        <div><h4>${esc(f.nome)}</h4><div class="fr-selos"><span class="fr-plano">${esc(f.plano)}</span>${f.nivel_exigido ? `<span class="fr-nivel">${esc(f.nivel_exigido)}</span>` : ''}</div></div></div>
+      <p class="fr-para">${esc(f.para_que)}</p>
+      <div class="fr-missao"><b>🎯 Missão prática</b>${passos}</div>
+      ${f.cuidado ? `<p class="fr-cuidado">🔒 ${esc(f.cuidado)}</p>` : ''}
+      <a class="next fr-abrir" href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">Abrir ${esc(f.nome)} ↗</a>
+    </article>`;
+  }).join('')}</div>`;
+}
+const AVISO_FERR = 'Opcional: não conta para o progresso. Escreva você mesmo os seus pedidos e não envie dados pessoais de clientes.';
+function blocoFerramentas(mod){
+  const lista = ferramentas(mod.id);
+  if (!lista.length) return '';
+  return `<section class="fr-box rise" aria-label="Pratique na ferramenta"><h3>🧰 Pratique na ferramenta</h3>
+    <p class="nota">Coloque o Módulo ${mod.id} em prática numa ferramenta de IA gratuita. ${AVISO_FERR}</p>${cardsFerramentas(lista)}</section>`;
+}
+function abrirFerramentas(id){
+  const mod = modOf(id), lista = ferramentas(id);
+  if (!mod || !lista.length) return;
+  fecharFerramentas();
+  document.body.insertAdjacentHTML('beforeend', `<div class="qr-modal fr-modal" id="fr-modal" data-act="fechar-fr" role="dialog" aria-modal="true" aria-labelledby="fr-tit">
+    <div class="fr-dlg" style="${tstyle(mod.id)}">
+      <button class="nfechar" type="button" data-act="fechar-fr" aria-label="Fechar">✕</button>
+      <div class="eyebrow">Módulo ${mod.id}: ${esc(mod.title)}</div>
+      <h2 class="fr-tit" id="fr-tit">🧰 Pratique na ferramenta</h2>
+      <p class="nota">${AVISO_FERR}</p>${cardsFerramentas(lista)}
+    </div></div>`);
+}
+function fecharFerramentas(){ const m = $('fr-modal'); if (m) m.remove(); }
 
 function renderLicao(){
   const m = $('main'), L = byId(S.cur), mod = modOf(L.mod), d = D();
@@ -1609,6 +1670,7 @@ document.addEventListener('click', e => {
   else if (a === 'qr') abrirQr();
   else if (a === 'indicar') indicarAmigo();
   else if (a === 'fechar-qr') { if (t === e.target || t.classList.contains('nfechar')) fecharQr(); }
+  else if (a === 'fechar-fr') { if (t === e.target || t.classList.contains('nfechar')) fecharFerramentas(); }
   else if (a === 'teste-nivel') abrirTeste();
   else if (a === 'fechar-teste') { if (t === e.target || t.classList.contains('nfechar')) fecharTeste(); }
   else if (a === 'tn-resp' && TN && !TN.espera) {
@@ -1644,6 +1706,7 @@ document.addEventListener('click', e => {
     const nx = m.lessons.find(l => !D()[l.id] && unlocked(l.id)) || m.lessons[0];
     goLesson(nx.id);
   }
+  else if (a === 'ferramentas') abrirFerramentas(parseInt(t.dataset.mod,10));
   else if (a === 'go') { const id = t.dataset.id; if (unlocked(id)) goLesson(id); }
   else if (a === 'spin') { t.classList.remove('spin'); void t.offsetWidth; t.classList.add('spin'); setTimeout(() => t.classList.remove('spin'), 750); }
   else if (a === 'ans') responder(parseInt(t.dataset.i,10));
@@ -1704,7 +1767,7 @@ document.addEventListener('input', e => {
 }));
 document.addEventListener('focusout', e => { if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') buscarCep(e.target); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { fecharQr(); fecharTeste(); fecharListaCursos(); }
+  if (e.key === 'Escape') { fecharQr(); fecharTeste(); fecharListaCursos(); fecharFerramentas(); }
   if (e.key === 'Escape') { TB.open = false; renderToolbox(); renderProgress(); closeMenu(); }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('role') === 'button') { e.preventDefault(); e.target.click(); }
 });
