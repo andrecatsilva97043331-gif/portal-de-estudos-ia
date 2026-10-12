@@ -115,7 +115,7 @@ function renderCursos(){
       <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
       <p class="hp">Lições curtas, casos de clientes de verdade e projetos práticos. Faça seu cadastro gratuito e comece agora.</p>
       <div class="chips"><span class="chip">🎓 ${totalCursos} ${totalCursos === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
-      <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}</div>
+      <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}${cartaoFundador('fd-cel')}</div>
       <div class="hv-acoes">${botaoIndicar()}
       <button class="qr-card so-pc" type="button" data-act="qr" title="Ver o QR maior"><span class="qr-tit">Estude no <span class="grad">celular</span></span><span class="qr-moldura"><span class="qr-in"><img src="assets/qr-app.svg" alt="QR code do Portal de Estudos IA" width="170" height="170"><i class="qr-scan" aria-hidden="true"></i></span></span></button></div>
       ${PORTAL.cert ? `<div class="hero-cert" id="hc"><div class="cert-vista hc-car" id="hc-vista" role="group" aria-roledescription="carrossel" aria-label="Exemplos dos certificados que você pode ganhar">
@@ -196,7 +196,7 @@ function renderCursos(){
   };
   const outros = CURSOS.filter(c => !c.projeto_final && c.trilha !== 'renda' && !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
   $('main').removeAttribute('style');
-  $('main').innerHTML = topo + cartaoFundador() + barraAtalhos() + `<section class="trilha" id="trilha">
+  $('main').innerHTML = topo + cartaoFundador(ALUNO || MASTER ? '' : 'fd-pc') + barraAtalhos() + `<section class="trilha" id="trilha">
       <h2 class="sec-t">Trilha de IA</h2>
       <p class="tsub">Do zero ao avançado em 3 níveis. Siga na ordem ou escolha só o curso de que você precisa.</p>
       ${chamadaTeste()}
@@ -315,7 +315,7 @@ function mensagemIndicacao(){
     + `Cadastro em 2 minutos. Bora estudar junto? 👇\n${u}`;
 }
 function indicarAmigo(){ window.open('https://wa.me/?text=' + encodeURIComponent(mensagemIndicacao()), '_blank', 'noopener'); }
-const cartaoFundador = () => `<a class="fundador rise" href="historia.html"><img src="assets/andre.jpg" alt="" width="72" height="72" loading="lazy"><span class="fd-tx"><small>Conheça o fundador</small><b>Do caderno compartilhado ao futuro da IA</b><span>A história de André Luiz, que dividia um caderno e um lápis com uma de suas irmãs para poderem estudar, e hoje fundou o Portal de Estudos IA.</span></span><span class="fd-cta">Ler minha história ➜</span></a>`;
+const cartaoFundador = (cls = '') => `<a class="fundador rise ${cls}" href="historia.html"><img src="assets/andre.jpg" alt="" width="72" height="72" loading="lazy"><span class="fd-tx"><small>Conheça o fundador</small><b>Do caderno compartilhado ao futuro da IA</b><span>A história de André Luiz, que dividia um caderno e um lápis com uma de suas irmãs para poderem estudar, e hoje fundou o Portal de Estudos IA.</span></span><span class="fd-cta">Ler minha história ➜</span></a>`;
 const botaoIndicar = () => `<button class="indica" type="button" data-act="indicar"><span class="ind-ic" aria-hidden="true">🎁</span><span class="ind-tx"><b>Indique um amigo</b><small>Envie o convite pelo WhatsApp</small></span><span class="ind-seta" aria-hidden="true">➜</span></button>`;
 
 /* Ícone Cursos do rodapé (celular): lista compacta com os ícones dos cursos. */

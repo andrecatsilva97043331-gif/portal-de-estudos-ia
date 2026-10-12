@@ -32,8 +32,10 @@ a.logo{text-decoration:none;}
 .fundador small{display:block; font:700 10.5px 'JetBrains Mono',monospace; letter-spacing:2px; text-transform:uppercase; color:#22d3ee;}
 .fundador b{display:block; margin:3px 0; font-size:16.5px;}
 .fundador .fd-tx span{display:block; font-size:13.5px; color:var(--muted,#9d9db5); line-height:1.45;}
-.fundador .fd-cta{flex:none; padding:10px 16px; border-radius:12px; font-weight:700; font-size:14px; color:#04040a; background:linear-gradient(135deg,#22d3ee,#c084fc);}
-@media (max-width:640px){ .fundador{flex-wrap:wrap;} .fundador .fd-cta{width:100%; text-align:center;} }
+.fundador .fd-cta{flex:none; box-sizing:border-box; padding:10px 16px; border-radius:12px; font-weight:700; font-size:14px; white-space:nowrap; text-align:center; color:#04040a; background:linear-gradient(135deg,#22d3ee,#c084fc);}
+@media (max-width:640px){ .fundador{flex-wrap:wrap;} .fundador .fd-cta{flex:1 1 100%; max-width:100%;} }
+.fundador.fd-cel{display:none;}
+@media (max-width:900px){ .fundador.fd-cel{display:flex; margin:16px 0 0;} .fundador.fd-pc{display:none;} }
 .step{display:flex; gap:14px; align-items:flex-start; padding:16px; border-radius:18px; border:1px solid color-mix(in srgb,var(--c) 35%,#16161e); background:linear-gradient(155deg,color-mix(in srgb,var(--c) 14%,#050507),#050507 70%);}
 .step b{font-family:var(--font-d); font-size:16px;}
 .step p{margin:4px 0 0; font-size:14px; color:var(--muted); line-height:1.45;}
