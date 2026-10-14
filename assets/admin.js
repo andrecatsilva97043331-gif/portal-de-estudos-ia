@@ -441,20 +441,25 @@ function renderPainel(){
       <button class="sbtn" data-act="atualizar">🔄 Atualizar</button>
       ${ajuda('ferramentas')}
     </div>
-    <div id="confirmacoes"></div>
-    <h2 class="sec-t">📈 Gráficos ${ajuda('graficos')}</h2>
+    <section class="dsec rise" id="confirmacoes" style="--c:#4ade80;--c2:#22d3ee"></section>
+    <h2 class="sec-t" style="--c:#22d3ee;--c2:#c084fc">📈 Gráficos ${ajuda('graficos')}</h2>
     <div class="charts" id="graficos"></div>
-    <h2 class="sec-t">📲 Central de avisos no WhatsApp ${ajuda('avisos')}</h2>
-    <div class="card avc rise" id="avisos"></div>
-    <h2 class="sec-t"><span id="titulo-tabela">Alunos</span> ${ajuda('alunos')}</h2>
-    <div class="card tcard" id="tabela"></div>
-    <h2 class="sec-t"><span id="titulo-cert">🎓 Certificados emitidos</span> ${ajuda('certificados')}</h2>
-    <p class="cert-sync" id="cert-sync">${esc(SYNC)}</p>
-    <div class="card tcard" id="certificados"></div>
-    <h2 class="sec-t">📣 Divulgação ${ajuda('divulgacao')}</h2>
-    <div class="card avc rise" id="divulgacao"></div>
-    <h2 class="sec-t"><span id="titulo-dep">💬 Depoimentos</span> ${ajuda('depoimentos')}</h2>
-    <div class="card tcard" id="depoimentos"></div>`;
+    <section class="dsec rise" style="--c:#22d3ee;--c2:#c084fc">
+      <h2 class="sec-t">📲 Central de avisos no WhatsApp ${ajuda('avisos')}</h2>
+      <div id="avisos"></div></section>
+    <section class="dsec rise" style="--c:#c084fc;--c2:#ec4899">
+      <h2 class="sec-t"><span id="titulo-tabela">Alunos</span> ${ajuda('alunos')}</h2>
+      <div id="tabela"></div></section>
+    <section class="dsec rise" style="--c:#4ade80;--c2:#22d3ee">
+      <h2 class="sec-t"><span id="titulo-cert">🎓 Certificados emitidos</span> ${ajuda('certificados')}</h2>
+      <p class="cert-sync" id="cert-sync">${esc(SYNC)}</p>
+      <div class="dtab" id="certificados"></div></section>
+    <section class="dsec rise" style="--c:#ec4899;--c2:#c084fc">
+      <h2 class="sec-t">📣 Divulgação ${ajuda('divulgacao')}</h2>
+      <div id="divulgacao"></div></section>
+    <section class="dsec rise" style="--c:#22d3ee;--c2:#3b82f6">
+      <h2 class="sec-t"><span id="titulo-dep">💬 Depoimentos</span> ${ajuda('depoimentos')}</h2>
+      <div id="depoimentos"></div></section>`;
   document.querySelectorAll('.stat b[data-n]').forEach(contar);
   renderConfirmacoes();
   renderTabela();
@@ -618,7 +623,7 @@ function renderConfirmacoes(){
   const faltam = pend.length - pediram.length;
   if (!pend.length) { el.innerHTML = ''; return; }
   el.innerHTML = `<h2 class="sec-t">✅ Confirmações de WhatsApp ${ajuda('confirmacoes')} <small style="color:var(--muted);font-weight:400">· ${pediram.length} aguardando você</small></h2>
-    <div class="card avc rise">
+    <div>
       <p class="nota" style="margin:0 0 12px">Quando o aluno toca em "Enviar confirmação", chega no seu WhatsApp uma mensagem com o código. Confira se o <b>número de quem mandou</b> e o <b>código</b> batem com os daqui e clique em Confirmar.</p>
       <div class="confs">${pediram.map(a => {
         const wa = linkWhats(a.telefone, a.pais);
@@ -647,9 +652,9 @@ function renderTabela(){
     return;
   }
   const ordem = rs.slice().sort((x, y) => String(x.a.nome || '').localeCompare(String(y.a.nome || ''), 'pt-BR', { sensitivity:'base' }));
-  $('tabela').innerHTML = `<table class="atbl"><thead><tr><th>Aluno</th></tr></thead><tbody>${ordem.map(({ a }) =>
-      `<tr data-act="aluno" data-id="${esc(a.id)}"><td><div class="pessoa"><button type="button" class="nome-aluno" data-act="aluno" data-id="${esc(a.id)}" title="Ver informações do aluno">${esc(a.nome)}</button><span class="ver-m" aria-hidden="true">›</span></div></td></tr>`
-    ).join('')}</tbody></table>`;
+  $('tabela').innerHTML = `<div class="alist">${ordem.map(({ a }, i) =>
+      `<button type="button" class="aluno-it" data-act="aluno" data-id="${esc(a.id)}" style="--d:${Math.min(i, 20) * 0.02}s" title="Ver informações do aluno"><span>${esc(a.nome)}</span><i aria-hidden="true">›</i></button>`
+    ).join('')}</div>`;
 }
 
 function abrirAluno(id){
