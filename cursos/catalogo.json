@@ -192,8 +192,8 @@
     "ordem": 15,
     "recomendado_antes": ["base-profissional"],
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "primeiros-clientes",
@@ -206,8 +206,8 @@
     "ordem": 16,
     "recomendado_antes": ["seu-primeiro-servico"],
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "formalizando-mei-e-financas",
@@ -220,8 +220,8 @@
     "ordem": 17,
     "recomendado_antes": ["seu-primeiro-servico", "primeiros-clientes"],
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "projeto-final-ia",

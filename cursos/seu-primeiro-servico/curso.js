@@ -174,6 +174,76 @@ const MODULES = [
             {t:'Trocar por um negócio fictício, com nome inventado, e identificar a peça como projeto de treino.', ok:true, why:'A amostra continua mostrando a habilidade dele, sem usar marca de terceiros nem enganar ninguém.'}
           ]}
       ]},
+    { id:'1.7', title:'Olhar a concorrência para se diferenciar, sem copiar', min:14,
+      body:[
+        `<div class="card analogy"><h3>🔭 A volta na feira antes de montar a banca</h3><p>O feirante novo não monta a banca e sai gritando preço. Antes, dá uma volta na feira: vê quem vende o mesmo, quanto cobra, onde a fila é grande e do que os fregueses reclamam ("o tomate daquela banca vem sempre amassado"). Ele não copia a banca do vizinho: procura o espaço que ninguém está ocupando bem. Olhar a concorrência é dar essa volta na feira antes de oferecer o seu serviço.</p></div>`,
+        `<div class="term"><b>Concorrente</b> = quem resolve o mesmo problema para o mesmo cliente, inclusive o "sobrinho que faz de graça" ou o próprio dono fazendo sozinho. <b>Lacuna</b> = uma necessidade que os concorrentes atendem mal ou não atendem. <b>Informação pública</b> = o que qualquer pessoa vê: perfis, páginas, avaliações e anúncios.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a Bruna e os cardápios digitais</h3><p>A Bruna validou que lanchonetes do bairro sofrem com cardápio desatualizado. Antes de montar a oferta, ela observou 5 concorrentes, só com informação pública: perfis de quem oferece o serviço, avaliações de clientes e o que os donos de lanchonete contaram nas conversas.</p>
+          <div class="tw"><table class="tbl"><tr><th>Concorrente</th><th>O que entrega</th><th>Preço visível</th><th>Reclamação comum</th></tr><tr><td>Agência do centro</td><td>Cardápio, site e redes</td><td>Só sob consulta</td><td>"Caro e demorado para mudar um preço"</td></tr><tr><td>Freelancer A</td><td>Cardápio em PDF bonito</td><td>Baixo</td><td>"Para mudar o preço, tenho que pedir e pagar de novo"</td></tr><tr><td>Aplicativo de cardápio</td><td>Sistema pronto</td><td>Mensalidade</td><td>"Complicado, desisti"</td></tr><tr><td>Sobrinho do dono</td><td>Arte no celular</td><td>De graça</td><td>"Some quando eu preciso"</td></tr><tr><td>O próprio dono</td><td>Foto do quadro de giz</td><td>Zero</td><td>"Os clientes perguntam tudo no WhatsApp"</td></tr></table></div>
+          <p>O padrão salta aos olhos: quase ninguém deixa o dono <b>atualizar o preço sozinho</b>. Essa é a lacuna.</p></div>`,
+        `<div class="flows"><div class="flow old"><h4>❌ Oferta antes da pesquisa</h4><p>"Faço cardápio digital bonito e barato." Problemas: é igual ao freelancer A, compete só por preço e não resolve a reclamação que mais apareceu.</p></div><div class="flow new"><h4>✅ Oferta depois da pesquisa</h4><p>"Cardápio digital para lanchonetes do bairro, que você mesmo atualiza pelo celular. Entrego com uma aula de 20 minutos, em 5 dias úteis." Diferencial verdadeiro, ligado a uma dor real.</p></div></div>`,
+        `<div class="card"><h3>O passo a passo</h3><ol class="golden"><li><span>Liste de 3 a 5 concorrentes, incluindo as alternativas "caseiras" (o dono, o parente, a planilha de papel).</span></li><li><span>Para cada um, anote só o que é público: o que entrega, preço quando aparece, prazo e o que os clientes elogiam ou reclamam.</span></li><li><span>Procure o que se repete nas reclamações: ali costuma estar a lacuna.</span></li><li><span>Escreva um diferencial que você consegue cumprir de verdade e que responda a essa lacuna.</span></li></ol></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Copiar textos, artes ou a página de um concorrente:</b> além de antiético, pode violar direitos autorais, e o cliente percebe. Inspire-se na estrutura, crie o seu conteúdo. <b>Fingir ser cliente para arrancar material ou propostas:</b> use o que é público e o que você ouviu nas conversas honestas. <b>Achar ótimo não ter concorrente nenhum:</b> às vezes é sinal de que ninguém paga por aquilo; volte às conversas de validação. <b>Competir só por preço:</b> sempre haverá alguém mais barato, inclusive o "de graça". <b>Falar mal dos outros:</b> fale do que você faz bem.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (cerca de 5 minutos)</h3><p>Use o <b>Google Gemini</b> como parceiro de organização, não como fonte de dados:</p><ol class="golden"><li><span>Escreva, com as suas palavras, o que você observou de 3 concorrentes do seu nicho (sem nomes de pessoas).</span></li><li><span>Peça que ele organize em uma tabela e que te faça perguntas sobre o que ficou faltando.</span></li><li><span>Desconfie de preços ou fatos sobre empresas que ele trouxer por conta própria: a IA pode inventar. Vale o que você viu.</span></li><li><span>Escreva você mesmo uma frase de diferencial que responda à lacuna que mais se repetiu.</span></li></ol><p>🔒 Não cole conversas privadas, prints com telefone nem dados de pessoas com quem você conversou.</p></div>`
+      ],
+      ch:[
+        { who:'Fábio, 30 anos, quer oferecer posts para pet shops', says:'Achei uma social media que faz posts lindos para pet shops. Vou copiar as legendas e as artes dela, só trocando o nome, e cobrar menos.',
+          q:'Qual é o melhor caminho?',
+          opts:[
+            {t:'Copiar e cobrar menos, porque assim ele já começa com um portfólio bonito.', ok:false, why:'Copiar trabalho alheio é antiético, pode violar direitos autorais e não mostra a habilidade real dele.'},
+            {t:'Observar o que ela entrega e do que os clientes de pet shop reclamam, e criar uma oferta própria que responda a uma lacuna.', ok:true, why:'A concorrência serve para achar espaço livre, não para copiar. Um diferencial próprio é mais difícil de imitar.'},
+            {t:'Desistir, porque já existe alguém muito bom no nicho.', ok:false, why:'Ter concorrente costuma indicar que existe demanda. O caminho é se diferenciar, não desistir.'}
+          ]},
+        { who:'Camila, 27 anos, pesquisou serviços de agenda para salões', says:'Nas avaliações e conversas, quase todas as donas de salão reclamam que o sistema que usam é complicado e ninguém ensina a mexer.',
+          q:'Como ela pode usar essa descoberta?',
+          opts:[
+            {t:'Ignorar, porque reclamação de cliente dos outros não é problema dela.', ok:false, why:'Reclamação repetida dos concorrentes é exatamente a lacuna que pode virar diferencial.'},
+            {t:'Oferecer o mesmo sistema complicado, só que mais barato.', ok:false, why:'Mais barato não resolve a dor que mais apareceu: a dificuldade de uso.'},
+            {t:'Incluir na oferta uma configuração simples e um treino curto para a dona e a equipe, e dizer isso com clareza.', ok:true, why:'Ela transforma a reclamação repetida em um diferencial verdadeiro e cumprível.'}
+          ]},
+        { who:'Otávio, 35 anos, não achou ninguém oferecendo planilhas para borracharias na cidade', says:'Ninguém faz isso aqui! Vou investir em site e logo amanhã, porque o mercado é todo meu.',
+          q:'O que ele deveria fazer antes de investir?',
+          opts:[
+            {t:'Investir logo, antes que alguém tenha a mesma ideia.', ok:false, why:'Ausência de concorrentes não prova demanda. Ele pode gastar num serviço que ninguém paga.'},
+            {t:'Conferir com borracheiros se eles têm o problema, como resolvem hoje e se já gastaram com isso.', ok:true, why:'Sem concorrente, a validação com pessoas reais fica ainda mais importante: pode haver um motivo para o espaço estar vazio.'},
+            {t:'Mudar de nicho imediatamente, porque sem concorrente não existe mercado.', ok:false, why:'Também não dá para concluir isso sem conversar. O espaço vazio pode ser oportunidade ou falta de demanda.'}
+          ]}
+      ]},
+    { id:'1.8', title:'Seguir, ajustar ou trocar: decidir com o que você aprendeu', min:14,
+      body:[
+        `<div class="card analogy"><h3>🚦 O GPS que recalcula a rota</h3><p>O motorista de aplicativo não insiste na rua bloqueada só porque já tinha decidido passar por ela, e também não volta para casa no primeiro trânsito. O GPS olha a situação real e diz: siga, desvie ou mude o caminho. Depois das conversas e da amostra, você tem dados reais na mão. Agora é hora de recalcular a rota com eles, e não com o entusiasmo ou o medo.</p></div>`,
+        `<div class="term"><b>Evidência</b> = algo que você viu ou ouviu, e não algo que imagina. <b>Sinal de compra</b> = pedir preço, perguntar quando você começa, indicar alguém. <b>Seguir</b> = manter serviço e nicho. <b>Ajustar</b> = mudar o formato ou o foco, mantendo a dor. <b>Trocar</b> = escolher outra ideia da sua lista.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o Renan e as academias</h3><p>O Renan queria fazer posts para academias de bairro. Conversou com 5 donos e fez uma amostra. Primeiro ele decidiu "no sentimento": "todo mundo achou legal, vou seguir". Depois montou a tabela de evidências:</p>
+          <div class="tw"><table class="tbl"><tr><th>Evidência</th><th>Resultado</th><th>O que indica</th></tr><tr><td>Contaram um caso concreto com posts</td><td>1 de 5</td><td>Dor fraca</td></tr><tr><td>Já gastaram tempo ou dinheiro com posts</td><td>1 de 5</td><td>Pouca prioridade</td></tr><tr><td>Reclamaram de mensalidade atrasada e de cobrar aluno pelo WhatsApp</td><td>4 de 5</td><td>Dor forte, que ele não procurava</td></tr><tr><td>Sinal de compra</td><td>2 pediram "você faz isso das cobranças?"</td><td>Interesse real</td></tr><tr><td>Amostra de posts</td><td>Levou 6 h e ele gostou de fazer</td><td>Sabe e gosta, mas a dor é outra</td></tr></table></div>
+          <p><b>Decisão:</b> ajustar. Mesmo nicho, outra dor: mensagens e uma planilha simples para lembrar e cobrar mensalidades com educação. Ele faz uma nova amostra curta e volta a 2 donos para mostrar.</p></div>`,
+        `<div class="card"><h3>Uma regra simples para decidir</h3><ol class="golden"><li><span><b>Seguir</b> quando a maioria das pessoas (por exemplo, 3 de 5) conta casos concretos, já tentou resolver e aparece ao menos um sinal de compra.</span></li><li><span><b>Ajustar</b> quando a dor existe, mas é outra, ou o formato não serve (preço, prazo, jeito de entregar).</span></li><li><span><b>Trocar</b> quando quase ninguém lembra de um caso concreto ou quando a amostra mostrou que você detesta o trabalho.</span></li><li><span>Defina um limite antes de começar: por exemplo, 3 semanas e nenhum gasto grande até a decisão.</span></li></ol></div>`,
+        `<div class="why-chain"><b>Por que decidir por evidência?</b> Porque elogio é educação, não compromisso. Sem tabela, você ouve o que quer ouvir. Ouvindo o que quer, insiste numa ideia fraca. Insistindo, gasta meses e dinheiro. Com a tabela, os mesmos 5 encontros viram uma decisão clara e rápida.</div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Decidir pelo "achei legal":</b> conte só casos, tentativas e sinais de compra. <b>Trocar de ideia a cada "não":</b> um não é uma pessoa; olhe o conjunto. <b>Insistir por apego</b> porque já contou para todo mundo: mudar de rota com base em dados é maturidade, não fracasso. <b>Gastar com logo, site ou equipamento antes de decidir:</b> a decisão vem antes do investimento.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (cerca de 5 minutos)</h3><p>Use o <b>Tally</b> (o formulário de registro do módulo):</p><ol class="golden"><li><span>Acrescente ao seu formulário um campo "contou caso concreto? (sim/não)" e outro "sinal de compra? (qual)".</span></li><li><span>Registre ou atualize as conversas que já fez, uma resposta por pessoa.</span></li><li><span>Abra a visão de respostas e conte quantas vezes cada dor apareceu.</span></li><li><span>Escreva sua decisão (seguir, ajustar ou trocar) e o motivo em duas linhas.</span></li></ol><p>🔒 Use só o primeiro nome ou um apelido; não registre telefone, endereço nem informações sensíveis de quem conversou com você.</p></div>`
+      ],
+      ch:[
+        { who:'Sueli, 44 anos, testou organizar pedidos de confeitarias', says:'Das 5 confeiteiras, 4 me contaram um pedido perdido no último mês, 3 já tentaram caderno e planilha, e uma perguntou quanto eu cobraria.',
+          q:'Qual é a decisão mais coerente?',
+          opts:[
+            {t:'Trocar de ideia, porque uma pessoa não demonstrou interesse.', ok:false, why:'Um caso isolado não muda o conjunto. As evidências da maioria apontam para uma dor real.'},
+            {t:'Seguir com o serviço, porque há casos concretos, tentativas anteriores e um sinal de compra.', ok:true, why:'É exatamente o padrão que justifica seguir: dor repetida, gente que já tentou resolver e alguém perguntando preço.'},
+            {t:'Fazer mais 30 conversas antes de decidir qualquer coisa.', ok:false, why:'Mais conversas ajudam, mas ela já tem evidência suficiente para dar o próximo passo com uma amostra ou piloto.'}
+          ]},
+        { who:'Wagner, 29 anos, queria fazer sites para oficinas', says:'Os mecânicos não ligaram para site, mas quase todos reclamaram que perdem orçamentos anotados em papel. Já gastei com domínio e logo do meu serviço de sites.',
+          q:'O que ele deveria fazer?',
+          opts:[
+            {t:'Insistir nos sites, porque já investiu dinheiro.', ok:false, why:'Dinheiro gasto não volta por insistir. Decidir pelo que já gastou leva a gastar ainda mais numa ideia fraca.'},
+            {t:'Desistir de oficinas e procurar outro nicho do zero.', ok:false, why:'O nicho mostrou uma dor forte. Jogar fora essa descoberta seria desperdício.'},
+            {t:'Ajustar: manter o nicho e testar um serviço para organizar orçamentos, com uma amostra curta.', ok:true, why:'A dor apareceu com clareza no mesmo nicho. Ajustar o formato aproveita o que ele aprendeu.'}
+          ]},
+        { who:'Lívia, 31 anos, fez a amostra de edição de vídeos curtos para clínicas', says:'Havia demanda, mas levei 9 horas, detestei cada minuto e passei a semana adiando. As pessoas gostaram do resultado.',
+          q:'Como ela deve pesar isso?',
+          opts:[
+            {t:'Considerar trocar para outra ideia da lista que ela goste de fazer, porque não gostar do trabalho costuma levar ao abandono.', ok:true, why:'Demanda sem gosto pelo trabalho vira adiamento e queda de qualidade. O critério "gosto de fazer" também é evidência.'},
+            {t:'Seguir de qualquer jeito, porque a demanda é o único critério que importa.', ok:false, why:'Ela mesma registrou que adiou a semana inteira. Um serviço que você detesta raramente se sustenta.'},
+            {t:'Esconder dos clientes que leva 9 horas e cobrar como se levasse 2.', ok:false, why:'Além de não resolver o problema do gosto, cobrar por 2 horas o que leva 9 é trabalhar no prejuízo.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: seu mapa de habilidades e o serviço escolhido', min:30,
       body:[
         `<div class="card"><p>Agora é com você. Neste projeto você vai sair do "acho que poderia fazer alguma coisa" para uma escolha concreta, testada e com motivos. Use o que aprendeu: as três listas, os cinco critérios, a validação sem induzir, a amostra cronometrada e a frase de posicionamento. A IA pode ajudar a gerar ideias e revisar textos, mas as notas, as conversas, a amostra e a decisão final são suas.</p></div>`
@@ -362,6 +432,75 @@ const MODULES = [
             {t:'Insistir que ele precisa decidir agora, senão o preço sobe.', ok:false, why:'Pressionar com ameaça de preço, sem que isso seja verdade, gera desconfiança.'},
             {t:'Agradecer, perguntar se ficou alguma dúvida e combinar um dia para retomar a conversa.', ok:true, why:'Respeitar o tempo do cliente e combinar um retorno mantém a porta aberta sem pressão.'},
             {t:'Não dizer nada e nunca mais procurar o Seu Arnaldo.', ok:false, why:'"Vou pensar" não é "não". Um retorno combinado é normal e esperado.'}
+          ]}
+      ]},
+    { id:'2.7', title:'Pacotes: versão essencial, completa e extras', min:14,
+      body:[
+        `<div class="card analogy"><h3>🧱 O açaí de 300, 500 e 700 ml</h3><p>A loja de açaí não tem um copo só. Tem três tamanhos e uma lista de adicionais com preço na parede. Quem tem pouco dinheiro leva o pequeno e sai satisfeito; quem quer mais escolhe o grande; e ninguém precisa pedir desconto, porque cada um escolhe o que cabe no bolso. Pacotes fazem o mesmo pelo seu serviço.</p></div>`,
+        `<div class="term"><b>Pacote</b> = um conjunto fechado de entregáveis, com prazo e preço. <b>Essencial</b> = a menor versão que ainda resolve o problema de verdade. <b>Completo</b> = a versão com mais itens para quem quer mais. <b>Extra</b> = item avulso, com preço já definido, para pedidos além do pacote.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: mensagens prontas para salões</h3><p><b>Antes:</b> a Tainá tinha um pacote único de R$ 330. Problemas: salões menores achavam caro e pediam desconto, ela cedia no impulso e ficava abaixo do custo; e os pedidos de "só mais uma mensagem" saíam de graça.</p><p><b>Depois:</b> ela usou o método da lição 2.2 para cada pacote. Números só para ilustrar: hora de R$ 40, R$ 15 de custos por trabalho (ferramentas e internet) e reserva de 10% para impostos e imprevistos (o seu percentual depende do seu caso; confirme com um contador).</p>
+          <div class="tw"><table class="tbl"><tr><th>Pacote</th><th>O que inclui</th><th>Horas reais</th><th>Conta</th><th>Preço</th></tr><tr><td>Essencial</td><td>6 mensagens + guia em texto, 1 rodada de ajustes</td><td>4 h</td><td>(4 × 40 + 15) × 1,10 = 192,50</td><td>R$ 195</td></tr><tr><td>Completo</td><td>12 mensagens + guia + aula de 30 min pelo celular, 1 rodada de ajustes</td><td>7 h</td><td>(7 × 40 + 15) × 1,10 = 324,50</td><td>R$ 330</td></tr><tr><td>Extra: rodada de ajustes</td><td>Mais uma rodada, todos os pontos juntos</td><td>1 h</td><td>1 × 40 × 1,10 = 44</td><td>R$ 45</td></tr></table></div>
+          <p>Agora, quando o salão diz "está caro", ela não dá desconto: mostra o Essencial. E quando pede "mais uma rodada", já existe preço.</p></div>`,
+        `<div class="card"><h3>Regras para montar os seus pacotes</h3><ol class="golden"><li><span>No máximo 2 ou 3 pacotes. Mais que isso confunde e trava a decisão.</span></li><li><span>A diferença entre eles é de entregáveis contáveis, e não de "mais dedicação" ou "atendimento VIP".</span></li><li><span>O Essencial precisa resolver o problema de verdade. Pacote "isca", feito para ser ruim e empurrar o caro, é enganação.</span></li><li><span>Todo pacote, inclusive o menor, fica acima do seu piso de custo.</span></li><li><span>Os extras mais pedidos ganham preço publicado antes de alguém pedir.</span></li></ol></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Inflar o Completo</b> com itens que ninguém usa só para parecer valioso: ofereça o que os clientes pediram nas conversas. <b>Calcular só o Completo</b> e "chutar" o Essencial pela metade do preço: refaça a conta com as horas reais de cada um. <b>Pacotes com nomes bonitos e conteúdo vago</b> ("Bronze, Prata, Ouro") sem dizer o que está dentro. <b>Esquecer o prazo</b> de cada pacote: o Completo costuma levar mais dias.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (cerca de 5 minutos)</h3><p>Use o <b>Google Planilhas</b>, de preferência a planilha de preço que você já começou:</p><ol class="golden"><li><span>Crie uma coluna para cada pacote (Essencial e Completo) e uma linha para cada extra.</span></li><li><span>Preencha as horas com o tempo cronometrado na sua amostra, e não com o tempo que gostaria de levar.</span></li><li><span>Monte a fórmula você mesmo: horas × valor da hora + custos, depois a sua reserva.</span></li><li><span>Confira se algum pacote ficou abaixo do piso e escreva, em uma linha, o que diferencia um do outro.</span></li></ol><p>🔒 A planilha de preço não precisa de nenhum dado de cliente. Se usar um caso real como base, troque o nome por um apelido.</p></div>`
+      ],
+      ch:[
+        { who:'Mateus, 26 anos, faz cardápios digitais', says:'Criei cinco pacotes: Bronze, Prata, Ouro, Platina e Diamante. A diferença é o nível de dedicação.',
+          q:'Qual é o melhor ajuste?',
+          opts:[
+            {t:'Manter os cinco, porque mais opções agradam a todos.', ok:false, why:'Opções demais confundem o cliente e travam a decisão, ainda mais sem diferença clara.'},
+            {t:'Reduzir para 2 ou 3 pacotes e diferenciar por entregáveis contáveis, como número de itens, aula de uso e prazo.', ok:true, why:'Poucos pacotes, com diferenças que o cliente consegue conferir, facilitam a escolha e evitam discussão depois.'},
+            {t:'Trocar os nomes por outros mais chamativos.', ok:false, why:'O problema não é o nome, e sim a quantidade e a diferença vaga entre os pacotes.'}
+          ]},
+        { who:'Rosana, 38 anos, calculou o Completo em R$ 400 pelas horas reais', says:'Para o Essencial vou cobrar R$ 120, só para atrair. Mas ele leva 5 horas, e minha hora vale R$ 40.',
+          q:'O que a conta mostra?',
+          opts:[
+            {t:'Que o Essencial fica abaixo do piso: só as horas já somam R$ 200. Ela precisa reduzir os entregáveis ou subir o preço.', ok:true, why:'5 × 40 = R$ 200 antes de custos e reserva. Pacote abaixo do piso significa pagar para trabalhar.'},
+            {t:'Que está certo, porque o Essencial serve só para atrair clientes.', ok:false, why:'Se a maioria escolher o Essencial, ela trabalha no prejuízo. Todo pacote precisa cobrir o custo.'},
+            {t:'Que ela deve tirar o Essencial e oferecer só o Completo.', ok:false, why:'Ter uma versão menor é útil para quem tem orçamento curto. O ajuste é na conta, não em eliminar a opção.'}
+          ]},
+        { who:'Seu Ademir, dono de uma barbearia, contratou o pacote Essencial de mensagens', says:'Ficou bom! Dá para fazer mais duas mensagens, para Dia dos Pais e Natal?',
+          q:'Como responder do jeito mais profissional?',
+          opts:[
+            {t:'Fazer de graça, porque são só duas.', ok:false, why:'Extras sem cobrança viram hábito e desvalorizam o pacote que ele pagou.'},
+            {t:'Dizer que só faz se ele trocar para o Completo.', ok:false, why:'Forçar a troca de pacote por um pedido pequeno soa como pressão. O extra existe para isso.'},
+            {t:'Agradecer e informar o preço e o prazo do extra "mensagem avulsa", que já estava definido.', ok:true, why:'Extra com preço publicado torna a conversa simples, justa e sem constrangimento para os dois lados.'}
+          ]}
+      ]},
+    { id:'2.8', title:'Receber com segurança: sinal, Pix, recibo e atraso', min:14,
+      body:[
+        `<div class="card analogy"><h3>🧾 A costureira do bairro</h3><p>A costureira tira as medidas e pede metade para comprar o tecido. Anota tudo no caderno: nome, peça, valor, quanto já foi pago. Na prova final, recebe o restante e entrega a roupa. Se alguém atrasa para buscar, ela liga com educação, sem escândalo na porta da loja. Receber bem é isso: combinado claro, registro e cobrança respeitosa.</p></div>`,
+        `<div class="term"><b>Sinal</b> = parte do pagamento antes de começar. <b>Comprovante</b> = prova de que o pagamento foi feito. <b>Recibo</b> = documento simples em que você declara que recebeu um valor. <b>Nota fiscal de serviço</b> = documento fiscal emitido por quem é formalizado, conforme as regras da sua prefeitura.</div>`,
+        `<div class="card"><h3>Do "fechado" ao "pago" em cinco passos</h3><ol class="golden"><li><span><b>Combinado:</b> valor, sinal, data do restante e forma de pagamento já escritos (lição 2.3).</span></li><li><span><b>Sinal confirmado:</b> só comece depois de ver o dinheiro no aplicativo do seu banco. Print de comprovante pode ser de um Pix agendado, cancelado ou até falso.</span></li><li><span><b>Chave Pix:</b> prefira uma chave aleatória ou um e-mail de trabalho, sem espalhar CPF e telefone pessoal à toa.</span></li><li><span><b>Entrega final:</b> combine antes que os arquivos finais (editáveis, sem marca d'água) vão após o pagamento do restante. Uma prévia pode ir antes.</span></li><li><span><b>Registro e recibo:</b> anote cliente, data e valor na sua planilha e envie recibo quando pedirem.</span></li></ol></div>`,
+        `<div class="card"><h3>Exemplo resolvido: cobrança que atrasou</h3><p>O Diego entregou o cardápio do Seu Paulo, e o restante venceu ontem.</p>
+          <div class="flows"><div class="flow old"><h4>❌ Antes</h4><p>"Seu Paulo, cadê o meu dinheiro?? Já entreguei faz tempo." Problemas: tom agressivo, sem valor, sem chave, sem saída para o cliente. E, quando não deu certo, Diego pensou em reclamar do cliente nas redes.</p></div><div class="flow new"><h4>✅ Depois</h4><p>"Oi, Seu Paulo! Tudo certo com o cardápio? Passando para lembrar do restante, R$ X, combinado para ontem. A chave Pix é a de sempre. Se precisar de outra data, me avisa que a gente combina."</p></div></div>
+          <div class="tw"><table class="tbl"><tr><th>Quando</th><th>O que fazer</th></tr><tr><td>1 dia após o vencimento</td><td>Lembrete gentil, com valor e chave</td></tr><tr><td>Uns 5 dias depois</td><td>Segundo lembrete, propondo nova data</td></tr><tr><td>Uns 10 dias depois</td><td>Ligação ou conversa, buscando um acordo (por exemplo, dividir)</td></tr><tr><td>Sem acordo</td><td>Procurar orientação (Sebrae, um advogado ou o Juizado Especial Cível, conforme o caso)</td></tr></table></div></div>`,
+        `<div class="card"><h3>Recibo, nota e impostos: o básico</h3><p>Um recibo simples tem: seu nome, nome do cliente, serviço, valor, forma de pagamento e data. Quem é formalizado (por exemplo, como MEI) segue as regras de nota fiscal de serviço da sua cidade e as obrigações do seu enquadramento. Essas regras mudam: confira no Portal do Empreendedor (gov.br), no Sebrae ou com um contador. O curso "Formalizando: MEI e Organização Financeira" aprofunda o tema. Mesmo antes de formalizar, guarde uma reserva para impostos nas suas contas.</p></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Começar sem sinal</b> "porque é conhecido". <b>Aceitar print sem conferir</b> no banco. <b>Não registrar</b> e esquecer quem pagou. <b>Cobrar com grosseria ou expor o cliente</b> em grupos e redes: é antiético, queima a sua reputação e pode trazer problema legal. <b>Prender o trabalho sem ter combinado antes:</b> a regra de entrega final após pagamento precisa estar no combinado.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (cerca de 5 minutos)</h3><p>Use o <b>ChatGPT</b> para treinar a cobrança:</p><ol class="golden"><li><span>Escreva você mesmo um lembrete de pagamento atrasado para um cliente fictício.</span></li><li><span>Peça que ele faça o papel de um cliente que atrasou e está sem dinheiro, e responda à sua mensagem.</span></li><li><span>Responda propondo um acordo justo, sem ameaça nem pressão.</span></li><li><span>Monte o seu modelo de recibo com campos como [CLIENTE], [VALOR] e [DATA].</span></li></ol><p>🔒 Não cole nome, CPF, telefone, chave Pix real nem valores de clientes reais. Use dados inventados.</p></div>`
+      ],
+      ch:[
+        { who:'Cristiane, 33 anos, fechou um cardápio com uma lanchonete', says:'O dono mandou o print do Pix do sinal. Já vou começar o trabalho agora mesmo.',
+          q:'O que ela deveria fazer antes de começar?',
+          opts:[
+            {t:'Conferir no aplicativo do banco se o valor realmente entrou.', ok:true, why:'Print pode ser de Pix agendado, cancelado ou falso. O que vale é o dinheiro na conta.'},
+            {t:'Começar logo, porque pedir para conferir é desconfiar do cliente.', ok:false, why:'Conferir no próprio banco é rotina, não acusação. O cliente nem precisa saber.'},
+            {t:'Pedir que o dono mande uma foto do documento dele junto com o print.', ok:false, why:'Pedir documento pessoal sem necessidade expõe dados e não confirma o pagamento. Basta olhar o extrato.'}
+          ]},
+        { who:'Anderson, 28 anos, entregou posts para uma loja de roupas', says:'O pagamento atrasou 3 dias. Estou pensando em postar no grupo do bairro que a loja é caloteira.',
+          q:'Qual é a conduta mais adequada?',
+          opts:[
+            {t:'Postar no grupo, porque assim a loja paga mais rápido.', ok:false, why:'Expor o cliente publicamente é antiético, pode gerar problema legal e afasta outros clientes do Anderson.'},
+            {t:'Mandar lembretes educados com valor e chave, propor nova data e, sem acordo, buscar orientação.', ok:true, why:'Cobrança respeitosa e em etapas resolve a maioria dos atrasos e preserva a reputação dele.'},
+            {t:'Não cobrar nada, para não perder a cliente.', ok:false, why:'Cobrar o combinado é direito dele. Dá para cobrar com educação e manter a relação.'}
+          ]},
+        { who:'Débora, 30 anos, entregou uma planilha para uma oficina', says:'O cliente pagou o restante e pediu um recibo. Ainda não sou formalizada. Posso dar recibo?',
+          q:'Qual é a resposta mais correta?',
+          opts:[
+            {t:'Não pode dar nenhum documento até abrir uma empresa.', ok:false, why:'Um recibo simples declarando o valor recebido pode ser feito. A nota fiscal é que depende de formalização.'},
+            {t:'Emitir uma nota fiscal usando o CNPJ de um amigo.', ok:false, why:'Usar o CNPJ de outra pessoa é irregular e pode causar problemas para os dois.'},
+            {t:'Fazer um recibo simples com os dois nomes, serviço, valor, forma de pagamento e data, e pesquisar a formalização no gov.br ou com um contador.', ok:true, why:'O recibo registra o pagamento de forma honesta; a formalização e a nota fiscal seguem regras oficiais que vale conferir.'}
           ]}
       ]},
     { id:'2.6', title:'Projeto: sua oferta em um parágrafo e o preço calculado', min:30,
@@ -557,6 +696,77 @@ const MODULES = [
             {t:'Calcular de cabeça no fim do ano.', ok:false, why:'A memória falha, e sem registro ela não consegue avaliar preço, custos nem obrigações.'}
           ]}
       ]},
+    { id:'3.7', title:'Quando algo dá errado: atraso, insatisfação e reembolso', min:14,
+      body:[
+        `<div class="card analogy"><h3>🧯 O encanador que volta para consertar</h3><p>Todo encanador já deixou um cano pingando. O que separa o profissional do enrolão não é nunca errar: é o que ele faz depois. Um some e para de atender o telefone. O outro liga, diz "foi a vedação que eu fiz, passo aí amanhã às 9 sem custo" e aparece. Esse ganha indicação até do cliente que teve o problema.</p></div>`,
+        `<div class="term"><b>Imprevisto</b> = algo que sai do combinado: atraso, erro, cliente insatisfeito. <b>Correção</b> = refazer o que ficou errado, dentro do combinado. <b>Reembolso</b> = devolver todo ou parte do valor pago. <b>Política de cancelamento</b> = regra escrita, antes do serviço, do que acontece se alguém desistir.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o cardápio da pizzaria</h3><p>No piloto, a Joana atrasou 2 dias e o cardápio saiu com o preço errado em 3 pizzas. O dono reclamou.</p>
+          <div class="flows"><div class="flow old"><h4>❌ Antes</h4><p>Ela demorou um dia para responder e escreveu: "Desculpa qualquer coisa, mas você mandou as informações bagunçadas." Problemas: sumiço, desculpa vaga, culpa no cliente e nenhuma solução.</p></div><div class="flow new"><h4>✅ Depois</h4><p>"Seu Carlos, o erro nos preços foi meu: copiei da tabela antiga. Já corrigi as 3 pizzas e te mando a versão nova hoje até as 18h. O atraso também foi meu. Para não repetir, passei a conferir cada preço com a sua lista antes de enviar."</p></div></div>
+          <p>Repare nos quatro passos da versão boa: <b>responder rápido</b>, <b>assumir o erro específico</b>, <b>propor a correção com data</b> e <b>dizer o que muda no processo</b>.</p></div>`,
+        `<div class="card"><h3>Cada situação pede uma resposta</h3><div class="tw"><table class="tbl"><tr><th>Situação</th><th>Resposta honesta</th></tr><tr><td>Atraso por sua causa</td><td>Avise antes de vencer o prazo, com nova data realista. Nunca depois.</td></tr><tr><td>Atraso porque o cliente não mandou o material</td><td>Lembre com educação que o prazo conta a partir do recebimento, como estava no combinado.</td></tr><tr><td>Erro seu</td><td>Corrija sem custo e o mais rápido possível.</td></tr><tr><td>Insatisfação de gosto</td><td>Use a rodada de ajustes combinada; peça exemplos do que ele imagina.</td></tr><tr><td>Pedido de reembolso</td><td>Siga a regra escrita. Se você não entregou o combinado, devolver o proporcional é o justo.</td></tr></table></div></div>`,
+        `<div class="why-chain"><b>Por que assumir o erro funciona?</b> Porque o cliente já sabe que algo deu errado. Se você se defende, ele passa a desconfiar de tudo. Se você assume e corrige, ele vê que pode contar com você quando der problema. E é exatamente isso que ele vai contar quando te indicar.</div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Sumir</b> esperando o problema esfriar: só piora. <b>Prometer demais para compensar</b> ("faço o site de graça!"): você cria um novo prazo que talvez não cumpra. <b>Brigar ou culpar o cliente</b>, mesmo quando ele contribuiu. <b>Dar desconto sem corrigir o erro:</b> o problema continua. <b>Não ter regra de cancelamento escrita:</b> inclua no combinado. Para dúvidas sobre direitos do consumidor e reembolso, consulte o Procon, o Sebrae ou um advogado.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (cerca de 5 minutos)</h3><p>Use o <b>Microsoft Copilot</b> para treinar uma conversa difícil:</p><ol class="golden"><li><span>Descreva uma situação fictícia de erro ou atraso no seu tipo de serviço, sem nomes reais.</span></li><li><span>Peça que ele faça o papel de um cliente chateado e mande a primeira reclamação.</span></li><li><span>Responda você, usando os quatro passos: responder, assumir, corrigir com data, mudar o processo.</span></li><li><span>Peça que ele aponte onde a sua resposta soou defensiva e reescreva esse trecho.</span></li></ol><p>🔒 Se for se inspirar numa reclamação real, tire nomes, contatos e detalhes que identifiquem o cliente antes de escrever na IA.</p></div>`
+      ],
+      ch:[
+        { who:'Leonardo, 27 anos, está no piloto com uma clínica de estética', says:'Hoje é quarta e eu prometi entregar na sexta, mas não vou conseguir. Vou ficar quieto e ver se ela nem percebe.',
+          q:'Qual é a melhor atitude?',
+          opts:[
+            {t:'Ficar quieto e entregar quando der.', ok:false, why:'A cliente vai perceber na sexta, e o silêncio transforma um atraso em quebra de confiança.'},
+            {t:'Avisar hoje, assumir o atraso e informar uma nova data que ele consegue cumprir.', ok:true, why:'Aviso antecipado e data realista mostram responsabilidade e dão à cliente tempo de se organizar.'},
+            {t:'Entregar na sexta uma versão feita às pressas, sem revisar.', ok:false, why:'Cumprir a data com qualidade ruim troca um problema por outro, e no piloto estraga o teste.'}
+          ]},
+        { who:'Marta, dona de uma doceria, recebeu as legendas da Patrícia', says:'Você escreveu que temos opção sem glúten, mas não temos! Uma cliente já perguntou.',
+          q:'Como a Patrícia deve responder?',
+          opts:[
+            {t:'Dizer que a IA escreveu aquilo e que a culpa não é dela.', ok:false, why:'Quem entrega responde pelo trabalho. Culpar a ferramenta passa insegurança e não resolve.'},
+            {t:'Oferecer 20% de desconto e não mexer nas legendas.', ok:false, why:'Desconto sem correção deixa a informação errada no ar, o que pode prejudicar a doceria.'},
+            {t:'Assumir o erro, corrigir as legendas na hora, sem custo, e passar a conferir cada informação com a cliente antes de enviar.', ok:true, why:'Erro de informação exige correção imediata. Mudar o processo evita que se repita.'}
+          ]},
+        { who:'Seu Jairo, dono de um pet shop, pediu reembolso', says:'Desisti das mensagens, quero meu dinheiro de volta. Mas você já me entregou 8 das 12 e eu já estou usando.',
+          q:'Qual é o caminho mais justo?',
+          opts:[
+            {t:'Devolver tudo, para evitar briga.', ok:false, why:'Ele já recebeu e usa a maior parte do trabalho. Devolver tudo não é proporcional ao que foi entregue.'},
+            {t:'Seguir a regra de cancelamento combinada; se não houver, propor de forma transparente devolver a parte que não foi entregue.', ok:true, why:'Reembolso proporcional ao que falta entregar é justo para os dois lados. Ter a regra escrita antes evita essa negociação.'},
+            {t:'Recusar qualquer devolução e parar de responder.', ok:false, why:'Parar de responder agrava o conflito e prejudica a reputação. Há uma parte do serviço que não foi entregue.'}
+          ]}
+      ]},
+    { id:'3.8', title:'Do piloto à oferta oficial: revisar e seguir com calma', min:14,
+      body:[
+        `<div class="card analogy"><h3>🏁 A receita depois do primeiro mês da marmitaria</h3><p>Quem abre uma marmitaria descobre, no primeiro mês, que a porção era grande demais, que o feijão acabava antes do meio-dia e que a entrega das 11h nunca dava certo. Não precisa fechar: ajusta a porção, o horário e o preço, imprime o cardápio novo e segue. Depois do piloto, a sua oferta também ganha uma versão 2, feita com o que aconteceu de verdade.</p></div>`,
+        `<div class="term"><b>Oferta v1</b> = a oferta que você testou no piloto. <b>Oferta oficial (v2)</b> = a versão revisada com os números e o feedback reais. <b>Indicador</b> = um número simples que você acompanha, como horas por trabalho ou propostas enviadas.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o cardápio do Diego</h3><p><b>Oferta v1:</b> "Cardápio digital, R$ 200, entrega em 3 dias, revisões à vontade."</p>
+          <div class="tw"><table class="tbl"><tr><th>Item</th><th>Planejado</th><th>Real no piloto</th></tr><tr><td>Horas de trabalho</td><td>5 h</td><td>9 h</td></tr><tr><td>Prazo</td><td>3 dias</td><td>8 dias (fotos chegaram em partes)</td></tr><tr><td>Revisões</td><td>"À vontade"</td><td>4 rodadas</td></tr><tr><td>Feedback</td><td>-</td><td>"Lindo, mas não sei mudar os preços"</td></tr></table></div>
+          <p><b>Conta revisada</b> (números só para ilustrar): 9 h × R$ 40 = R$ 360, mais R$ 15 de custos = R$ 375, mais 10% de reserva = R$ 412,50. Preço: R$ 415.</p>
+          <p><b>Oferta oficial (v2):</b> "Cardápio digital para lanchonetes, com até 40 itens e um vídeo curto ensinando a atualizar os preços. 1 rodada de ajustes. Entrega em 5 dias úteis a partir do recebimento de fotos e preços. R$ 415, metade de sinal."</p></div>`,
+        `<div class="card"><h3>Revisão em cinco passos</h3><ol class="golden"><li><span>Compare planejado e real: horas, prazo, revisões e custos.</span></li><li><span>Liste os padrões do feedback (lição 3.3) e escolha 1 ou 2 ajustes.</span></li><li><span>Refaça a conta do preço com as horas reais e decida se muda o preço, o escopo ou os dois.</span></li><li><span>Atualize página de oferta, combinado e pacotes para a v2, com o depoimento autorizado.</span></li><li><span>Defina indicadores simples para as próximas 4 semanas: conversas iniciadas, propostas enviadas, contratos fechados e horas reais por trabalho.</span></li></ol></div>`,
+        `<div class="card"><h3>Expectativa honesta</h3><p>Ter a oferta oficial pronta não garante clientes nem renda. É comum passar semanas com poucas respostas no começo. Os indicadores servem para você aprender onde travou (poucas conversas? propostas sem resposta?), e não para se cobrar um faturamento. Respeite a capacidade que você calculou na lição 3.5: crescer além dela derruba a qualidade. Como conseguir mais clientes é o tema do curso "Primeiros Clientes".</p></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Manter o preço do piloto</b> para todos os novos clientes, mesmo sabendo que não cobre o custo. <b>Mudar tudo de uma vez</b> e não saber o que funcionou: 1 ou 2 ajustes por ciclo. <b>Esquecer de atualizar o combinado</b>, e a v1 continuar valendo nas conversas. <b>Usar o depoimento do piloto sem autorização</b> ou mudar as palavras do cliente. <b>Prometer na página</b> resultados que o piloto não mostrou.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (cerca de 5 minutos)</h3><p>Use o <b>Carrd</b> para publicar a v2:</p><ol class="golden"><li><span>Abra a sua página de oferta (ou crie uma, se ainda não fez).</span></li><li><span>Atualize entregáveis, prazo, preço e o que não está incluído, com base no que o piloto mostrou.</span></li><li><span>Inclua o depoimento só se tiver autorização por escrito, com as palavras do cliente.</span></li><li><span>Peça a 1 pessoa do nicho que diga o que entendeu da oferta e anote o que ficou confuso.</span></li></ol><p>🔒 Não coloque na página telefone, prints de conversas nem dados de clientes. Fotos e logos de clientes, só com autorização.</p></div>`
+      ],
+      ch:[
+        { who:'Gabriela, 29 anos, terminou o piloto de agenda para salões', says:'Calculei 4 horas e levei 8. O piloto foi a R$ 150. Vou manter R$ 150 para todo mundo, para não assustar ninguém.',
+          q:'Qual é a melhor decisão?',
+          opts:[
+            {t:'Manter R$ 150, porque preço baixo atrai mais clientes.', ok:false, why:'Com o dobro de horas, o preço do piloto não cobre o custo. Mais clientes assim significa mais prejuízo.'},
+            {t:'Refazer a conta com as 8 horas reais e definir o preço oficial, ou enxugar o escopo para caber no tempo.', ok:true, why:'A oferta oficial precisa nascer dos números reais do piloto, não do preço especial combinado para testar.'},
+            {t:'Cobrar a diferença da cliente do piloto.', ok:false, why:'O preço do piloto foi combinado. Ajustes valem para os próximos clientes.'}
+          ]},
+        { who:'Rodrigo, 32 anos, recebeu o feedback do piloto com uma loja de material de construção', says:'Vou mudar de uma vez preço, prazo, entregáveis, nicho, nome do serviço e a página toda.',
+          q:'O que faz mais sentido?',
+          opts:[
+            {t:'Mudar tudo agora, já que o piloto mostrou vários pontos.', ok:false, why:'Mudando tudo, ele não saberá o que funcionou na próxima rodada, e pode jogar fora o que deu certo.'},
+            {t:'Não mudar nada, porque um piloto só não prova nada.', ok:false, why:'O piloto existe para gerar ajustes. Ignorar o que aprendeu desperdiça o teste.'},
+            {t:'Escolher 1 ou 2 ajustes ligados aos padrões do feedback, atualizar a oferta e observar o próximo cliente.', ok:true, why:'Poucos ajustes por vez deixam claro o que melhorou e mantêm o que já funciona.'}
+          ]},
+        { who:'Aline, 35 anos, publicou a oferta oficial há 3 semanas', says:'Mandei 4 propostas e ninguém fechou ainda. Acho que o curso não funcionou e vou desistir.',
+          q:'Qual é a leitura mais útil?',
+          opts:[
+            {t:'Usar os indicadores para ver onde trava, como pedir retorno sobre as propostas e conferir se a página está clara, e seguir dentro da capacidade dela.', ok:true, why:'Poucas respostas no início são comuns. Os indicadores mostram onde ajustar, sem prometer resultado rápido.'},
+            {t:'Baixar o preço pela metade imediatamente.', ok:false, why:'Sem saber o motivo, cortar o preço pode deixá-la abaixo do custo sem resolver o problema real.'},
+            {t:'Prometer na página resultados garantidos para chamar atenção.', ok:false, why:'Promessa de resultado que ela não controla é enganosa e destrói a confiança.'}
+          ]}
+      ]},
     { id:'3.6', title:'Projeto: página de oferta e plano do seu cliente-piloto', min:30,
       body:[
         `<div class="card"><p>Neste projeto você junta o módulo inteiro num material que pode usar já: a página de oferta do seu serviço e o plano do cliente-piloto, do convite ao feedback. Um plano escrito evita improviso, deixa o combinado claro e garante que você vai sair do piloto com aprendizado e, se o cliente quiser, um depoimento autorizado. Se você já fez um piloto, use o projeto para registrar o que aconteceu e o que vai ajustar. Concluindo este projeto e as demais lições, você emite o certificado do curso.</p></div>`
@@ -606,9 +816,9 @@ const PROMPTS = {
 
 const THEME = { 1:['#10B981','#84CC16'], 2:['#84CC16','#10B981'], 3:['#10B981','#84CC16'] };
 const LIC = {
-  '1.1':'🔍','1.2':'🎯','1.3':'🩺','1.4':'🪧','1.5':'⏱️','1.6':'🗺️',
-  '2.1':'📦','2.2':'💲','2.3':'🤝','2.4':'✈️','2.5':'💬','2.6':'📝',
-  '3.1':'🧪','3.2':'📁','3.3':'🧁','3.4':'🖼️','3.5':'🍳','3.6':'🚀'
+  '1.1':'🔍','1.2':'🎯','1.3':'🩺','1.4':'🪧','1.5':'⏱️','1.6':'🗺️','1.7':'🔭','1.8':'🚦',
+  '2.1':'📦','2.2':'💲','2.3':'🤝','2.4':'✈️','2.5':'💬','2.6':'📝','2.7':'🧱','2.8':'🧾',
+  '3.1':'🧪','3.2':'📁','3.3':'🧁','3.4':'🖼️','3.5':'🍳','3.6':'🚀','3.7':'🧯','3.8':'🏁'
 };
 
 return {
