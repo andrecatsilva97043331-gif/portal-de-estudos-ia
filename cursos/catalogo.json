@@ -84,8 +84,8 @@
     "ordem": 7,
     "recomendado_antes": ["automacao-sem-codigo", "criando-apps-com-ia"],
     "status": "disponivel",
-    "carga_horaria": 4,
-    "versao": 1
+    "carga_horaria": 8,
+    "versao": 2
   },
   {
     "id": "ia-com-seus-dados",
@@ -110,8 +110,8 @@
     "ordem": 9,
     "recomendado_antes": ["criando-apps-com-ia", "agentes-de-ia"],
     "status": "disponivel",
-    "carga_horaria": 3,
-    "versao": 1
+    "carga_horaria": 8,
+    "versao": 2
   },
   {
     "id": "do-projeto-ao-negocio",
@@ -123,8 +123,8 @@
     "ordem": 10,
     "recomendado_antes": ["ia-em-producao"],
     "status": "disponivel",
-    "carga_horaria": 3,
-    "versao": 1
+    "carga_horaria": 8,
+    "versao": 2
   },
   {
     "id": "base-profissional",
@@ -136,8 +136,8 @@
     "grupo": "fundamentos",
     "ordem": 11,
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "posts-para-redes-sociais",

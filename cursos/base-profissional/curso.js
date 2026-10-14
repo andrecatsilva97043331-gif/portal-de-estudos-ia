@@ -181,6 +181,79 @@ Data e assinatura.</div>`,
             {t:'Usar a conta da empresa conforme as regras dela ou pedir autorização por escrito antes de usar outra ferramenta.', ok:true, why:'Ela respeita o combinado com o cliente e deixa registrado qualquer exceção.'}
           ]}
       ]},
+    { id:'1.7', title:'Pedir só o necessário: do pedido exagerado ao enxuto', min:15,
+      body:[
+        `<div class="card analogy"><h3>🍕 O entregador de pizza</h3><p>Para entregar a sua pizza, a pizzaria precisa do endereço e de um telefone. Ela não pergunta a sua renda, a sua data de nascimento nem o nome da sua mãe. Se perguntasse, você estranharia na hora. No seu serviço vale o mesmo raciocínio: cada dado que você pede precisa ter um motivo claro. O que não tem motivo não deve ser pedido, porque vira só risco guardado na sua pasta.</p></div>`,
+        `<div class="term"><b>Finalidade</b> = o motivo concreto pelo qual você precisa de um dado (ex.: o telefone, para combinar a entrega). <b>Necessidade</b> = princípio da LGPD que manda tratar só os dados indispensáveis para essa finalidade. <b>Dado de exemplo</b> = informação inventada que mostra o formato sem expor ninguém (ex.: "Cliente A, R$ 80, terça").</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a mensagem da social media</h3><p><b>Passo 1, o pedido original.</b> A Bruna vai criar posts de aniversário e de retorno para uma clínica de estética. Na pressa, mandou esta mensagem:</p>
+          <div class="code">"Oi, Dra. Paula! Para começar, me manda a planilha de todas as clientes com nome completo, CPF, data de nascimento, telefone, endereço, procedimentos que fizeram e as fotos de antes e depois. E a senha do Instagram da clínica, por favor."</div>
+          <p><b>Passo 2, a pergunta para cada dado:</b> "para que eu preciso disso no serviço que vou fazer?".</p></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Dado pedido</th><th>Para que serviria?</th><th>Decisão</th></tr><tr><td>Nome completo, CPF, endereço</td><td>Nada nos posts</td><td>Não pedir</td></tr><tr><td>Data de nascimento e telefone</td><td>O envio das mensagens é feito pela clínica</td><td>Não pedir: criar modelo com [NOME]</td></tr><tr><td>Procedimentos feitos</td><td>Dado de saúde, sensível</td><td>Não pedir: usar só a lista de serviços da clínica</td></tr><tr><td>Fotos de antes e depois</td><td>Só se houver autorização das pacientes</td><td>Pedir depois, apenas as autorizadas</td></tr><tr><td>Senha do Instagram</td><td>Publicar os posts</td><td>Pedir acesso de colaboradora</td></tr></table></div>`,
+        `<div class="card"><h3>Passo 3, a versão enxuta</h3><div class="code">"Oi, Dra. Paula! Para os posts, preciso só de: a lista de serviços com os nomes que vocês usam, o logotipo e as cores da clínica. Não preciso dos dados das suas clientes: faço modelos de mensagem com [NOME] e vocês preenchem no envio. Se quiser usar fotos de antes e depois, me mande só as que tiverem autorização por escrito. Para publicar, pode me adicionar como colaboradora no Instagram, sem passar a senha."</div>
+          <p>Repare no resultado: o serviço continua possível, a Bruna recebe menos coisa para guardar e a clínica percebe que está lidando com alguém cuidadoso. Pedir menos também é argumento de venda.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p><b>Copiar o formulário de outra pessoa</b>, com campos que o seu serviço não usa. <b>Pedir "tudo de uma vez" para não ter que voltar a perguntar</b>: dá menos trabalho hoje e mais risco depois. <b>Pedir dado real para testar</b> o que funcionaria com dado de exemplo. <b>Esquecer de dizer para que serve</b> cada informação pedida: o cliente confia mais quando entende o motivo.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (Claude, plano gratuito)</h3><ol class="golden"><li><span>Escreva você mesmo a mensagem que mandaria a um cliente novo do seu serviço pedindo o material para começar.</span></li><li><span>Monte a tabela do passo 2: cada dado, para que serve e a decisão.</span></li><li><span>Peça ao Claude, com as suas palavras, que aponte pedidos sem finalidade clara, sem inventar regras novas.</span></li><li><span>Reescreva a mensagem final você mesmo e confira se cada pedido tem um motivo.</span></li></ol><p>🔒 Use um cliente fictício ou o seu próprio serviço; não cole nomes, telefones nem documentos de clientes reais.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que a pizzaria pede o seu endereço, mas não pergunta quanto você ganha.</div>`
+      ],
+      ch:[
+        { who:'Otávio, 33 anos, faz cardápios digitais para restaurantes', says:'Meu formulário de início pede CPF, RG, endereço e data de nascimento do dono do restaurante. Peguei de um modelo da internet.',
+          q:'O que ele deve fazer com o formulário?',
+          opts:[
+            {t:'Manter todos os campos, porque um formulário completo parece mais profissional.', ok:false, why:'Campos sem finalidade não deixam o serviço melhor: só aumentam o que ele precisa proteger.'},
+            {t:'Revisar campo por campo e deixar só o que o cardápio e a cobrança realmente exigem, explicando para que serve cada um.', ok:true, why:'Pedir só o necessário, com motivo claro, segue o princípio da necessidade e passa confiança ao cliente.'},
+            {t:'Tornar todos os campos opcionais e guardar o que vier.', ok:false, why:'Deixar opcional ainda convida o cliente a mandar dados que você não usa.'}
+          ]},
+        { who:'Helena, 40 anos, dona de uma escola de inglês', says:'Para os posts de matrícula, vou te mandar a lista dos alunos com nome, idade, telefone dos pais e notas. Assim você personaliza tudo.',
+          q:'Qual é a resposta mais profissional?',
+          opts:[
+            {t:'Aceitar a lista e apagar depois de terminar os posts.', ok:false, why:'Apagar depois é bom, mas o melhor é nem receber: os posts não precisam desses dados, e há dados de crianças.'},
+            {t:'Aceitar só os nomes e as idades, que são dados menos sensíveis.', ok:false, why:'Mesmo reduzido, continua sendo dado de alunos, muitos deles crianças, sem uso nos posts.'},
+            {t:'Agradecer e explicar que os posts não precisam de dados dos alunos: basta a lista de cursos, horários e valores, e mensagens personalizadas podem usar modelos com [NOME].', ok:true, why:'Ela recebe o que o serviço exige e protege os alunos, que incluem crianças, com cuidado redobrado.'}
+          ]},
+        { who:'Caio, 26 anos, testa um assistente de atendimento com IA para uma ótica', says:'Para ver se as respostas ficam boas, vou usar as conversas reais dos clientes da ótica, com nome e receita dos óculos.',
+          q:'Como ele deve fazer o teste?',
+          opts:[
+            {t:'Criar conversas de exemplo, com nomes inventados e situações parecidas com as reais, e testar com elas.', ok:true, why:'Dados de exemplo mostram se o assistente funciona sem expor clientes, e a receita é dado de saúde.'},
+            {t:'Usar as conversas reais, porque o teste fica mais fiel.', ok:false, why:'A fidelidade do teste não justifica expor nomes e dados de saúde dos clientes.'},
+            {t:'Usar as conversas reais, mas só da semana passada.', ok:false, why:'Reduzir o período não muda o problema: continuam sendo dados reais sem necessidade.'}
+          ]}
+      ]},
+    { id:'1.8', title:'Aviso de uso de IA: do vago ao claro', min:15,
+      body:[
+        `<div class="card analogy"><h3>🏷️ A etiqueta da roupa</h3><p>Toda roupa tem uma etiqueta dizendo do que é feita: "60% algodão, 40% poliéster". Ninguém deixa de comprar por causa disso, e a etiqueta ajuda a escolher e a cuidar da peça. O problema seria uma etiqueta dizendo "100% algodão" numa camiseta de poliéster. O aviso de uso de IA é a etiqueta do seu serviço: curto, verdadeiro e fácil de achar.</p></div>`,
+        `<div class="term"><b>Aviso de uso de IA</b> = texto curto que conta ao cliente como a IA entra no seu trabalho. <b>Rótulo de conteúdo sintético</b> = aviso ao público de que uma imagem, voz ou vídeo foi gerado por IA (ex.: "imagem ilustrativa criada com IA"). <b>Promessa verificável</b> = afirmação que você consegue cumprir e mostrar, como "reviso tudo antes de entregar".</div>`,
+        `<div class="card"><h3>Exemplo resolvido, passo 1: três avisos fracos</h3><p>O Lucas faz textos e artes para lojas de bairro. Veja três versões que ele já usou e o problema de cada uma:</p>
+          <div class="tw"><table class="tbl"><tr><th>Versão</th><th>Problema</th></tr><tr><td>"Uso umas ferramentas aí para agilizar."</td><td>Vago: o cliente não sabe o que entra na IA nem quem revisa.</td></tr><tr><td>Uma linha em letra miúda na última página do PDF.</td><td>Escondido: parece que ele não queria que o cliente lesse.</td></tr><tr><td>"Seus dados estão 100% seguros, a IA não guarda nada."</td><td>Exagerado: ele não controla o que a ferramenta guarda, então não pode prometer.</td></tr></table></div></div>`,
+        `<div class="card"><h3>Passo 2: as quatro partes de um bom aviso</h3><ol class="golden"><li><span><b>Onde a IA entra</b>: rascunhos de texto, ideias, imagens ilustrativas.</span></li><li><span><b>O que você faz</b>: escolhe, revisa e adapta tudo ao negócio.</span></li><li><span><b>O que nunca vai para a IA</b>: dados pessoais dos clientes do cliente.</span></li><li><span><b>Como o público fica sabendo</b>: imagem gerada que pode parecer foto real leva rótulo.</span></li></ol></div>`,
+        `<div class="card"><h3>Passo 3: a versão clara</h3><div class="code">"Como trabalho: uso ferramentas de inteligência artificial como apoio para rascunhos de texto e imagens ilustrativas. Eu escolho, reviso e adapto tudo ao seu negócio antes de entregar. Não coloco dados pessoais dos seus clientes nessas ferramentas. Imagens criadas com IA que possam ser confundidas com foto real vão com a indicação 'imagem ilustrativa'. Fotos de produto são sempre as suas."</div>
+          <p>Ele colocou esse parágrafo logo no início da proposta, e não no fim. Quando um cliente pergunta "você usa IA?", ele responde com as mesmas quatro partes, sem rodeio.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p><b>Prometer o que a ferramenta controla</b>, como "nada fica guardado": diga o que você faz, não o que a empresa da IA faz. <b>Copiar o aviso de outra pessoa</b> que usa IA de outro jeito. <b>Não atualizar o aviso</b> quando muda de ferramenta ou passa a gerar vozes e vídeos. <b>Rotular demais</b>: não é preciso avisar ao público que um texto teve rascunho de IA, mas é preciso cuidar para que nada engane quem vê.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (Atividade nos apps Gemini, gratuito)</h3><ol class="golden"><li><span>Escreva o seu aviso com as quatro partes do passo 2, para o serviço que você oferece ou pretende oferecer.</span></li><li><span>Abra a página de atividade do Gemini na sua conta Google (ou a página de configurações da ferramenta que você usa).</span></li><li><span>Confira se o que o seu aviso diz combina com o que você vê: o histórico está ligado? por quanto tempo fica guardado?</span></li><li><span>Se o aviso promete algo que a configuração não garante, reescreva a frase até ela ser verdadeira.</span></li></ol><p>🔒 Não cole dados de clientes para testar; use frases inventadas.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que a etiqueta da roupa precisa dizer a verdade, mesmo quando a verdade é "tem poliéster".</div>`
+      ],
+      ch:[
+        { who:'Lívia, 28 anos, cria posts para salões de beleza', says:'Escrevi no meu site: "Uso IA, mas seus dados estão 100% protegidos, a ferramenta não guarda nada."',
+          q:'O que deve ser ajustado nesse aviso?',
+          opts:[
+            {t:'Nada, porque uma frase forte passa segurança ao cliente.', ok:false, why:'Segurança baseada numa promessa que ela não controla vira problema quando a realidade for diferente.'},
+            {t:'Trocar a promessa sobre a ferramenta pelo que ela faz de fato: não colocar dados pessoais dos clientes na IA e revisar tudo antes de entregar.', ok:true, why:'Ela só pode garantir o próprio comportamento. Promessa verificável é honesta e cumprível.'},
+            {t:'Tirar o aviso do site, para não chamar atenção para a IA.', ok:false, why:'Esconder o uso de IA cria desconfiança quando o cliente descobre. O problema é a promessa, não o aviso.'}
+          ]},
+        { who:'Marcelo, 35 anos, faz anúncios para uma imobiliária', says:'Gerei com IA a imagem de uma sala decorada para um apartamento vazio. Ficou parecendo foto de verdade.',
+          q:'Como usar essa imagem com honestidade?',
+          opts:[
+            {t:'Usar como se fosse foto do apartamento, porque o cliente gostou.', ok:false, why:'Quem vê o anúncio vai achar que o imóvel é daquele jeito, o que engana o comprador.'},
+            {t:'Não usar imagens geradas por IA em nenhum anúncio.', ok:false, why:'Não é proibido usar: o cuidado é deixar claro que é uma simulação.'},
+            {t:'Combinar com a imobiliária e publicar com a indicação de que é uma imagem ilustrativa de decoração criada com IA, junto com fotos reais do imóvel.', ok:true, why:'O rótulo evita que o público confunda simulação com realidade, e as fotos reais mostram o imóvel como ele é.'}
+          ]},
+        { who:'Sueli, 50 anos, dona de uma papelaria', says:'Li o seu aviso na proposta. Então a IA faz tudo e você só aperta o botão?',
+          q:'Qual resposta segue as partes de um bom aviso?',
+          opts:[
+            {t:'"A IA me ajuda nos rascunhos. Eu escolho, confiro preços e nomes, adapto ao jeito da papelaria e não coloco dados dos seus clientes nela. A responsabilidade pela entrega é minha."', ok:true, why:'Mostra onde a IA entra, o que ele faz, o que fica fora da ferramenta e quem responde pelo resultado.'},
+            {t:'"Não, na verdade quase não uso IA, foi só um modo de dizer."', ok:false, why:'Desmentir o próprio aviso para evitar a conversa é falta de transparência.'},
+            {t:'"Isso é segredo profissional, prefiro não explicar."', ok:false, why:'A cliente tem direito de entender o essencial do serviço que contrata.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: a política de dados do seu serviço', min:30,
       body:[
         `<div class="card"><p>Agora você vai transformar o que aprendeu no módulo em um documento curto, para usar de verdade com seus clientes. Pense no serviço que pretende oferecer (posts, atendimento, textos, imagens, planilhas). Uma política simples de dados mostra profissionalismo e evita conflitos. Você pode usar IA para revisar a clareza, mas escreva o pedido com suas palavras e confira tudo o que ela sugerir.</p></div>`,
@@ -396,6 +469,87 @@ Atendo por aqui das 9h às 18h."</div>`,
             {t:'Entregar no prazo sem revisar os preços do cardápio.', ok:false, why:'Preço errado no cardápio causa prejuízo e reclamação. É melhor atrasar avisando do que entregar com erro.'}
           ]}
       ]},
+    { id:'2.7', title:'Do combinado fraco ao profissional: reescrita passo a passo', min:15,
+      body:[
+        `<div class="card analogy"><h3>🎂 A receita da vó</h3><p>A receita da vó diz "farinha até dar o ponto" e "forno quente até dourar". Para ela, que fez o bolo mil vezes, funciona. Para quem nunca fez, cada frase vira dúvida. Um combinado fraco é assim: claro na sua cabeça, cheio de buracos para o cliente. Reescrever é trocar o "até dar o ponto" por medidas que qualquer pessoa entende do mesmo jeito.</p></div>`,
+        `<div class="term"><b>Palavra elástica</b> = termo que cada pessoa entende de um jeito ("rapidinho", "uns posts", "ajusto o que precisar"). <b>Condição de início</b> = o que precisa acontecer para o prazo começar a contar. <b>Critério de pronto</b> = como os dois sabem que a entrega terminou.</div>`,
+        `<div class="card"><h3>Exemplo resolvido, passo 1: o combinado fraco</h3><p>O Diego fechou com a Jéssica, dona de uma doceria, por esta mensagem:</p>
+          <div class="code">"Oi Jéssica! Faço sua identidade visual e os posts. Fica R$ 500, entrego rapidinho e ajusto o que precisar. Pode ser?"</div>
+          <p><b>Passo 2, caçar as palavras elásticas.</b> Leia como se você fosse o cliente mais exigente do mundo e marque tudo o que permite duas interpretações.</p></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Trecho</th><th>Como o Diego entende</th><th>Como a cliente pode entender</th></tr><tr><td>"identidade visual"</td><td>Logo simples e paleta de cores</td><td>Logo, cardápio, etiquetas e fachada</td></tr><tr><td>"os posts"</td><td>8 posts</td><td>Posts todo dia, para sempre</td></tr><tr><td>"rapidinho"</td><td>Umas duas semanas</td><td>Até sábado</td></tr><tr><td>"ajusto o que precisar"</td><td>Pequenos ajustes</td><td>Refazer quantas vezes quiser</td></tr><tr><td>"R$ 500"</td><td>Metade agora, metade na entrega</td><td>Tudo no fim, se gostar</td></tr></table></div>`,
+        `<div class="card"><h3>Passo 3, a versão profissional</h3><div class="code">Combinado: Doceria da Jéssica
+Inclui: logotipo (3 opções, você escolhe 1) e paleta de cores; 8 posts para Instagram (arte + legenda).
+Não inclui: cardápio, etiquetas, fachada, vídeos e anúncios pagos (posso orçar à parte).
+Prazo: logotipo em 7 dias úteis e posts em mais 7, contando depois de receber fotos dos doces e o sinal.
+Revisões: até 2 rodadas por entrega, com os ajustes juntos numa mensagem.
+Valor: R$ 500, sendo R$ 250 de sinal via Pix e R$ 250 na entrega dos posts.
+Você me envia: fotos dos doces, horários e formas de pedido.
+Pronto quando: você aprovar o logotipo e os 8 posts.
+Pode confirmar com um "ok"?</div>
+          <p><b>Passo 4, o teste da leitura dupla.</b> O Diego leu em voz alta e perguntou, frase por frase: "dá para entender de outro jeito?". Só mandou quando a resposta foi não para todas.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p><b>Copiar um contrato enorme da internet</b>, cheio de juridiquês que o cliente não lê. <b>Trocar uma palavra elástica por outra</b> ("em breve" no lugar de "rapidinho"). <b>Esquecer o critério de pronto</b>, e o trabalho nunca termina. <b>Mandar e não pedir o "ok"</b>: sem confirmação, continua sendo só uma proposta.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (Google Docs, gratuito)</h3><ol class="golden"><li><span>Escreva, num documento novo, um combinado "fraco" de 2 linhas que você mandaria na pressa.</span></li><li><span>Monte a tabela do passo 2: trecho, como você entende e como o cliente pode entender.</span></li><li><span>Reescreva com os títulos: inclui, não inclui, prazo e condição, revisões, valor, o que o cliente envia e pronto quando.</span></li><li><span>Faça o teste da leitura dupla em voz alta e corrija o que ainda tiver duas interpretações.</span></li></ol><p>🔒 Use um cliente fictício ou só o primeiro nome; não coloque CPF, endereço nem dados de clientes reais no documento.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que "farinha até dar o ponto" funciona para a vó, mas não para quem nunca fez bolo.</div>`
+      ],
+      ch:[
+        { who:'Fábio, 30 anos, edita vídeos para academias', says:'Mandei para o cliente: "Edito seus vídeos do mês, entrego rapidinho e faço quantas alterações precisar." Ele aceitou na hora.',
+          q:'Qual trecho mais precisa ser reescrito para evitar conflito?',
+          opts:[
+            {t:'Só o "rapidinho", porque prazo é o que mais gera briga.', ok:false, why:'O prazo é um problema, mas "vídeos do mês" e "quantas alterações precisar" também abrem espaço para conflito.'},
+            {t:'Nenhum, porque o cliente já aceitou.', ok:false, why:'O aceite de um texto vago não evita a briga: cada um aceitou a própria interpretação.'},
+            {t:'"Vídeos do mês", "rapidinho" e "quantas alterações precisar": trocar por quantidade, prazo com condição de início e número de revisões.', ok:true, why:'As três palavras elásticas viram números e condições que os dois entendem do mesmo jeito.'}
+          ]},
+        { who:'Tatiane, 37 anos, faz textos para um site de pousada', says:'Reescrevi meu combinado com escopo, prazo e preço. Mas não sei como o cliente vai saber que terminei.',
+          q:'O que falta no combinado dela?',
+          opts:[
+            {t:'Um critério de pronto, como "concluído quando você aprovar os 5 textos das páginas", para fechar o trabalho.', ok:true, why:'Sem critério de pronto, o trabalho pode ficar aberto para sempre, com ajustes sem fim.'},
+            {t:'Uma multa alta para o cliente que atrasar a aprovação.', ok:false, why:'Multa não resolve a falta de clareza e pode assustar um cliente pequeno.'},
+            {t:'Um texto jurídico longo, para ficar mais seguro.', ok:false, why:'Texto longo e difícil não deixa mais claro quando o trabalho termina.'}
+          ]},
+        { who:'Nelson, 58 anos, dono de uma ferragem', says:'Seu combinado diz "posts em 7 dias úteis após receber as fotos". Mandei as fotos hoje, mas queria para amanhã.',
+          q:'Como o prestador deve responder?',
+          opts:[
+            {t:'Aceitar entregar amanhã, mesmo sem tempo, para agradar.', ok:false, why:'Prometer um prazo impossível costuma acabar em atraso ou trabalho malfeito.'},
+            {t:'Lembrar com educação o prazo combinado e, se der, oferecer entregar parte antes ou cobrar urgência como extra, por escrito.', ok:true, why:'O combinado claro permite negociar sem conflito: o prazo está escrito e a exceção vira novo acordo.'},
+            {t:'Ignorar o pedido, porque o combinado já diz tudo.', ok:false, why:'Ter razão no papel não dispensa uma resposta educada e uma alternativa.'}
+          ]}
+      ]},
+    { id:'2.8', title:'Preço na ponta do lápis: horas, custos e reserva', min:15,
+      body:[
+        `<div class="card analogy"><h3>🍱 A marmita da dona Cida</h3><p>A dona Cida vende marmitas. No começo, ela somava só arroz, feijão e carne e achava que lucrava bem. Um dia, colocou na conta o gás, as embalagens, a gasolina da entrega e as duas horas que passava no WhatsApp anotando pedidos. A "marmita lucrativa" quase empatava. Com serviço é igual: o preço não é só a hora de "fazer", é tudo o que o trabalho consome.</p></div>`,
+        `<div class="term"><b>Horas invisíveis</b> = tempo que o trabalho exige e quase ninguém conta: conversa, briefing, revisão, organização e entrega. <b>Custo rateado</b> = despesa do mês (internet, ferramentas) dividida entre os trabalhos do mês. <b>Reserva</b> = valor separado para imprevistos, meses fracos e, quando você se formalizar, impostos.</div>`,
+        `<div class="card"><h3>Exemplo resolvido, passo 1: listar as etapas</h3><p>A Renata faz cardápios digitais. Uma lanchonete pediu um, e ela pensou em cobrar R$ 150 "porque é rapidinho". Antes de responder, listou as etapas de um pedido típico (números fictícios):</p>
+          <div class="tw"><table class="tbl"><tr><th>Etapa</th><th>Horas</th></tr><tr><td>Conversa e briefing</td><td>1</td></tr><tr><td>Organizar itens e preços enviados</td><td>1</td></tr><tr><td>Produção com IA e design</td><td>3</td></tr><tr><td>Conferência de preços com o dono</td><td>1</td></tr><tr><td>Duas rodadas de ajustes</td><td>1,5</td></tr><tr><td>Entrega e confirmação</td><td>0,5</td></tr><tr><td><b>Total</b></td><td><b>8 horas</b></td></tr></table></div>
+          <p>Ela achava que eram 3 horas. As outras 5 eram horas invisíveis.</p></div>`,
+        `<div class="calc"><b>Passo 2, a conta completa:</b> com o método da lição 2.3, o custo da hora dela é R$ 25. Horas: 8 × R$ 25 = R$ 200. Custos do mês (ferramentas e parte da internet): R$ 100, divididos por 5 trabalhos no mês = R$ 20 por trabalho. Subtotal: R$ 220. Reserva de 20% (escolha dela): R$ 44. Total: R$ 264, arredondado para R$ 270. <div class="res">Com R$ 150, sobrariam R$ 130 depois dos custos, ou cerca de R$ 16 por hora: ela trabalharia abaixo do próprio custo da hora. Exemplo fictício, não é preço recomendado.</div></div>`,
+        `<div class="card"><h3>Passo 3, quando o cliente acha caro</h3><p>A Renata não cortou o preço do mesmo serviço. Ofereceu um pacote menor: cardápio de uma página, com uma rodada de ajustes, que leva cerca de 5 horas e sai por menos. O cliente escolheu sabendo o que leva em cada opção. Mexer no escopo protege o seu custo da hora; dar desconto no mesmo trabalho só tira dinheiro do seu bolso.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p><b>Contar só a hora de produção.</b> <b>Esquecer os custos do mês</b>, como se as ferramentas fossem de graça. <b>Tratar a reserva como lucro</b> e gastar tudo. <b>Usar o percentual de reserva de outra pessoa</b> sem pensar na sua realidade. Sobre impostos: se for se formalizar, confirme os valores com um contador ou no portal oficial do governo (gov.br), em vez de chutar.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (Google Planilhas, gratuito)</h3><ol class="golden"><li><span>Crie as colunas "etapa" e "horas" e liste as etapas de um pedido típico seu, sem esquecer conversa, revisão e entrega.</span></li><li><span>Some as horas com uma fórmula de soma e multiplique pelo seu custo da hora.</span></li><li><span>Acrescente uma linha de custos rateados (custos do mês divididos pelos trabalhos do mês) e uma de reserva com o percentual que você escolher.</span></li><li><span>Compare o total com o preço que você cobraria "de cabeça" e anote a diferença e quantas horas eram invisíveis.</span></li></ol><p>🔒 Chame o cliente de "Cliente A"; a planilha não precisa de nomes nem de contatos.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que a dona Cida precisa contar o gás e a embalagem no preço da marmita.</div>`
+      ],
+      ch:[
+        { who:'Gabriela, 24 anos, faz convites digitais para festas', says:'Cada convite leva uns 40 minutos no editor, então cobro pelo tempo de edição. Mas no fim do mês sempre sobra menos do que eu esperava.',
+          q:'O que provavelmente está faltando na conta dela?',
+          opts:[
+            {t:'Cobrar um pouco menos, para vender mais convites e compensar.', ok:false, why:'Vender mais abaixo do custo só aumenta o prejuízo por hora trabalhada.'},
+            {t:'As horas invisíveis (conversa, ajustes, envio) e os custos rateados das ferramentas, que precisam entrar no preço.', ok:true, why:'Contar só a edição esconde boa parte do tempo e das despesas reais de cada convite.'},
+            {t:'Usar uma IA mais rápida, porque o problema é a velocidade.', ok:false, why:'A velocidade pode ajudar, mas o problema é que a conta não inclui tudo o que o trabalho consome.'}
+          ]},
+        { who:'Jorge, 46 anos, dono de uma autoescola', says:'Seu orçamento dos posts deu R$ 400. O outro rapaz cobra R$ 250. Faz pelo mesmo preço dele?',
+          q:'Qual resposta protege o custo da hora sem perder a conversa?',
+          opts:[
+            {t:'Aceitar os R$ 250 pelo mesmo pacote, para não perder o cliente.', ok:false, why:'Fazer o mesmo trabalho por bem menos coloca o prestador abaixo do próprio custo.'},
+            {t:'Dizer que o outro rapaz deve cobrar errado.', ok:false, why:'Falar mal de outro profissional não ajuda o cliente a decidir e soa deselegante.'},
+            {t:'Explicar o que está incluído e oferecer um pacote menor, com menos posts ou uma rodada de ajuste, que caiba perto dos R$ 250.', ok:true, why:'Ajustar o escopo mantém o valor da hora e dá ao cliente uma opção real dentro do orçamento.'}
+          ]},
+        { who:'Renan, 29 anos, faz planilhas de controle para pequenos comércios', says:'Calculei meu preço com uma reserva de 20%. Nesse mês sobrou dinheiro e pensei em gastar a reserva num celular novo.',
+          q:'Qual é o uso mais sensato da reserva?',
+          opts:[
+            {t:'Gastar, porque é dinheiro que sobrou.', ok:false, why:'A reserva existe justamente para os meses fracos e imprevistos; gastar agora deixa ele descoberto depois.'},
+            {t:'Mantê-la separada para imprevistos, meses fracos e, se ele se formalizar, impostos, e decidir compras com o que sobrar além dela.', ok:true, why:'Reserva não é lucro: separar esse dinheiro evita sustos quando o mês for fraco ou a conta chegar.'},
+            {t:'Tirar a reserva do preço nos próximos meses, já que sobrou.', ok:false, why:'Um mês bom não garante os próximos; tirar a reserva deixa o preço frágil.'}
+          ]}
+      ]},
     { id:'2.6', title:'Projeto: seu combinado de 1 página', min:30,
       body:[
         `<div class="card"><p>Hora de criar o combinado que você vai mandar de verdade para seus próximos clientes. Use o serviço que pretende oferecer e um cliente imaginário, mas realista (uma padaria, um salão, uma oficina). Você pode pedir à IA para apontar trechos confusos, escrevendo o pedido com suas palavras, mas a decisão de cada regra é sua. Se o valor for alto ou o caso for sensível, mostre a um profissional.</p></div>`,
@@ -606,6 +760,94 @@ Data  | Cliente           | Serviço        | Valor     | Forma  | Comprovante
             {t:'Fazer o recibo com o valor maior, mas sem assinar.', ok:false, why:'Sem assinatura, o documento continua falso e o problema continua.'}
           ]}
       ]},
+    { id:'3.7', title:'Revisão de entrega feita com IA: um caso do começo ao fim', min:15,
+      body:[
+        `<div class="card analogy"><h3>🛍️ A conferência da sacola</h3><p>Antes de entregar o pedido ao motoboy, a atendente da lanchonete confere a sacola com a comanda: o lanche certo, o refrigerante, o molho, o guardanapo. Leva um minuto e evita a ligação brava do cliente. Na lição 3.3 você aprendeu o método das 3 leituras. Agora vai ver esse método aplicado num post de verdade, do rascunho da IA até a entrega.</p></div>`,
+        `<div class="term"><b>Fonte de conferência</b> = o material oficial do cliente com que você compara o texto (tabela de preços, horários, mensagem dele). <b>Item bloqueante</b> = erro que impede a entrega até ser resolvido, como preço errado. <b>Registro de revisão</b> = nota curta dizendo o que foi conferido, com quem e quando.</div>`,
+        `<div class="card"><h3>Exemplo resolvido, passo 1: o rascunho da IA</h3><p>A Marta pediu um post para o pet shop dela. A IA entregou este rascunho:</p>
+          <div class="code">"🐶 Banho e tosa no Pet Feliz Petshop! Toda quarta, 30% OFF para todas as raças. Abrimos de segunda a domingo, das 8h às 20h. Nosso shampoo é aprovado por veterinários e elimina 100% das pulgas. O melhor pet shop da cidade! Agende pelo WhatsApp."</div>
+          <p><b>Passo 2, comparar com a fonte.</b> A fonte é a mensagem que a Marta mandou com a promoção e os horários.</p></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>A IA escreveu</th><th>A fonte diz</th><th>Ação</th></tr><tr><td>"Pet Feliz Petshop"</td><td>"Pet Feliz"</td><td>Corrigir o nome</td></tr><tr><td>30% para todas as raças</td><td>20% para porte pequeno</td><td>Bloqueante: corrigir</td></tr><tr><td>Segunda a domingo, 8h às 20h</td><td>Segunda a sábado, 9h às 18h</td><td>Bloqueante: corrigir</td></tr><tr><td>"Aprovado por veterinários, elimina 100%"</td><td>Nada sobre isso</td><td>Retirar: afirmação sem prova</td></tr><tr><td>"O melhor pet shop da cidade"</td><td>Nada sobre isso</td><td>Retirar: comparação sem prova</td></tr></table></div>`,
+        `<div class="card"><h3>Passo 3, a versão revisada e o registro</h3><div class="code">"🐶 Quarta é dia de banho e tosa com 20% de desconto para pets de porte pequeno no Pet Feliz! Atendemos de segunda a sábado, das 9h às 18h. Agende pelo WhatsApp."</div>
+          <p>Antes de enviar, a revisora anotou na pasta da cliente:</p>
+          <div class="code">Revisão: post promoção de quarta
+Conferido com a mensagem da Marta (12/03): nome, desconto, porte, horários.
+Retirado: "elimina 100% das pulgas", "aprovado por veterinários", "o melhor da cidade".
+Pendente: nenhum. Liberado para entrega.</div>
+          <p>Se a Marta perguntar daqui a um mês por que o post não fala do shampoo, o registro responde em segundos.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p><b>Revisar no celular, com pressa</b>, entre um compromisso e outro. <b>Conferir só o que você mudou</b> e esquecer o resto do texto. <b>Corrigir um número "de cabeça"</b> em vez de olhar a fonte. <b>Entregar com item bloqueante</b> "para o cliente ver": ele pode publicar sem ler.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (NotebookLM, gratuito)</h3><ol class="golden"><li><span>Escreva um documento curto com dados de um negócio fictício: nome, horários, 3 preços e uma promoção. Essa é a sua fonte.</span></li><li><span>Envie esse documento ao NotebookLM como fonte.</span></li><li><span>Escreva você mesmo um post sobre o negócio com 2 ou 3 erros de propósito (preço, horário, uma promessa).</span></li><li><span>Pergunte, com as suas palavras, se cada dado do post confere com a fonte, e abra as citações para confirmar.</span></li><li><span>Monte a tabela do passo 2 e o registro de revisão.</span></li></ol><p>🔒 Use só dados inventados ou materiais seus; não envie dados de clientes nem documentos reais deles.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que a atendente confere a sacola com a comanda antes de entregar ao motoboy.</div>`
+      ],
+      ch:[
+        { who:'Wagner, 32 anos, faz posts para uma pizzaria', says:'A IA escreveu "entrega grátis em toda a cidade". O dono me mandou a regra: grátis só até 3 km. Vou mandar o post assim mesmo e avisar o dono para corrigir.',
+          q:'Como ele deve tratar esse erro?',
+          opts:[
+            {t:'Como item bloqueante: corrigir antes de enviar, conferindo a regra na mensagem do dono.', ok:true, why:'Condição de entrega errada gera cobrança e reclamação. Erro de condição comercial se resolve antes da entrega.'},
+            {t:'Mandar como está, porque o dono vai ler antes de publicar.', ok:false, why:'Não há garantia de que o cliente vai revisar. A revisão é parte do serviço.'},
+            {t:'Trocar por "entrega grátis em quase toda a cidade".', ok:false, why:'Continua impreciso. A versão certa é a regra exata da fonte.'}
+          ]},
+        { who:'Carolina, 35 anos, assistente virtual de uma clínica de fisioterapia', says:'Revisei o texto do site, mas não anotei nada. Agora o dono quer saber por que a frase "cura definitiva da dor" sumiu.',
+          q:'Que hábito teria ajudado?',
+          opts:[
+            {t:'Não mexer em frases do cliente, mesmo que estejam erradas.', ok:false, why:'Promessa de cura em saúde precisa ser retirada; o problema foi não registrar.'},
+            {t:'Mandar todas as versões do texto para o dono comparar.', ok:false, why:'Isso joga o trabalho de conferência para o cliente e não explica o motivo.'},
+            {t:'Um registro de revisão curto: o que foi conferido, com qual fonte, o que foi retirado e por quê.', ok:true, why:'O registro mostra o motivo da mudança na hora e reforça o cuidado do serviço.'}
+          ]},
+        { who:'Pedro, 27 anos, faz cardápios para lanchonetes', says:'Na revisão do cardápio, conferi só os 3 preços que o dono mudou esta semana. O resto eu já tinha visto no mês passado.',
+          q:'Qual é o risco dessa revisão?',
+          opts:[
+            {t:'Nenhum, porque o resto do cardápio não mudou.', ok:false, why:'A nova versão gerada pode ter alterado outros itens sem ninguém perceber.'},
+            {t:'Deixar passar erros em partes que ele não conferiu, porque a IA pode ter mudado outros itens ao gerar a nova versão.', ok:true, why:'Cada versão nova precisa ser conferida inteira contra a fonte, não só o trecho alterado.'},
+            {t:'Ficar lento demais, porque revisar tudo é exagero.', ok:false, why:'Conferir o cardápio inteiro leva minutos e evita prejuízo para a lanchonete.'}
+          ]}
+      ]},
+    { id:'3.8', title:'Recibos e comprovantes: da bagunça à pasta organizada', min:15,
+      body:[
+        `<div class="card analogy"><h3>📦 A caixa de sapato do avô</h3><p>Muita família tem aquela caixa de sapato cheia de notas, recibos e carnês misturados. Tudo está "guardado", mas achar um papel leva uma tarde inteira. Os prints de Pix espalhados na galeria do celular são a caixa de sapato digital. Na lição 3.5 você viu por que registrar o dinheiro do trabalho. Aqui você vai ver, passo a passo, como deixar recibos e comprovantes fáceis de achar.</p></div>`,
+        `<div class="term"><b>Numeração sequencial</b> = cada recibo com um número seguido (001, 002, 003), sem pular nem repetir. <b>Comprovante</b> = prova de um pagamento recebido ou feito (extrato, fatura, nota). <b>Conferência mensal</b> = comparar a sua planilha com o extrato da conta do trabalho, para ver se tudo bate.</div>`,
+        `<div class="card"><h3>Exemplo resolvido, passo 1: o antes</h3><p>O Rodrigo faz artes para hamburguerias. Quando um cliente pediu a segunda via de um recibo de março, ele encontrou: prints de Pix misturados com fotos da família, recibos escritos à mão sem data, dois recibos com o mesmo número e uma planilha que parou em fevereiro. Levou uma hora e não achou.</p>
+          <p><b>Passo 2, um modelo de recibo único.</b> Ele criou um modelo e passou a preencher só depois de ver o dinheiro no aplicativo do banco:</p>
+          <div class="code">RECIBO Nº 007
+Recebi de [NOME DO CLIENTE OU DA EMPRESA] o valor de R$ [VALOR] ([VALOR POR EXTENSO]),
+referente a [SERVIÇO E PERÍODO, ex.: 8 posts de março].
+Forma de pagamento: [PIX/TRANSFERÊNCIA] em [DATA].
+[CIDADE], [DATA]. [SEU NOME] — [SEU CPF OU CNPJ]</div></div>`,
+        `<div class="card"><h3>Passo 3, pastas e nomes que se acham sozinhos</h3><div class="code">Financeiro/
+  2026/
+    03-marco/
+      recebidos/  2026-03-05_Recibo-007_Hamburgueria-Brasa.pdf
+      custos/     2026-03-10_Fatura-ferramenta-IA.pdf
+    controle-2026 (planilha)</div>
+          <p>Na planilha, cada linha tem data, cliente, serviço, valor, número do recibo e o nome do arquivo. <b>Passo 4, a conferência mensal:</b> no primeiro dia útil do mês, o Rodrigo abre o extrato da conta do trabalho e confere linha por linha com a planilha. Leva uns 15 minutos. Da última vez, achou um Pix que não tinha registrado.</p></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Antes</th><th>Depois</th></tr><tr><td>Prints na galeria</td><td>PDFs em pasta por mês</td></tr><tr><td>Recibo sem número ou repetido</td><td>Numeração sequencial</td></tr><tr><td>Planilha parada</td><td>Registro no dia + conferência mensal</td></tr><tr><td>Uma hora procurando</td><td>Segunda via em um minuto</td></tr></table></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p><b>Emitir recibo antes de o dinheiro cair</b>: o recibo diz que você recebeu. <b>Guardar tudo só no celular</b>, sem backup. <b>Apagar mensagens com comprovantes</b> antes de salvar o arquivo. <b>Achar que o recibo substitui a nota fiscal</b> quando o cliente ou a lei exige nota: nesse caso, procure um contador, o Sebrae ou o portal oficial (gov.br).</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (Google Planilhas, a mesma do módulo 2)</h3><ol class="golden"><li><span>Crie uma planilha com as colunas: data, cliente, serviço, valor, forma de pagamento, nº do recibo e nome do arquivo.</span></li><li><span>Preencha 3 linhas com recebimentos fictícios, numerando os recibos em sequência.</span></li><li><span>Escreva, com as suas palavras, o seu modelo de recibo com os campos entre colchetes.</span></li><li><span>Crie no seu armazenamento a estrutura de pastas por ano e mês e anote na planilha o dia da sua conferência mensal.</span></li></ol><p>🔒 Use clientes fictícios no treino. Na versão real, guarde a planilha numa conta com senha forte e verificação em duas etapas.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que achar um papel na caixa de sapato do avô demora tanto e como pastas com etiqueta resolvem isso.</div>`
+      ],
+      ch:[
+        { who:'Luana, 31 anos, faz legendas para lojas de roupa', says:'Uma cliente pediu o recibo e eu já mandei, mas o Pix ainda não apareceu na minha conta. Ela disse que fez a transferência.',
+          q:'O que foi errado nesse procedimento?',
+          opts:[
+            {t:'Nada, porque a cliente confirmou que pagou.', ok:false, why:'A palavra da cliente não confirma o pagamento. Só a conta bancária confirma.'},
+            {t:'O recibo foi emitido sem confirmar o pagamento no banco; ele declara que ela recebeu um valor que ainda não chegou.', ok:true, why:'Recibo é prova de recebimento. Emitir antes de o dinheiro cair cria um documento que não corresponde à realidade.'},
+            {t:'O erro foi não cobrar uma taxa pela emissão do recibo.', ok:false, why:'A questão não é taxa, e sim a ordem: primeiro confirmar no banco, depois emitir.'}
+          ]},
+        { who:'Anderson, 42 anos, faz vídeos para corretores de imóveis', says:'Meus recibos estão numerados assim: 1, 2, 2, 5, 6. Perdi a conta em alguns meses.',
+          q:'Qual é o melhor ajuste a partir de agora?',
+          opts:[
+            {t:'Recomeçar a numeração do 1 todo mês, para ficar mais simples.', ok:false, why:'Repetir números entre meses faz recibos diferentes terem o mesmo número, o que confunde a busca.'},
+            {t:'Parar de numerar, porque o valor e a data já identificam o recibo.', ok:false, why:'Dois serviços podem ter a mesma data e o mesmo valor. O número único evita confusão.'},
+            {t:'Seguir a partir do próximo número livre, sem repetir, e anotar cada número na planilha junto com o arquivo, para notar logo se pular ou repetir.', ok:true, why:'Uma sequência única, registrada na planilha, deixa cada recibo fácil de achar e conferir.'}
+          ]},
+        { who:'Cristina, 29 anos, social media de duas clínicas veterinárias', says:'Registro todos os recebimentos na planilha no mesmo dia. Mesmo assim, preciso conferir com o extrato todo mês?',
+          q:'Por que a conferência mensal ainda vale a pena?',
+          opts:[
+            {t:'Porque ela pode ter esquecido um registro ou digitado um valor errado, e o extrato mostra o que realmente entrou e saiu.', ok:true, why:'A conferência pega esquecimentos e erros de digitação e garante que a planilha mostre a realidade.'},
+            {t:'Não vale: quem registra no mesmo dia nunca erra.', ok:false, why:'Qualquer pessoa esquece ou digita errado de vez em quando; a conferência existe para isso.'},
+            {t:'Porque o banco exige essa conferência todo mês.', ok:false, why:'Não é exigência do banco: é um hábito de organização que protege você.'}
+          ]}
+      ]},
     { id:'3.6', title:'Projeto: seu checklist pessoal de entrega e segurança', min:30,
       body:[
         `<div class="card"><p>Este é o projeto que fecha o curso. O checklist da lição 3.2 é genérico. Agora você vai criar o seu, adaptado ao serviço que pretende oferecer, para usar antes de cada entrega. Ele deve ser curto o suficiente para usar sempre e completo o suficiente para pegar os erros que mais importam. Pode pedir à IA sugestões de itens, escrevendo o pedido com suas palavras, mas escolha e reescreva cada item você mesmo.</p></div>`,
@@ -651,7 +893,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#3B82F6','#6366F1'], 2:['#6366F1','#3B82F6'], 3:['#3B82F6','#6366F1'] };
-const LIC = { '1.1':'🔒','1.2':'©️','1.3':'🎭','1.4':'🍰','1.5':'📜','1.6':'📄','2.1':'📝','2.2':'🎯','2.3':'🧮','2.4':'🍕','2.5':'💬','2.6':'🤝','3.1':'🚨','3.2':'✅','3.3':'🔎','3.4':'🗄️','3.5':'💰','3.6':'🧾' };
+const LIC = { '1.1':'🔒','1.2':'©️','1.3':'🎭','1.4':'🍰','1.5':'📜','1.6':'📄','2.1':'📝','2.2':'🎯','2.3':'🧮','2.4':'🍕','2.5':'💬','2.6':'🤝','3.1':'🚨','3.2':'✅','3.3':'🔎','3.4':'🗄️','3.5':'💰','3.6':'🧾','1.7':'✂️','1.8':'🏷️','2.7':'✍️','2.8':'🍱','3.7':'🛍️','3.8':'📦' };
 
 return {
   id: 'base-profissional',
