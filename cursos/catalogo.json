@@ -8,8 +8,8 @@
     "nivel": "iniciante",
     "ordem": 1,
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 2
+    "carga_horaria": 4,
+    "versao": 3
   },
   {
     "id": "prompts-que-funcionam",
@@ -20,8 +20,8 @@
     "nivel": "iniciante",
     "ordem": 2,
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "ia-no-trabalho",
@@ -33,8 +33,8 @@
     "ordem": 3,
     "recomendado_antes": ["prompts-que-funcionam"],
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "automacao-sem-codigo",

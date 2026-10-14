@@ -177,6 +177,133 @@ const MODULES = [
             {t:'As regras: quais produtos, validade, quantidade e condições, além de uma chamada para ação clara.', ok:true, why:'Regras claras evitam conflito com clientes, e a chamada para ação diz o que fazer para aproveitar.'}
           ]}
       ]},
+    { id:'1.7', title:'Respostas prontas para o atendimento no WhatsApp', min:12,
+      body:[
+        `<div class="card analogy"><h3>🗂️ A pasta de respostas do balcão</h3><p>Na farmácia do bairro, o atendente ouve a mesma pergunta vinte vezes por dia: "abre domingo?", "aceita Pix?", "entrega em casa?". Quem tem as respostas na ponta da língua atende rápido, sem esquecer nenhum detalhe. A IA ajuda você a montar essa <b>pasta de respostas</b> para o WhatsApp do seu negócio, mas as informações dentro dela precisam ser as verdadeiras.</p></div>`,
+        `<div class="term"><b>Resposta rápida</b> = mensagem salva no WhatsApp Business que você chama com um atalho, digitando "/" e o nome dela. <b>Mensagem de ausência</b> = resposta automática enviada fora do horário de atendimento. <b>Perguntas frequentes</b> = dúvidas que os clientes repetem toda semana.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: a oficina de bicicletas</h3><p>Seu Antônio tem uma oficina de bicicletas em Recife e passa boa parte do dia respondendo as mesmas perguntas no WhatsApp.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Pedido fraco</h4><div class="node">Ele pediu só "faça respostas automáticas para a minha oficina". Veio um texto bonito, mas com horário de sábado que ele não tem, parcelamento em 12 vezes que ele não oferece e um tom de banco.</div></div>
+            <div class="flow new"><h4>Pedido melhorado</h4><div class="node good">Ele listou as 6 perguntas mais comuns e escreveu, do jeito dele, a resposta verdadeira de cada uma: horário, formas de pagamento, prazo de revisão, se busca a bicicleta em casa. Pediu que a IA deixasse cada resposta com até 3 linhas, tom simpático, e usasse [NOME] e [DATA] onde muda de cliente para cliente.</div></div>
+          </div>
+          <p style="margin-top:14px">O que estava errado no primeiro pedido: a IA não sabia nada da oficina, então preencheu com o que é comum em outras empresas. O resultado do segundo: 6 respostas curtas, que Seu Antônio leu, ajustou duas palavras e salvou como respostas rápidas.</p>
+          <div class="tw"><table class="tbl"><tr><th>Pergunta comum</th><th>Atalho salvo</th><th>O que conferir</th></tr>
+          <tr><td>Qual o horário?</td><td>/horario</td><td>Dias e horários reais, inclusive feriados</td></tr>
+          <tr><td>Aceita Pix?</td><td>/pagamento</td><td>Formas aceitas e se há taxa no cartão</td></tr>
+          <tr><td>Quanto tempo leva a revisão?</td><td>/prazo</td><td>Prazo que ele consegue cumprir na semana cheia</td></tr></table></div></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Informação inventada</b>: se a resposta cita algo que você não disse (horário, desconto, garantia), a IA completou por conta própria. Corte.</span></li><li><span><b>Resposta que não responde</b>: leia como se fosse o cliente. Depois de ler, ele sabe o que fazer? Se não, falta o próximo passo.</span></li><li><span><b>Mensagem de ausência que promete demais</b>: "respondemos em 5 minutos" fora do horário gera frustração. Prometa o que cumpre, como "respondemos a partir das 8h".</span></li><li><span><b>Respostas esquecidas</b>: preço e horário mudam. Marque no calendário uma revisão das respostas salvas a cada mês.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o Microsoft Copilot ou o Claude, nas versões gratuitas, por uns 10 minutos.</p>
+          <ol class="golden"><li><span>Anote as 5 perguntas que mais chegam no seu WhatsApp (do seu negócio ou de onde você trabalha).</span></li><li><span>Escreva, com as suas palavras, a resposta verdadeira de cada uma.</span></li><li><span>Escreva o seu próprio pedido para a IA deixar as respostas curtas, no seu tom e com [VARIÁVEIS] no lugar de dados de clientes.</span></li><li><span>Leia cada resposta como se fosse o cliente e corte tudo o que você não disse.</span></li><li><span>Se usar o WhatsApp Business, salve pelo menos 2 como respostas rápidas.</span></li></ol>
+          <p>🔒 Não cole conversas reais com nomes e telefones de clientes. Pela LGPD, esses dados só devem ser usados para a finalidade que o cliente espera.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que a resposta pronta só ajuda se a informação dentro dela for verdadeira.</div>`
+      ],
+      ch:[
+        { who:'Rosângela, 47 anos, dona de um pet shop em Belo Horizonte', says:'Pedi à IA uma mensagem de ausência e ela escreveu que respondemos "em até 10 minutos, 24 horas por dia". Eu atendo sozinha, das 9h às 18h.',
+          q:'O que Rosângela deve fazer?',
+          opts:[
+            {t:'Usar assim, porque passa uma imagem profissional.', ok:false, why:'Prometer o que não cumpre frustra o cliente e passa a imagem oposta quando ninguém responde.'},
+            {t:'Trocar pela informação real, como "respondemos a partir das 9h", e dizer à IA o horário verdadeiro na próxima vez.', ok:true, why:'A mensagem de ausência precisa refletir o horário real. Sem essa informação, a IA inventa um padrão.'},
+            {t:'Desligar a mensagem de ausência.', ok:false, why:'A mensagem é útil para o cliente saber quando terá resposta. Basta deixá-la verdadeira.'}
+          ]},
+        { who:'Thiago, 32 anos, atendente de uma loja de celulares', says:'Quero colar as últimas 200 conversas do WhatsApp da loja na IA para ela descobrir as perguntas mais comuns.',
+          q:'Qual é o caminho mais cuidadoso?',
+          opts:[
+            {t:'Colar tudo, porque assim a lista fica mais completa.', ok:false, why:'As conversas têm nomes, telefones e às vezes endereços. Não precisam ir para a IA.'},
+            {t:'Colar só os números de telefone, sem as mensagens.', ok:false, why:'Telefone é dado pessoal e não ajuda em nada a descobrir as perguntas.'},
+            {t:'Anotar ele mesmo as perguntas que se repetem, sem dados de clientes, e pedir à IA ajuda para escrever as respostas.', ok:true, why:'Ele conhece as perguntas do dia a dia. A IA ajuda na redação sem receber dados de ninguém.'}
+          ]},
+        { who:'Dona Cida, 58 anos, vende bolos caseiros em Goiânia', says:'Montei minhas respostas rápidas há seis meses. Um cliente reclamou que pagou o preço antigo que estava na mensagem.',
+          q:'O que faltou no processo dela?',
+          opts:[
+            {t:'Revisar as respostas salvas sempre que preço, horário ou condição mudam, por exemplo uma vez por mês.', ok:true, why:'Resposta pronta desatualizada vira promessa errada. Uma revisão periódica evita o problema.'},
+            {t:'Pedir à IA respostas mais longas.', ok:false, why:'O tamanho não era o problema. O preço estava desatualizado.'},
+            {t:'Nunca colocar preço em resposta pronta.', ok:false, why:'Preço na resposta ajuda o cliente. Só precisa estar atualizado.'}
+          ]}
+      ]},
+    { id:'1.8', title:'Linguagem simples: avisos que todo mundo entende', min:12,
+      body:[
+        `<div class="card analogy"><h3>🪧 A placa da estrada</h3><p>Uma placa de trânsito precisa ser entendida em dois segundos, por qualquer pessoa, a 80 km/h. Ninguém escreve numa placa "Prezado condutor, informamos que, em virtude de obras, faz-se necessário reduzir a velocidade". Escreve "Obras. Reduza a velocidade". Avisos de trabalho deveriam seguir a mesma ideia: <b>quem lê precisa entender de primeira</b>. A IA é uma boa ajudante para simplificar.</p></div>`,
+        `<div class="term"><b>Linguagem simples</b> = jeito de escrever para que a pessoa encontre, entenda e use a informação na primeira leitura. <b>Jargão</b> = palavra técnica de uma profissão, como "SLA" ou "protocolo de atendimento". <b>Público</b> = quem vai ler, com o que essa pessoa já sabe e o que não sabe.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o aviso da clínica</h3><p>Luana trabalha na recepção de uma clínica de fisioterapia e precisa avisar os pacientes sobre a nova regra de faltas.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Antes</h4><div class="node">"Informamos que, conforme deliberação da diretoria, a ausência injustificada às sessões previamente agendadas, sem comunicação prévia com antecedência mínima de 24 horas, ensejará a perda da respectiva sessão."</div></div>
+            <div class="flow new"><h4>Depois</h4><div class="node good">"Não vai poder vir? Avise até 24 horas antes pelo WhatsApp da clínica. Se não avisar, a sessão é contada como feita."</div></div>
+          </div>
+          <p style="margin-top:14px">Como ela chegou lá com a IA:</p>
+          <ol class="golden"><li><span>Disse <b>quem lê</b>: pacientes de várias idades, muitos idosos, que leem no celular.</span></li><li><span>Pediu para trocar palavras difíceis por palavras do dia a dia e usar frases curtas.</span></li><li><span>Pediu que a ação viesse primeiro ("avise até 24 horas antes") e a consequência depois.</span></li><li><span>Conferiu se a regra continuava igual: prazo, canal e consequência. Simplificar não pode mudar o sentido.</span></li></ol>
+          <div class="tw"><table class="tbl"><tr><th>Em vez de</th><th>Prefira</th></tr>
+          <tr><td>Em virtude de</td><td>Por causa de</td></tr>
+          <tr><td>Efetuar o pagamento</td><td>Pagar</td></tr>
+          <tr><td>Antecedência mínima de 24 horas</td><td>Até 24 horas antes</td></tr></table></div></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Simplificar demais e perder a regra</b>: a IA pode cortar uma exceção importante. Compare item por item com o original.</span></li><li><span><b>Tom infantil</b>: linguagem simples não é falar como se o leitor fosse criança. Se soar condescendente, peça tom respeitoso.</span></li><li><span><b>Aviso sem ação</b>: se a pessoa termina de ler e não sabe o que fazer, falta o pedido claro.</span></li><li><span><b>Teste que ninguém faz</b>: o melhor teste é mostrar a uma pessoa do público e pedir que ela explique o aviso com as palavras dela.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o Claude ou o Microsoft Copilot, nas versões gratuitas, por cerca de 10 minutos.</p>
+          <ol class="golden"><li><span>Escolha um aviso, regra ou instrução difícil do seu trabalho (ou um texto público, como uma regra do condomínio).</span></li><li><span>Retire nomes e dados internos que não podem sair da empresa.</span></li><li><span>Escreva o seu próprio pedido dizendo quem vai ler, onde vai ler e o que a pessoa precisa fazer.</span></li><li><span>Compare a nova versão com a original, regra por regra.</span></li><li><span>Mostre a uma pessoa e veja se ela entende de primeira.</span></li></ol></div>`,
+        `<div class="card"><h3>💡 Quatro perguntas antes de enviar um aviso</h3><p>Antes de publicar qualquer aviso, responda: <b>quem lê?</b> (idade, familiaridade com o assunto, se lê no celular); <b>o que a pessoa precisa fazer?</b> (a ação vem primeiro); <b>até quando?</b> (data clara, de preferência com o dia da semana); <b>e se não fizer?</b> (a consequência, sem tom de ameaça). Se o aviso responde às quatro, está quase pronto. Vale também pedir à IA que aponte as palavras que alguém de fora da área poderia não entender e, para quem prefere ouvir, gravar você mesmo um áudio curto com o mesmo conteúdo.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que uma placa de "cuidado, piso molhado" funciona melhor do que um parágrafo inteiro sobre o chão.</div>`
+      ],
+      ch:[
+        { who:'Edson, 51 anos, síndico de um prédio em Curitiba', says:'Pedi à IA para simplificar a regra da garagem. Ficou ótima, mas sumiu a parte que diz que moto não pode ocupar vaga de visitante.',
+          q:'O que isso mostra?',
+          opts:[
+            {t:'Que a versão simples está certa, porque ficou mais curta.', ok:false, why:'Curto não é o mesmo que correto. Uma regra perdida gera conflito entre moradores.'},
+            {t:'Que simplificar não pode mudar a regra: é preciso comparar com o original e devolver o que foi cortado.', ok:true, why:'Linguagem simples muda o jeito de dizer, não o conteúdo. A conferência item por item pega esse corte.'},
+            {t:'Que regras de condomínio não podem ser simplificadas.', ok:false, why:'Podem e devem. Só precisam continuar completas.'}
+          ]},
+        { who:'Cristiane, 44 anos, agente comunitária de saúde', says:'Preciso explicar a campanha de vacinação para famílias do bairro. A IA escreveu um texto simples, mas cheio de "você consegue, campeão!" e emojis.',
+          q:'Qual ajuste faz sentido?',
+          opts:[
+            {t:'Pedir tom respeitoso e direto, para adultos de todas as idades, mantendo frases curtas e as informações de data, local e documentos.', ok:true, why:'Linguagem simples é clara e respeitosa. Tom infantil pode soar desrespeitoso para os adultos.'},
+            {t:'Voltar ao texto técnico do ministério, para parecer sério.', ok:false, why:'O texto técnico era justamente o que dificultava o entendimento.'},
+            {t:'Enviar assim, emojis sempre chamam atenção.', ok:false, why:'O problema não é chamar atenção, é o tom que pode afastar quem lê.'}
+          ]},
+        { who:'Fábio, 36 anos, supervisor de uma transportadora', says:'Reescrevi com a IA o procedimento de entrega para os motoristas. Achei claríssimo. Já posso mandar?',
+          q:'Qual é o melhor teste antes de enviar?',
+          opts:[
+            {t:'Pedir à IA que confirme se está claro.', ok:false, why:'A IA tende a aprovar o próprio texto. Quem precisa entender é o motorista.'},
+            {t:'Ler de novo ele mesmo, com mais atenção.', ok:false, why:'Quem escreveu já sabe o que quis dizer e não percebe o que está confuso.'},
+            {t:'Mostrar a um ou dois motoristas e pedir que expliquem o procedimento com as próprias palavras.', ok:true, why:'Se o público explica certo, o texto funciona. Se não, aparece exatamente onde ajustar.'}
+          ]}
+      ]},
+    { id:'1.9', title:'Traduzir e adaptar mensagens para outro idioma', min:12,
+      body:[
+        `<div class="card analogy"><h3>🌎 O primo que mora fora</h3><p>Quando você precisa falar com alguém de outro país, ajuda muito ter um primo que mora lá: ele não troca só as palavras, ele sabe <b>como as pessoas de lá falam</b>. A IA traduz bem e pode adaptar o jeito de dizer, mas ela não conhece o seu negócio, e um número trocado numa tradução pode virar prejuízo.</p></div>`,
+        `<div class="term"><b>Tradução</b> = passar o texto de uma língua para outra. <b>Adaptação</b> = ajustar exemplos, formatos e tom à cultura de quem lê. <b>Falso cognato</b> = palavra parecida com o português, mas com outro sentido, como "pretend" (fingir, e não pretender) ou "exquisito" em espanhol (delicioso, e não esquisito).</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: a pousada e o casal americano</h3><p>Gabriela cuida das reservas de uma pousada em Florianópolis e recebeu um pedido de reserva em inglês, de um casal dos Estados Unidos.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Antes</h4><div class="node">Ela colou a resposta em português num tradutor e enviou sem ler. O texto saiu com a data "02/03", que o casal leu como 3 de fevereiro em vez de 2 de março, o preço sem dizer a moeda e sem explicar que o Pix não funciona para quem não tem conta no Brasil.</div></div>
+            <div class="flow new"><h4>Depois</h4><div class="node good">Ela pediu à IA a tradução para o inglês, com a data por extenso ("March 2"), o valor em reais com a observação de que é em reais, e uma frase explicando as formas de pagamento para estrangeiros. Depois, pediu que a IA traduzisse de volta para o português, para conferir.</div></div>
+          </div>
+          <p style="margin-top:14px">A técnica da <b>tradução de volta</b> é simples: se o texto que volta para o português disser algo diferente do original, há um problema na tradução.</p>
+          <div class="pipe"><div class="node ink">Texto em português</div><div class="ar">➜</div><div class="node yel">Tradução adaptada</div><div class="ar">➜</div><div class="node ink">Volta para o português</div><div class="ar">➜</div><div class="node ink">Comparação</div></div></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Números e datas trocados</b>: nos Estados Unidos, a data vem com o mês primeiro, e o separador de milhar é a vírgula. Escreva datas por extenso e confira valores um a um.</span></li><li><span><b>Tom errado para a cultura</b>: um e-mail informal demais pode soar desrespeitoso para um fornecedor estrangeiro. Diga quem lê e o grau de formalidade.</span></li><li><span><b>Documento oficial traduzido por IA</b>: contratos e documentos para órgãos públicos de outro país costumam exigir tradução juramentada ou revisão profissional.</span></li><li><span><b>Gíria que não viaja</b>: "tá tranquilo, favorável" não tem tradução. Prefira frases neutras.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o Microsoft Copilot ou o Claude, nas versões gratuitas, por cerca de 10 minutos.</p>
+          <ol class="golden"><li><span>Escolha uma mensagem curta do seu trabalho que poderia ir para um cliente ou fornecedor estrangeiro.</span></li><li><span>Troque nomes e valores reais por fictícios.</span></li><li><span>Escreva o seu próprio pedido de tradução, dizendo o idioma, quem lê e o tom.</span></li><li><span>Peça a tradução de volta para o português e compare com o original.</span></li><li><span>Marque datas, números e prazos e confira cada um.</span></li></ol></div>`,
+        `<div class="card"><h3>💡 Tradutor ou assistente de IA?</h3><p>Tradutores como o Google Tradutor e o DeepL são rápidos para entender uma mensagem que você recebeu. Assistentes de IA, como o Copilot e o Claude, ajudam mais quando você precisa adaptar o tom, explicar um contexto ou escrever uma resposta do zero. Nos dois casos vale a mesma regra: tudo o que envolve valor, data, prazo ou compromisso é conferido por você. Se você conversa sempre com o mesmo cliente ou fornecedor estrangeiro, guarde as frases que já deram certo numa pequena lista de respostas no idioma dele e reutilize.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que traduzir uma piada palavra por palavra quase nunca tem graça.</div>`
+      ],
+      ch:[
+        { who:'Wellington, 39 anos, compra peças de um fornecedor da China', says:'Traduzi meu pedido para o inglês com IA. Escrevi "5.000 unidades" e a tradução saiu "5.000 units". Está certo?',
+          q:'Qual é o risco e como evitar?',
+          opts:[
+            {t:'Nenhum risco, número é igual em qualquer língua.', ok:false, why:'Em inglês, o ponto separa decimais. "5.000" pode ser lido como cinco unidades.'},
+            {t:'Trocar por "5,000 units" ou escrever "five thousand units", e conferir todos os números do pedido.', ok:true, why:'Separadores de milhar e decimal mudam entre países. Escrever no padrão do leitor, ou por extenso, evita um pedido errado.'},
+            {t:'Mandar em português, o fornecedor que traduza.', ok:false, why:'Isso transfere o risco para o fornecedor e aumenta a chance de erro.'}
+          ]},
+        { who:'Juliana, 27 anos, guia de turismo em Salvador', says:'Vou mandar o roteiro em inglês para um grupo. Como sei se a tradução da IA não mudou nada importante?',
+          q:'Qual técnica ajuda Juliana a conferir?',
+          opts:[
+            {t:'Perguntar à IA se a tradução está perfeita.', ok:false, why:'A IA tende a confirmar o próprio trabalho. A conferência precisa comparar com o original.'},
+            {t:'Confiar, porque a IA é melhor em inglês do que ela.', ok:false, why:'Mesmo boa, a IA pode trocar horários, locais ou valores. O roteiro é responsabilidade dela.'},
+            {t:'Pedir a tradução de volta para o português, comparar com o original e conferir horários, locais e valores.', ok:true, why:'A tradução de volta mostra mudanças de sentido, e os dados críticos ela confere um por um.'}
+          ]},
+        { who:'Seu Akira, 63 anos, aposentado que vai tirar a cidadania japonesa', says:'Vou traduzir minha certidão de nascimento com IA para entregar no consulado. Fica mais barato.',
+          q:'O que ele deve verificar antes?',
+          opts:[
+            {t:'Se o consulado exige tradução juramentada ou feita por profissional, consultando o site oficial.', ok:true, why:'Documentos oficiais costumam ter exigências próprias. A regra do órgão vale mais do que a economia.'},
+            {t:'Nada, qualquer tradução serve.', ok:false, why:'Se a tradução não for aceita, ele perde tempo e pode atrasar o processo.'},
+            {t:'Só se a IA traduziu os nomes corretamente.', ok:false, why:'Os nomes importam, mas a primeira pergunta é se esse tipo de tradução é aceito.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: minha comunicação da semana com IA', min:35,
       body:[`<div class="card"><p>Você vai usar a IA em comunicações reais da sua semana, do rascunho à revisão, sem perder o seu jeito de falar e sem expor dados de ninguém.</p></div>`],
       projeto:{
@@ -397,6 +524,89 @@ const MODULES = [
             {t:'Pedir a estrutura da pré-leitura com descrições gerais e preencher os números sigilosos ela mesma, fora da IA, ou usar só ferramenta autorizada pela empresa.', ok:true, why:'A IA organiza o formato; os dados sensíveis ficam onde devem ficar.'}
           ]}
       ]},
+    { id:'2.8', title:'Controle de caixa: entradas e saídas sem susto', min:12,
+      body:[
+        `<div class="card analogy"><h3>🐷 O cofrinho com tampa de vidro</h3><p>Um cofrinho fechado não diz quanto tem dentro: você só descobre quando quebra. Um cofrinho com tampa de vidro mostra o dinheiro entrando e saindo. O controle de caixa é essa <b>tampa de vidro do seu negócio</b>. A IA ajuda a montar a planilha e a entender os números, mas quem anota e confere é você.</p></div>`,
+        `<div class="term"><b>Entrada</b> = dinheiro que chega (vendas, Pix recebido). <b>Saída</b> = dinheiro que sai (fornecedor, aluguel, taxa da maquininha). <b>Saldo</b> = entradas menos saídas. <b>Fluxo de caixa</b> = registro dessas entradas e saídas ao longo dos dias, para prever se vai faltar dinheiro.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: a manicure que não sabia quanto ganhava</h3><p>Tatiane é manicure e MEI em São Paulo. Recebe por Pix, dinheiro e cartão, compra material toda semana e, no fim do mês, nunca sabe se teve lucro.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Antes</h4><div class="node">Ela perguntou à IA "quanto eu lucrei este mês?" e colou o extrato do banco. A IA respondeu um valor, mas misturou uma transferência da irmã com venda e esqueceu a taxa do cartão. Além disso, o extrato tinha nomes e CPFs de clientes.</div></div>
+            <div class="flow new"><h4>Depois</h4><div class="node good">Ela pediu à IA só a <b>estrutura</b>: quais colunas usar e quais fórmulas somam entradas e saídas por mês. Montou a planilha no Google Planilhas e passou a anotar cada movimento, separando dinheiro pessoal do dinheiro do negócio. As somas são feitas pela planilha.</div></div>
+          </div>
+          <div class="tw"><table class="tbl"><tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Categoria</th><th>Valor</th></tr>
+          <tr><td>03/03</td><td>Pé e mão</td><td>Entrada</td><td>Serviço</td><td>R$ 60</td></tr>
+          <tr><td>04/03</td><td>Esmaltes e algodão</td><td>Saída</td><td>Material</td><td>R$ 85</td></tr>
+          <tr><td>05/03</td><td>Taxa da maquininha</td><td>Saída</td><td>Taxas</td><td>R$ 3</td></tr></table></div>
+          <p>Com a planilha pronta, ela pede à IA ajuda para <b>interpretar</b>: "quais categorias de saída mais cresceram?" e "que perguntas eu deveria fazer sobre esses números?". As contas continuam na planilha. Para o MEI, ela também guarda as notas e preenche o relatório mensal de receitas, conferindo as regras no Portal do Empreendedor ou com o contador.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Misturar dinheiro pessoal e do negócio</b>: o Pix do aluguel de casa entra na conta e o lucro parece maior. Use uma categoria "pessoal" ou, melhor, contas separadas.</span></li><li><span><b>Pedir a conta à IA</b>: ela pode errar somas. Se o total da IA não bate com a planilha, vale a planilha.</span></li><li><span><b>Esquecer pequenas saídas</b>: taxas, gás, transporte. Somadas, elas fazem diferença.</span></li><li><span><b>Colar o extrato inteiro</b>: extrato tem dados pessoais de clientes e seus. Não precisa ir para a IA.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o Google Planilhas com um assistente de IA (ChatGPT, Gemini ou Copilot) aberto ao lado, por cerca de 15 minutos.</p>
+          <ol class="golden"><li><span>Escreva o seu próprio pedido descrevendo o seu negócio (ou a sua casa) e pedindo as colunas de um controle de caixa simples.</span></li><li><span>Crie a planilha com 10 movimentos fictícios, incluindo pelo menos uma taxa.</span></li><li><span>Peça a fórmula de soma por tipo e aplique.</span></li><li><span>Some 3 linhas na calculadora e veja se bate com a planilha.</span></li><li><span>Pergunte à IA o que observar nesses números, sem colar dados reais.</span></li></ol></div>`,
+        `<div class="card"><h3>💡 Prever, e não só registrar</h3><p>Com algumas semanas de registro, o controle de caixa mostra padrões: a semana do mês em que entra menos dinheiro, as contas que vencem juntas, o mês de movimento fraco. Peça à IA ajuda para montar uma aba de previsão com as contas fixas do próximo mês (aluguel, DAS do MEI, internet) e compare com a média de entradas. Se a previsão mostra que vai faltar, você descobre com antecedência e consegue negociar prazo ou guardar uma reserva. A decisão continua sua: a planilha só acende a luz amarela antes.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que é preciso anotar também o dinheiro que sai, e não só o que entra.</div>`
+      ],
+      ch:[
+        { who:'Reginaldo, 41 anos, dono de um food truck em Fortaleza', says:'A IA me disse que meu lucro de março foi R$ 4.200. Na minha planilha, deu R$ 3.650.',
+          q:'Em qual número ele deve confiar?',
+          opts:[
+            {t:'No da IA, porque ela calcula mais rápido.', ok:false, why:'Rapidez não é precisão. A IA pode errar somas ou ter lido dados errados.'},
+            {t:'Na média dos dois.', ok:false, why:'Média de um número certo com um errado continua errada.'},
+            {t:'No da planilha, depois de conferir algumas linhas, e usar a IA só para entender os números, não para calcular.', ok:true, why:'Contas ficam na planilha. A IA ajuda a montar a estrutura e a interpretar.'}
+          ]},
+        { who:'Michele, 33 anos, costureira e MEI', says:'O Pix da pensão do meu filho cai na mesma conta das clientes. Meu controle diz que o ateliê fatura mais do que fatura de verdade.',
+          q:'Qual é o melhor ajuste?',
+          opts:[
+            {t:'Separar o que é pessoal do que é do negócio, com categoria própria ou conta separada.', ok:true, why:'Misturar dinheiro pessoal infla o faturamento e atrapalha decisões e obrigações do MEI.'},
+            {t:'Deixar como está, dinheiro é tudo igual.', ok:false, why:'Para saber se o ateliê dá lucro, é preciso olhar só o dinheiro do ateliê.'},
+            {t:'Pedir à IA para adivinhar quais Pix são de clientes.', ok:false, why:'A IA não sabe a origem de cada Pix. Seria chute, e exigiria expor dados pessoais.'}
+          ]},
+        { who:'Osvaldo, 55 anos, tem uma pequena loja de material de construção', says:'Quero que a IA analise meu caixa. Vou colar o extrato do banco do mês inteiro, com nome de quem pagou.',
+          q:'Qual é o jeito mais seguro?',
+          opts:[
+            {t:'Colar o extrato, a IA precisa dos detalhes.', ok:false, why:'Nomes e dados bancários de clientes não são necessários para a análise e não devem ir para a IA.'},
+            {t:'Não analisar o caixa.', ok:false, why:'Entender o caixa é importante. Dá para fazer isso sem expor ninguém.'},
+            {t:'Resumir o mês por categoria na planilha, sem nomes, e pedir à IA perguntas e observações sobre esse resumo.', ok:true, why:'O resumo por categoria basta para a análise e mantém os dados pessoais protegidos.'}
+          ]}
+      ]},
+    { id:'2.9', title:'E-mails e arquivos em ordem', min:12,
+      body:[
+        `<div class="card analogy"><h3>🗄️ A gaveta de documentos da família</h3><p>Toda casa tem aquela gaveta onde vai tudo: conta de luz, receita médica, garantia da geladeira. Quando precisa de um papel, perde-se meia hora. Com pastas etiquetadas, leva um minuto. No computador e no e-mail acontece o mesmo. A IA ajuda a <b>desenhar o sistema de pastas e regras</b>; quem cria e mantém é você.</p></div>`,
+        `<div class="term"><b>Padrão de nomes</b> = jeito fixo de nomear arquivos, como "2026-03-15_ClienteA_orcamento". <b>Marcador ou pasta</b> = etiqueta que agrupa e-mails do mesmo assunto. <b>Filtro ou regra</b> = instrução que o Gmail ou o Outlook segue sozinho, como mover todo e-mail de um fornecedor para uma pasta.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o escritório de contabilidade</h3><p>Renato trabalha num pequeno escritório de contabilidade e recebe mais de 80 e-mails por dia. Os arquivos chamam "documento final", "documento final 2" e "agora sim".</p>
+          <div class="flows">
+            <div class="flow old"><h4>Antes</h4><div class="node">Caixa de entrada com 3 mil e-mails não lidos, notas fiscais misturadas com propaganda e arquivos sem data. Para achar a nota de um cliente, ele usava a busca e torcia.</div></div>
+            <div class="flow new"><h4>Depois</h4><div class="node good">Ele descreveu à IA os tipos de e-mail que recebe (notas, dúvidas de clientes, boletos, propaganda) e pediu uma estrutura de pastas e um padrão de nomes. Ajustou à realidade do escritório, criou 5 marcadores e 3 filtros, e passou a nomear arquivos com data no começo.</div></div>
+          </div>
+          <ol class="golden"><li><span>Data no começo do nome, no formato ano-mês-dia: assim os arquivos ficam em ordem sozinhos.</span></li><li><span>Poucas pastas: 5 a 8 bem usadas valem mais que 40 esquecidas.</span></li><li><span>Filtros só para o que é previsível, como e-mails de um mesmo remetente.</span></li><li><span>15 minutos por semana para esvaziar a caixa de entrada.</span></li></ol>
+          <p>A IA também ajuda a explicar o passo a passo de criar um filtro no Gmail ou no Outlook. Se o menu que ela descreve não existir, confira na ajuda oficial do programa: as telas mudam com o tempo.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Sistema complicado demais</b>: se você precisa pensar em qual pasta vai cada arquivo, há pastas demais.</span></li><li><span><b>Filtro que esconde o importante</b>: um filtro que manda tudo para uma pasta pode esconder a cobrança urgente. Teste e confira a pasta nos primeiros dias.</span></li><li><span><b>Colar e-mails de clientes na IA</b>: para desenhar o sistema, ela só precisa dos tipos de e-mail, não do conteúdo.</span></li><li><span><b>Apagar sem pensar</b>: notas fiscais e documentos de clientes podem ter prazo de guarda. Arquive em vez de apagar.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o ChatGPT (gratuito) e o seu próprio e-mail ou pasta de arquivos, por cerca de 15 minutos.</p>
+          <ol class="golden"><li><span>Liste os 5 tipos de e-mail ou arquivo que você mais recebe, sem nomes de pessoas.</span></li><li><span>Escreva o seu próprio pedido para a IA sugerir pastas e um padrão de nomes.</span></li><li><span>Corte o que não serve para você e crie as pastas.</span></li><li><span>Renomeie 5 arquivos no novo padrão ou crie 1 filtro de e-mail.</span></li><li><span>Marque no calendário 15 minutos semanais de arrumação.</span></li></ol></div>`,
+        `<div class="card"><h3>💡 Nuvem, cópia de segurança e acessos</h3><p>Organizar não adianta se o arquivo some quando o celular quebra. Guarde os documentos de trabalho num serviço de nuvem, como Google Drive ou OneDrive, ou no lugar indicado pela empresa, e ative a cópia de segurança das conversas do WhatsApp Business. Pergunte à IA quais documentos do seu ramo costumam ter prazo de guarda e confirme com o contador ou com a empresa: notas fiscais e documentos trabalhistas, por exemplo, não devem ser apagados por conta própria. Compartilhe pastas só com quem precisa e revise esses acessos quando alguém sair da equipe.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que é mais fácil achar um brinquedo quando cada caixa tem uma etiqueta.</div>`
+      ],
+      ch:[
+        { who:'Aline, 30 anos, assistente de uma imobiliária', says:'A IA sugeriu 35 pastas para organizar os e-mails da imobiliária. Criei todas e, uma semana depois, voltei a deixar tudo na caixa de entrada.',
+          q:'O que deu errado?',
+          opts:[
+            {t:'O sistema tinha pastas demais para a rotina dela; poucas pastas bem usadas funcionam melhor.', ok:true, why:'Quando decidir onde guardar dá trabalho, a pessoa desiste. Simplicidade é o que mantém o hábito.'},
+            {t:'Faltaram mais pastas, para cada assunto ter a sua.', ok:false, why:'Mais pastas aumentariam o esforço de decidir, que foi o que a fez desistir.'},
+            {t:'Organizar e-mail não funciona em imobiliária.', ok:false, why:'Funciona, desde que o sistema seja simples e caiba na rotina.'}
+          ]},
+        { who:'Paulo, 46 anos, comprador de uma rede de supermercados', says:'Criei um filtro que joga todos os e-mails dos fornecedores numa pasta. Na semana passada, perdi o prazo de um pedido urgente que foi parar lá.',
+          q:'Qual é o melhor ajuste?',
+          opts:[
+            {t:'Apagar todos os filtros.', ok:false, why:'Filtros economizam tempo. O problema foi não acompanhar a pasta.'},
+            {t:'Revisar o filtro para não esconder o que é urgente e conferir a pasta todos os dias nos primeiros tempos.', ok:true, why:'Filtro bom organiza sem esconder. Testar e acompanhar evita perder mensagens importantes.'},
+            {t:'Pedir aos fornecedores que não mandem mais e-mails.', ok:false, why:'O e-mail é o canal de trabalho. O ajuste é no filtro.'}
+          ]},
+        { who:'Denise, 38 anos, secretária de uma escola particular', says:'Vou colar na IA os e-mails dos pais dos alunos para ela me dizer como organizar a caixa de entrada.',
+          q:'O que ela precisa mandar para a IA?',
+          opts:[
+            {t:'Os e-mails completos, com nomes dos pais e dos alunos.', ok:false, why:'São dados pessoais, inclusive de crianças, que pedem cuidado redobrado pela LGPD. Não são necessários.'},
+            {t:'Só a lista de tipos de e-mail (matrícula, boletos, recados, eventos) e a quantidade aproximada de cada um.', ok:true, why:'Para sugerir pastas e filtros, a IA só precisa saber os tipos de mensagem, não o conteúdo.'},
+            {t:'Os e-mails sem os nomes, mas com as notas dos alunos.', ok:false, why:'Notas também são dados pessoais e não ajudam a organizar a caixa.'}
+          ]}
+      ]},
     { id:'2.7', title:'Projeto: organizando uma rotina de trabalho', min:35,
       body:[`<div class="card"><p>Escolha uma área da sua rotina que hoje vive na memória ou na correria e organize com a ajuda da IA: um plano semanal, um checklist ou um orçamento. O importante é que seja algo que você vai realmente usar.</p></div>`],
       projeto:{
@@ -582,6 +792,130 @@ const MODULES = [
             {t:'Não usar IA e assinar o que o plano mandar.', ok:false, why:'A IA pode ajudar bastante a entender, com os cuidados certos.'}
           ]}
       ]},
+    { id:'3.7', title:'Golpes, boatos e conteúdo falso: como checar', min:12,
+      body:[
+        `<div class="card analogy"><h3>🕵️ O porteiro desconfiado</h3><p>Um bom porteiro não deixa ninguém subir só porque a pessoa disse "sou do gás". Ele pergunta, confere o crachá e liga para o morador. Com mensagens, áudios e vídeos é igual: antes de acreditar, pagar ou repassar, <b>confira por outro caminho</b>. Hoje, com IA, é fácil imitar voz, rosto e comprovante.</p></div>`,
+        `<div class="term"><b>Golpe de falsa identidade</b> = alguém se passa por parente, chefe ou empresa para pedir dinheiro ou dados. <b>Deepfake</b> = vídeo ou áudio falso feito com IA, imitando uma pessoa real. <b>Agência de checagem</b> = equipe de jornalistas que verifica boatos, como Lupa, Aos Fatos, Estadão Verifica e Fato ou Fake.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o áudio do "chefe"</h3><p>Sueli é assistente financeira numa distribuidora em Campinas. Numa sexta à tarde, chegou um áudio de um número novo, com a voz parecida com a do diretor: "Sueli, estou numa reunião, preciso que você faça um Pix urgente para este fornecedor, depois eu explico".</p>
+          <div class="why-chain"><div>"A voz é igualzinha à dele."</div><div>Por que desconfiar? → "Número novo, pressa, pedido de dinheiro e 'depois eu explico'."</div><div>O que confirma? → "Ligar para o número que já está salvo e seguir o processo de pagamento da empresa."</div><div class="root">Resultado: o diretor não sabia de nada. Era um golpe com voz imitada. Sueli não pagou porque conferiu por outro canal.</div></div>
+          <div class="flows">
+            <div class="flow old"><h4>Reação de risco</h4><div class="node">Acreditar na voz, pagar rápido para não incomodar o chefe e só perguntar depois.</div></div>
+            <div class="flow new"><h4>Reação segura</h4><div class="node good">Parar, confirmar pelo contato antigo ou pessoalmente, e seguir o processo de aprovação. Pedido verdadeiro aguenta 10 minutos de conferência.</div></div>
+          </div>
+          <p>A IA pode ajudar na checagem: você descreve a mensagem, sem dados pessoais, e pede os <b>sinais de alerta</b> e as perguntas que deveria fazer. Para boatos, pergunte a uma ferramenta com fontes, como o Perplexity, e abra as fontes. Mas atenção: ferramentas que dizem "detectar IA" em imagens e áudios erram muito. A conferência por outro canal vale mais.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Confiar no comprovante</b>: comprovante de Pix pode ser montado. Confira se o dinheiro entrou no extrato do banco.</span></li><li><span><b>Confiar na voz ou no rosto</b>: com IA, os dois podem ser imitados. Desconfie de pressa e segredo.</span></li><li><span><b>Repassar "por via das dúvidas"</b>: boato repassado ganha credibilidade. Na dúvida, não repasse.</span></li><li><span><b>Perguntar à IA "isso é verdade?" e aceitar</b>: ela pode não saber de fatos recentes. Peça fontes e abra-as.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o Perplexity, na versão gratuita, por cerca de 10 minutos.</p>
+          <ol class="golden"><li><span>Escolha uma notícia ou corrente que chegou num grupo de WhatsApp recentemente.</span></li><li><span>Escreva a sua própria pergunta, pedindo o que se sabe sobre o assunto e quais fontes confirmam.</span></li><li><span>Abra pelo menos 2 fontes e veja a data e quem publicou.</span></li><li><span>Procure o assunto no site de uma agência de checagem.</span></li><li><span>Anote sua conclusão: verdadeiro, falso, enganoso ou sem confirmação.</span></li></ol>
+          <p>🔒 Não cole prints com nomes e telefones de pessoas do grupo.</p></div>`,
+        `<div class="card"><h3>💡 Se você caiu, ou quase caiu</h3><p>Cair em golpe não é falta de inteligência: os golpistas usam pressa, medo e a confiança em pessoas conhecidas. Se você fez um Pix para um golpista, avise o seu banco imediatamente pelo canal oficial e peça a contestação pelo MED, o Mecanismo Especial de Devolução do Pix. Registre também um boletim de ocorrência, que em muitos estados pode ser feito pela internet. No trabalho, avise logo o responsável: esconder só aumenta o prejuízo. E combine com a equipe uma regra simples, como "pedido de pagamento fora do processo nunca é atendido", para ninguém decidir sozinho sob pressão.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que, se um estranho diz que a mãe dela mandou buscá-la, o certo é ligar para a mãe antes.</div>`
+      ],
+      ch:[
+        { who:'Jorge, 52 anos, dono de uma loja de autopeças em Ribeirão Preto', says:'Um cliente mandou o comprovante do Pix e já quer levar a peça. O comprovante parece certinho.',
+          q:'O que Jorge deve fazer antes de entregar?',
+          opts:[
+            {t:'Entregar, comprovante é prova de pagamento.', ok:false, why:'Comprovantes falsos são comuns e fáceis de montar. A prova é o dinheiro na conta.'},
+            {t:'Pedir à IA para analisar a imagem do comprovante.', ok:false, why:'A IA não tem acesso à conta dele e pode errar. A conferência é no extrato.'},
+            {t:'Conferir no aplicativo do banco se o valor realmente entrou na conta.', ok:true, why:'Só o extrato confirma o pagamento. Leva segundos e evita prejuízo.'}
+          ]},
+        { who:'Neide, 66 anos, aposentada e vendedora de cosméticos por catálogo', says:'Recebi um vídeo de um famoso indicando um investimento que rende 5% ao dia. Vou mandar para as minhas clientes.',
+          q:'Qual é a atitude mais segura?',
+          opts:[
+            {t:'Não repassar, desconfiar da promessa e procurar o assunto em agências de checagem e fontes confiáveis.', ok:true, why:'Rendimento garantido muito alto é sinal clássico de golpe, e vídeos de famosos podem ser deepfakes.'},
+            {t:'Repassar, já que foi um famoso que falou.', ok:false, why:'Vídeos podem ser falsos e feitos com IA. Repassar espalha o golpe para as clientes dela.'},
+            {t:'Repassar com a frase "não sei se é verdade".', ok:false, why:'Mesmo com o aviso, o golpe chega a mais pessoas e alguém pode cair.'}
+          ]},
+        { who:'Caio, 29 anos, analista de RH', says:'Uso uma ferramenta que diz se o áudio foi feito por IA. Ela disse que o áudio do suposto diretor é verdadeiro, então vou fazer a transferência.',
+          q:'O que está errado nesse raciocínio?',
+          opts:[
+            {t:'Nada, a ferramenta foi feita para isso.', ok:false, why:'Detectores de IA erram com frequência, para os dois lados. Não servem como prova.'},
+            {t:'Ele deveria usar dois detectores diferentes.', ok:false, why:'Dois detectores imprecisos continuam imprecisos. O que resolve é conferir com a pessoa.'},
+            {t:'Detectores de IA não são confiáveis; ele deve confirmar com o diretor pelo contato conhecido e seguir o processo de aprovação.', ok:true, why:'A conferência por outro canal e o processo da empresa protegem mais do que qualquer detector.'}
+          ]}
+      ]},
+    { id:'3.8', title:'Aprender com vídeos, podcasts e áudios', min:12,
+      body:[
+        `<div class="card analogy"><h3>🎧 O caderno do colega caprichoso</h3><p>Na escola, sempre tinha um colega com o caderno impecável: tudo anotado, com títulos e resumos. Pegar emprestado ajudava, mas quem só copiava esquecia rápido. A IA pode transformar um vídeo de uma hora num caderno organizado. O aprendizado, porém, acontece quando <b>você usa esse caderno para pensar e praticar</b>.</p></div>`,
+        `<div class="term"><b>Transcrição</b> = o texto de tudo o que foi falado num vídeo ou áudio. <b>Marcação de tempo</b> = o minuto em que algo foi dito, para você voltar ao trecho. <b>Fonte</b> = no NotebookLM, cada material que você envia, como um link de vídeo do YouTube com legenda, um PDF ou um áudio.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o treinamento de atendimento</h3><p>Rafael, 25 anos, vendedor de uma loja de eletrodomésticos em Manaus, recebeu da empresa um vídeo de treinamento de 50 minutos sobre o novo sistema de vendas e não tinha tempo de ver de uma vez.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Antes</h4><div class="node">Ele pediu "resuma esse vídeo" a uma IA e leu um resumo de 5 linhas. Na semana seguinte, travou na hora de cadastrar uma venda com troca, porque o resumo não falava disso.</div></div>
+            <div class="flow new"><h4>Depois</h4><div class="node good">Ele colocou o vídeo como fonte no NotebookLM e pediu: os passos do sistema em ordem, com o minuto de cada um; as dúvidas que um vendedor novo costuma ter; e 5 perguntas para testar se entendeu. Assistiu só os trechos mais difíceis e treinou as perguntas sem olhar.</div></div>
+          </div>
+          <ol class="golden"><li><span>Peça a <b>estrutura</b> do conteúdo com marcação de tempo.</span></li><li><span>Assista os <b>trechos mais importantes</b> por inteiro.</span></li><li><span>Peça <b>perguntas</b> e responda sem consultar.</span></li><li><span>Confira as respostas no trecho original.</span></li></ol>
+          <p>Áudios do WhatsApp com orientações longas de trabalho também podem ser transcritos, desde que não tenham dados de terceiros e que a ferramenta seja permitida pela empresa.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Só ler o resumo</b>: dá sensação de que aprendeu, mas o detalhe que você vai precisar costuma estar fora dele.</span></li><li><span><b>Transcrição com erro</b>: nomes, números e termos técnicos podem sair trocados. Volte ao minuto indicado e confira.</span></li><li><span><b>Vídeo sem legenda</b>: algumas ferramentas só leem vídeos com legenda. Se não funcionar, use outro material.</span></li><li><span><b>Conteúdo sem fonte confiável</b>: um vídeo bem resumido continua sendo a opinião de quem gravou. Para temas sérios, confira em fontes oficiais.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o NotebookLM, gratuito com conta Google, por cerca de 15 minutos.</p>
+          <ol class="golden"><li><span>Escolha um vídeo público com legenda sobre um assunto do seu trabalho (uma aula, uma palestra, um tutorial).</span></li><li><span>Adicione o link como fonte.</span></li><li><span>Escreva o seu próprio pedido para ter a estrutura do vídeo com os minutos de cada parte.</span></li><li><span>Assista o trecho que parecer mais importante.</span></li><li><span>Peça perguntas de revisão, responda sem olhar e confira nas citações.</span></li></ol></div>`,
+        `<div class="card"><h3>💡 Áudio também ensina</h3><p>Podcasts e áudios são ótimos para o trajeto no ônibus ou no metrô, mas é fácil ouvir sem prestar atenção. Depois de ouvir, tente dizer em voz alta as três ideias principais antes de pedir qualquer resumo. Em seguida, peça o resumo à IA e compare: o que você lembrou e o que escapou? Essa comparação mostra onde você se distraiu. Para estudos mais longos, crie no NotebookLM um caderno por assunto e vá adicionando as fontes; assim, as perguntas de revisão juntam tudo o que você já estudou sobre aquele tema.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que ler o resumo do filme não é o mesmo que saber contar a história.</div>`
+      ],
+      ch:[
+        { who:'Vanessa, 34 anos, técnica de enfermagem', says:'Assisti só ao resumo de uma aula sobre um novo protocolo do hospital. No plantão, não lembrei de um detalhe importante.',
+          q:'Como ela deve estudar a próxima aula?',
+          opts:[
+            {t:'Pedir um resumo ainda mais curto.', ok:false, why:'Resumo mais curto corta ainda mais detalhes.'},
+            {t:'Usar a IA para ter a estrutura com os minutos, assistir os trechos importantes, treinar com perguntas e conferir no protocolo oficial do hospital.', ok:true, why:'Estrutura, trechos completos, prática e conferência na fonte oficial fixam o que importa no plantão.'},
+            {t:'Deixar de lado as aulas em vídeo.', ok:false, why:'O vídeo é útil. O que faltou foi estudar de forma ativa.'}
+          ]},
+        { who:'Leandro, 42 anos, representante comercial', says:'A transcrição da palestra diz que a meta de vendas do setor é de "15 milhões". Vou usar esse número na minha apresentação.',
+          q:'O que ele deve fazer antes?',
+          opts:[
+            {t:'Usar o número, porque está escrito na transcrição.', ok:false, why:'Transcrições erram números com frequência. Um número errado numa apresentação compromete a credibilidade.'},
+            {t:'Arredondar para 20 milhões, para impressionar.', ok:false, why:'Alterar o número de propósito é pior do que errar sem querer.'},
+            {t:'Voltar ao minuto indicado, ouvir o trecho e, se possível, confirmar numa fonte escrita.', ok:true, why:'A marcação de tempo existe para conferir. Número importante merece fonte confirmada.'}
+          ]},
+        { who:'Sabrina, 28 anos, coordenadora de uma ONG', says:'Quero transcrever com IA os áudios de WhatsApp dos atendimentos às famílias para montar um relatório.',
+          q:'Qual é o cuidado principal?',
+          opts:[
+            {t:'Verificar se pode usar esses áudios, retirar ou evitar dados pessoais e usar só ferramentas autorizadas pela ONG.', ok:true, why:'Áudios de atendimento têm dados pessoais e às vezes sensíveis. A LGPD exige cuidado com a finalidade e com quem recebe esses dados.'},
+            {t:'Nenhum, o relatório é para uso interno.', ok:false, why:'Uso interno não autoriza mandar dados das famílias para qualquer ferramenta.'},
+            {t:'Só cuidar para a transcrição sair sem erros de português.', ok:false, why:'A ortografia importa, mas o risco maior é expor dados das famílias.'}
+          ]}
+      ]},
+    { id:'3.9', title:'Usar IA com ética: autoria, transparência e limites', min:12,
+      body:[
+        `<div class="card analogy"><h3>🧑‍🍳 O bolo de mistura pronta</h3><p>Usar mistura pronta para fazer bolo não é crime. Mas se você entra num concurso de "receita da avó" com bolo de caixinha, ou vende como caseiro o que é industrializado, aí há um problema. Com a IA é parecido: <b>usar não é errado; esconder, quando importa, e entregar sem revisar, é</b>.</p></div>`,
+        `<div class="term"><b>Autoria</b> = quem criou e responde por um trabalho. <b>Transparência</b> = deixar claro como a IA foi usada, quando isso importa para quem recebe. <b>Política de uso</b> = regras da empresa, escola ou conselho profissional sobre quais ferramentas e dados podem ser usados.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o relatório da estagiária</h3><p>Isabela, estagiária de marketing em Porto Alegre, precisava entregar um relatório sobre a concorrência.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Antes</h4><div class="node">Ela pediu tudo à IA e entregou sem ler. O relatório citava uma pesquisa que não existia e um concorrente que fechou em 2024. Na reunião, não soube explicar de onde vinham os números.</div></div>
+            <div class="flow new"><h4>Depois</h4><div class="node good">Ela usou a IA para organizar os tópicos e revisar o texto, levantou os dados ela mesma em fontes conferidas e incluiu no final uma linha: "Texto revisado com apoio de IA; dados levantados e conferidos pela autora". O gestor elogiou a clareza e confiou nos números.</div></div>
+          </div>
+          <div class="tw"><table class="tbl"><tr><th>Situação</th><th>Pergunta para decidir</th></tr>
+          <tr><td>Trabalho de faculdade ou curso</td><td>O que a regra da instituição permite? O professor espera que o texto seja seu?</td></tr>
+          <tr><td>Relatório no trabalho</td><td>Eu consigo explicar e defender cada número e conclusão?</td></tr>
+          <tr><td>Imagem ou texto para cliente</td><td>O cliente seria enganado se não soubesse que foi feito com IA?</td></tr>
+          <tr><td>Dados de clientes ou da empresa</td><td>A ferramenta é autorizada? A LGPD permite usar esses dados para isso?</td></tr></table></div></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Assinar o que não entende</b>: se você não sabe explicar um trecho, ainda não é seu. Estude ou corte.</span></li><li><span><b>Ignorar a regra local</b>: empresas, escolas e conselhos profissionais têm regras diferentes. Na dúvida, pergunte antes.</span></li><li><span><b>Exagerar no aviso</b>: não é preciso avisar que usou o corretor ortográfico. Avise quando o uso muda o que a pessoa pensa sobre o trabalho.</span></li><li><span><b>Imitar alguém sem permissão</b>: usar a voz, o rosto ou o estilo de uma pessoa real sem autorização pode ferir direitos e enganar.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o Google Gemini, gratuito com conta Google, por cerca de 10 minutos.</p>
+          <ol class="golden"><li><span>Pense em um uso real que você faz ou quer fazer da IA no trabalho ou no estudo.</span></li><li><span>Escreva o seu próprio pedido para a IA listar os riscos éticos e de privacidade desse uso.</span></li><li><span>Compare com as regras da sua empresa ou escola, se existirem.</span></li><li><span>Escreva, com as suas palavras, 3 regras pessoais de uso da IA.</span></li></ol></div>`,
+        `<div class="card"><h3>💡 Três regras que cabem em qualquer profissão</h3><p>Quem usa IA no dia a dia com segurança costuma seguir três regras simples: não colar dados pessoais ou sigilosos em ferramentas não autorizadas; não entregar nada que não consiga explicar; e contar como usou a IA sempre que essa informação mudaria a opinião de quem recebe. Essas regras evitam a maior parte dos problemas. Elas não substituem as regras da sua empresa, escola ou conselho profissional, que podem ser mais rígidas. Escreva as suas regras e deixe num lugar visível, como um bilhete perto da tela.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos a diferença entre pedir ajuda para fazer o dever de casa e pedir que alguém faça o dever no seu lugar.</div>`
+      ],
+      ch:[
+        { who:'Henrique, 22 anos, estudante de administração', says:'Meu professor proibiu IA no trabalho final. Vou usar mesmo assim, ninguém vai perceber.',
+          q:'Qual é a atitude correta?',
+          opts:[
+            {t:'Usar escondido, já que ninguém vai perceber.', ok:false, why:'Descumprir a regra é desonesto, pode reprovar e tira dele a chance de aprender.'},
+            {t:'Seguir a regra e, se tiver dúvida sobre o que é permitido (como corrigir ortografia), perguntar ao professor.', ok:true, why:'Cada instituição define suas regras. Perguntar resolve a dúvida sem arriscar a nota nem a integridade.'},
+            {t:'Usar e reescrever as frases para disfarçar.', ok:false, why:'Disfarçar continua sendo descumprir a regra.'}
+          ]},
+        { who:'Bruna, 37 anos, designer autônoma', says:'Fiz a logo de um cliente com ajuda de um gerador de imagens. Preciso contar a ele?',
+          q:'Qual é o caminho mais honesto?',
+          opts:[
+            {t:'Não contar, o que importa é o resultado.', ok:false, why:'Uma logo precisa ser exclusiva e registrável. Esconder o uso pode trazer problemas ao cliente depois.'},
+            {t:'Dizer que fez tudo à mão, para valorizar o trabalho.', ok:false, why:'Mentir sobre o processo quebra a confiança e pode gerar problema se o cliente descobrir.'},
+            {t:'Contar como usou a IA, revisar os termos de uso da ferramenta e garantir que o resultado final foi trabalhado por ela.', ok:true, why:'Numa logo, o cliente precisa saber como foi feita para decidir sobre registro e exclusividade. Transparência protege os dois.'}
+          ]},
+        { who:'Gilberto, 48 anos, contador', says:'Um colega usou um áudio com a voz de um cliente, criado por IA, para "agilizar" uma autorização por telefone.',
+          q:'Como avaliar essa atitude?',
+          opts:[
+            {t:'Ok, desde que a intenção fosse boa.', ok:false, why:'Boa intenção não autoriza imitar alguém. A autorização precisa vir da própria pessoa.'},
+            {t:'É grave: imitar a voz de uma pessoa sem consentimento engana terceiros e pode configurar fraude.', ok:true, why:'Usar a voz de alguém sem autorização fere direitos e confiança, e pode ter consequências legais.'},
+            {t:'Só seria problema se o cliente descobrisse.', ok:false, why:'O erro está no ato, não em ser descoberto.'}
+          ]}
+      ]},
     { id:'3.6', title:'Projeto: meu plano de aprendizado com IA', min:35,
       body:[`<div class="card"><p>Escolha algo que você precisa aprender ou preparar para o trabalho (uma habilidade, uma prova, uma entrevista, uma apresentação) e use a IA como mapa, treinadora e parceira de ensaio, sempre conferindo nas fontes.</p></div>`],
       projeto:{
@@ -605,8 +939,8 @@ const MODULES = [
 ];
 
 const MODDONE = {
-  1: 'Você já escreve, ajusta o tom e resume mais rápido, sem abrir mão da revisão. O rascunho é da IA, a responsabilidade é sua.',
-  2: 'Você aprendeu a usar a IA para planilhas, planos, checklists e orçamentos, sempre testando e conferindo os números.',
+  1: 'Você já escreve, ajusta o tom, resume, simplifica avisos, monta respostas prontas e traduz mais rápido, sem abrir mão da revisão. O rascunho é da IA, a responsabilidade é sua.',
+  2: 'Você aprendeu a usar a IA para planilhas, planos, checklists, orçamentos, controle de caixa e organização de e-mails e arquivos, sempre testando e conferindo os números.',
   3: 'Parabéns, você concluiu o curso IA no Trabalho e no Dia a Dia! A IA agora trabalha a seu favor na comunicação, na organização e no estudo, com você no comando, e você já pode emitir o certificado do curso. Próximo passo da trilha: o curso "Automação Sem Código".'
 };
 
@@ -623,7 +957,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#22C55E','#14B8A6'], 2:['#14B8A6','#06B6D4'], 3:['#10B981','#22C55E'] };
-const LIC = { '1.1':'✉️','1.2':'📝','1.3':'🌡️','1.4':'🪞','1.5':'📲','1.6':'📣','2.1':'🧮','2.2':'🗓️','2.3':'✅','2.4':'🧾','2.5':'🧱','2.6':'🤝','2.7':'🗂️','3.1':'🔎','3.2':'🎓','3.3':'🧗','3.4':'🎭','3.5':'📜','3.6':'📈' };
+const LIC = { '1.1':'✉️','1.2':'📝','1.3':'🌡️','1.4':'🪞','1.5':'📲','1.7':'🗂️','1.8':'🪧','1.9':'🌎','1.6':'📣','2.1':'🧮','2.2':'🗓️','2.3':'✅','2.4':'🧾','2.5':'🧱','2.6':'🤝','2.8':'🐷','2.9':'🗄️','2.7':'🗂️','3.1':'🔎','3.2':'🎓','3.3':'🧗','3.4':'🎭','3.5':'📜','3.7':'🕵️','3.8':'🎧','3.9':'⚖️','3.6':'📈' };
 
 return {
   id: 'ia-no-trabalho',

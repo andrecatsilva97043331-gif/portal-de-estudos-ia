@@ -197,6 +197,127 @@ const MODULES = [
             {t:'Treinamento é o curso que o usuário faz para aprender a usar a IA.', ok:false, why:'Aqui o termo se refere à fase em que a IA aprendeu com exemplos, não ao curso do usuário.'}
           ]}
       ]},
+    { id:'1.7', title:'Classificar, prever e gerar: os 3 trabalhos da IA', min:13,
+      body:[
+        `<div class="card analogy"><h3>🏪 Os três funcionários da loja</h3><p>Numa loja de bairro, um funcionário <b>separa</b> as encomendas por bairro, outro <b>calcula</b> quanto pão assar amanhã olhando as vendas da semana e um terceiro <b>escreve</b> o cartaz da promoção. São três trabalhos diferentes. Quase toda IA que você encontra faz um desses três trabalhos, e cada um erra de um jeito.</p></div>`,
+        `<div class="term"><b>Classificar</b> = colocar algo numa categoria (spam ou não spam, compra normal ou suspeita). <b>Prever</b> = estimar um número ou o que vem a seguir (tempo de entrega, vendas do mês, a próxima palavra). <b>Gerar</b> = criar um conteúdo novo (texto, imagem, áudio).</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: que trabalho é esse?</h3><p>Veja cinco situações comuns. Para cada uma, a pergunta é: a IA está separando, estimando ou criando? E o que pode dar errado?</p>
+          <div class="tw"><table class="tbl"><tr><th>Situação</th><th>Trabalho</th><th>Como costuma errar</th></tr>
+          <tr><td>O banco bloqueia uma compra no cartão</td><td>Classificar (suspeita ou normal)</td><td>Bloqueia uma compra sua de verdade (alarme falso)</td></tr>
+          <tr><td>O app de entrega mostra "chega em 35 min"</td><td>Prever</td><td>Chuva e trânsito mudam tudo: é estimativa, não promessa</td></tr>
+          <tr><td>O teclado do celular completa a palavra</td><td>Prever (a próxima palavra)</td><td>Completa com a palavra errada</td></tr>
+          <tr><td>O desbloqueio do celular reconhece seu rosto</td><td>Classificar (é você ou não)</td><td>Falha com pouca luz ou de óculos escuros</td></tr>
+          <tr><td>O chat escreve a legenda do seu post</td><td>Gerar</td><td>Texto genérico ou com informação inventada</td></tr></table></div>
+          <p>Curiosidade importante: o chat <b>gera</b> texto <b>prevendo</b> a continuação mais provável, palavra por palavra (lição 1.2). Por isso ele parece criativo e, ao mesmo tempo, pode inventar com toda a naturalidade.</p></div>`,
+        `<div class="card"><h3>🧭 O que fazer com cada tipo</h3><ol class="golden"><li><span><b>Classificação:</b> pergunte "o que acontece quando ela erra?" e saiba como corrigir (marcar "não é spam", ligar para o banco).</span></li><li><span><b>Previsão:</b> trate como estimativa com margem. Use como referência e junte com o que você sabe (feriado, chuva, promoção).</span></li><li><span><b>Geração:</b> leia como rascunho e confira fatos, números e nomes antes de usar.</span></li></ol></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ol class="golden"><li><span><b>Confundir previsão com promessa:</b> "o app disse 35 minutos, então o entregador atrasou de propósito".</span></li><li><span><b>Achar que a categoria é a verdade final:</b> e-mail importante cai no spam e ninguém olha a pasta.</span></li><li><span><b>Achar que toda IA é um chat:</b> a maior parte da IA do seu dia nem conversa, só separa e estima em silêncio.</span></li></ol></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Quick, Draw!, 5 min)</h3><ol class="golden"><li><span>Abra o Quick, Draw! pelo endereço oficial (quickdraw.withgoogle.com). É gratuito e não pede cadastro.</span></li><li><span>Jogue uma rodada de 6 desenhos. Enquanto desenha, repare que a IA vai "chutando" nomes: ela está <b>classificando</b> o seu rabisco.</span></li><li><span>No fim, anote em quantos ela acertou e abra um que ela errou para ver os exemplos que ela conhecia.</span></li><li><span>Escreva uma frase com suas palavras: qual dos três trabalhos ela fez e por que errou aquele desenho.</span></li></ol></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> escolha três apps do seu celular e explique a alguém da família se a IA de cada um separa, estima ou cria.</div>`
+      ],
+      ch:[
+        { who:'Cleide, 44 anos, dona de um pet shop', says:'O sistema de vendas disse que vou vender 120 sacos de ração no mês que vem. Já posso comprar exatamente 120?',
+          q:'O que é mais sensato para a Cleide?',
+          opts:[
+            {t:'Comprar exatamente 120, porque a IA calculou com base nas vendas.', ok:false, why:'É uma previsão, não uma garantia. Comprar o número exato ignora a margem de erro e o que ela sabe do próprio negócio.'},
+            {t:'Usar os 120 como referência e ajustar com o que ela sabe: feriados, promoções, clientes novos e o estoque que já tem.', ok:true, why:'Previsão é estimativa com margem. Juntar o número com o conhecimento dela é o uso certo.'},
+            {t:'Ignorar a previsão, porque previsão de IA sempre erra.', ok:false, why:'Previsões erram, mas costumam ser uma boa referência. Jogar fora a informação também é desperdício.'}
+          ]},
+        { who:'Anderson, 29 anos, auxiliar administrativo', says:'Um e-mail importante de um fornecedor foi parar no spam e eu perdi o prazo. A IA do e-mail está quebrada?',
+          q:'Qual é a melhor explicação e atitude?',
+          opts:[
+            {t:'Está quebrada: o certo é desligar o filtro de spam.', ok:false, why:'Sem o filtro, ele receberia uma enxurrada de golpes. O filtro acerta muito mais do que erra.'},
+            {t:'A IA leu o e-mail e decidiu que o fornecedor não é confiável.', ok:false, why:'O filtro não julga pessoas: ele classifica por padrões, e às vezes um e-mail legítimo parece spam.'},
+            {t:'O filtro classifica por padrões e às vezes erra. Ele deve marcar o e-mail como "não é spam" e olhar a pasta de spam de vez em quando.', ok:true, why:'Toda classificação tem alarmes falsos. Saber corrigir e conferir a pasta evita perder mensagens importantes.'}
+          ]},
+        { who:'Patrícia, 38 anos, professora do fundamental', says:'Quero mostrar para a turma um exemplo de IA que cria algo novo.',
+          q:'Qual destes exemplos é de IA gerando conteúdo?',
+          opts:[
+            {t:'O aplicativo do banco marcando uma compra como suspeita.', ok:false, why:'Isso é classificar: a IA coloca a compra numa categoria (normal ou suspeita).'},
+            {t:'Um assistente de IA criando uma lista nova de exercícios sobre frações.', ok:true, why:'Criar um conteúdo que não existia é gerar. E, como todo conteúdo gerado, a professora deve conferir as respostas dos exercícios.'},
+            {t:'O app de mapas estimando a hora de chegada.', ok:false, why:'Isso é prever: a IA estima um tempo a partir do trânsito e de viagens anteriores.'}
+          ]}
+      ]},
+    { id:'1.8', title:'Dados bons, IA boa: o que entra é o que sai', min:14,
+      body:[
+        `<div class="card analogy"><h3>🍞 O aprendiz que só viu pão queimado</h3><p>Se você ensina um aprendiz de padeiro mostrando só pães franceses queimados, ele vai achar que pão francês é escuro e duro. Ele não é burro: aprendeu direitinho com os exemplos <b>errados</b>. A IA é igual: ela fica tão boa quanto os exemplos que recebeu.</p></div>`,
+        `<div class="term"><b>Exemplos de treino</b> = os dados mostrados à IA para ela aprender. <b>Dados desequilibrados</b> = muitos exemplos de um tipo e poucos do outro. <b>Atalho</b> = quando a IA aprende um detalhe que não importa (o fundo da foto, a luz) em vez do que importa (o objeto).</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: a cooperativa de reciclagem</h3><p>Mariana quer uma IA que separe <b>garrafa PET</b> de <b>lata</b> pela câmera, para ajudar a cooperativa do bairro.</p>
+          <div class="flows">
+            <div class="flow old"><h4>1ª tentativa</h4><div class="node">50 fotos de lata e só 8 de garrafa. Todas as latas fotografadas na mesa branca; as garrafas, no chão. Resultado: qualquer coisa no chão vira "garrafa", até uma caneca.</div></div>
+            <div class="flow new"><h4>2ª tentativa</h4><div class="node good">Cerca de 40 fotos de cada, nos mesmos lugares, com luz e ângulos variados, inteiras e amassadas. Resultado: acerta muito mais e erra menos quando muda o lugar.</div></div>
+          </div>
+          <p style="margin-top:14px">Como ela descobriu o problema, perguntando "por quê?" até chegar na causa:</p>
+          <div class="why-chain"><div>"A IA chamou a caneca de garrafa."</div><div>Por quê? → "A caneca estava no chão."</div><div>E por que o chão importa? → "No treino, só as garrafas estavam no chão."</div><div class="root">Causa: a IA aprendeu o fundo, não o objeto. O problema estava nos dados, não na IA.</div></div></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><div class="tw"><table class="tbl"><tr><th>Problema nos dados</th><th>Sinal que aparece</th></tr>
+          <tr><td>Poucos exemplos</td><td>Só acerta em condições iguais às do treino</td></tr>
+          <tr><td>Desequilíbrio</td><td>"Chuta" quase sempre a categoria que tinha mais exemplos</td></tr>
+          <tr><td>Atalho (fundo, luz)</td><td>Erra quando muda o ambiente</td></tr>
+          <tr><td>Pouca variedade de pessoas e lugares</td><td>Funciona pior com sotaques, tons de pele ou regiões que apareceram pouco: é o <b>viés</b> da lição 1.3 na prática</td></tr></table></div>
+          <p>Isso vale também para os chats: assuntos com poucos textos de qualidade, como temas bem locais do Brasil, tendem a ter respostas mais fracas.</p></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Teachable Machine, 5 min)</h3><ol class="golden"><li><span>Abra teachablemachine.withgoogle.com e crie um "Projeto de imagem" padrão. É gratuito e não pede cadastro.</span></li><li><span>Crie 2 classes com objetos de casa (ex.: caneca e controle remoto) e grave <b>desequilibrado de propósito</b>: umas 40 fotos de um, 5 do outro, cada um num fundo diferente.</span></li><li><span>Treine e teste trocando os objetos de lugar. Anote os erros.</span></li><li><span>Agora equilibre (cerca de 30 de cada, fundos e ângulos variados), treine de novo e compare.</span></li><li><span>Escreva em 2 frases o que mudou e por quê.</span></li></ol><p>🔐 As fotos ficam no seu navegador. Mesmo assim, não filme documentos nem o rosto de outras pessoas sem autorização.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a alguém por que um aprendiz que só viu pão queimado não tem culpa do erro, e o que isso ensina sobre a IA.</div>`
+      ],
+      ch:[
+        { who:'Rodrigo, 51 anos, dono de um hortifrúti', says:'Treinei um app para separar tomate bom de tomate passado, só com fotos tiradas de manhã na bancada. À tarde, com outra luz, ele erra muito.',
+          q:'O que explica o problema e como resolver?',
+          opts:[
+            {t:'A IA cansa ao longo do dia; basta reiniciar o celular à tarde.', ok:false, why:'IA não cansa. Ela erra porque a situação da tarde é diferente dos exemplos que viu.'},
+            {t:'Os exemplos eram parecidos demais (mesma luz e lugar). Ele deve incluir fotos com luz e lugares diferentes e treinar de novo.', ok:true, why:'A IA aprendeu com a luz da manhã como parte do padrão. Exemplos variados ensinam o que realmente importa: o tomate.'},
+            {t:'Ele precisa comprar um celular com câmera mais cara.', ok:false, why:'Uma câmera melhor pode ajudar um pouco, mas o problema principal está nos exemplos do treino.'}
+          ]},
+        { who:'Vânia, 46 anos, gerente de RH', says:'A empresa quer usar um sistema que escolhe currículos aprendendo com as contratações antigas. Só que quase todos os contratados nos últimos anos foram homens.',
+          q:'Qual é o risco?',
+          opts:[
+            {t:'Nenhum: máquina é neutra e não tem preconceito.', ok:false, why:'A máquina aprende com os dados. Se o histórico tem um padrão injusto, ela pode repeti-lo sem ninguém perceber.'},
+            {t:'Só haveria problema se alguém programasse o sistema para preferir homens.', ok:false, why:'O viés pode vir dos exemplos, sem ninguém pedir. É por isso que ele é perigoso.'},
+            {t:'O sistema pode repetir o padrão e favorecer homens. É preciso revisar os dados, testar os resultados e manter decisão humana.', ok:true, why:'Viés nos dados vira viés nas decisões. Revisão humana e dados mais equilibrados reduzem o risco.'}
+          ]},
+        { who:'Bianca, 17 anos, estudante do ensino técnico', says:'Na Teachable Machine, coloquei 60 fotos de gato e 6 de cachorro. Agora tudo que eu mostro vira gato.',
+          q:'Qual ajuste resolve melhor?',
+          opts:[
+            {t:'Equilibrar: colocar uma quantidade parecida de fotos de cachorro, com fundos e ângulos variados, e treinar de novo.', ok:true, why:'Com dados desequilibrados, a IA aprende que "gato" é o chute mais seguro. Equilibrar corrige isso.'},
+            {t:'Clicar em treinar mais vezes, com as mesmas fotos.', ok:false, why:'Treinar de novo com os mesmos exemplos repete o mesmo desequilíbrio.'},
+            {t:'Apagar a classe cachorro, já que ela atrapalha.', ok:false, why:'Aí a IA só conhece gato e vai chamar tudo de gato. O problema continua.'}
+          ]}
+      ]},
+    { id:'1.9', title:'Confiança não é certeza: o chute da IA', min:13,
+      body:[
+        `<div class="card analogy"><h3>🌦️ "70% de chance de chuva"</h3><p>A previsão do tempo diz 70% de chance de chuva. Você leva o guarda-chuva, mas sabe que pode não chover. A porcentagem mostra o tamanho da aposta, <b>não uma garantia</b>. Muitas IAs também trabalham com apostas, e o problema é que nem sempre elas mostram isso.</p></div>`,
+        `<div class="term"><b>Confiança</b> = o quanto a IA "aposta" numa resposta, às vezes mostrada em porcentagem. <b>Caso fora do treino</b> = situação diferente de tudo o que a IA viu ao aprender. <b>"Não sei"</b> = resposta que muitas IAs não conseguem dar sozinhas.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: as barrinhas da Teachable Machine</h3><p>Um modelo foi treinado com duas classes: <b>caneca</b> e <b>celular</b>. Veja o que acontece:</p>
+          <div class="tw"><table class="tbl"><tr><th>O que aparece na câmera</th><th>Resultado</th><th>O que significa</th></tr>
+          <tr><td>Uma caneca parecida com as do treino</td><td>97% caneca</td><td>Caso conhecido: tende a acertar</td></tr>
+          <tr><td>Uma laranja, que ele nunca viu</td><td>88% caneca</td><td>Chute forçado: ele só conhece duas opções e precisa escolher uma</td></tr>
+          <tr><td>A parede vazia</td><td>60% celular</td><td>Também é chute: não existe a opção "nada"</td></tr></table></div>
+          <p>A laranja recebeu 88% sem ser caneca. O modelo não estava "quase certo": ele <b>não tinha como dizer "não sei"</b>. Nos chats acontece algo parecido: o texto sai fluente e firme mesmo quando a base é fraca, e normalmente nem aparece porcentagem.</p></div>`,
+        `<div class="card"><h3>🧭 Como agir</h3><ol class="golden"><li><span>Caso parecido com o que a IA conhece e erro barato: use e confira de vez em quando.</span></li><li><span>Caso diferente do comum, ou resultado dividido (tipo 50% a 50%): olhe você mesmo.</span></li><li><span>Erro caro (dinheiro, saúde, segurança, direitos): sempre confira, não importa a porcentagem ou o tom.</span></li></ol></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ol class="golden"><li><span><b>Ler 90% como "90% de chance de estar certo no mundo real".</b> É a aposta do modelo entre as opções que ele conhece.</span></li><li><span><b>Perguntar "tem certeza?" ao chat e aceitar o "sim".</b> Ele pode só repetir, ou mudar de ideia só para agradar. Isso não é conferência.</span></li><li><span><b>Esquecer os casos fora do treino.</b> É justamente neles que a IA erra com mais segurança.</span></li></ol></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Teachable Machine, 4 min)</h3><ol class="golden"><li><span>Use o modelo da lição anterior ou crie outro com 2 objetos de casa.</span></li><li><span>Mostre cada objeto e anote as porcentagens.</span></li><li><span>Mostre um terceiro objeto que ele nunca viu e depois aponte a câmera para a parede. Anote.</span></li><li><span>Responda por escrito: o modelo disse "não sei" alguma vez? Que porcentagem ele deu ao chute?</span></li></ol></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a alguém por que uma IA que só conhece caneca e celular chama a laranja de caneca com 88%.</div>`
+      ],
+      ch:[
+        { who:'Fábio, 40 anos, porteiro de condomínio', says:'O sistema da câmera disse 92% de certeza que a pessoa no portão é um morador. Posso abrir sem olhar?',
+          q:'Qual é a atitude certa?',
+          opts:[
+            {t:'Abrir: 92% é praticamente certeza.', ok:false, why:'92% é a aposta do sistema, não uma garantia. Em segurança, os 8% restantes podem ser justamente o problema.'},
+            {t:'Usar a indicação como ajuda, mas confirmar do jeito de sempre (interfone, cadastro, olhar a pessoa) antes de liberar.', ok:true, why:'Acesso ao prédio é decisão de segurança: a IA ajuda, a conferência humana decide.'},
+            {t:'Desligar o sistema, porque ele pode errar.', ok:false, why:'O sistema pode ser útil como apoio. O ajuste é não deixar a decisão só com ele.'}
+          ]},
+        { who:'Luciana, 23 anos, estudante de Pedagogia', says:'Treinei a Teachable Machine com maçã e banana. Mostrei um limão e ela disse 85% banana!',
+          q:'Por que isso aconteceu?',
+          opts:[
+            {t:'O modelo está com defeito e precisa ser refeito do zero.', ok:false, why:'Não é defeito: é o comportamento esperado de um modelo que só conhece duas opções.'},
+            {t:'O modelo aprendeu sozinho que limão é um tipo de banana.', ok:false, why:'Ele nunca viu limão. Não aprendeu nada sobre limões; só escolheu entre o que conhecia.'},
+            {t:'O limão estava fora do treino e o modelo é obrigado a escolher entre maçã e banana; ele não tem a opção "não sei".', ok:true, why:'Casos fora do treino geram chutes, às vezes com porcentagem alta. Por isso porcentagem não é certeza.'}
+          ]},
+        { who:'Henrique, 34 anos, motorista', says:'Perguntei ao chat o prazo para recorrer de uma multa. Depois perguntei "tem certeza?" e ele respondeu "sim, tenho certeza".',
+          q:'O que Henrique deve fazer?',
+          opts:[
+            {t:'Conferir o prazo na própria notificação da multa e no site oficial do órgão que aplicou a multa.', ok:true, why:'O "sim" do chat não é verificação. Prazo de recurso é coisa séria e está escrito na notificação e no site oficial.'},
+            {t:'Confiar, porque o chat confirmou duas vezes.', ok:false, why:'Repetir a mesma resposta não a torna verdadeira. A confirmação precisa vir de outra fonte.'},
+            {t:'Perguntar de novo até a resposta mudar e ficar com a última.', ok:false, why:'Mudar de resposta só mostra que ele não tem certeza. A última versão não é mais confiável que a primeira.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: onde a IA ajuda na minha vida', min:35,
       body:[`<div class="card"><p>Hora de aplicar o módulo na sua realidade. Você vai olhar para a sua rotina e separar, com honestidade, onde a IA pode ajudar e onde ela não deve entrar. Não existe resposta certa única: o que vale é o seu raciocínio.</p></div>`],
       projeto:{
@@ -428,6 +549,174 @@ const MODULES = [
             {t:'Explicar o conceito com as próprias palavras e um exemplo, pedir que a IA corrija, responder perguntas de teste e conferir no material de contabilidade.', ok:true, why:'Explicar de volta e responder perguntas mostram o que ele entendeu de fato, e o material confirma.'}
           ]}
       ]},
+    { id:'2.8', title:'Avaliar a resposta e pedir ajustes certeiros', min:14,
+      body:[
+        `<div class="card analogy"><h3>🧵 O ajuste na costureira</h3><p>Se você diz para a costureira "não ficou bom", ela não sabe o que mexer. Se diz "sobe a barra dois dedos e aperta um pouco na cintura", em meia hora a calça fica perfeita. Com a IA é igual: <b>o ajuste vago gera outra tentativa no escuro; o ajuste certeiro resolve</b>.</p></div>`,
+        `<div class="term"><b>Ajuste certeiro</b> = pedido de mudança que diz o que mudar, onde e como. <b>Critério</b> = o que torna a resposta boa para você (estar certa, servir para quem vai ler, ter o tamanho e o tom certos). <b>Detalhe inventado</b> = informação que você não deu e a IA colocou por conta própria.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o aviso do lava-rápido</h3><p>Seu Zé pediu um aviso de reajuste de preço para mandar aos clientes no WhatsApp. A primeira resposta veio longa, com "Prezados clientes, vimos por meio desta...", cheia de emojis, e ainda trazia "a partir de 1º de março", data que ele nunca disse.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Ajuste vago</h4><div class="node">"Melhora isso aí." A IA reescreve tudo do zero, continua longo e a data inventada continua lá.</div></div>
+            <div class="flow new"><h4>Ajuste certeiro</h4><div class="node good">Seu Zé diz o que manter (o agradecimento), o que mudar (no máximo 4 linhas, tom simpático, sem "prezados", só um emoji) e o que tirar (a data, que ele mesmo vai colocar).</div></div>
+          </div>
+          <p style="margin-top:14px"><b>O roteiro de 3 rodadas</b> que ele usou:</p>
+          <ol class="golden"><li><span><b>Avalie</b> com três perguntas: está certo? Serve para quem vai ler? Tem o tamanho e o tom certos?</span></li><li><span><b>Ajuste</b> dizendo o que manter e o que mudar, com no máximo 3 mudanças por vez.</span></li><li><span><b>Confira você</b> os dados (datas, preços, nomes, condições) antes de usar.</span></li></ol></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><div class="tw"><table class="tbl"><tr><th>Erro</th><th>Sinal</th><th>Correção</th></tr>
+          <tr><td>Pedido vago ("melhora", "não gostei")</td><td>A nova versão tem os mesmos problemas</td><td>Diga o que mudar e como</td></tr>
+          <tr><td>Muitas mudanças de uma vez</td><td>Algumas são ignoradas</td><td>Até 3 por rodada</td></tr>
+          <tr><td>Não dizer o que estava bom</td><td>A IA muda justamente o que você gostou</td><td>Diga "mantenha..."</td></tr>
+          <tr><td>Aceitar detalhe inventado</td><td>Aparece data, preço ou condição que você não deu</td><td>Mande tirar e confira tudo antes de publicar</td></tr></table></div></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (ChatGPT ou Gemini, 5 min)</h3><ol class="golden"><li><span>Escolha uma mensagem real que você precisa mandar esta semana (um aviso, um convite, um lembrete).</span></li><li><span>Faça o pedido com papel, tarefa, contexto e formato, como na lição 2.2, escrito por você.</span></li><li><span>Antes de pedir ajuste, anote para si: o que está bom e o que precisa mudar.</span></li><li><span>Peça o ajuste numa só mensagem, com até 3 mudanças e o que manter.</span></li><li><span>Confira os dados e marque se a IA inventou algum detalhe.</span></li></ol><p>🔐 Use [NOME] e [VALOR] no lugar de dados reais de outras pessoas.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a alguém a diferença entre dizer "não ficou bom" e dar um ajuste certeiro, usando o exemplo da costureira.</div>`
+      ],
+      ch:[
+        { who:'Kátia, 36 anos, dona de um brechó', says:'A IA fez a legenda do meu post, mas ficou com cara de propaganda de banco. Escrevi "não gostei" e veio outra igualzinha.',
+          q:'Qual ajuste funciona melhor?',
+          opts:[
+            {t:'Escrever "NÃO GOSTEI" em letras maiúsculas para a IA entender que é sério.', ok:false, why:'Maiúsculas não dizem o que mudar. A IA continua sem saber o que a Kátia quer.'},
+            {t:'Dizer o que mudar: tom leve e descontraído, como ela fala com as clientes, frases curtas, mantendo o preço e o horário da loja.', ok:true, why:'Ajuste certeiro diz o que mudar e o que manter. Assim a próxima versão chega perto do que ela quer.'},
+            {t:'Trocar de ferramenta, porque essa não entende brechó.', ok:false, why:'Qualquer IA responde mal a um ajuste vago. O problema está no pedido de ajuste, não na ferramenta.'}
+          ]},
+        { who:'Marcos, 42 anos, corretor de seguros', says:'Pedi 12 mudanças de uma vez no meu texto de apresentação. Umas cinco foram simplesmente ignoradas.',
+          q:'Como ele deve conduzir a revisão?',
+          opts:[
+            {t:'Dividir em rodadas com poucas mudanças por vez, conferindo cada rodada antes da próxima.', ok:true, why:'Com até 3 mudanças por vez, a IA atende melhor e fica fácil perceber o que foi feito e o que faltou.'},
+            {t:'Repetir as mesmas 12 mudanças até ela fazer todas.', ok:false, why:'A lista longa continua difícil de atender por inteiro. Dividir é mais rápido do que insistir.'},
+            {t:'Aceitar o texto assim, porque a IA não consegue fazer revisões.', ok:false, why:'Ela consegue revisar bem; só precisa de pedidos menores e mais claros.'}
+          ]},
+        { who:'Jefferson, 31 anos, vende peças de bicicleta pela internet', says:'A IA escreveu meu anúncio com "frete grátis acima de R$ 100". Eu nunca ofereci isso, mas ficou tão atraente...',
+          q:'O que Jefferson deve fazer?',
+          opts:[
+            {t:'Manter, porque deixa o anúncio mais vendedor.', ok:false, why:'Anunciar uma condição que ele não oferece pode obrigá-lo a cumprir ou gerar reclamação de clientes.'},
+            {t:'Manter, porque se a IA escreveu deve ser comum no mercado.', ok:false, why:'A IA inventa detalhes plausíveis. Ser comum no mercado não quer dizer que vale para a loja dele.'},
+            {t:'Pedir para tirar a frase e, a partir de agora, conferir todo preço e condição antes de publicar.', ok:true, why:'Detalhe inventado é um erro típico. Quem responde pelo anúncio é ele, então quem confere é ele.'}
+          ]}
+      ]},
+    { id:'2.9', title:'Resumir textos e documentos sem perder o essencial', min:14,
+      body:[
+        `<div class="card analogy"><h3>📺 O capítulo da novela que você perdeu</h3><p>Você pede para alguém contar o capítulo que perdeu. A pessoa conta o principal, mas pode esquecer justamente a cena que você queria saber, ou contar errado. Resumo de IA é parecido: <b>economiza muito tempo, mas pode deixar de fora ou trocar o que mais importa para você</b>.</p></div>`,
+        `<div class="term"><b>Resumo</b> = versão curta com os pontos principais. <b>Trecho de origem</b> = a parte do texto original de onde saiu cada ponto do resumo. <b>Omissão</b> = algo importante que ficou de fora do resumo.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o regulamento da festa junina</h3><p>Regina recebeu da escola do filho um regulamento de 6 páginas da festa junina (um texto público, sem dados pessoais). Ela só quer saber o que os pais precisam fazer.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Pedido solto</h4><div class="node">"Resume isso." Veio um resumo bonito sobre "a importância da festa para a comunidade", sem a data de entrega das prendas e sem o valor do convite.</div></div>
+            <div class="flow new"><h4>Pedido com objetivo</h4><div class="node good">Regina explicou para quem é o resumo (pais), o que procurar (tarefas, datas, valores e prazos), pediu em tópicos, com o trecho de origem de cada item, e que a IA avisasse quando algo não estivesse no texto.</div></div>
+          </div>
+          <p style="margin-top:14px"><b>Depois do resumo, ela conferiu em 3 passos:</b></p>
+          <ol class="golden"><li><span>Procurou no original cada data e valor do resumo (no computador, Ctrl+F ajuda).</span></li><li><span>Perguntou se havia algo sobre cancelamento ou penalidade que ficou de fora.</span></li><li><span>Leu ela mesma a parte de pagamento, porque mexe com dinheiro.</span></li></ol></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Item inventado:</b> o resumo traz algo que não está no texto. Pedir o trecho de origem denuncia isso.</span></li><li><span><b>Exceção esquecida:</b> "entrega até dia 10, <i>exceto para o 1º ano</i>". Releia as regras que afetam você.</span></li><li><span><b>Arquivo lido pela metade:</b> em textos muito longos, algumas ferramentas não leem tudo. Pergunte o que diz a última parte e confira.</span></li><li><span><b>Foto ilegível:</b> papel torto ou com sombra gera leitura errada de números.</span></li><li><span><b>Documento com dados pessoais:</b> contrato com CPF e endereço não vai inteiro. Cubra os dados ou cole só a cláusula que quer entender.</span></li></ol></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (ChatGPT, Gemini ou Copilot, 5 min)</h3><ol class="golden"><li><span>Escolha um texto público e longo: uma notícia, o regulamento de um concurso, o manual de um eletrodoméstico ou um edital.</span></li><li><span>Escreva o seu pedido dizendo para que você precisa do resumo e em que formato.</span></li><li><span>Peça o trecho de origem de cada ponto.</span></li><li><span>Confira 3 pontos no texto original.</span></li><li><span>Pergunte o que ficou de fora e veja se faz sentido.</span></li></ol><p>🔐 Não envie documentos com CPF, endereço ou dados de saúde, seus ou de outras pessoas.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a alguém por que pedir "o trecho de onde você tirou isso" ajuda a pegar erros num resumo.</div>`
+      ],
+      ch:[
+        { who:'Wagner, 27 anos, estuda para concurso', says:'A IA resumiu o edital e disse que a inscrição vai até o dia 20. Vou deixar para fazer no dia 20 mesmo.',
+          q:'Qual é a atitude mais segura?',
+          opts:[
+            {t:'Confiar no resumo, porque a IA leu o edital inteiro.', ok:false, why:'A IA pode trocar números ou ler só parte do arquivo. Prazo de inscrição é o tipo de detalhe que não pode errar.'},
+            {t:'Conferir a data no edital original e no site oficial da banca, e não deixar para a última hora.', ok:true, why:'Prazos e datas sempre se conferem na fonte. Um dia errado pode custar a vaga.'},
+            {t:'Pedir à IA para resumir de novo e ver se a data se repete.', ok:false, why:'A repetição não confirma nada: ela pode repetir o mesmo erro. A conferência é no edital.'}
+          ]},
+        { who:'Simone, 33 anos, vendedora', says:'Quero entender meu contrato de aluguel. Vou colar ele inteiro na IA, com meu nome, CPF e endereço e os dados do proprietário.',
+          q:'Qual é o jeito mais cuidadoso?',
+          opts:[
+            {t:'Colar tudo, porque o contrato é dela.', ok:false, why:'O contrato também tem dados do proprietário, e os dela não precisam ir para a IA para explicar uma cláusula.'},
+            {t:'Nunca usar IA para entender contratos.', ok:false, why:'A IA pode ajudar a entender termos e cláusulas. O cuidado é com os dados e com decisões jurídicas importantes.'},
+            {t:'Trocar os dados por [LOCADOR], [LOCATÁRIA] e [ENDEREÇO], ou colar só as cláusulas que quer entender, e levar dúvidas sérias a um profissional.', ok:true, why:'Anonimizar mantém a utilidade e protege as duas partes. Para decisões com consequência jurídica, vale ouvir quem é da área.'}
+          ]},
+        { who:'Rogério, 45 anos, encarregado de obra', says:'Pedi um resumo da ata da reunião. O resumo não falou que o prazo da entrega mudou, e isso estava no fim do texto.',
+          q:'Como evitar isso da próxima vez?',
+          opts:[
+            {t:'Pedir um resumo ainda mais curto, para ficar mais fácil de ler.', ok:false, why:'Mais curto aumenta o risco de deixar coisas de fora.'},
+            {t:'Pedir o resumo com datas e prazos em destaque e o trecho de origem, perguntar se algo sobre prazos ficou de fora e conferir no original.', ok:true, why:'Dizer o que importa e conferir os pontos críticos é o que evita omissões.'},
+            {t:'Nada a fazer: resumos de IA são sempre completos.', ok:false, why:'Resumos podem omitir pontos importantes, principalmente no fim de textos longos.'}
+          ]}
+      ]},
+    { id:'2.10', title:'Mensagens difíceis de trabalho com a IA', min:14,
+      body:[
+        `<div class="card analogy"><h3>📞 O secretário caprichoso</h3><p>Imagine um secretário que escreve muito bem, mas não sabe o que você decidiu. Se você diz só "responde aquele cliente", ele inventa. Se você dita o recado, ele capricha na forma. Com a IA é assim: <b>você decide o conteúdo; ela ajuda no jeito de dizer</b>.</p></div>`,
+        `<div class="term"><b>Fatos</b> = o que aconteceu, sem opinião. <b>Decisão</b> = o que você vai fazer ou oferecer (desconto, nova data, recusa). <b>Tom</b> = o jeito de falar: acolhedor, firme, informal.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o bolo que derreteu</h3><p>Uma cliente da Luciene, que faz bolos sob encomenda, reclamou que o bolo chegou com a cobertura derretida.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Pedido solto</h4><div class="node">"Responde essa cliente brava." A IA escreveu oferecendo "reembolso integral e um bolo grátis", promessa que a Luciene nunca fez.</div></div>
+            <div class="flow new"><h4>Fatos + decisão + tom</h4><div class="node good">Luciene contou os fatos (entrega às 14h, dia muito quente), a decisão dela (pedir desculpas, dar 30% de desconto na próxima encomenda e trocar a embalagem) e o tom (acolhedor, sem culpar o entregador, até 5 linhas).</div></div>
+          </div>
+          <div class="tw" style="margin-top:14px"><table class="tbl"><tr><th>Parte</th><th>Quem decide</th></tr>
+          <tr><td>O que aconteceu</td><td>Você conta</td></tr>
+          <tr><td>O que vai oferecer ou recusar</td><td>Você decide, antes de abrir a IA</td></tr>
+          <tr><td>Palavras, ordem, educação</td><td>A IA sugere, você ajusta</td></tr>
+          <tr><td>Enviar</td><td>Você, depois de ler tudo</td></tr></table></div></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Deixar a IA decidir a compensação:</b> aparece reembolso, brinde ou prazo que você não ofereceu.</span></li><li><span><b>Texto robótico:</b> "lamentamos profundamente o ocorrido e reiteramos nosso compromisso". Peça para soar como você fala com os clientes.</span></li><li><span><b>Promessa vaga:</b> "faremos o possível" quando a resposta é não. Recusa clara e educada respeita mais o cliente.</span></li><li><span><b>Colar o print da conversa:</b> leva nome, foto e telefone da cliente. Conte a situação com suas palavras.</span></li></ol></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Gemini ou ChatGPT, 5 min)</h3><ol class="golden"><li><span>Lembre uma situação real e difícil: atraso, cobrança, reclamação ou um pedido que você precisa recusar.</span></li><li><span>Antes de abrir a IA, escreva para você 3 linhas: fatos, decisão e tom.</span></li><li><span>Peça o rascunho com as suas palavras, usando [CLIENTE] no lugar do nome.</span></li><li><span>Leia em voz alta: soa como você?</span></li><li><span>Ajuste e confira se nada foi prometido além do que você decidiu.</span></li></ol></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a alguém por que a IA pode escrever a resposta ao cliente, mas não pode decidir o que oferecer.</div>`
+      ],
+      ch:[
+        { who:'Robson, 49 anos, dono de oficina mecânica', says:'Um cliente pediu conserto de câmbio automático, que eu não faço. A IA sugeriu responder "faremos o possível para atender".',
+          q:'O que Robson deve fazer com essa sugestão?',
+          opts:[
+            {t:'Mandar assim, porque é educado.', ok:false, why:'Educado, mas cria a expectativa de um serviço que ele não faz. O cliente perde tempo esperando.'},
+            {t:'Trocar por uma recusa clara e gentil e, se quiser, indicar onde o cliente pode encontrar o serviço.', ok:true, why:'A decisão é dele (não faz o serviço). A IA ajuda no tom, mas a mensagem precisa dizer a verdade.'},
+            {t:'Não responder, para evitar o desconforto.', ok:false, why:'Ficar sem resposta irrita mais do que uma recusa educada.'}
+          ]},
+        { who:'Denise, 52 anos, diarista', says:'Uma cliente está há duas semanas sem me pagar. Quero usar a IA para escrever a cobrança.',
+          q:'Qual caminho gera a melhor mensagem?',
+          opts:[
+            {t:'Pedir "uma cobrança bem agressiva para ela ficar com medo".', ok:false, why:'Tom agressivo costuma piorar a relação e pode passar do limite. Firmeza com educação funciona melhor.'},
+            {t:'Deixar a IA decidir se cobra juros e qual o novo prazo.', ok:false, why:'Juros e prazo são decisões da Denise. A IA pode inventar valores ou condições.'},
+            {t:'Dizer os fatos (dias trabalhados, valor, atraso), a decisão dela (nova data de pagamento) e o tom (educado e firme), colocando a chave Pix ela mesma depois.', ok:true, why:'Fatos e decisão vêm dela; a IA organiza as palavras. E dados de pagamento ela coloca fora da IA.'}
+          ]},
+        { who:'Sueli, 41 anos, dona de uma loja de roupas no bairro', says:'A IA escreveu: "Prezada cliente, lamentamos profundamente o ocorrido e reiteramos nosso compromisso". Minhas clientes são vizinhas, a gente conversa no WhatsApp como amigas.',
+          q:'Qual é o melhor ajuste?',
+          opts:[
+            {t:'Pedir para soar como conversa de WhatsApp entre conhecidas, com frases curtas, e ajustar à mão as palavras que ela não usaria.', ok:true, why:'O tom precisa combinar com a relação. Ajuste certeiro e um toque pessoal deixam a mensagem com a cara dela.'},
+            {t:'Mandar assim, porque formal é sempre mais profissional.', ok:false, why:'Para clientes próximas, um texto formal demais soa frio e estranho.'},
+            {t:'Desistir da IA para mensagens a clientes.', ok:false, why:'O problema era só o tom, e isso se ajusta em uma rodada.'}
+          ]}
+      ]},
+    { id:'2.11', title:'Comparar duas IAs na mesma tarefa', min:14,
+      body:[
+        `<div class="card analogy"><h3>🔧 Dois orçamentos antes de decidir</h3><p>Antes de consertar a geladeira, você pede orçamento em duas assistências e compara preço, prazo e garantia. Com as ferramentas de IA, dá para fazer o mesmo: <b>mesma tarefa, mesmos critérios, e você decide qual usar para aquele tipo de trabalho</b>.</p></div>`,
+        `<div class="term"><b>Teste justo</b> = o mesmo pedido, nas duas ferramentas, no mesmo dia. <b>Critério</b> = o que você vai observar em cada resposta. <b>Conferível</b> = tarefa cujo resultado você consegue checar numa fonte.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: a segunda via da conta de luz</h3><p>Jéssica, auxiliar de escritório, pediu a duas IAs um passo a passo para tirar a segunda via da conta de luz da distribuidora da cidade dela. Depois conferiu no site oficial da distribuidora.</p>
+          <div class="tw"><table class="tbl"><tr><th>Critério</th><th>IA A</th><th>IA B</th></tr>
+          <tr><td>Entendeu o pedido</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Informação correta (conferida no site)</td><td>❌ citou um menu que não existe</td><td>✅</td></tr>
+          <tr><td>Clara e fácil de seguir</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Tamanho certo</td><td>✅</td><td>❌ longa demais</td></tr>
+          <tr><td>Mostrou de onde tirou</td><td>❌</td><td>✅ indicou o site</td></tr></table></div>
+          <p>Conclusão da Jéssica: para esse tipo de tarefa, a IA B foi melhor, porque acertou o que importa. Isso <b>não</b> quer dizer que ela é melhor em tudo: numa tarefa de escrever um convite, o resultado pode inverter.</p></div>`,
+        `<div class="card"><h3>🧮 Placar da comparação</h3><p>Use durante a prática: marque cada critério que a resposta cumpriu. "Informação correta" pesa mais que os outros.</p>
+          <div class="tw"><table class="tbl"><tr><th>Critério</th><th>IA A</th><th>IA B</th></tr>
+          <tr><td>Entendeu o pedido</td><td><input type="checkbox" class="pl-a"></td><td><input type="checkbox" class="pl-b"></td></tr>
+          <tr><td>Informação correta (conferida)</td><td><input type="checkbox" class="pl-a pl-fa"></td><td><input type="checkbox" class="pl-b pl-fb"></td></tr>
+          <tr><td>Clara e fácil de seguir</td><td><input type="checkbox" class="pl-a"></td><td><input type="checkbox" class="pl-b"></td></tr>
+          <tr><td>Tamanho certo</td><td><input type="checkbox" class="pl-a"></td><td><input type="checkbox" class="pl-b"></td></tr>
+          <tr><td>Mostrou de onde tirou</td><td><input type="checkbox" class="pl-a"></td><td><input type="checkbox" class="pl-b"></td></tr></table></div>
+          <div class="res"><div><b id="pl-ra">0 de 5</b><span>IA A</span></div><div><b id="pl-rb">0 de 5</b><span>IA B</span></div><div><b id="pl-rv">-</b><span>melhor nesta tarefa</span></div></div></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ol class="golden"><li><span><b>Pedidos diferentes:</b> uma recebe pergunta de receita, a outra de imposto. Não dá para comparar.</span></li><li><span><b>Julgar pela aparência:</b> a resposta mais longa ou mais bonita não é, por isso, a mais certa.</span></li><li><span><b>Concluir para sempre com um teste só:</b> as respostas variam e as ferramentas mudam com o tempo. Repita de vez em quando.</span></li><li><span><b>Comparar sem conferir:</b> se as duas erraram o fato, nenhuma ganhou.</span></li></ol></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (ChatGPT e Gemini ou Copilot, 5 min)</h3><ol class="golden"><li><span>Escolha uma tarefa real cuja resposta você consiga conferir.</span></li><li><span>Escreva o seu pedido uma vez e use o mesmo texto nas duas ferramentas.</span></li><li><span>Marque o placar acima.</span></li><li><span>Confira pelo menos 1 fato de cada resposta numa fonte confiável.</span></li><li><span>Anote qual você vai usar para esse tipo de tarefa e por quê.</span></li></ol><p>🔐 Como vai mandar o pedido para duas empresas, capriche ainda mais em não incluir dados pessoais.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a alguém por que comparar duas IAs é como pedir dois orçamentos, e o que torna a comparação justa.</div>`
+      ],
+      ch:[
+        { who:'Gustavo, 30 anos, auxiliar de logística', says:'A resposta do Copilot tinha o dobro do tamanho da do ChatGPT. Então ela é a melhor, né?',
+          q:'O que você diria ao Gustavo?',
+          opts:[
+            {t:'Isso mesmo: mais texto significa mais informação útil.', ok:false, why:'Texto longo pode ter enrolação ou erro. Tamanho não mede qualidade.'},
+            {t:'Tamanho não decide: ele deve comparar se a informação está correta, se é clara e se serve para a tarefa.', ok:true, why:'Critérios como exatidão e utilidade dizem qual resposta resolve o problema. O tamanho certo depende da tarefa.'},
+            {t:'Ao contrário: a resposta mais curta é sempre a melhor.', ok:false, why:'Curta demais pode deixar de fora o essencial. Também não é critério sozinho.'}
+          ]},
+        { who:'Eliane, 47 anos, assistente administrativa', says:'Testei o ChatGPT com uma pergunta de receita e o Gemini com uma pergunta de imposto. O Gemini foi pior, então ele é pior.',
+          q:'Qual é o problema desse teste?',
+          opts:[
+            {t:'Nenhum: ela testou as duas ferramentas.', ok:false, why:'Testou, mas com tarefas diferentes. Assim não dá para saber se a diferença veio da ferramenta ou da pergunta.'},
+            {t:'O teste não foi justo: para comparar, o pedido precisa ser o mesmo nas duas, e o resultado deve ser conferido.', ok:true, why:'Mesmo pedido e conferência na fonte é o que torna a comparação válida.'},
+            {t:'Ela deveria ter testado só uma ferramenta.', ok:false, why:'Comparar é útil; o problema foi o jeito de comparar.'}
+          ]},
+        { who:'Seu Nelson, 62 anos, aposentado', says:'Perguntei a duas IAs o horário de atendimento de um posto de serviços públicos da minha cidade, e cada uma deu um horário diferente.',
+          q:'Qual é a atitude certa?',
+          opts:[
+            {t:'Ficar com o horário da resposta mais detalhada.', ok:false, why:'Detalhe não é prova. Informação local e que muda é o ponto fraco das duas.'},
+            {t:'Perguntar a uma terceira IA e ficar com o horário que aparecer mais.', ok:false, why:'Votação entre IAs não confirma nada: todas podem estar desatualizadas.'},
+            {t:'Conferir no site oficial ou no telefone do próprio posto, porque nenhuma das duas decide uma informação local.', ok:true, why:'Quando as IAs discordam sobre algo local, a resposta está na fonte oficial.'}
+          ]}
+      ]},
     { id:'2.7', title:'Projeto: uma tarefa real resolvida com IA', min:35,
       body:[`<div class="card"><p>Agora você vai usar a fórmula de 4 partes numa tarefa de verdade, conversando com a IA em várias rodadas. O objetivo não é acertar de primeira, e sim mostrar como você conduziu a conversa até chegar num resultado útil.</p></div>`],
       projeto:{
@@ -633,6 +922,121 @@ const MODULES = [
             {t:'Não colar o processo e conversar com a coordenação sobre regras e ferramentas autorizadas.', ok:true, why:'Dados que não podem sair ficam fora da IA até existir uma ferramenta e uma regra adequadas.'}
           ]}
       ]},
+    { id:'3.7', title:'Ajustando a privacidade da sua conta', min:13,
+      body:[
+        `<div class="card analogy"><h3>🪟 A cortina da janela</h3><p>Morar numa casa com janela para a rua não é problema. O problema é nunca ter olhado se a cortina está aberta. A sua conta de IA tem "cortinas": opções que decidem o que fica guardado e como suas conversas podem ser usadas. <b>Quase ninguém abre essas configurações</b>, e leva só cinco minutos.</p></div>`,
+        `<div class="term"><b>Histórico</b> = as conversas que ficam salvas na sua conta. <b>Memória</b> = recurso de algumas ferramentas que guarda informações sobre você para usar em conversas futuras. <b>Chat temporário</b> = conversa que não fica no seu histórico (a empresa ainda pode guardá-la por um tempo, conforme a política dela). <b>Uso para treinamento</b> = permissão para a empresa usar suas conversas para melhorar os modelos.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: a conta da Fabiana</h3><p>Fabiana, vendedora, usa o ChatGPT para textos do trabalho há oito meses. Ao abrir as configurações, encontrou o uso para treinamento ligado, a memória guardando "trabalho na loja tal, meu gerente se chama tal" e dezenas de conversas antigas com nomes de clientes. O que ela fez:</p>
+          <ol class="golden"><li><span>Em <b>Configurações › Controles de dados</b>, leu a opção de usar as conversas para melhorar o modelo e decidiu desligá-la.</span></li><li><span>Em <b>Personalização › Memória</b>, leu o que estava salvo e apagou o que não queria que a IA lembrasse.</span></li><li><span>Apagou as conversas antigas que tinham nomes de clientes.</span></li><li><span>Passou a usar o <b>chat temporário</b> para assuntos mais delicados.</span></li></ol>
+          <div class="tw"><table class="tbl"><tr><th>Ferramenta</th><th>Onde procurar</th></tr>
+          <tr><td>ChatGPT</td><td>Configurações › Controles de dados; Personalização › Memória</td></tr>
+          <tr><td>Gemini</td><td>Configurações › Atividade (o nome do menu já mudou algumas vezes)</td></tr>
+          <tr><td>Copilot</td><td>Configurações de privacidade do Copilot e da Conta Microsoft</td></tr></table></div>
+          <p>Os nomes dos menus mudam com frequência. Se não encontrar, procure palavras como "dados", "privacidade", "memória" ou "atividade".</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ol class="golden"><li><span><b>Achar que desligar o treinamento torna tudo secreto.</b> O que você escreve continua sendo enviado e guardado pela empresa. Senhas, CPFs e documentos seguem proibidos.</span></li><li><span><b>Achar que chat temporário é anônimo.</b> Ele só não fica no seu histórico.</span></li><li><span><b>Esquecer a memória.</b> Um detalhe pessoal dito uma vez pode reaparecer em conversas futuras.</span></li><li><span><b>Deixar a conta aberta</b> em computador do trabalho, da escola ou de lan house. Sempre saia da conta.</span></li></ol></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (ChatGPT: controles de dados, 5 min)</h3><ol class="golden"><li><span>Abra as configurações da ferramenta de IA que você usa.</span></li><li><span>Encontre a opção de uso das conversas para treinamento, leia a explicação e decida se quer deixar ligada.</span></li><li><span>Se houver memória, leia o que está salvo e apague o que não quer manter.</span></li><li><span>Apague pelo menos 1 conversa antiga com informação que não precisa ficar lá.</span></li><li><span>Anote o que mudou e por quê: vai servir para o seu guia de segurança.</span></li></ol></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a alguém a diferença entre histórico, memória e chat temporário, usando a imagem da cortina.</div>`
+      ],
+      ch:[
+        { who:'Ricardo, 37 anos, analista financeiro', says:'Desliguei a opção de usar minhas conversas para treinar a IA. Agora posso colar a planilha com os CPFs dos clientes, certo?',
+          q:'O que Ricardo precisa entender?',
+          opts:[
+            {t:'Pode colar: com o treinamento desligado, ninguém tem acesso aos dados.', ok:false, why:'Desligar o treinamento reduz um tipo de uso, mas os dados continuam sendo enviados e guardados pela empresa.'},
+            {t:'Pode colar, desde que use o chat temporário.', ok:false, why:'O chat temporário só tira a conversa do histórico. CPFs de clientes continuam saindo da empresa sem necessidade.'},
+            {t:'Não: desligar o treinamento não muda o fato de que os dados saem da empresa. CPFs continuam no vermelho do semáforo.', ok:true, why:'Configuração de privacidade é uma camada a mais, não uma licença para colar dados pessoais.'}
+          ]},
+        { who:'Ana, 20 anos, estudante', says:'Usei o computador da biblioteca para entrar na minha conta de IA e fazer um trabalho. Já terminei.',
+          q:'O que Ana deve fazer antes de levantar?',
+          opts:[
+            {t:'Sair da conta (fazer logout) e não deixar a senha salva no navegador.', ok:true, why:'Em computador compartilhado, a próxima pessoa pode abrir sua conta e ler o histórico se você não sair.'},
+            {t:'Só fechar a aba: isso já desconecta a conta.', ok:false, why:'Fechar a aba geralmente mantém a sessão aberta. É preciso sair da conta.'},
+            {t:'Apagar só a última conversa e deixar a conta aberta.', ok:false, why:'Com a conta aberta, todas as outras conversas continuam acessíveis.'}
+          ]},
+        { who:'Paula, 44 anos, auxiliar de cozinha', says:'Pedi receitas para a IA e ela lembrou que eu tenho diabetes, coisa que eu falei semanas atrás. Não quero que ela guarde isso.',
+          q:'Qual é a solução?',
+          opts:[
+            {t:'Criar uma conta nova toda semana.', ok:false, why:'Trabalhoso e desnecessário. A ferramenta tem um lugar próprio para controlar o que fica guardado.'},
+            {t:'Abrir as configurações de memória, apagar esse item (ou desligar a memória) e evitar contar dados de saúde quando não for preciso.', ok:true, why:'A memória pode ser revista e apagada. E dado de saúde é sensível: só compartilhe quando realmente fizer diferença.'},
+            {t:'Nada a fazer: a IA nunca esquece.', ok:false, why:'Nas ferramentas com memória, você pode ver e apagar o que foi guardado.'}
+          ]}
+      ]},
+    { id:'3.8', title:'Lendo as fontes que a IA mostra', min:13,
+      body:[
+        `<div class="card analogy"><h3>🧾 A nota fiscal da informação</h3><p>Quando um vendedor mostra a nota fiscal, você ainda confere se ela é daquela compra, daquela loja e daquela data. Uma IA que mostra fontes é como o vendedor que mostra a nota: ajuda muito, mas <b>só vale se você abrir e conferir</b>.</p></div>`,
+        `<div class="term"><b>Fonte</b> = página ou documento de onde a informação veio. <b>Fonte primária</b> = quem produz a informação (o órgão do governo, o Diário Oficial, a própria empresa). <b>Fonte secundária</b> = quem repassa (notícia, blog, vídeo). <b>Data de publicação</b> = quando a fonte foi escrita.</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido (caso fictício): o boato do Pix</h3><p>Gilson recebeu no grupo do bairro: "A partir do mês que vem, Pix acima de R$ 500 vai pagar taxa." Ele perguntou ao Perplexity, que respondeu citando 3 fontes. Ele abriu cada uma e fez 4 perguntas:</p>
+          <div class="tw"><table class="tbl"><tr><th>Pergunta</th><th>Fonte 1</th><th>Fonte 2</th><th>Fonte 3</th></tr>
+          <tr><td>Quem publicou?</td><td>Banco Central (primária)</td><td>Jornal conhecido</td><td>Blog sem autor</td></tr>
+          <tr><td>Diz mesmo o que a resposta afirma?</td><td>Não fala em taxa</td><td>Fala de um boato desmentido</td><td>Afirma a taxa</td></tr>
+          <tr><td>De quando é?</td><td>Atual</td><td>Atual</td><td>Sem data</td></tr>
+          <tr><td>É a origem ou repete alguém?</td><td>Origem</td><td>Cita o Banco Central</td><td>Não cita ninguém</td></tr></table></div>
+          <p>Conclusão do Gilson: a única fonte que sustentava a taxa era a mais fraca. Ele não repassou o boato e mandou no grupo o link da fonte oficial.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Ver o link e não abrir:</b> a presença da fonte dá sensação de segurança, mas só a leitura confirma.</span></li><li><span><b>Fonte que não diz aquilo:</b> a IA pode resumir errado ou misturar fontes. Procure a frase na página.</span></li><li><span><b>Fonte velha:</b> regra de 2019 pode ter mudado. Olhe a data.</span></li><li><span><b>Muitos sites, uma só origem:</b> cinco sites copiando o mesmo post não somam cinco confirmações.</span></li></ol></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Perplexity, 5 min)</h3><ol class="golden"><li><span>Escolha uma afirmação que circulou num grupo seu (saúde, dinheiro, benefício, notícia).</span></li><li><span>Pergunte ao Perplexity com as suas palavras se ela é verdadeira.</span></li><li><span>Abra pelo menos 2 fontes e faça as 4 perguntas da tabela.</span></li><li><span>Classifique: confirmada, sem confirmação ou desmentida.</span></li><li><span>Se for repassar, repasse o link da fonte oficial, não o print da IA.</span></li></ol><p>🔐 Não cole a mensagem com nome, foto ou telefone de quem mandou: escreva só a afirmação.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a alguém por que "a IA mostrou o link" não é o mesmo que "a informação está confirmada".</div>`
+      ],
+      ch:[
+        { who:'Marlene, 58 anos, cuidadora de idosos', says:'A IA disse que uma vacina está liberada para todas as idades e citou a página do Ministério da Saúde. Abri a página e ela fala só de alguns grupos.',
+          q:'Em que Marlene deve acreditar?',
+          opts:[
+            {t:'Na resposta da IA, porque ela citou uma fonte oficial.', ok:false, why:'Citar a fonte não garante que a resposta repetiu a fonte corretamente. O que vale é o que está escrito na página.'},
+            {t:'No que a página oficial diz: a resposta da IA resumiu errado.', ok:true, why:'Quando resposta e fonte discordam, vale a fonte. Esse é exatamente o erro que abrir o link revela.'},
+            {t:'Nas duas, porque cada uma tem um pedaço da verdade.', ok:false, why:'A página oficial é clara sobre os grupos. A versão da IA, nesse ponto, está errada.'}
+          ]},
+        { who:'Diego, 28 anos, microempreendedor (MEI)', says:'A fonte que a IA mostrou sobre o limite de faturamento do MEI é do site do governo, mas é de 2019.',
+          q:'O que Diego deve fazer?',
+          opts:[
+            {t:'Usar a informação: se é do governo, vale para sempre.', ok:false, why:'Regras mudam. Uma página oficial antiga pode estar desatualizada.'},
+            {t:'Ignorar a data, porque o que importa é o site ser oficial.', ok:false, why:'Ser oficial e ser atual são coisas diferentes. Os dois importam.'},
+            {t:'Procurar a informação atual no canal oficial do MEI (Portal do Empreendedor, no gov.br) antes de decidir.', ok:true, why:'Para regras que mexem com dinheiro e impostos, a fonte precisa ser oficial e atual.'}
+          ]},
+        { who:'Tiago, 35 anos, garçom', says:'Achei a mesma notícia em cinco sites diferentes. Todos citam o mesmo post de uma rede social. Então está confirmado.',
+          q:'O que está errado nesse raciocínio?',
+          opts:[
+            {t:'Nada: cinco sites concordando é confirmação suficiente.', ok:false, why:'Eles não concordam de forma independente: todos copiaram a mesma origem.'},
+            {t:'Os cinco sites vêm de uma só origem, o post. É preciso encontrar uma fonte primária ou um veículo que tenha apurado por conta própria.', ok:true, why:'Repetição não é confirmação. O que conta é ter fontes independentes e confiáveis.'},
+            {t:'Ele deveria ter achado dez sites em vez de cinco.', ok:false, why:'Mais cópias da mesma origem continuam sendo uma única fonte.'}
+          ]}
+      ]},
+    { id:'3.9', title:'Anonimizar de verdade: o que entrega quem é a pessoa', min:13,
+      body:[
+        `<div class="card analogy"><h3>🕶️ A tarja preta que não esconde nada</h3><p>Uma foto de jornal com tarja preta nos olhos não protege ninguém se a legenda diz "o dono da única padaria da Rua das Acácias". Com a IA é igual: <b>tirar só o nome não basta</b> quando os outros detalhes apontam direto para a pessoa.</p></div>`,
+        `<div class="term"><b>Identificação direta</b> = dado que, sozinho, identifica alguém: nome, CPF, telefone, e-mail, endereço, placa, foto do rosto. <b>Identificação indireta</b> = combinação de detalhes que aponta para uma pessoa (cargo único + cidade pequena + data). <b>Rótulo</b> = marcação no lugar do dado, como [FUNCIONÁRIO] ou [CLIENTE 1].</div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o feedback do Leandro</h3><p>Leandro, supervisor de loja, quer ajuda para escrever um feedback a um funcionário que vem chegando atrasado.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Primeira versão</h4><div class="node">Nome completo do funcionário, "o único caixa da nossa filial de Itabuna", "atrasou 5 vezes em setembro porque cuida da mãe com Alzheimer".</div></div>
+            <div class="flow new"><h4>Versão anonimizada</h4><div class="node good">"[FUNCIONÁRIO]", "atrasou várias vezes no último mês por um motivo familiar", pedindo um tom acolhedor, claro sobre a regra de horário e com 2 combinados possíveis.</div></div>
+          </div>
+          <p style="margin-top:14px"><b>O método de 4 passos que ele usou:</b></p>
+          <ol class="golden"><li><span>Tirar a <b>identificação direta</b>: nome, documentos, contatos, endereço.</span></li><li><span>Generalizar os <b>detalhes indiretos</b>: "filial de Itabuna" e "único caixa" viraram "uma loja"; a data exata virou "no último mês".</span></li><li><span>Retirar o <b>dado sensível</b> que não muda a resposta: a doença da mãe virou "motivo familiar".</span></li><li><span>Ler como um <b>estranho</b>: dá para descobrir quem é? Se sim, generalizar mais.</span></li></ol>
+          <p>A resposta da IA ficou igualmente útil, e ninguém foi exposto.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ol class="golden"><li><span><b>Trocar só o nome</b> e manter cargo, local e data que identificam.</span></li><li><span><b>Colar e-mail com assinatura:</b> o rodapé leva telefone, endereço e cargo.</span></li><li><span><b>Print de conversa:</b> mostra foto de perfil, número e nome do contato.</span></li><li><span><b>Planilha ou arquivo com "sobras":</b> colunas escondidas, comentários e o nome do autor no arquivo.</span></li></ol></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (ChatGPT em chat temporário ou outro assistente, 5 min)</h3><ol class="golden"><li><span>Pense numa situação real de trabalho ou estudo que envolve outra pessoa.</span></li><li><span>Escreva o pedido primeiro num bloco de notas, não na IA.</span></li><li><span>Aplique os 4 passos.</span></li><li><span>Releia como um estranho (ou peça a alguém de confiança): dá para descobrir quem é?</span></li><li><span>Só então envie à IA. Os dados reais você coloca depois, fora dela.</span></li></ol></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a alguém por que "a professora da única escola do bairro" pode identificar uma pessoa tanto quanto o nome dela.</div>`
+      ],
+      ch:[
+        { who:'Sílvia, 39 anos, professora', says:'Quero ajuda da IA para escrever o relatório de um aluno: "o único aluno cadeirante do 7º B da Escola Estadual tal". Troquei o nome por [ALUNO]. Já está anônimo?',
+          q:'O que você responderia?',
+          opts:[
+            {t:'Sim: sem o nome, ninguém sabe quem é.', ok:false, why:'Escola, turma e deficiência juntos apontam para uma única criança. É identificação indireta.'},
+            {t:'Basta trocar o nome da escola e manter o resto.', ok:false, why:'Turma e deficiência ainda restringem muito. E a deficiência é dado sensível que talvez nem mude a resposta.'},
+            {t:'Ainda não: ela deve generalizar ("um aluno do fundamental") e só manter a deficiência se ela realmente mudar o que precisa ser escrito.', ok:true, why:'Anonimizar é tirar o nome e também os detalhes que, juntos, identificam. Dado sensível só entra se for necessário.'}
+          ]},
+        { who:'Marcelo, 32 anos, atendente de uma loja online', says:'Colei o e-mail de um cliente para a IA me ajudar a responder. Depois vi que foi junto a assinatura com telefone e endereço dele.',
+          q:'O que ele deveria ter feito?',
+          opts:[
+            {t:'Apagado a assinatura e o cabeçalho antes de colar, conferindo o texto inteiro antes de enviar.', ok:true, why:'Assinaturas e cabeçalhos são o jeito mais comum de vazar dados sem perceber. Conferir antes de colar resolve.'},
+            {t:'Nada: o cliente mandou o e-mail para a loja, então pode.', ok:false, why:'O cliente mandou para a loja, não para outro serviço. Repassar dados sem necessidade é o que a LGPD pede para evitar.'},
+            {t:'Nada: a IA não presta atenção na assinatura.', ok:false, why:'O problema não é a IA prestar atenção, é o dado ter sido enviado e guardado fora da empresa.'}
+          ]},
+        { who:'Cláudio, 55 anos, síndico', says:'Quero que a IA me ajude a responder uma reclamação de barulho. Qual destes pedidos está bem anonimizado?',
+          q:'Escolha o pedido mais seguro.',
+          opts:[
+            {t:'"Resuma a reclamação da Dona Fátima, do apartamento 302 do Edifício Primavera."', ok:false, why:'Nome, apartamento e prédio identificam a moradora diretamente.'},
+            {t:'"Resuma a reclamação da F., do 302 do Edifício Primavera."', ok:false, why:'Inicial, apartamento e prédio continuam apontando para uma só pessoa.'},
+            {t:'"Resuma a reclamação de uma moradora sobre barulho vindo do apartamento de cima."', ok:true, why:'Mantém o que a IA precisa para ajudar (o problema) e tira tudo o que identifica as pessoas.'}
+          ]}
+      ]},
     { id:'3.6', title:'Projeto: meu guia pessoal de segurança com IA', min:35,
       body:[`<div class="card"><p>Você vai montar um guia curto, do seu jeito, para consultar sempre que for usar IA. Ele vale para você e pode ser compartilhado com a família ou com a equipe.</p></div>`],
       projeto:{
@@ -656,8 +1060,8 @@ const MODULES = [
 ];
 
 const MODDONE = {
-  1: 'Você já sabe o que a IA é, como ela aprendeu e onde costuma errar. Isso já te coloca à frente de muita gente.',
-  2: 'Você já conversou com a IA do jeito certo. Pedir bem é metade do resultado.',
+  1: 'Você já sabe o que a IA é, como ela aprende com exemplos, por que dados ruins geram erros e por que confiança não é certeza. Isso já te coloca à frente de muita gente.',
+  2: 'Você já conversa com a IA do jeito certo: pede bem, ajusta com precisão, resume sem perder o essencial e compara ferramentas com critério.',
   3: 'Parabéns, você concluiu o curso IA do Zero! Você sabe pedir, conferir e se proteger, e já pode emitir o certificado do curso. Próximo passo da trilha: o curso "Prompts que Funcionam".'
 };
 
@@ -674,7 +1078,21 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#22C55E','#14B8A6'], 2:['#14B8A6','#06B6D4'], 3:['#10B981','#22C55E'] };
-const LIC = { '1.1':'🤖','1.2':'📚','1.3':'⚖️','1.4':'📺','1.5':'📖','1.6':'🗺️','2.1':'💬','2.2':'✍️','2.3':'🖼️','2.4':'🗂️','2.5':'📱','2.6':'🧑‍🏫','2.7':'🛠️','3.1':'🔒','3.2':'🔍','3.3':'🗓️','3.4':'🎭','3.5':'🚫','3.6':'🛡️' };
+const LIC = { '1.1':'🤖','1.2':'📚','1.3':'⚖️','1.4':'📺','1.5':'📖','1.6':'🗺️','2.1':'💬','2.2':'✍️','2.3':'🖼️','2.4':'🗂️','2.5':'📱','2.6':'🧑‍🏫','2.7':'🛠️','3.1':'🔒','3.2':'🔍','3.3':'🗓️','3.4':'🎭','3.5':'🚫','3.6':'🛡️',
+  '1.7':'🧩','1.8':'🍞','1.9':'🎯','2.8':'🧵','2.9':'📄','2.10':'📨','2.11':'🔬','3.7':'🪟','3.8':'🧾','3.9':'🕶️' };
+
+const PLACAR = {};
+function placar(root){
+  const cx = [...root.querySelectorAll('.pl-a, .pl-b')], ra = root.querySelector('#pl-ra');
+  if (!cx.length || !ra) return;
+  if (!ra.dataset.pronto) { cx.forEach((c, i) => { c.checked = !!PLACAR[i]; }); ra.dataset.pronto = '1'; }
+  else cx.forEach((c, i) => { PLACAR[i] = c.checked; });
+  const conta = sel => root.querySelectorAll(sel + ':checked').length;
+  const a = conta('.pl-a'), b = conta('.pl-b'), fa = conta('.pl-fa'), fb = conta('.pl-fb');
+  ra.textContent = a + ' de 5';
+  root.querySelector('#pl-rb').textContent = b + ' de 5';
+  root.querySelector('#pl-rv').textContent = !a && !b ? '-' : !fa && !fb ? 'Nenhuma: confira' : fa && !fb ? 'IA A' : fb && !fa ? 'IA B' : a > b ? 'IA A' : b > a ? 'IA B' : 'Empate';
+}
 
 return {
   id: 'ia-do-zero',
@@ -683,6 +1101,7 @@ return {
   prompts: PROMPTS,
   cores: THEME,
   iconesLicao: LIC,
+  aoAbrirLicao: { '2.11': placar },
   niveis: [[1500,'Mestre'],[900,'Avançado'],[300,'Intermediário'],[0,'Iniciante']]
 };
 })());
