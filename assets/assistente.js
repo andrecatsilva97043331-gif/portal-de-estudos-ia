@@ -71,7 +71,7 @@ function montar(){
       <div class="ia-atalhos" id="ia-atalhos"></div>
       <textarea class="ia-txt" id="ia-txt" rows="5" maxlength="4000" placeholder="Escreva a sua dúvida. Ex.: não entendi a diferença entre…"></textarea>
       <p class="ia-dica" id="ia-dica"></p>
-      <div class="ia-bts"><button class="ia-google" type="button" data-ia="google">🔎 Perguntar ao Google IA</button><button class="ia-gemini" type="button" data-ia="gemini">♊ Abrir no Gemini</button></div>
+      <div class="ia-bts"><button class="ia-google" type="button" data-ia="google">🔎 Perguntar ao Google IA</button></div>
       <p class="ia-nota">Abre a IA gratuita do Google em outra aba, já com o assunto da sua aula. Ela vai te orientar passo a passo, sem respostas prontas.</p>
     </section>`);
 }
@@ -110,9 +110,9 @@ document.addEventListener('click', e => {
   else if (a === 'atalho') {
     const t = $('ia-txt'); t.value = ATALHOS[b.dataset.k].texto; t.focus(); t.setSelectionRange(t.value.length, t.value.length); atualizarDica();
   }
-  else if (a === 'google' || a === 'gemini') {
+  else if (a === 'google') {
     const txt = montarTexto(); if (!txt) return;
-    window.abrirNaIA(txt, avisar, { gemini: a === 'gemini', aviso: AVISO_PERGUNTA });
+    window.abrirNaIA(txt, avisar, { aviso: AVISO_PERGUNTA });
   }
 });
 document.addEventListener('input', e => { if (e.target.id === 'ia-txt') atualizarDica(); });
