@@ -304,6 +304,45 @@ const MODULES = [
             {t:'Só se a IA traduziu os nomes corretamente.', ok:false, why:'Os nomes importam, mas a primeira pergunta é se esse tipo de tradução é aceito.'}
           ]}
       ]},
+    { id:'1.10', title:'Relatório curto de resultados para chefe ou cliente', min:12,
+      body:[
+        `<div class="card analogy"><h3>⚽ O resumo do jogo</h3><p>Quem perdeu o jogo não quer ouvir os 90 minutos lance por lance. Quer saber o placar, quem fez os gols e se o time se classificou. Um relatório de trabalho é igual: <b>quem lê quer primeiro o resultado, depois o que precisa decidir</b>. A IA ajuda a sair da lista de tudo o que você fez para o resumo que importa.</p></div>`,
+        `<div class="term"><b>Relatório curto</b> = texto de meia página, ou menos, que conta o andamento de um trabalho. <b>Resultado</b> = o que mudou de fato, de preferência com número. <b>Pedido de decisão</b> = o que você precisa que a pessoa aprove, escolha ou responda.</div>`,
+        `<div class="card"><h3>A ordem que funciona</h3><ol class="golden"><li><span><b>Resultado principal</b> em uma frase, com número quando tiver.</span></li><li><span><b>O que foi feito</b>, em 2 ou 3 tópicos.</span></li><li><span><b>Problemas ou riscos</b>, sem esconder.</span></li><li><span><b>Próximos passos</b>, com prazo.</span></li><li><span><b>O que você precisa</b> de quem lê.</span></li></ol></div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: o mês da padaria</h3><p>Renata é gerente de uma padaria em Goiânia e precisa mandar ao dono o resumo do mês. Ela tinha anotações soltas: testou entrega por aplicativo, um forno quebrou por 3 dias, as vendas de salgados subiram, falta decidir o horário de domingo.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Antes</h4><div class="node">Colou as anotações na IA e pediu "faz um relatório". Veio uma página e meia, com títulos como "Introdução" e "Considerações finais", e o pedido sobre o domingo escondido no último parágrafo. O dono não leu até o fim.</div></div>
+            <div class="flow new"><h4>Depois</h4><div class="node good">Ela disse à IA quem lê (o dono, que lê pelo celular), o tamanho (até 10 linhas), a ordem (resultado, feito, problemas, próximos passos, decisão) e pediu que a decisão sobre o domingo viesse destacada logo no começo. Depois conferiu cada número nas anotações.</div></div>
+          </div>
+          <p style="margin-top:14px"><b>Resultado esperado:</b> uma mensagem que o dono lê em 1 minuto e responde no mesmo dia: "Vendas de salgados subiram 15% (valor do exemplo). Preciso da sua decisão sobre abrir domingo até 14h ou 18h."</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>A IA arredonda ou inventa números:</b> "cerca de 20%" quando era 15%. Confira cada número com a sua anotação.</span></li><li><span><b>Esconder o problema:</b> pedir para "deixar positivo" pode apagar o forno quebrado. Quem lê descobre depois e perde a confiança.</span></li><li><span><b>Relatório de atividades em vez de resultados:</b> "fiz 12 reuniões" diz pouco; "fechamos 2 contratos" diz o que mudou.</span></li><li><span><b>Pedido de decisão no fim:</b> se a pessoa precisa responder algo, isso vai no começo.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o Claude ou o Microsoft Copilot, nas versões gratuitas, por cerca de 10 minutos.</p>
+          <ol class="golden"><li><span>Escreva anotações soltas sobre uma semana ou um mês do seu trabalho, com números fictícios.</span></li><li><span>Escreva o seu próprio pedido dizendo quem lê, onde lê, o tamanho e a ordem dos 5 blocos.</span></li><li><span>Confira cada número da resposta com as suas anotações.</span></li><li><span>Veja se o problema aparece com honestidade e se o pedido de decisão está no começo.</span></li><li><span>Corte o que quem lê não precisa saber.</span></li></ol><p>🔒 Não cole faturamento real, salários nem nomes de clientes; use valores fictícios.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que, ao contar como foi a escola, o melhor é começar por "tirei 9 na prova" e não pela hora em que acordou.</div>`
+      ],
+      ch:[
+        { who:'Cristiano, 37 anos, supervisor de uma equipe de vendas', says:'Mandei para a diretora um relatório de 2 páginas feito com IA. Ela respondeu: "qual é o resumo?". Eu precisava que ela aprovasse a contratação de mais um vendedor.',
+          q:'Como ele deveria ter pedido o relatório?',
+          opts:[
+            {t:'Pedir um texto ainda mais completo, para mostrar todo o trabalho.', ok:false, why:'O problema foi justamente o tamanho. Mais texto esconde ainda mais o pedido.'},
+            {t:'Dizer à IA quem lê, limitar o tamanho e pedir o resultado e o pedido de aprovação logo no começo.', ok:true, why:'Quem decide precisa ver primeiro o resultado e o que deve aprovar. O resto vem em seguida, curto.'},
+            {t:'Mandar só "preciso contratar mais um vendedor", sem relatório.', ok:false, why:'Sem resultado nem motivo, a diretora não tem base para aprovar.'}
+          ]},
+        { who:'Priscila, 31 anos, social media freelancer', says:'Minhas anotações diziam que o perfil da cliente cresceu 8% no mês. O relatório da IA dizia "crescimento de quase 10%".',
+          q:'O que ela deve fazer?',
+          opts:[
+            {t:'Manter, porque "quase 10%" soa melhor e é parecido.', ok:false, why:'É um número errado. Se a cliente conferir, a confiança no trabalho cai.'},
+            {t:'Corrigir para 8% e conferir todos os outros números do relatório com as anotações.', ok:true, why:'Se a IA arredondou um número, pode ter mexido em outros. Conferir tudo é parte do trabalho.'},
+            {t:'Pedir à IA para conferir os próprios números.', ok:false, why:'A IA pode confirmar o próprio erro. A conferência é com a anotação original.'}
+          ]},
+        { who:'Valéria, 44 anos, coordenadora de um projeto de reforma', says:'A obra atrasou uma semana por falta de material. Pensei em pedir para a IA "deixar o relatório positivo" e nem citar o atraso.',
+          q:'Qual é a melhor escolha?',
+          opts:[
+            {t:'Esconder o atraso para o cliente não ficar preocupado.', ok:false, why:'O cliente vai perceber o atraso. Descobrir depois é pior do que saber agora.'},
+            {t:'Citar o atraso só se o cliente perguntar.', ok:false, why:'Esperar a pergunta passa a impressão de esconder. O relatório é o lugar certo para avisar.'},
+            {t:'Informar o atraso com clareza, a causa e o novo prazo, junto com o que já foi feito.', ok:true, why:'Contar o problema com o plano de solução mantém a confiança e evita surpresas.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: minha comunicação da semana com IA', min:35,
       body:[`<div class="card"><p>Você vai usar a IA em comunicações reais da sua semana, do rascunho à revisão, sem perder o seu jeito de falar e sem expor dados de ninguém.</p></div>`],
       projeto:{
@@ -605,6 +644,50 @@ const MODULES = [
             {t:'Os e-mails completos, com nomes dos pais e dos alunos.', ok:false, why:'São dados pessoais, inclusive de crianças, que pedem cuidado redobrado pela LGPD. Não são necessários.'},
             {t:'Só a lista de tipos de e-mail (matrícula, boletos, recados, eventos) e a quantidade aproximada de cada um.', ok:true, why:'Para sugerir pastas e filtros, a IA só precisa saber os tipos de mensagem, não o conteúdo.'},
             {t:'Os e-mails sem os nomes, mas com as notas dos alunos.', ok:false, why:'Notas também são dados pessoais e não ajudam a organizar a caixa.'}
+          ]}
+      ]},
+    { id:'2.10', title:'Cronograma de trás para frente: do prazo ao primeiro passo', min:12,
+      body:[
+        `<div class="card analogy"><h3>✈️ A hora de sair de casa</h3><p>Se o voo sai às 10h, você não pensa "vou acordar e ver no que dá". Você conta de trás para frente: embarque às 9h20, chegar ao aeroporto às 8h30, uma hora de trânsito, então sair às 7h30 e acordar às 6h30. <b>Partir do prazo e voltar até hoje</b> mostra se ainda dá tempo e quando cada coisa precisa começar.</p></div>`,
+        `<div class="term"><b>Cronograma reverso</b> = planejamento que começa pela data final e volta, etapa por etapa, até hoje. <b>Dependência</b> = etapa que só pode começar quando outra termina. <b>Folga</b> = dias de reserva para imprevistos.</div>`,
+        `<div class="card"><h3>Como montar com a IA</h3><ol class="golden"><li><span>Diga a <b>entrega e a data final</b>.</span></li><li><span>Liste as <b>etapas</b> que você conhece e peça que a IA aponte as que faltam.</span></li><li><span>Informe <b>quanto tempo</b> cada etapa leva na sua realidade e o que depende do quê.</span></li><li><span>Peça as datas de trás para frente, <b>com folga</b>, e só dias em que você trabalha.</span></li><li><span><b>Confira as datas no calendário</b>: feriados e fins de semana costumam escapar.</span></li></ol></div>`,
+        `<div class="card"><h3>📝 Exemplo resolvido: a festa junina da escola</h3><p>Elaine é coordenadora de uma escola em Recife e a festa junina é dia 27 de junho, um sábado. Faltam 5 semanas.</p>
+          <div class="flows">
+            <div class="flow old"><h4>Antes</h4><div class="node">Ela pediu "um cronograma para a festa junina". A IA devolveu uma lista genérica de 8 semanas, começando no passado, com "contratar banda" que a escola não faz, e sem lembrar que as bandeirinhas dependem das turmas, que só ensaiam às terças.</div></div>
+            <div class="flow new"><h4>Depois</h4><div class="node good">Ela informou a data da festa, a data de hoje, as etapas que já conhecia (convite aos pais, doações, decoração com as turmas, ensaio da quadrilha), que as turmas só ajudam às terças e que o convite precisa sair 3 semanas antes. Pediu as datas de trás para frente, com 3 dias de folga antes da festa.</div></div>
+          </div>
+          <div class="tw"><table class="tbl"><tr><th>Etapa</th><th>Depende de</th><th>Prazo</th></tr>
+          <tr><td>Montagem da quadra</td><td>Decoração pronta</td><td>Sexta, véspera da festa</td></tr>
+          <tr><td>Decoração com as turmas</td><td>Material doado</td><td>Terças até 23 de junho</td></tr>
+          <tr><td>Arrecadar doações</td><td>Convite enviado</td><td>Até 16 de junho</td></tr>
+          <tr><td>Convite aos pais</td><td>Data confirmada</td><td>Até 5 de junho</td></tr></table></div>
+          <p><b>Resultado esperado:</b> Elaine descobre que o convite precisa sair nesta semana, não daqui a quinze dias, e confere cada data no calendário antes de passar à equipe.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Não dizer a data de hoje:</b> a IA não sabe quando você está e pode montar etapas que começariam no passado.</span></li><li><span><b>Datas erradas no calendário:</b> a IA pode errar o dia da semana ou cair num feriado. Confira cada data.</span></li><li><span><b>Prazos otimistas:</b> se a gráfica leva uma semana, não aceite "2 dias". Use o tempo da sua realidade.</span></li><li><span><b>Esquecer a folga:</b> sem reserva, um atraso pequeno estraga a data final.</span></li><li><span><b>Sinal de alerta:</b> se a primeira etapa já está atrasada, avise quem decide agora: talvez seja preciso cortar algo ou mudar a data.</span></li></ol></div>`,
+        `<div class="card"><h3>🧭 Agora é sua vez</h3><p>Use o ChatGPT para montar o cronograma e o Trello para acompanhar, nos planos gratuitos, por cerca de 10 minutos.</p>
+          <ol class="golden"><li><span>Escolha uma entrega real com data: um evento, um pedido grande, uma mudança.</span></li><li><span>Escreva o seu próprio pedido com a data final, a data de hoje, as etapas que você conhece e o tempo real de cada uma.</span></li><li><span>Peça que a IA aponte etapas esquecidas e dependências, com folga.</span></li><li><span>Confira cada data no calendário e corrija o que cair em feriado ou fim de semana.</span></li><li><span>Crie no Trello um cartão por etapa, com o prazo conferido.</span></li></ol><p>🔒 Não informe nomes, telefones ou endereços de clientes, alunos ou fornecedores.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que, para chegar na escola às 7h, é preciso saber primeiro quanto tempo leva o caminho.</div>`
+      ],
+      ch:[
+        { who:'Reginaldo, 48 anos, dono de uma gráfica rápida', says:'Um cliente quer 500 convites de casamento para daqui a 20 dias. A IA montou um cronograma, mas colocou a impressão num domingo, e a gráfica não abre.',
+          q:'O que ele deve fazer?',
+          opts:[
+            {t:'Seguir o cronograma e abrir no domingo.', ok:false, why:'O problema é o cronograma, não a gráfica. Basta informar os dias de trabalho.'},
+            {t:'Informar à IA os dias em que a gráfica funciona, pedir o cronograma de novo e conferir cada data no calendário.', ok:true, why:'A IA não sabe a rotina dele e pode errar o dia da semana. Com a informação certa e a conferência, as datas ficam reais.'},
+            {t:'Descartar o cronograma e fazer tudo de cabeça.', ok:false, why:'O cronograma é útil. Precisa só do ajuste e da conferência.'}
+          ]},
+        { who:'Michele, 34 anos, analista de compras', says:'Pedi um cronograma para a compra de uniformes. A IA deu 2 dias para o fornecedor entregar, mas ele sempre leva 10.',
+          q:'Qual é o ajuste certo?',
+          opts:[
+            {t:'Aceitar os 2 dias e cobrar o fornecedor.', ok:false, why:'Cobrar não muda o prazo real. O cronograma vai estourar.'},
+            {t:'Informar o prazo real de 10 dias, refazer as datas de trás para frente e manter uma folga.', ok:true, why:'O cronograma só funciona com os tempos reais de cada etapa, mais uma reserva para imprevistos.'},
+            {t:'Tirar a etapa da entrega do cronograma.', ok:false, why:'É justamente a etapa que define quando a compra precisa ser feita.'}
+          ]},
+        { who:'Rafaela, 29 anos, organiza a convenção anual de uma associação', says:'Fiz o cronograma de trás para frente e vi que a reserva do auditório já devia ter sido feita há uma semana.',
+          q:'Qual é a melhor reação?',
+          opts:[
+            {t:'Ignorar e seguir as próximas etapas como se nada tivesse acontecido.', ok:false, why:'O atraso continua lá e pode derrubar a data do evento.'},
+            {t:'Esconder o atraso da diretoria até ter certeza.', ok:false, why:'Quanto mais tarde a diretoria souber, menos opções terá para resolver.'},
+            {t:'Resolver a reserva agora e avisar a diretoria, com opções: outro local, outra data ou cortar uma etapa.', ok:true, why:'É para isso que o cronograma reverso serve: descobrir o problema cedo, enquanto ainda há o que fazer.'}
           ]}
       ]},
     { id:'2.7', title:'Projeto: organizando uma rotina de trabalho', min:35,
@@ -957,7 +1040,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#22C55E','#14B8A6'], 2:['#14B8A6','#06B6D4'], 3:['#10B981','#22C55E'] };
-const LIC = { '1.1':'✉️','1.2':'📝','1.3':'🌡️','1.4':'🪞','1.5':'📲','1.7':'🗂️','1.8':'🪧','1.9':'🌎','1.6':'📣','2.1':'🧮','2.2':'🗓️','2.3':'✅','2.4':'🧾','2.5':'🧱','2.6':'🤝','2.8':'🐷','2.9':'🗄️','2.7':'🗂️','3.1':'🔎','3.2':'🎓','3.3':'🧗','3.4':'🎭','3.5':'📜','3.7':'🕵️','3.8':'🎧','3.9':'⚖️','3.6':'📈' };
+const LIC = { '1.1':'✉️','1.2':'📝','1.3':'🌡️','1.4':'🪞','1.5':'📲','1.7':'🗂️','1.8':'🪧','1.9':'🌎','1.10':'📋','1.6':'📣','2.1':'🧮','2.2':'🗓️','2.3':'✅','2.4':'🧾','2.5':'🧱','2.6':'🤝','2.8':'🐷','2.9':'🗄️','2.10':'⏳','2.7':'🗂️','3.1':'🔎','3.2':'🎓','3.3':'🧗','3.4':'🎭','3.5':'📜','3.7':'🕵️','3.8':'🎧','3.9':'⚖️','3.6':'📈' };
 
 return {
   id: 'ia-no-trabalho',

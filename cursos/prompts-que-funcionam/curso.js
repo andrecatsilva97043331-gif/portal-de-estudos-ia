@@ -280,6 +280,49 @@ const MODULES = [
             {t:'Trocar os nomes por códigos (Aluno 1, Aluno 2), guardar a correspondência só com ela e seguir as regras da escola sobre uso de IA.', ok:true, why:'Com códigos, a IA analisa as notas do mesmo jeito, e nenhum aluno fica exposto.'}
           ]}
       ]},
+    { id:'1.9', title:'Troque palavras vagas por critérios concretos', min:12,
+      body:[
+        `<div class="card analogy"><h3>✂️ "Corta só um pouquinho"</h3><p>Você senta na cadeira do cabeleireiro e pede: "corta só um pouquinho". Para você, um pouquinho é um dedo; para ele, pode ser cinco centímetros. Ninguém errou de propósito: a palavra é que não dizia quanto. Na IA acontece o mesmo com <b>"melhor", "curto", "profissional", "criativo"</b>: cada um entende de um jeito, e a IA escolhe o sentido mais comum, não o seu.</p></div>`,
+        `<div class="term"><b>Palavra vaga</b> = termo que cada pessoa entende de um jeito, como "curto" ou "chamativo". <b>Critério concreto</b> = algo que dá para conferir na resposta: número de linhas, palavras proibidas, uma pergunta no fim, nível de leitura.</div>`,
+        `<div class="card"><h3>O teste do fiscal</h3><p>Para cada palavra do seu pedido, pergunte: <b>um fiscal conseguiria dizer, olhando a resposta, se ela cumpriu isso?</b> "Curto" não passa no teste; "até 4 linhas" passa. "Profissional" não passa; "sem gírias, sem emojis, tratando por senhor ou senhora" passa.</p><div class="tw"><table class="tbl"><tr><th>Palavra vaga</th><th>Critério concreto</th></tr>
+          <tr><td>Curto</td><td>Até 4 linhas, ou até 60 palavras</td></tr>
+          <tr><td>Simples</td><td>Frases curtas, sem termos técnicos, como para quem nunca ouviu falar do assunto</td></tr>
+          <tr><td>Profissional</td><td>Sem gírias nem emojis, tratamento formal</td></tr>
+          <tr><td>Chamativo</td><td>Começar com uma pergunta ou um número; uma oferta clara na primeira linha</td></tr>
+          <tr><td>Melhore</td><td>Diga o quê: corrigir erros, encurtar, deixar mais gentil, organizar em tópicos</td></tr></table></div></div>`,
+        `<div class="card"><h3>Exemplo resolvido: o aviso do salão</h3><p>Patrícia tem um salão de beleza em Belo Horizonte e vai fechar no feriado. Pediu à IA:</p>
+          <div class="flows"><div class="flow old"><h4>Pedido fraco</h4><div class="node">"Faz um aviso curto e profissional de que o salão vai fechar no feriado."</div></div></div>
+          <p style="margin-top:14px"><b>O que aconteceu:</b> veio um texto de 8 linhas, com "Prezados clientes" e "informamos que", que soou frio para clientes que ela chama pelo nome. Para a IA, aquilo era curto e profissional.</p>
+          <ol class="golden"><li><span>Sublinhe as <b>palavras vagas</b> do pedido: "curto" e "profissional".</span></li><li><span>Pergunte o que <b>você</b> quer dizer com cada uma: curto é o que cabe numa tela de celular sem rolar; profissional, para ela, é educado mas próximo.</span></li><li><span>Troque cada palavra por um <b>critério que dá para conferir</b>.</span></li><li><span>Leia a resposta e <b>confira critério por critério</b>.</span></li></ol>
+          <div class="flows"><div class="flow new"><h4>Pedido melhorado</h4><div class="node good">"Escreva um aviso para o status do WhatsApp do meu salão: fechado na segunda-feira de feriado, voltamos na terça às 9h. Até 3 linhas. Tom educado e próximo, como quem fala com clientes conhecidas: sem 'prezados' nem 'informamos'. No máximo 1 emoji. Termine convidando a agendar pelo WhatsApp."</div></div></div>
+          <p style="margin-top:14px"><b>Resultado esperado:</b> um aviso de 3 linhas, no tom do salão, que Patrícia confere em segundos porque sabe exatamente o que pediu.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Empilhar adjetivos:</b> "curto, objetivo, envolvente e impactante" só multiplica as dúvidas. Troque cada um por um critério ou apague.</span></li><li><span><b>Critério que você não confere:</b> pedir "até 50 palavras" e nunca contar. Se o limite importa, confira; a IA nem sempre acerta números exatos.</span></li><li><span><b>Exagerar nos critérios:</b> 15 regras para uma mensagem simples deixam o texto engessado. Fique com os 3 ou 4 que mais importam.</span></li><li><span><b>Sinal de alerta:</b> se você pensa "não era bem isso" mas não sabe dizer o quê, procure a palavra vaga no seu pedido.</span></li></ol></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez</h3><p>Use o Claude ou o DeepSeek, nos planos gratuitos:</p><ol class="golden"><li><span>Pegue um pedido seu que tenha pelo menos 2 palavras vagas, como "curto", "simples" ou "bonito".</span></li><li><span>Envie do jeito que está e guarde a resposta.</span></li><li><span>Faça o teste do fiscal: troque cada palavra vaga por um critério concreto, com as suas palavras.</span></li><li><span>Envie a nova versão numa conversa nova.</span></li><li><span>Confira a resposta critério por critério e anote qual troca fez mais diferença.</span></li></ol><p>🔒 Use situações sem nomes, telefones ou dados de clientes.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que "arruma o quarto" dá briga e "guarda os brinquedos na caixa e a roupa no cesto" não dá.</div>`
+      ],
+      ch:[
+        { who:'Diego, 30 anos, dono de uma hamburgueria', says:'Pedi "uma legenda bem chamativa" para o combo da semana. Veio cheia de exclamações e emojis, parecendo propaganda de TV.',
+          q:'Qual ajuste resolve melhor?',
+          opts:[
+            {t:'Pedir "uma legenda menos chamativa".', ok:false, why:'Troca uma palavra vaga por outra. A IA continua sem saber o que ele quer.'},
+            {t:'Trocar "chamativa" por critérios: começar com o preço do combo, até 3 linhas, no máximo 2 emojis e terminar com como pedir.', ok:true, why:'Critérios concretos dizem exatamente o que é "chamar atenção" para ele, e dá para conferir cada um.'},
+            {t:'Gerar várias vezes até sair uma do jeito que ele imagina.', ok:false, why:'Sem mudar o pedido, ele depende da sorte. O problema está na palavra vaga.'}
+          ]},
+        { who:'Sueli, 52 anos, agente comunitária de saúde', says:'Pedi para explicar a campanha de vacinação "de um jeito simples". Ainda veio com palavras como "imunização" e "esquema vacinal".',
+          q:'Como ela deveria pedir?',
+          opts:[
+            {t:'Escrever "BEM simples" em letras maiúsculas.', ok:false, why:'Ênfase não define o que é simples. A IA não sabe quem vai ler nem que palavras evitar.'},
+            {t:'Pedir "mais simples ainda" várias vezes na mesma conversa.', ok:false, why:'Pode até melhorar um pouco, mas sem critério ela não sabe quando parar nem o que trocar.'},
+            {t:'Dizer quem vai ler e o critério: frases curtas, sem termos técnicos como "imunização", explicando como para um vizinho que nunca leu sobre o assunto.', ok:true, why:'Definir o leitor e as palavras proibidas transforma "simples" em algo que dá para conferir.'}
+          ]},
+        { who:'Marcos, 41 anos, coordenador de uma escola de idiomas', says:'Agora coloco critério em tudo. Meu último pedido para um bilhete de aniversário tinha 14 regras, e o texto saiu duro, sem graça.',
+          q:'O que Marcos deve fazer?',
+          opts:[
+            {t:'Ficar com os 3 ou 4 critérios que mais importam para aquele bilhete e deixar o resto livre.', ok:true, why:'Critérios servem para o que importa. Regras demais engessam o texto e algumas acabam ignoradas.'},
+            {t:'Voltar a pedir só "um bilhete bonito".', ok:false, why:'Volta ao problema da palavra vaga. O equilíbrio está em poucos critérios bem escolhidos.'},
+            {t:'Acrescentar mais regras, como "seja natural".', ok:false, why:'"Natural" é outra palavra vaga, e mais regras pioram o que já estava duro.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: reescrevendo 3 pedidos meus', min:35,
       body:[`<div class="card"><p>Você vai pegar pedidos que já fez (ou faria) à IA e transformá-los em pedidos claros, usando tudo do módulo: clareza, exemplos, limites, formato, papel e público. O valor está em comparar o antes e o depois com a resposta real da IA.</p></div>`],
       projeto:{
@@ -969,6 +1012,46 @@ const MODULES = [
             {t:'Escalar: responder com acolhimento, sem admitir nem negar culpa, e levar o caso para quem decide. A IA pode, no máximo, ajudar a rascunhar a primeira mensagem, revisada por ele.', ok:true, why:'Casos graves pedem decisão humana. Modelos servem para as perguntas frequentes, não para situações de risco.'}
           ]}
       ]},
+    { id:'3.10', title:'Teste o modelo com casos difíceis antes de guardar', min:12,
+      body:[
+        `<div class="card analogy"><h3>🍰 A receita testada</h3><p>A confeiteira não coloca um bolo novo no cardápio depois de acertar uma vez. Ela testa num dia quente, com outra marca de farinha, em forma maior. Só quando dá certo em vários cenários a receita vai para o caderno. Um modelo de prompt é igual: <b>funcionar no primeiro caso não prova que funciona sempre</b>.</p></div>`,
+        `<div class="term"><b>Caso típico</b> = a situação mais comum em que você vai usar o modelo. <b>Caso difícil</b> = situação que foge do comum: informação faltando, texto muito longo, pedido incomum. <b>Teste</b> = rodar o mesmo modelo com casos diferentes e conferir se a resposta continua boa.</div>`,
+        `<div class="card"><h3>Os 3 casos de teste</h3><div class="tw"><table class="tbl"><tr><th>Caso</th><th>Pergunta que ele responde</th></tr>
+          <tr><td>Típico</td><td>O modelo faz bem o trabalho de todo dia?</td></tr>
+          <tr><td>Com informação faltando</td><td>A IA pergunta ou inventa o que não sabe?</td></tr>
+          <tr><td>Fora do padrão</td><td>O modelo respeita os limites quando a situação é estranha ou delicada?</td></tr></table></div></div>`,
+        `<div class="card"><h3>Exemplo resolvido: o modelo de orçamento do marceneiro</h3><p>Valdir é marceneiro em Curitiba e criou um modelo para responder pedidos de orçamento: "Responda ao cliente que pediu [MÓVEL] com as medidas [MEDIDAS], informando que o orçamento sai em até 2 dias úteis e pedindo foto do ambiente." Testou com um armário de cozinha, ficou ótimo, e guardou.</p>
+          <div class="flows"><div class="flow old"><h4>Jeito fraco</h4><div class="node">Testar uma vez, com o caso mais fácil, e guardar o modelo como pronto.</div></div></div>
+          <p style="margin-top:14px"><b>O que aconteceu depois:</b> um cliente não mandou as medidas, e a IA inventou "2 metros de largura" na resposta. Outro pediu um móvel que Valdir não faz, e a IA prometeu orçamento mesmo assim.</p>
+          <ol class="golden"><li><span>Escreva <b>3 casos</b> fictícios: um típico, um com informação faltando e um fora do padrão.</span></li><li><span>Rode o modelo <b>igual</b> nos 3, cada um numa conversa nova.</span></li><li><span>Anote <b>onde falhou</b> e qual foi o problema.</span></li><li><span>Acrescente ao modelo a <b>regra que faltava</b>: "Se faltar alguma medida, peça ao cliente; não invente. Se o pedido não for de móvel sob medida, diga com educação que não trabalho com isso."</span></li><li><span><b>Rode os 3 casos de novo</b> e só então guarde, anotando a versão e a data.</span></li></ol>
+          <p><b>Resultado esperado:</b> um modelo que pede o que falta em vez de inventar e que sabe dizer "não", testado antes de chegar ao cliente.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns e como perceber</h3><ol class="golden"><li><span><b>Testar só com o caso fácil:</b> é justamente o caso difícil que aparece na pior hora.</span></li><li><span><b>Mudar o modelo e não testar de novo:</b> a regra nova pode estragar o que antes funcionava. Rode os 3 casos outra vez.</span></li><li><span><b>Testar na mesma conversa:</b> a IA aproveita o que veio antes e o teste fica mais fácil do que a vida real. Use conversas novas.</span></li><li><span><b>Usar casos reais com dados de clientes:</b> invente casos parecidos, com nomes e números fictícios.</span></li></ol></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez</h3><p>Use o Microsoft Copilot para testar e o Google Docs para guardar:</p><ol class="golden"><li><span>Escolha um modelo da sua biblioteca, ou escreva um agora, com as suas palavras.</span></li><li><span>Invente 3 casos: típico, com informação faltando e fora do padrão.</span></li><li><span>Rode o modelo nos 3, cada um numa conversa nova, e anote onde falhou.</span></li><li><span>Acrescente ao modelo uma regra para a falha e rode os 3 casos de novo.</span></li><li><span>Guarde a versão final no Google Docs com a data e os casos testados.</span></li></ol><p>🔒 Os casos de teste devem ser inventados: nada de nomes, telefones ou mensagens reais de clientes.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que um avião de papel precisa ser testado com vento antes de ir para o campeonato.</div>`
+      ],
+      ch:[
+        { who:'Tatiane, 33 anos, assistente administrativa de uma imobiliária', says:'Meu modelo de resposta para interessados em aluguel funcionou perfeito no primeiro teste. Já posso usar com todo mundo?',
+          q:'O que falta antes de usar de verdade?',
+          opts:[
+            {t:'Nada: se funcionou uma vez, vai funcionar sempre.', ok:false, why:'Um teste só mostra o caso fácil. Situações diferentes podem revelar falhas.'},
+            {t:'Testar com pelo menos mais 2 casos, um com informação faltando e um fora do padrão, em conversas novas.', ok:true, why:'Os casos difíceis mostram se o modelo inventa ou passa dos limites antes que isso aconteça com um cliente.'},
+            {t:'Pedir para a IA garantir que o modelo está perfeito.', ok:false, why:'A IA não tem como garantir isso. Só o teste com casos variados mostra.'}
+          ]},
+        { who:'Rogério, 45 anos, técnico de refrigeração', says:'No teste em que o cliente não disse a marca do ar-condicionado, a IA inventou uma marca na resposta.',
+          q:'Qual é o melhor ajuste no modelo?',
+          opts:[
+            {t:'Acrescentar a regra "se faltar a marca ou o modelo do aparelho, pergunte ao cliente; não invente" e rodar os testes de novo.', ok:true, why:'A regra resolve a falha encontrada, e o novo teste confirma que ela funcionou sem estragar o resto.'},
+            {t:'Apagar a marca da resposta toda vez, na mão.', ok:false, why:'Corrige o sintoma toda vez, mas o modelo continua com o mesmo defeito.'},
+            {t:'Desistir do modelo, porque a IA inventa coisas.', ok:false, why:'A falha tem solução simples. Achar o problema é justamente para que serve o teste.'}
+          ]},
+        { who:'Lúcia, 37 anos, nutricionista', says:'Para testar meu modelo de plano alimentar, pensei em usar as fichas reais de 3 pacientes, com nome e exames.',
+          q:'Qual é a forma certa de testar?',
+          opts:[
+            {t:'Usar as fichas reais, porque deixam o teste mais realista.', ok:false, why:'São dados de saúde, sensíveis. O teste não justifica expor pacientes.'},
+            {t:'Usar as fichas reais, mas apagar a conversa depois.', ok:false, why:'Apagar depois não desfaz o envio dos dados.'},
+            {t:'Inventar 3 casos parecidos com os reais, sem nomes nem exames verdadeiros, incluindo um com informação faltando.', ok:true, why:'Casos fictícios testam o modelo do mesmo jeito, sem expor ninguém.'}
+          ]}
+      ]},
     { id:'3.6', title:'Projeto: minha biblioteca com 5 modelos', min:35,
       body:[`<div class="card"><p>Agora você vai montar o começo da sua biblioteca pessoal, com modelos criados e testados por você para tarefas que se repetem na sua rotina. Nada de copiar listas prontas: cada modelo nasce de uma necessidade sua.</p></div>`],
       projeto:{
@@ -1010,7 +1093,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#22C55E','#14B8A6'], 2:['#14B8A6','#06B6D4'], 3:['#10B981','#22C55E'] };
-const LIC = { '1.1':'🎯','1.2':'🖼️','1.3':'📏','1.4':'🎙️','1.5':'🧭','1.6':'📝','1.7':'🎂','1.8':'🕶️','2.1':'💬','2.2':'🧩','2.3':'🎤','2.4':'🔁','2.5':'🔀','2.6':'😈','2.7':'🪜','2.8':'🤔','2.9':'⚖️','2.10':'🔄','3.1':'🧰','3.2':'🔧','3.3':'📚','3.4':'📎','3.5':'📷','3.6':'🗃️','3.7':'🎓','3.8':'📊','3.9':'🎧' };
+const LIC = { '1.1':'🎯','1.2':'🖼️','1.3':'📏','1.4':'🎙️','1.5':'🧭','1.6':'📝','1.7':'🎂','1.8':'🕶️','1.9':'✂️','2.1':'💬','2.2':'🧩','2.3':'🎤','2.4':'🔁','2.5':'🔀','2.6':'😈','2.7':'🪜','2.8':'🤔','2.9':'⚖️','2.10':'🔄','3.1':'🧰','3.2':'🔧','3.3':'📚','3.4':'📎','3.5':'📷','3.6':'🗃️','3.7':'🎓','3.8':'📊','3.9':'🎧','3.10':'🧪' };
 
 return {
   id: 'prompts-que-funcionam',

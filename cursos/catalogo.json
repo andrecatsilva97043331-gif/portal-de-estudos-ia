@@ -21,7 +21,7 @@
     "ordem": 2,
     "status": "disponivel",
     "carga_horaria": 4,
-    "versao": 2
+    "versao": 3
   },
   {
     "id": "ia-no-trabalho",
@@ -34,7 +34,7 @@
     "recomendado_antes": ["prompts-que-funcionam"],
     "status": "disponivel",
     "carga_horaria": 4,
-    "versao": 2
+    "versao": 3
   },
   {
     "id": "automacao-sem-codigo",
