@@ -186,6 +186,58 @@ Oi, [NOME]! Seu pedido de [QUANTIDADE] marmitas está confirmado para [DATA]. A 
             {t:'Recusar o trabalho, porque briefing com prints é proibido.', ok:false, why:'Prints sem dados pessoais são úteis e permitidos. Basta tirar as informações que identificam as pessoas.'}
           ]}
       ]},
+    { id:'1.7', title:'Perfil comercial do WhatsApp Business: a vitrine antes da conversa', min:12,
+      body:[
+        `<div class="card analogy"><h3>🏪 A fachada da loja</h3><p>Antes de entrar numa loja de bairro, você olha a fachada: o nome, o que vende, o horário na porta. Se a placa está apagada e a vitrine vazia, você segue andando. No WhatsApp, o perfil comercial é essa fachada. O cliente olha antes de mandar o primeiro "oi", e um perfil bem feito já responde metade das perguntas.</p></div>`,
+        `<div class="term"><b>Perfil comercial</b> = nome, foto, descrição, horário, endereço e links do negócio no WhatsApp Business. <b>Catálogo</b> = vitrine de produtos ou serviços com foto, nome, preço e descrição. <b>Direito de imagem</b> = a pessoa ou o autor de uma foto decide se ela pode ser usada.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a esmalteria Studio Bela</h3><p>A dona pediu ajuda porque recebia sempre as mesmas perguntas: "onde fica?", "abre sábado?", "quanto custa?".</p></div>`,
+        `<div class="flows"><div class="flow old"><h4>Antes</h4><div class="node">Foto: logo pixelado com a marca d'água de um aplicativo grátis</div><div class="node">Descrição: "O MELHOR salão da cidade!!! Venha conferir 💅💅💅"</div><div class="node">Horário: em branco</div><div class="node">Catálogo: fotos de unhas baixadas da internet</div></div><div class="flow new"><h4>Depois</h4><div class="node">Foto: logo limpo ou a fachada real</div><div class="node">Descrição: "Manicure e pedicure no Jardim América. Atendimento com hora marcada, de terça a sábado. Agende por aqui."</div><div class="node">Horário: preenchido e igual à mensagem de ausência</div><div class="node">Catálogo: fotos do próprio trabalho, com "a partir de [VALOR]"</div></div></div>`,
+        `<div class="card"><h3>O que mudou e por quê</h3><ol class="golden"><li><span>A descrição diz o que faz, onde e como pedir. O superlativo saiu, porque não prova nada.</span></li><li><span>O horário preenchido evita a cobrança de resposta às 23h.</span></li><li><span>As fotos são da própria esmalteria. As que mostram clientes só entraram com autorização por escrito.</span></li><li><span>A marca d'água saiu do logo: ela passa a impressão de trabalho improvisado.</span></li></ol></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Foto da internet:</b> imagem do Google, do Pinterest ou do concorrente tem dono. Use fotos próprias ou de bancos com licença de uso, e leia a licença. <b>Foto de cliente:</b> mesmo que seja só a mão, peça autorização e guarde a resposta. <b>Marca d'água:</b> muitos editores gratuitos colocam a própria marca na imagem. Escolha uma ferramenta que não faça isso ou use a foto simples, bem iluminada. Nunca remova a marca d'água de um banco de imagens: isso viola a licença. <b>Dados demais:</b> quem atende em casa pode mostrar só o bairro e passar o endereço completo depois do agendamento. <b>Preço velho:</b> catálogo desatualizado gera briga. Coloque no guia de uso quem revisa e quando.</p></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (WhatsApp Business)</h3><ol class="golden"><li><span>Num número de teste ou no seu, escreva uma descrição de até 3 linhas para um negócio fictício: o que faz, para quem, onde e como pedir.</span></li><li><span>Preencha o horário e confira se ele bate com a sua mensagem de ausência.</span></li><li><span>Cadastre 2 itens no catálogo com fotos tiradas por você.</span></li><li><span>Abra o perfil por outro celular: em 5 segundos dá para entender o negócio? Ajuste o que travou.</span></li></ol><p>🔒 Para mexer no perfil de um cliente, peça autorização, não abra as conversas dele e não use fotos de pessoas sem permissão.</p></div>`
+      ],
+      ch:[
+        { who:'Daniela, 34 anos, faz bolos sob encomenda em casa', says:'Quero montar o catálogo do WhatsApp com aquelas fotos lindas de bolo que eu acho na internet. As minhas ficam feias.',
+          q:'Qual é a melhor orientação?',
+          opts:[
+            {t:'Usar as fotos da internet, porque todo mundo faz isso e ninguém vai reclamar.', ok:false, why:'As fotos têm dono, e o cliente vai esperar um bolo que ela não fez. É risco legal e de confiança.'},
+            {t:'Fotografar os próprios bolos com luz natural e fundo simples, e usar banco de imagens só com licença, sem fingir que é trabalho dela.', ok:true, why:'Foto própria mostra o que o cliente vai receber de verdade. Banco com licença serve para ilustrar, não para enganar.'},
+            {t:'Usar as fotos da internet, mas apagar a marca d’água delas.', ok:false, why:'Remover a marca d’água viola a licença e piora o problema: além de usar sem permissão, esconde a origem.'}
+          ]},
+        { who:'Seu Edson, 61 anos, dono de uma chaveiro', says:'Meu perfil diz só "Chaveiro do Edson". O povo liga perguntando se faço chave de carro e se abro domingo.',
+          q:'O que deve entrar primeiro no perfil dele?',
+          opts:[
+            {t:'Uma descrição curta com os serviços principais, o bairro e o horário, incluindo se atende domingo.', ok:true, why:'O perfil responde às perguntas que se repetem antes mesmo da conversa começar.'},
+            {t:'Uma frase de efeito, como "O chaveiro número 1 do Brasil".', ok:false, why:'Superlativo não informa nada e não responde às dúvidas que fazem o cliente ligar.'},
+            {t:'O CPF e o endereço residencial dele, para passar confiança.', ok:false, why:'Dado pessoal não traz confiança ao cliente e expõe o dono sem necessidade.'}
+          ]}
+      ]},
+    { id:'1.8', title:'Teste e revisão final: do rascunho ao pacote pronto', min:12,
+      body:[
+        `<div class="card analogy"><h3>🪡 A prova da costureira</h3><p>A costureira não entrega o vestido sem a prova: a cliente veste, anda, senta, e só aí aparece a alça que aperta. No papel estava perfeito. Com o pacote de mensagens é igual: só no teste de conversa aparece a mensagem que deixa dúvida ou soa estranha.</p></div>`,
+        `<div class="term"><b>Cliente oculto</b> = pessoa que finge ser cliente para testar o atendimento. <b>Rodada de ajuste</b> = correção feita depois do teste, antes da entrega. <b>Revisão com IA</b> = pedir que a IA aponte problemas, e não que reescreva tudo.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o orçamento da vidraçaria</h3><p>No teste, a pessoa que fingia ser cliente leu a mensagem e perguntou: "que medição? Vocês vêm aqui quando? Tenho que pagar já?".</p></div>`,
+        `<div class="flows"><div class="flow old"><h4>Antes do teste</h4><div class="node">Segue orçamento conforme solicitado. Box temperado 8mm incolor, ferragens em alumínio, valor [VALOR]. Prazo 15 dias úteis após medição. 50% de entrada. Aguardo retorno.</div></div><div class="flow new"><h4>Depois do teste</h4><div class="node">Oi, [NOME]! O box para o seu banheiro fica em [VALOR], já com instalação. Antes de fabricar, a gente vai aí medir: prefere [OPÇÃO 1] ou [OPÇÃO 2]? Depois da medição, ele fica pronto em [PRAZO] dias úteis.</div></div></div>`,
+        `<div class="card"><h3>O roteiro do teste, passo a passo</h3><ol class="golden"><li><span>Escolha 3 situações: uma fácil, uma de preço e uma difícil, como uma reclamação.</span></li><li><span>Chame alguém que não conhece o pacote.</span></li><li><span>Responda usando só as mensagens do pacote.</span></li><li><span>Anote onde travou: pergunta repetida, informação faltando ou tom estranho.</span></li><li><span>Ajuste e registre o que mudou na versão do documento.</span></li></ol><p>No exemplo, saíram os termos técnicos, entrou o próximo passo e o sinal de 50% ficou para a confirmação, com a forma de pagamento.</p></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Colar conversas reais na IA:</b> prints com nomes e telefones de clientes finais são dados pessoais. Use só os modelos com campos e confira as configurações de privacidade da ferramenta. <b>Aceitar tudo o que a IA sugere:</b> ela pode inventar promoção, prazo ou política. Se não veio do briefing, não entra. <b>Testar só com quem elogia:</b> o amigo que acha tudo lindo não ajuda. <b>Revisar só no computador:</b> leia no celular, onde a mensagem vai ser lida.</p></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (Claude)</h3><ol class="golden"><li><span>Separe 3 mensagens do seu pacote, com campos no lugar de qualquer dado real.</span></li><li><span>Escreva você o pedido: o negócio, o público, o tom e que a IA só aponte o que parece confuso ou robótico, sem reescrever.</span></li><li><span>Compare os apontamentos com a sua leitura em voz alta e decida você o que muda.</span></li><li><span>Faça um teste de 5 minutos com alguém fingindo ser cliente e anote 2 ajustes.</span></li></ol><p>🔒 Nada de nomes, telefones ou conversas de clientes reais no chat da IA.</p></div>`
+      ],
+      ch:[
+        { who:'Michele, 30 anos, terminou um pacote para uma academia', says:'Para revisar mais rápido, vou colar na IA os prints de 50 conversas reais da academia, com nome e telefone dos alunos.',
+          q:'Qual é o caminho mais seguro?',
+          opts:[
+            {t:'Colar os prints, porque a IA só vai ler e não vai fazer nada com os dados.', ok:false, why:'Ela não controla o que a ferramenta faz com o conteúdo, e os alunos não autorizaram esse uso dos dados.'},
+            {t:'Revisar com a IA só os modelos com campos como [NOME], sem conversas reais, e testar o pacote com um cliente oculto.', ok:true, why:'Para revisar o texto, os modelos bastam. O teste de conversa mostra o resto sem expor ninguém.'},
+            {t:'Não revisar nada e entregar como está, para não correr risco.', ok:false, why:'Pular a revisão deixa passar erros que o teste encontraria com facilidade e sem risco.'}
+          ]},
+        { who:'Caio, 27 anos, testou um pacote de uma lavanderia', says:'A IA sugeriu acrescentar "entrega grátis em 24h" na mensagem de orçamento. Ficou mais vendedor.',
+          q:'O que ele deve fazer?',
+          opts:[
+            {t:'Manter, porque a IA conhece boas práticas de venda.', ok:false, why:'A IA não conhece as regras da lavanderia. Uma política inventada vira promessa que o dono não cumpre.'},
+            {t:'Manter, mas trocar 24h por 48h para ficar mais seguro.', ok:false, why:'Continua sendo uma política inventada. O problema é a origem da informação, não o número.'},
+            {t:'Tirar a frase e só usar prazo e taxa de entrega que vierem do briefing, confirmados pelo dono.', ok:true, why:'Política vem do dono. A IA ajuda no texto, mas não decide as regras do negócio.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: pacote de 10 mensagens para a jornada de um negócio', min:30,
       body:[
         `<div class="card"><p>Agora é com você. Escolha um negócio real (de alguém que você conhece, com autorização) ou um negócio fictício bem detalhado. Faça o briefing, mapeie a jornada e escreva as 10 mensagens que mais fariam diferença no dia a dia dele. Você pode usar IA para rascunhos, mas escreva o seu próprio pedido, com o contexto do negócio, e revise cada mensagem com as dicas da lição 1.2.</p></div>`,
@@ -408,6 +460,66 @@ Se não for o momento, sem problema.
             {t:'Mandar a proposta de novo daqui a dois dias, como se nada tivesse acontecido.', ok:false, why:'Ignorar a resposta da pessoa é desrespeitoso e leva ao bloqueio.'}
           ]}
       ]},
+    { id:'2.7', title:'Proposta do pacote: do orçamento confuso à página clara', min:12,
+      body:[
+        `<div class="card analogy"><h3>🍔 O cardápio do combo</h3><p>Na lanchonete, o cardápio diz o que vem no combo, quanto custa e quanto sai a batata extra. Ninguém precisa perguntar três vezes. Se o atendente responde "depende", o cliente desiste. A proposta do seu pacote é esse cardápio: em uma página, o cliente entende o que recebe, quanto paga e o que fazer para começar.</p></div>`,
+        `<div class="term"><b>Proposta</b> = documento curto que apresenta o serviço, o escopo, o prazo e o valor. <b>Validade</b> = até quando aquele preço e aquele prazo valem. <b>Extra</b> = o que não está incluído e é cobrado à parte.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a proposta para uma clínica veterinária</h3><p>A dona da clínica pediu um orçamento depois de uma conversa rápida. A primeira versão foi esta:</p></div>`,
+        `<div class="flows"><div class="flow old"><h4>Proposta fraca</h4><div class="node">Oi! Faço mensagens pra WhatsApp e LinkedIn, fica R$ 500, vai bombar suas vendas 🚀 Fechado?</div></div></div>`,
+        `<div class="card"><h3>Os problemas</h3><ol class="golden"><li><span>Não mostra que entendeu a dor da clínica.</span></li><li><span>Não diz o que está incluso: quantas mensagens, variações, guia.</span></li><li><span>Promete resultado ("vai bombar"), o que ninguém pode garantir.</span></li><li><span>Não fala de prazo, revisões nem forma de pagamento.</span></li><li><span>Pressiona com "Fechado?" em vez de propor um próximo passo.</span></li></ol></div>`,
+        `<div class="code">Proposta melhorada (resumo da página):
+1. O que entendi: muitos tutores pedem preço de vacina e somem; os lembretes de retorno são esquecidos.
+2. O que entrego: 12 mensagens de WhatsApp com 2 variações cada, lembrete de vacina e guia de uso de 1 página.
+3. Como trabalho: briefing de 30 min, entrega em [PRAZO] dias úteis, até 2 rodadas de revisão.
+4. Investimento: [VALOR], com [FORMA DE PAGAMENTO].
+5. Não está incluso: posts de LinkedIn e configuração no aparelho (posso orçar à parte).
+6. Validade: [DATA]. Próximo passo: marcar o briefing.
+O pacote organiza o atendimento; não garante aumento de vendas.</div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Reaproveitar a proposta de outro cliente</b> sem revisar: o nome de outra empresa ou detalhes do negócio dela vazam. Use campos e passe o checklist. <b>Logos de clientes sem autorização:</b> só mostre quem permitiu. <b>Esconder o extra:</b> o conflito aparece na segunda revisão. <b>Pedir dados demais antes de fechar:</b> para orçar, basta o nome do negócio e o contato; CPF ou endereço ficam para a hora do pagamento, se forem necessários. <b>PDF de 10 páginas:</b> uma página bem organizada é lida, dez não.</p></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (Google Docs)</h3><ol class="golden"><li><span>Crie um documento "Proposta – [negócio fictício]" com os 6 títulos do exemplo, usando Título 2.</span></li><li><span>Preencha cada parte com as suas palavras, pensando na dor daquele negócio.</span></li><li><span>Termine com uma linha honesta sobre o que o pacote faz e o que não garante.</span></li><li><span>Peça a alguém que leia em 2 minutos e diga o que vai receber, quanto paga e quando. Ajuste o que ficou confuso.</span></li></ol><p>🔒 Use um negócio fictício ou um real com autorização, e compartilhe o documento só com quem precisa ler, no modo leitor.</p></div>`
+      ],
+      ch:[
+        { who:'Leonardo, 32 anos, vai mandar a primeira proposta para uma autoescola', says:'Vou mandar só o valor por WhatsApp. Se ela quiser saber o que inclui, pergunta.',
+          q:'Qual é a melhor forma de apresentar a proposta?',
+          opts:[
+            {t:'Mandar só o valor, porque cliente gosta de resposta curta.', ok:false, why:'Preço sem escopo vira comparação só por valor e gera dúvida sobre o que está incluso.'},
+            {t:'Uma página curta com a dor que ele entendeu, o que entrega, prazo, revisões, valor, o que é extra e o próximo passo.', ok:true, why:'Com tudo claro numa página, a cliente decide sem precisar perguntar e não há surpresa depois.'},
+            {t:'Um documento de 12 páginas com a história dele e teorias de comunicação.', ok:false, why:'Ninguém lê 12 páginas para contratar um pacote de mensagens. O essencial se perde.'}
+          ]},
+        { who:'Tânia, 39 anos, reaproveitou a proposta de um cliente antigo', says:'Copiei a proposta que mandei para uma pizzaria e troquei o nome no topo. Vou enviar para uma hamburgueria.',
+          q:'Qual cuidado ela não pode pular?',
+          opts:[
+            {t:'Revisar o documento inteiro: detalhes, números e dores da pizzaria não podem aparecer para a hamburgueria.', ok:true, why:'Informação de um cliente vazando para outro quebra o sigilo e mostra descuido. Estrutura pode ser reaproveitada; conteúdo, não.'},
+            {t:'Nenhum: proposta é igual para todo mundo.', ok:false, why:'Cada negócio tem dores e escopo próprios. Uma proposta genérica convence menos e pode expor o cliente anterior.'},
+            {t:'Deixar o nome da pizzaria para mostrar que ela tem clientes.', ok:false, why:'Expor um cliente sem autorização é falta de sigilo, e a hamburgueria vai perceber o copia e cola.'}
+          ]}
+      ]},
+    { id:'2.8', title:'Calendário de posts e imagens com direito de uso', min:12,
+      body:[
+        `<div class="card analogy"><h3>🍱 O cardápio da semana da marmitaria</h3><p>A marmitaria que planeja o cardápio da semana compra certo, não desperdiça e não fica sem ideia na quarta-feira. Quem decide na hora acaba repetindo o mesmo prato. Com posts é igual: um calendário simples evita a semana em que saem três posts e o mês em que não sai nenhum.</p></div>`,
+        `<div class="term"><b>Calendário de conteúdo</b> = tabela com o que publicar em cada semana. <b>Pilar</b> = tipo de assunto que se repete, como dúvida frequente ou bastidor. <b>Licença de imagem</b> = regra que diz como uma foto pode ser usada.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a contadora Renata</h3><p><b>Antes:</b> postava quando lembrava, às vezes três posts num dia e depois nada por um mês. Usava fotos achadas no Google, uma delas com a marca d'água de um banco de imagens, e textos como "Feliz segunda, rede!". <b>O que fizemos:</b> transformamos as perguntas que ela mais recebe no WhatsApp em pilares e montamos 4 semanas, com a origem de cada imagem anotada.</p></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Semana</th><th>Pilar</th><th>Ideia</th><th>Imagem</th></tr><tr><td>1</td><td>Dúvida frequente</td><td>"MEI pode contratar funcionário?"</td><td>Foto própria da mesa de trabalho</td></tr><tr><td>2</td><td>Bastidor</td><td>Como ela organiza os documentos dos clientes</td><td>Print de planilha com dados fictícios</td></tr><tr><td>3</td><td>Erro comum</td><td>Perder o prazo de uma declaração</td><td>Sem imagem: só texto</td></tr><tr><td>4</td><td>História real</td><td>Cliente que se regularizou</td><td>Foto enviada pela cliente, com autorização</td></tr></table></div>`,
+        `<div class="why-chain"><p><b>Por que pilares?</b> Porque ninguém fica sem ideia: cada semana já tem um tipo de assunto. <b>Por que tirar das perguntas do WhatsApp?</b> Porque são dúvidas reais do público. <b>E por que uma frequência baixa?</b> Porque um post por semana que se mantém vale mais que cinco que param em um mês.</p></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Foto do Google:</b> aparecer na busca não significa ser livre. Use fotos próprias ou de bancos com licença e leia o que ela permite. <b>Tirar marca d'água:</b> viola a licença; se a foto tem marca, ela não é grátis para aquele uso. <b>Marca d'água do aplicativo:</b> editores gratuitos podem colocar a própria marca na arte; avise o cliente ou escolha uma opção que não faça isso. <b>Pessoas na foto:</b> só com autorização. <b>Prints com dados:</b> nomes, CNPJ ou valores de clientes saem ou viram fictícios. <b>Ritmo irreal:</b> não prometa ao cliente um post por dia se ele não vai sustentar.</p></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (Microsoft Copilot)</h3><ol class="golden"><li><span>Liste você 4 perguntas frequentes de um negócio fictício.</span></li><li><span>Escreva um post curto para uma delas, com gancho e pergunta no fim.</span></li><li><span>Peça ao Copilot duas versões de tom mantendo os fatos, escolha uma e ajuste você.</span></li><li><span>Monte a tabela de 4 semanas com pilar, ideia e a origem de cada imagem: própria, autorizada ou banco com licença.</span></li></ol><p>🔒 Não cole nomes, números ou casos de clientes reais no chat.</p></div>`
+      ],
+      ch:[
+        { who:'Gilberto, 48 anos, arquiteto', says:'Achei no Google a foto perfeita de uma sala para o meu post. Tem uma marca d\u2019água no canto, mas dá para cortar.',
+          q:'Qual é a melhor decisão?',
+          opts:[
+            {t:'Cortar a marca d\u2019água e publicar, porque está na internet.', ok:false, why:'A marca indica que a foto tem dono e licença paga. Cortar viola a licença e pode gerar cobrança.'},
+            {t:'Usar foto de um projeto próprio ou de um banco com licença que permita o uso, e deixar claro quando a imagem é só ilustrativa.', ok:true, why:'Foto própria mostra o trabalho real. Banco com licença resolve a ilustração sem risco.'},
+            {t:'Publicar a foto com a marca, porque assim está dando crédito.', ok:false, why:'Mostrar a marca não é licença. A foto continua sendo usada sem permissão.'}
+          ]},
+        { who:'Lívia, 26 anos, cuida do LinkedIn de um escritório de advocacia', says:'O sócio quer um post por dia, mas na prática eles demoram uma semana para aprovar cada texto.',
+          q:'O que você proporia?',
+          opts:[
+            {t:'Aceitar um post por dia e publicar sem aprovação quando atrasar.', ok:false, why:'Publicar sem aprovação num escritório de advocacia é arriscado, e o ritmo prometido não se sustenta.'},
+            {t:'Desistir do calendário, porque eles não têm tempo.', ok:false, why:'Sem plano, os posts param de vez. O problema é o ritmo, não a ideia de planejar.'},
+            {t:'Um calendário de um post por semana com pilares, aprovando o mês inteiro numa reunião curta.', ok:true, why:'Um ritmo que cabe na rotina de aprovação se mantém, e a reunião mensal resolve o gargalo.'}
+          ]}
+      ]},
     { id:'2.6', title:'Projeto: perfil, 3 posts e 3 mensagens de LinkedIn', min:30,
       body:[
         `<div class="card"><p>Agora você vai produzir a parte de LinkedIn de um pacote. Pode ser para você mesmo (divulgando o seu serviço de mensagens) ou para um profissional real que autorizou. Use IA para rascunhos se quiser, mas escreva o seu próprio pedido com o contexto e revise tudo com o que aprendeu sobre gancho, tom, follow-up e respeito.</p></div>`,
@@ -611,6 +723,62 @@ Oi, [NOME]. Peço desculpas: o seu bolo vai atrasar cerca de [TEMPO] por causa d
             {t:'Não responder até o cliente se acalmar.', ok:false, why:'O silêncio aumenta a irritação e a chance de o caso piorar.'}
           ]}
       ]},
+    { id:'3.7', title:'Opt-in na prática: formulário e registro de consentimento', min:12,
+      body:[
+        `<div class="card analogy"><h3>📋 A lista de espera do restaurante</h3><p>No restaurante cheio, você mesmo escreve o nome na lista e diz quantas pessoas são. Ninguém coloca o seu nome sem perguntar, e se você desistir, risca. O opt-in funciona assim: a pessoa escolhe entrar, sabe para que está entrando e consegue sair.</p></div>`,
+        `<div class="term"><b>Opt-in</b> = a pessoa marca, por vontade própria, que quer receber mensagens. <b>Finalidade</b> = para que o dado vai ser usado. <b>Registro de consentimento</b> = anotação de quem aceitou, quando e para quê. <b>Caixa pré-marcada</b> = aceite que já vem marcado; não vale como escolha livre.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a pizzaria que quer mandar o cardápio da semana</h3><p><b>Antes:</b> um formulário "Cadastre-se e concorra a uma pizza!" pedia nome, CPF, data de nascimento, endereço e WhatsApp. Embaixo, uma caixa já marcada: "Aceito receber ofertas da pizzaria e de parceiros".</p></div>`,
+        `<div class="card"><h3>Os problemas</h3><ol class="golden"><li><span>Dados demais: para mandar o cardápio, CPF e data de nascimento não são necessários.</span></li><li><span>Caixa pré-marcada: a pessoa não escolheu de verdade.</span></li><li><span>"Parceiros": abre a porta para repassar a lista a outras empresas.</span></li><li><span>Não diz com que frequência chega nem como sair.</span></li><li><span>Sorteio misturado: promoção com sorteio pode exigir autorização do governo; o dono deve consultar antes.</span></li></ol></div>`,
+        `<div class="code">Depois (formulário enxuto):
+Nome: ______   WhatsApp: ______
+[ ] Quero receber pelo WhatsApp o cardápio da semana e as promoções da Pizzaria [NOME], no máximo 1 vez por semana. Meu número não será repassado a ninguém. Posso sair quando quiser respondendo SAIR.
+(caixa obrigatória e desmarcada)</div>`,
+        `<div class="card"><h3>O registro que protege o negócio</h3><p>O Google Formulários grava a data e a hora de cada resposta numa planilha. Acrescente uma coluna "saiu em" e anote quando alguém pedir SAIR. Assim, se um cliente perguntar "por que recebo isso?", o dono mostra quando ele aceitou. Combine quem pode abrir essa planilha: ela é uma lista de dados pessoais.</p></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p>Planilha compartilhada com "qualquer pessoa com o link"; esquecer de tirar da lista quem pediu para sair; usar o aceite de lembretes de horário para mandar promoções, que é outra finalidade; e importar a lista antiga de clientes como se todos tivessem aceitado. Para esses contatos antigos, mande uma única mensagem perguntando se querem continuar recebendo.</p></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (Google Formulários)</h3><ol class="golden"><li><span>Crie um formulário com só dois dados: nome e WhatsApp.</span></li><li><span>Escreva você o texto do aceite: o que a pessoa recebe, com que frequência e como sai.</span></li><li><span>Deixe a caixa obrigatória e desmarcada.</span></li><li><span>Responda com dados fictícios, abra a planilha, confira a data e a hora e crie a coluna "saiu em".</span></li><li><span>Revise o compartilhamento da planilha para que só você tenha acesso.</span></li></ol><p>🔒 Nos testes, use dados inventados, nunca o número de outra pessoa.</p></div>`
+      ],
+      ch:[
+        { who:'Marcelo, 40 anos, dono de uma loja de suplementos', says:'Meu formulário de cadastro já vem com a caixa "aceito receber promoções" marcada. Assim ninguém esquece de marcar.',
+          q:'Qual é o ajuste necessário?',
+          opts:[
+            {t:'Nenhum: se a pessoa não quisesse, desmarcaria.', ok:false, why:'Aceite que já vem marcado não mostra escolha da pessoa. Muita gente nem percebe a caixa.'},
+            {t:'Deixar a caixa desmarcada, com texto claro sobre o que, com que frequência e como sair, e registrar quem marcou.', ok:true, why:'Consentimento vale quando a pessoa escolhe sabendo o que vai receber, e o registro mostra isso depois.'},
+            {t:'Tirar a caixa e cadastrar todo mundo que comprar na loja.', ok:false, why:'Comprar não é aceitar divulgação. Sem escolha, a lista vira fonte de denúncias.'}
+          ]},
+        { who:'Patrícia, 35 anos, dona de um estúdio de pilates', says:'As alunas aceitaram receber lembrete de aula. Posso usar esses mesmos números para mandar promoção de uma loja de roupas fitness parceira?',
+          q:'Qual é a orientação correta?',
+          opts:[
+            {t:'Sim, porque as alunas já aceitaram receber mensagens do estúdio.', ok:false, why:'Elas aceitaram lembrete de aula, não promoção de terceiros. A finalidade mudou.'},
+            {t:'Sim, desde que mande à noite, quando elas têm tempo de ler.', ok:false, why:'O horário não resolve a falta de consentimento para aquela finalidade.'},
+            {t:'Não usar para isso; se quiser divulgar a parceira, perguntar antes quem quer receber, com opção de sair.', ok:true, why:'Cada finalidade pede o próprio aceite. Perguntar antes respeita as alunas e protege o número do estúdio.'}
+          ]}
+      ]},
+    { id:'3.8', title:'Segurança na entrega: acessos, golpes e encerramento do projeto', min:12,
+      body:[
+        `<div class="card analogy"><h3>🔑 A chave do eletricista</h3><p>Quando você viaja e deixa a chave com o eletricista para ele trocar a fiação, espera que ele mexa só no quadro de luz, não abra suas gavetas e devolva a chave no fim. Sem cópia. Quem configura o WhatsApp ou o LinkedIn de um cliente recebe uma chave parecida, e precisa devolvê-la do mesmo jeito.</p></div>`,
+        `<div class="term"><b>Código de verificação</b> = número de 6 dígitos que o WhatsApp manda por SMS para ativar a conta num aparelho. <b>Verificação em duas etapas</b> = PIN extra, criado pelo dono, pedido de tempos em tempos. <b>Encerramento</b> = etapa final em que você apaga dados e remove os seus acessos.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a configuração de uma loja de calçados</h3><p><b>Antes:</b> o freelancer pediu por mensagem a senha do e-mail e o código que chegou por SMS, salvou um backup das conversas no próprio drive "para consultar" e ficou com a planilha de contatos. Meses depois, ninguém sabia quem tinha acesso a quê.</p></div>`,
+        `<div class="flows"><div class="flow old"><h4>Jeito arriscado</h4><div class="node">Pede senha e código → guarda conversas e contatos → nunca remove o acesso</div></div><div class="flow new"><h4>Jeito seguro</h4><div class="node">Cliente opera o próprio celular numa chamada → ativa o PIN de duas etapas → você trabalha só com os modelos → no fim, apaga arquivos e sai dos acessos</div></div></div>`,
+        `<div class="card"><h3>Checklist de encerramento</h3><ol class="golden"><li><span>Apague prints e arquivos com dados de clientes finais.</span></li><li><span>Remova o seu acesso de documentos, planilhas e páginas de empresa.</span></li><li><span>Confirme com o dono que o PIN de duas etapas está ativo e só ele sabe.</span></li><li><span>Entregue uma lista do que foi configurado e onde.</span></li><li><span>Guarde só o necessário para você: proposta, combinado e versão final dos modelos, sem contatos.</span></li></ol></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Pedir ou repassar o código de 6 dígitos:</b> é o golpe mais comum de clonagem de WhatsApp. Ninguém deve enviar esse código a ninguém, nem a você. <b>Pedir senha do LinkedIn:</b> o cliente pode colar os textos, ou dar acesso de administrador na página da empresa pelos recursos oficiais. <b>Misturar contas de clientes no seu celular pessoal.</b> <b>Ficar com a lista de contatos</b> "por garantia": isso é guardar dado pessoal sem finalidade. Se algo vazar, avise o dono na hora; a ANPD tem orientações sobre incidentes. Inclua também no guia de uso uma frase para os clientes finais, como "nunca pedimos códigos nem Pix por número novo".</p></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (site da ANPD)</h3><ol class="golden"><li><span>No site da ANPD, procure o guia orientativo de segurança da informação para agentes de pequeno porte (se o nome mudar, busque por "segurança").</span></li><li><span>Leia a parte sobre controle de acesso e senhas.</span></li><li><span>Escreva você um checklist de 5 itens para o início e o fim de cada projeto.</span></li><li><span>Escreva uma frase de alerta contra golpes para o guia de uso do cliente.</span></li></ol><p>🔒 No checklist, use exemplos fictícios, sem senhas ou números reais.</p></div>`
+      ],
+      ch:[
+        { who:'Juliano, 29 anos, vai configurar o WhatsApp Business de uma ótica', says:'O dono está viajando. Ele disse que me manda por mensagem o código de 6 dígitos que chegar no celular dele.',
+          q:'Qual é a melhor orientação?',
+          opts:[
+            {t:'Aceitar o código, porque o dono confia nele.', ok:false, why:'Repassar o código é exatamente o caminho dos golpes de clonagem. A confiança não reduz o risco se a mensagem vazar.'},
+            {t:'Remarcar para uma chamada em que o próprio dono opera o celular, e ativar o PIN de duas etapas que só ele sabe.', ok:true, why:'O código e o PIN ficam só com o dono. Você orienta a configuração sem ter a chave da conta.'},
+            {t:'Pedir o código e apagar a mensagem logo depois.', ok:false, why:'Apagar depois não desfaz o risco: o código já circulou e a conta pode ser ativada em outro aparelho.'}
+          ]},
+        { who:'Bianca, 31 anos, terminou um pacote para uma imobiliária', says:'Ficou comigo uma planilha com 800 contatos de clientes da imobiliária. Vou guardar, vai que eles pedem algo depois.',
+          q:'O que ela deve fazer no encerramento?',
+          opts:[
+            {t:'Guardar a planilha numa pasta com senha, por segurança.', ok:false, why:'Senha protege, mas não resolve: ela não tem mais finalidade para guardar esses dados.'},
+            {t:'Usar os contatos para divulgar o próprio serviço.', ok:false, why:'Os clientes deram os dados à imobiliária. Usar para outra finalidade fere a LGPD e a confiança.'},
+            {t:'Apagar a planilha, confirmar ao dono que apagou e manter só a proposta, o combinado e os modelos finais.', ok:true, why:'Sem finalidade, o dado não deve ficar com ela. Confirmar por escrito fecha o projeto com transparência.'}
+          ]}
+      ]},
     { id:'3.6', title:'Projeto: guia de uso responsável e proposta de preço', min:30,
       body:[
         `<div class="card"><p>Este projeto fecha o curso e prepara você para conversar com um cliente de verdade. Você vai escrever o guia de uso responsável que acompanha o pacote, incluindo como lidar com respostas difíceis, e uma proposta de preço com escopo claro. Use IA se quiser para revisar o texto, mas o raciocínio do preço (horas, valor por hora, pesquisa) deve ser seu.</p></div>`,
@@ -656,7 +824,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#06B6D4','#3B82F6'], 2:['#3B82F6','#06B6D4'], 3:['#06B6D4','#3B82F6'] };
-const LIC = { '1.1':'📦','1.2':'💬','1.3':'🗺️','1.4':'⚡','1.5':'📝','1.6':'🛠️','2.1':'💼','2.2':'🗂️','2.3':'🪪','2.4':'👔','2.5':'📬','2.6':'🛠️','3.1':'⚖️','3.2':'📁','3.3':'🚦','3.4':'🧾','3.5':'🤝','3.6':'🛠️' };
+const LIC = { '1.1':'📦','1.2':'💬','1.3':'🗺️','1.4':'⚡','1.5':'📝','1.6':'🛠️','2.1':'💼','2.2':'🗂️','2.3':'🪪','2.4':'👔','2.5':'📬','2.6':'🛠️','3.1':'⚖️','3.2':'📁','3.3':'🚦','3.4':'🧾','3.5':'🤝','3.6':'🛠️','1.7':'🏪','1.8':'🪡','2.7':'📄','2.8':'📅','3.7':'📋','3.8':'🔐' };
 
 return {
   id: 'pacotes-whatsapp-linkedin',

@@ -174,6 +174,64 @@ const MODULES = [
             {t:'Ignorar os concorrentes, porque pesquisar a concorrência é antiético.', ok:false, why:'Observar o que é público é normal e ajuda a destacar o cliente. Antiético é copiar ou enganar.'}
           ]}
       ]},
+    { id:'1.7', title:'Exemplo resolvido: da conversa com o dono à página no papel', min:14,
+      body:[
+        `<div class="card analogy"><h3>🍲 A receita antes do almoço de domingo</h3><p>Quem vai cozinhar para a família no domingo separa os ingredientes, lê a receita e só depois acende o fogão. Quem começa sem olhar a despensa descobre no meio que falta o tomate. Com o site é igual: as anotações da conversa com o dono são os ingredientes, e o mapa de seções é a receita. Só depois disso faz sentido abrir a ferramenta.</p></div>`,
+        `<div class="card"><h3>O caso: Barbearia do Wesley, em Contagem (MG)</h3><p>Anotações da entrevista de 20 minutos, só com fatos que o dono confirmou:</p><ol class="golden"><li><span>Corte, barba e sobrancelha. O que mais sai é corte com barba.</span></li><li><span>Clientes do bairro Eldorado, de 18 a 45 anos, muitos chegam por indicação.</span></li><li><span>Pergunta campeã no WhatsApp: "tem horário hoje?" e "aceita Pix?".</span></li><li><span>Diferencial real: abre às 7h para quem trabalha cedo, e atende com hora marcada.</span></li><li><span>Não faz química nem atende a domicílio.</span></li></ol></div>`,
+        `<div class="flows"><div class="flow old"><b>Topo antes (rascunho sem briefing)</b><div class="node">"Barbearia Premium: estilo, tradição e excelência para o homem moderno."</div></div><div class="flow new"><b>Topo depois (com os fatos)</b><div class="node">"Corte e barba no Eldorado, Contagem. Abrimos às 7h, com hora marcada. Botão: Ver horários no WhatsApp."</div></div></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Seção</th><th>Problema no rascunho</th><th>Versão melhorada</th></tr><tr><td>Serviços</td><td>Listava "química e coloração", que ele não faz</td><td>Só corte, barba e sobrancelha, cada um com uma linha</td></tr><tr><td>Perguntas frequentes</td><td>Não existia</td><td>"Tem horário hoje?", "Aceita Pix?", "Precisa marcar?"</td></tr><tr><td>Prova social</td><td>Frases inventadas pela IA</td><td>2 depoimentos reais, com autorização por mensagem</td></tr><tr><td>Contato</td><td>Só um formulário</td><td>Botão de WhatsApp, endereço em texto, mapa e horários</td></tr></table></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ul><li>Colar no chat da IA o nome e o telefone de clientes da barbearia: use só dados do negócio, nunca de pessoas.</li><li>Aceitar serviço que a IA "achou que combinava".</li><li>Usar foto de cliente tirada do Instagram sem pedir.</li><li>Pular as perguntas frequentes, que respondem o que o cliente mais quer saber.</li></ul></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (ChatGPT, cerca de 4 min)</h3><ol class="golden"><li><span>Escolha um negócio do seu bairro ou invente um com detalhes.</span></li><li><span>Escreva você as 5 anotações, no formato do exemplo.</span></li><li><span>Peça, com as suas palavras, só o texto do topo e das perguntas frequentes, dizendo o que a IA não pode inventar.</span></li><li><span>Compare com as suas anotações e risque o que não for fato.</span></li></ol><p>🔒 Não cole nomes, telefones ou conversas de clientes. Use só informações públicas do negócio ou fictícias.</p></div>`
+      ],
+      ch:[
+        { who:'Gabriela, 27 anos, fazendo o site de uma lavanderia em Sorocaba', says:'A IA colocou "lavagem a seco e entrega grátis" nos serviços. Ficou completo, vou manter.', q:'O que ela deve fazer primeiro?',
+          opts:[
+            {t:'Manter, porque são serviços comuns de lavanderia.', ok:false, why:'Ser comum não quer dizer que essa lavanderia oferece. Serviço errado gera cliente frustrado.'},
+            {t:'Conferir com as anotações da entrevista e com a dona, e tirar o que não foi confirmado.', ok:true, why:'O briefing é a fonte da verdade. A IA completa lacunas com palpites.'},
+            {t:'Trocar "grátis" por "com taxa" e manter o resto.', ok:false, why:'Ainda é informação não confirmada. Tudo precisa vir dos fatos do negócio.'}
+          ]},
+        { who:'Wesley, 33 anos, o barbeiro do exemplo', says:'Para a IA escrever melhor, vou mandar o print da minha agenda, com nome e telefone dos clientes.', q:'Como orientar?',
+          opts:[
+            {t:'Aceitar, porque quanto mais contexto, melhor o texto.', ok:false, why:'Dados de clientes não são necessários para escrever o site e não devem ir para ferramentas externas.'},
+            {t:'Mandar só os nomes, sem os telefones.', ok:false, why:'Nome também é dado pessoal. O texto do site não precisa disso.'},
+            {t:'Explicar que basta descrever os serviços e horários, sem dados de clientes, e escrever o pedido só com fatos do negócio.', ok:true, why:'Coletar e repassar só o necessário protege os clientes dele e segue a lógica da LGPD.'}
+          ]},
+        { who:'Otávio, 24 anos, planejando o site de uma loja de açaí', says:'O dono disse que a pergunta mais comum é "entrega no meu bairro?". Onde coloco isso?', q:'Qual é a melhor decisão?',
+          opts:[
+            {t:'Nas perguntas frequentes e perto do botão de WhatsApp, com a lista real de bairros atendidos.', ok:true, why:'Responder a dúvida mais comum onde a pessoa decide reduz mensagens repetidas e ajuda a converter.'},
+            {t:'Em lugar nenhum: o cliente pergunta no WhatsApp.', ok:false, why:'Se a dúvida é a mais comum, o site deve responder antes.'},
+            {t:'No rodapé, em letra pequena.', ok:false, why:'Informação importante escondida é como não ter.'}
+          ]}
+      ]},
+    { id:'1.8', title:'Lista de materiais: fotos, autorizações e dados antes de montar', min:14,
+      body:[
+        `<div class="card analogy"><h3>🧱 A lista do pedreiro</h3><p>Antes de começar a obra, o pedreiro entrega a lista: tantos sacos de cimento, tanto de areia, tantos tijolos. Se o material não chega, a obra para, e ninguém culpa o pedreiro. No site, a sua lista de materiais diz o que o cliente precisa mandar, em que formato e com qual autorização. Sem ela, o projeto empaca esperando "umas fotos".</p></div>`,
+        `<div class="flows"><div class="flow old"><b>Pedido vago</b><div class="node">"Dona Neide, me manda umas fotos e as informações aí quando puder."</div></div><div class="flow new"><b>Pedido organizado</b><div class="node">Lista com 6 itens, formato de cada um, prazo combinado e o aviso de que a montagem começa quando tudo chegar.</div></div></div>`,
+        `<div class="card"><h3>Exemplo resolvido: Confeitaria da Dona Neide, em Belém</h3><div class="tw"><table class="tbl"><tr><th>Material</th><th>Quem fornece</th><th>Cuidado</th></tr><tr><td>Logo</td><td>Dona Neide (arquivo original)</td><td>Logo baixado do Google sai borrado; peça o arquivo da gráfica</td></tr><tr><td>8 a 12 fotos dos bolos</td><td>Dona Neide, com luz natural</td><td>Fotos dela, e não de outras confeitarias</td></tr><tr><td>Fotos com pessoas</td><td>Dona Neide</td><td>Autorização de cada pessoa por mensagem; crianças só com os responsáveis</td></tr><tr><td>Depoimentos</td><td>Clientes</td><td>Pedido de autorização para frase e primeiro nome</td></tr><tr><td>Dados do negócio</td><td>Dona Neide</td><td>Telefone, bairros de entrega, horários, formas de pagamento</td></tr><tr><td>Acessos</td><td>Dona Neide</td><td>Contas no e-mail dela; nada de senha por WhatsApp</td></tr></table></div></div>`,
+        `<div class="why-chain"><b>Por que o prazo começa com o material?</b> Porque sem fotos e dados você monta no escuro. Porque montar no escuro gera retrabalho. Porque retrabalho atrasa a entrega e a culpa recai sobre você, mesmo sem ser sua.</div>`,
+        `<div class="card"><h3>Erros comuns</h3><ul><li>Usar foto de bolo de outra confeitaria "só até chegar a dela".</li><li>Publicar foto de festa com convidados sem autorização.</li><li>Pedir RG ou CPF do cliente sem precisar: guarde só o que o trabalho exige e apague o resto ao final.</li><li>Receber senha pessoal por mensagem.</li></ul></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Google Maps, cerca de 4 min)</h3><ol class="golden"><li><span>Busque no Maps o tipo de negócio do seu cliente no bairro dele.</span></li><li><span>Abra 3 perfis e veja que tipos de foto aparecem: fachada, produto, equipe.</span></li><li><span>Anote quais fotos ajudam a decidir e quais faltam.</span></li><li><span>Escreva a sua lista de materiais com formato e cuidado para cada item.</span></li></ol><p>🔒 Só observe: não baixe nem reutilize fotos dos concorrentes, e não anote dados de quem fez avaliações.</p></div>`
+      ],
+      ch:[
+        { who:'Dona Neide, 58 anos, confeiteira em Belém', says:'Ainda não tirei as fotos dos meus bolos. Pega umas da internet por enquanto, depois a gente troca.', q:'Qual é a melhor resposta?',
+          opts:[
+            {t:'Usar fotos da internet e trocar depois.', ok:false, why:'Fotos da internet têm dono, e o "depois" costuma não chegar. Ela venderia bolos que não são dela.'},
+            {t:'Combinar um dia para fotografar com luz natural, deixar a seção marcada como pendente e só publicar com fotos reais.', ok:true, why:'Fotos reais mostram o produto verdadeiro e evitam problema de direitos.'},
+            {t:'Gerar fotos de bolos com IA e dizer que são dela.', ok:false, why:'Mostrar produto falso como se fosse real engana o cliente final.'}
+          ]},
+        { who:'Henrique, 30 anos, fazendo o site de um buffet infantil em Londrina', says:'O dono me mandou 40 fotos de festas, com várias crianças. Vou usar as mais bonitas na página.', q:'O que fazer antes de publicar?',
+          opts:[
+            {t:'Publicar, porque as festas aconteceram no buffet.', ok:false, why:'O local não dá direito sobre a imagem das crianças.'},
+            {t:'Borrar só os olhos das crianças.', ok:false, why:'Ainda é possível reconhecer, e falta a autorização dos responsáveis.'},
+            {t:'Usar fotos do espaço e da decoração sem pessoas, e só usar fotos com crianças que tenham autorização escrita dos responsáveis.', ok:true, why:'Imagem de criança pede cuidado redobrado. Fotos do espaço mostram o serviço sem esse risco.'}
+          ]},
+        { who:'Priscila, 26 anos, montando a lista de materiais de uma clínica veterinária', says:'Vou pedir também a lista de clientes com telefone, para colocar um "nossos clientes" no site.', q:'Como ajustar a lista?',
+          opts:[
+            {t:'Tirar esse item: o site não precisa de dados de clientes. Para prova social, pedir depoimentos autorizados.', ok:true, why:'Pedir só o necessário protege os clientes da clínica e evita expor dados pessoais.'},
+            {t:'Manter, mas publicar só os nomes.', ok:false, why:'Nome é dado pessoal e publicar sem autorização expõe as pessoas.'},
+            {t:'Manter e guardar a lista para usar em outros projetos.', ok:false, why:'Dados coletados para uma finalidade não devem ser reaproveitados para outra.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: briefing e mapa de seções de um site real', min:30,
       body:[
         `<div class="card"><p>Agora você vai planejar o site de um negócio de verdade: de um conhecido, de um familiar ou de um comércio do seu bairro (com autorização para usar as informações). Ainda não é para montar o site, e sim para chegar com tudo pronto na hora de montar: os fatos, a ordem das seções e os textos revisados. Pode usar IA para rascunhar textos, mas o pedido é seu e a revisão também.</p></div>`,
@@ -371,6 +429,65 @@ const MODULES = [
             {t:'Um ajuste por vez, dizendo a seção, o problema e o resultado esperado, testando e guardando cópia a cada passo.', ok:true, why:'Pedidos específicos evitam mudanças indesejadas, e a cópia permite voltar atrás.'},
             {t:'Repetir "melhore o site" até ficar bom.', ok:false, why:'Pedido vago gera mudanças aleatórias e pode piorar o que estava aprovado.'},
             {t:'Desistir da IA e entregar o rascunho como estava, sem revisar.', ok:false, why:'O problema foi o jeito de pedir. Entregar sem revisão também não resolve.'}
+          ]}
+      ]},
+    { id:'2.7', title:'Exemplo resolvido: a página única no Google Sites', min:15,
+      body:[
+        `<div class="card analogy"><h3>🧩 O móvel que vem na caixa</h3><p>O guarda-roupa que chega desmontado vem com as peças e o manual. Quem segue a ordem e confere cada parafuso monta numa tarde. Quem pula etapas fica com a porta torta. O Google Sites é esse móvel: os blocos estão prontos, e o seu trabalho é encaixar na ordem do mapa de seções e conferir cada parte.</p></div>`,
+        `<div class="card"><h3>O caso: Oficina do Seu Jair, em Uberlândia</h3><ol class="golden"><li><span><b>Conta:</b> criar o site na conta Google do próprio Seu Jair, com ele ao lado, ou combinar por escrito a transferência da propriedade.</span></li><li><span><b>Tema:</b> escolher um tema simples e ajustar a cor para o azul da fachada.</span></li><li><span><b>Seções:</b> topo, serviços, como funciona, fotos reais, perguntas e contato, com os textos já revisados.</span></li><li><span><b>Botão:</b> inserir um botão "Pedir orçamento no WhatsApp" com o link wa.me no formato correto.</span></li><li><span><b>Mapa:</b> inserir o mapa e escrever o endereço também em texto.</span></li><li><span><b>Publicar:</b> escolher o endereço provisório e abrir no celular. Depois de cada edição, publicar de novo, senão a mudança não aparece.</span></li></ol></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Primeira versão</th><th>Problema</th><th>Depois da revisão</th></tr><tr><td>Topo só com foto de carro, sem frase</td><td>Ninguém sabe o que a oficina faz</td><td>"Freio, suspensão e troca de óleo no Bairro Tibery"</td></tr><tr><td>Botão "Clique aqui"</td><td>Não diz a ação</td><td>"Pedir orçamento no WhatsApp"</td></tr><tr><td>Só o mapa</td><td>Não carrega em sinal fraco</td><td>Mapa + endereço em texto + referência</td></tr><tr><td>Menu com 7 itens</td><td>Página única não precisa disso</td><td>Menu com 4 âncoras ou nenhum</td></tr></table></div>`,
+        `<div class="card"><h3>Limites do plano gratuito</h3><p>O endereço gratuito fica dentro de sites.google.com. Para usar um domínio próprio, é preciso comprar o domínio e seguir a ajuda oficial para ligar. Os recursos são mais simples que os de construtores pagos. Explique isso ao cliente antes e confira as condições atuais, porque elas mudam.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ul><li>Criar na sua conta pessoal e depois não conseguir entregar.</li><li>Editar e esquecer de publicar de novo.</li><li>Inserir imagens de busca sem conferir a licença.</li><li>Não testar o botão no celular.</li></ul></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Google Sites, cerca de 5 min)</h3><ol class="golden"><li><span>Crie um site novo para um negócio fictício ou para o cliente que autorizou.</span></li><li><span>Monte só o topo e o contato, com frase do que faz, para quem e onde.</span></li><li><span>Insira o botão de WhatsApp e confira o link.</span></li><li><span>Publique em modo provisório e abra no celular.</span></li></ol><p>🔒 Não use o telefone de outra pessoa sem autorização; num teste, use o seu ou deixe um número de exemplo e não divulgue o link.</p></div>`
+      ],
+      ch:[
+        { who:'Jair, 60 anos, dono da oficina', says:'Você criou o site na sua conta Google. Se um dia a gente parar de trabalhar junto, como eu fico?', q:'Qual teria sido o melhor caminho?',
+          opts:[
+            {t:'Criar o site na conta Google dele, com ele ao lado, ou transferir a propriedade e registrar isso na entrega.', ok:true, why:'O site é do negócio. Na conta do cliente, ele não depende de você para continuar.'},
+            {t:'Manter na sua conta e prometer que nunca vai sumir.', ok:false, why:'Promessa não substitui a posse. O cliente fica refém.'},
+            {t:'Passar a senha da sua conta pessoal para ele.', ok:false, why:'Compartilhar senha pessoal é inseguro para os dois.'}
+          ]},
+        { who:'Sabrina, 23 anos, ajustando um site no Google Sites', says:'Troquei o horário de sábado no editor, mas no celular do cliente continua o horário antigo.', q:'O que provavelmente faltou?',
+          opts:[
+            {t:'Esperar uma semana, porque o Google demora.', ok:false, why:'A mudança só aparece depois de publicar de novo.'},
+            {t:'Clicar em publicar de novo depois da edição e conferir no celular.', ok:true, why:'No Google Sites, as edições ficam no rascunho até a nova publicação.'},
+            {t:'Apagar o site e criar outro.', ok:false, why:'Desnecessário e ainda muda o endereço que já foi divulgado.'}
+          ]},
+        { who:'Seu Raimundo, 67 anos, dono de uma mercearia', says:'Ouvi dizer que no Google Sites é grátis. Então o endereço vai ser mercearia.com.br de graça, né?', q:'Como explicar com honestidade?',
+          opts:[
+            {t:'Confirmar que sim, para fechar o serviço.', ok:false, why:'É informação falsa. Ele descobriria depois e perderia a confiança.'},
+            {t:'Dizer que o Google Sites não serve para mercearia.', ok:false, why:'Serve bem para página simples. O ponto é explicar o endereço.'},
+            {t:'Explicar que a montagem no plano gratuito fica num endereço dentro de sites.google.com e que o domínio próprio é comprado à parte, por ano, se ele quiser.', ok:true, why:'Mostrar o que é grátis e o que custa evita surpresa e deixa a decisão com ele.'}
+          ]}
+      ]},
+    { id:'2.8', title:'Planos grátis sem surpresa: subdomínio, marca da plataforma e imagens de IA', min:14,
+      body:[
+        `<div class="card analogy"><h3>🏬 O quiosque no shopping</h3><p>O quiosque sai mais barato que uma loja de rua, mas segue as regras do shopping: horário dele, placa com o nome do shopping, e o contrato pode mudar na renovação. Plano gratuito de site é parecido. Funciona bem, desde que o cliente saiba das regras antes, e não depois que divulgou o link.</p></div>`,
+        `<div class="term"><b>Subdomínio</b> = endereço dentro do da plataforma, como negocio.plataforma.app. <b>Marca da plataforma</b> = selo ou aviso "feito com..." que alguns planos grátis exibem, como uma marca d'água. <b>Termos de uso</b> = regras da ferramenta, incluindo uso comercial e o que acontece com o que você cria.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: Rafa, personal trainer em Florianópolis</h3><div class="tw"><table class="tbl"><tr><th>O que o plano grátis costuma ter</th><th>Impacto para o Rafa</th><th>Como explicar</th></tr><tr><td>Subdomínio</td><td>Endereço mais longo no cartão</td><td>Serve para começar; domínio próprio é opcional e pago à parte</td></tr><tr><td>Selo da plataforma</td><td>Aparece no rodapé ou num canto</td><td>Mostrar como fica antes de aprovar</td></tr><tr><td>Limites de páginas ou recursos</td><td>Pode faltar agenda online</td><td>Dizer o que dá e o que não dá</td></tr><tr><td>Condições que mudam</td><td>Pode virar pago</td><td>Anotar a data em que você conferiu</td></tr></table></div></div>`,
+        `<div class="flows"><div class="flow old"><b>Proposta antes</b><div class="node">"Site grátis para sempre, sem nenhum custo."</div></div><div class="flow new"><b>Proposta depois</b><div class="node">"Página no plano gratuito, com subdomínio e selo da plataforma (condições conferidas em outubro). Domínio próprio é opcional, com custo anual pago por você."</div></div></div>`,
+        `<div class="card"><h3>Imagens de IA no plano grátis</h3><p>Em algumas ferramentas, como o Ideogram no plano gratuito, tudo o que você gera fica público. Então não coloque no pedido o nome, o logo ou a foto de um cliente sem autorização. Use a imagem de IA como ilustração ou rascunho de logo, anote no relatório que foi gerada por IA e não a apresente como foto do lugar real.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ul><li>Prometer "grátis para sempre".</li><li>Esconder o selo da plataforma até o cliente ver no ar.</li><li>Ignorar se o plano permite uso comercial.</li><li>Gerar logo com o nome do cliente numa ferramenta pública sem combinar.</li></ul></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Ideogram, cerca de 4 min)</h3><ol class="golden"><li><span>Abra a página de planos e anote, com a data, o que o gratuito oferece.</span></li><li><span>Descreva com suas palavras uma imagem de topo para um negócio fictício.</span></li><li><span>Gere 2 opções e escolha uma.</span></li><li><span>Escreva 2 linhas de aviso ao cliente: origem da imagem e regras do plano.</span></li></ol><p>🔒 No grátis as imagens ficam públicas: não use nomes, rostos ou logos reais.</p></div>`
+      ],
+      ch:[
+        { who:'Rafa, 29 anos, personal trainer', says:'O site ficou pronto, mas apareceu um selo da plataforma no rodapé. Ninguém me avisou.', q:'O que teria evitado a surpresa?',
+          opts:[
+            {t:'Mostrar antes da aprovação como o plano grátis exibe o site, com subdomínio e selo, e anotar isso na proposta.', ok:true, why:'Avisar antes transforma o limite numa escolha consciente do cliente.'},
+            {t:'Esconder o selo com um bloco branco por cima.', ok:false, why:'Burlar o plano pode violar os termos de uso e o site pode ser suspenso.'},
+            {t:'Dizer que o selo some sozinho em alguns meses.', ok:false, why:'É uma informação falsa.'}
+          ]},
+        { who:'Kelly, 25 anos, criando o logo de uma doceria no plano grátis de uma ferramenta de imagens', says:'Vou colocar o nome da doceria e a foto da dona no pedido para a imagem ficar personalizada.', q:'O que considerar?',
+          opts:[
+            {t:'Nada, a imagem é só para uso interno.', ok:false, why:'No plano em que tudo fica público, o que você gera pode ser visto por qualquer pessoa.'},
+            {t:'Combinar com a dona antes, não usar a foto dela e lembrar que o resultado fica público.', ok:true, why:'Autorização e cuidado com imagem de pessoas valem também em ferramentas de IA.'},
+            {t:'Usar a foto de uma modelo qualquer da internet no lugar.', ok:false, why:'A foto da modelo também tem dono e direito de imagem.'}
+          ]},
+        { who:'Fábio, 35 anos, recomendando ferramenta para um cliente', says:'Li no ano passado que esse construtor era grátis com domínio próprio. Vou prometer isso.', q:'Qual é a postura certa?',
+          opts:[
+            {t:'Prometer, porque a informação era oficial.', ok:false, why:'Condições de plano mudam. A informação de um ano atrás pode estar errada.'},
+            {t:'Conferir a página oficial de planos hoje, anotar a data e passar ao cliente o que vale agora.', ok:true, why:'Conferir antes de recomendar evita promessa que você não controla.'},
+            {t:'Não falar de custos para não assustar.', ok:false, why:'Omitir custo gera conflito depois.'}
           ]}
       ]},
     { id:'2.6', title:'Projeto: site de 1 página publicado em rascunho', min:30,
@@ -572,6 +689,63 @@ const MODULES = [
             {t:'Pedir para a dona testar depois e avisar se quebrou.', ok:false, why:'Testar é responsabilidade de quem altera, não do cliente.'}
           ]}
       ]},
+    { id:'3.7', title:'Exemplo resolvido: antes e depois com PageSpeed e WAVE', min:15,
+      body:[
+        `<div class="card analogy"><h3>🩺 O check-up no posto de saúde</h3><p>Ninguém precisa ser médico para entender um exame: você olha o que está fora da faixa e conversa sobre isso. As ferramentas de teste fazem o check-up do site. Você não precisa entender cada número, só achar o que está em vermelho, corrigir o que dá e conferir de novo.</p></div>`,
+        `<div class="card"><h3>O caso: Açaíteria Ponto Doce, em Manaus (exemplo ilustrativo)</h3><p>O PageSpeed, na aba de celular, deu nota de desempenho em vermelho. O WAVE apontou imagens sem texto alternativo e erros de contraste. Veja o que foi feito, um item por vez:</p><div class="tw"><table class="tbl"><tr><th>Antes</th><th>O que a ferramenta mostrou</th><th>Correção sem programar</th></tr><tr><td>3 fotos de 5 MB</td><td>Imagens grandes atrasam a página</td><td>Redimensionar para 1200 px e comprimir</td></tr><tr><td>Texto cinza claro no branco</td><td>Contraste baixo</td><td>Texto quase preto e letra maior</td></tr><tr><td>Fotos sem descrição</td><td>Imagem sem texto alternativo</td><td>"Copo de açaí com banana e granola"</td></tr><tr><td>Botão "Clique aqui"</td><td>Link sem sentido fora do contexto</td><td>"Pedir no WhatsApp"</td></tr><tr><td>Vídeo com som automático</td><td>Atrapalha quem usa leitor de tela</td><td>Vídeo sem autoplay</td></tr></table></div></div>`,
+        `<div class="card"><h3>Checklist rápido de acessibilidade e velocidade</h3><ol class="golden"><li><span>Fotos leves e com descrição.</span></li><li><span>Contraste bom e letra confortável no celular.</span></li><li><span>Botões que dizem a ação.</span></li><li><span>Nada tocando sozinho.</span></li><li><span>Teste de novo e registre o antes e o depois.</span></li></ol></div>`,
+        `<div class="why-chain"><b>Por que corrigir um item por vez?</b> Porque assim você sabe o que melhorou a nota. Porque, se algo quebrar, é fácil voltar. Porque o registro de antes e depois vira prova do seu cuidado na entrega.</div>`,
+        `<div class="card"><h3>Erros comuns</h3><ul><li>Perseguir nota 100 e gastar horas em detalhes que o visitante nem percebe.</li><li>Testar só a versão de computador.</li><li>Achar que a ferramenta substitui o teste com pessoas de verdade.</li><li>Prometer ao cliente que a nota garante clientes ou posição no Google.</li></ul></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (PageSpeed e WAVE, cerca de 5 min)</h3><ol class="golden"><li><span>Rode o PageSpeed no rascunho que você publicou, na aba de celular.</span></li><li><span>Rode o WAVE no mesmo link.</span></li><li><span>Escolha 2 problemas que dá para resolver sem programar.</span></li><li><span>Corrija, teste de novo e anote o antes e o depois.</span></li></ol><p>🔒 Teste os seus sites ou os de clientes que autorizaram. Não divulgue relatório do site de outra pessoa para expor falhas.</p></div>`
+      ],
+      ch:[
+        { who:'Jéssica, 28 anos, revisando o site de uma açaíteria', says:'O PageSpeed deu vermelho. Vou trocar tudo de uma vez: hospedagem, tema e fotos.', q:'Qual é o melhor caminho?',
+          opts:[
+            {t:'Trocar tudo, porque assim resolve mais rápido.', ok:false, why:'Mudando tudo junto, você não sabe o que ajudou e pode quebrar o site.'},
+            {t:'Ler as principais sugestões, começar pelas imagens pesadas, testar de novo e seguir um item por vez.', ok:true, why:'Imagens são a causa mais comum de lentidão, e corrigir em etapas mostra o efeito de cada ajuste.'},
+            {t:'Ignorar a nota, porque ferramenta não entende de açaí.', ok:false, why:'A nota reflete a experiência de quem abre no 4G. Vale corrigir o principal.'}
+          ]},
+        { who:'Leonardo, 32 anos, viu o relatório do WAVE', says:'Apareceram 6 imagens sem texto alternativo. Vou escrever "imagem" em todas.', q:'Como corrigir direito?',
+          opts:[
+            {t:'Escrever "imagem" mesmo, porque o erro some.', ok:false, why:'Some do relatório, mas não ajuda quem usa leitor de tela.'},
+            {t:'Repetir o nome da loja em todas para ajudar no Google.', ok:false, why:'Repetir palavra-chave não descreve a imagem e piora a leitura.'},
+            {t:'Descrever o que cada imagem mostra, como "Fachada azul da loja na Rua das Flores".', ok:true, why:'Texto alternativo é para pessoas: deve contar o que a imagem mostra.'}
+          ]},
+        { who:'Seu Elias, 59 anos, dono de uma papelaria', says:'Agora que a nota ficou verde, vou vender muito mais, né?', q:'Qual é a resposta honesta?',
+          opts:[
+            {t:'Sim, nota verde garante mais vendas.', ok:false, why:'Ninguém garante vendas. É uma promessa enganosa.'},
+            {t:'Explicar que o site ficou mais rápido e fácil de usar, o que ajuda quem visita, mas que vendas dependem de muitos outros fatores.', ok:true, why:'Mostra o benefício real sem prometer resultado que você não controla.'},
+            {t:'Dizer que a nota não serve para nada.', ok:false, why:'Serve: mede a experiência do visitante. Só não garante vendas.'}
+          ]}
+      ]},
+    { id:'3.8', title:'Exemplo resolvido: formulário enxuto e aviso de privacidade de verdade', min:14,
+      body:[
+        `<div class="card analogy"><h3>📒 O caderninho do fiado</h3><p>O dono da venda anota no caderninho o nome e quanto a pessoa deve. Não pede RG, profissão nem data de nascimento, e guarda o caderno na gaveta, não em cima do balcão. Formulário de site deve seguir a mesma lógica: pedir só o necessário, dizer para que serve e guardar com cuidado.</p></div>`,
+        `<div class="card"><h3>O caso: Studio de unhas da Taís, em Ribeirão Preto</h3><div class="flows"><div class="flow old"><b>Formulário antes</b><div class="node">9 campos: nome, CPF, data de nascimento, endereço, e-mail, WhatsApp, Instagram, renda e mensagem. Caixa "aceito receber promoções" já marcada. Nenhum aviso.</div></div><div class="flow new"><b>Formulário depois</b><div class="node">Nome, WhatsApp, serviço desejado e melhor horário. Perto do botão: "Usamos seus dados só para responder ao seu contato" e o link do aviso. Promoções só se a pessoa marcar.</div></div></div></div>`,
+        `<div class="card"><h3>O aviso de privacidade da Taís, item por item</h3><div class="tw"><table class="tbl"><tr><th>Item</th><th>Como ficou</th></tr><tr><td>Responsável</td><td>Studio da Taís, contato pelo WhatsApp do site</td></tr><tr><td>Dados</td><td>Nome, WhatsApp, serviço e horário preferido</td></tr><tr><td>Finalidade</td><td>Responder e agendar</td></tr><tr><td>Compartilhamento</td><td>O serviço de formulário que recebe as mensagens</td></tr><tr><td>Tempo</td><td>Apagados depois de 6 meses sem novo contato</td></tr><tr><td>Direitos</td><td>Pedir para ver, corrigir ou apagar pelo WhatsApp</td></tr><tr><td>Cookies</td><td>O site não usa medição nem anúncios</td></tr></table></div><p>Curto, verdadeiro e com o que o studio faz de fato. Se um dia entrar medição de visitas, o aviso muda junto.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ul><li>Copiar a política de uma empresa grande.</li><li>Respostas do formulário chegando no seu e-mail pessoal, e não no da cliente.</li><li>Planilha de respostas compartilhada com "qualquer pessoa com o link".</li><li>Escrever "seus dados estão 100% seguros": ninguém garante isso.</li><li>Pedir dados de saúde sem necessidade.</li></ul></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Claude, cerca de 4 min)</h3><ol class="golden"><li><span>Escreva você um aviso de 7 itens para um negócio fictício, no formato da tabela.</span></li><li><span>Peça ao Claude, com as suas palavras, para apontar trechos confusos ou promessas que você não controla.</span></li><li><span>Ajuste o texto e confira se cada item descreve o que o negócio faz de verdade.</span></li></ol><p>🔒 Não cole respostas reais de formulário nem dados de clientes. Isso não substitui orientação jurídica em casos sensíveis.</p></div>`
+      ],
+      ch:[
+        { who:'Taís, 31 anos, dona do studio de unhas', says:'Quero pedir CPF e data de nascimento no formulário, para já ter o cadastro completo.', q:'Qual é a melhor orientação?',
+          opts:[
+            {t:'Pedir, porque é só um formulário.', ok:false, why:'Pedir mais dados do que o necessário contraria o princípio da necessidade da LGPD e afasta visitantes.'},
+            {t:'Pedir só nome, WhatsApp, serviço e horário. Se um dia precisar de mais para outra finalidade, avaliar e informar.', ok:true, why:'Para agendar, esses dados bastam. Menos dados, menos risco e mais contatos.'},
+            {t:'Pedir, mas deixar os campos escondidos.', ok:false, why:'Campo escondido coletando dados é o oposto da transparência.'}
+          ]},
+        { who:'Vinícius, 27 anos, configurou o formulário de uma imobiliária', says:'As respostas vão para uma planilha que deixei aberta para qualquer pessoa com o link, para facilitar.', q:'O que corrigir?',
+          opts:[
+            {t:'Nada, ninguém vai adivinhar o link.', ok:false, why:'Links vazam por mensagem, histórico ou print. Dados pessoais ficam expostos.'},
+            {t:'Trocar o link a cada mês.', ok:false, why:'Continua aberto a quem tiver o link no período.'},
+            {t:'Restringir a planilha às contas da imobiliária, com senha forte e verificação em duas etapas, e tirar o seu acesso ao final se não for cuidar da manutenção.', ok:true, why:'Acesso restrito protege os dados de quem preencheu o formulário.'}
+          ]},
+        { who:'Amanda, 34 anos, escrevendo o aviso de privacidade de uma escola de música', says:'Coloquei "seus dados estão 100% seguros e nunca serão compartilhados". Passa confiança.', q:'Como melhorar a frase?',
+          opts:[
+            {t:'Trocar por algo verdadeiro: quais dados, para quê, com qual serviço são compartilhados e como pedir exclusão.', ok:true, why:'O aviso deve descrever a realidade. O serviço de formulário já recebe os dados, então "nunca compartilhados" é falso.'},
+            {t:'Manter, porque toda empresa escreve isso.', ok:false, why:'Ser comum não torna a frase verdadeira.'},
+            {t:'Aumentar para "segurança de nível bancário".', ok:false, why:'É outra promessa que ela não consegue provar.'}
+          ]}
+      ]},
     { id:'3.6', title:'Projeto: testes, proposta e combinado de suporte', min:30,
       body:[
         `<div class="card"><p>Este projeto fecha o curso. Pegue o site publicado em rascunho no projeto 2.6 e coloque à prova. Depois, prepare os documentos que um cliente receberia: o registro dos testes, o aviso de privacidade (se houver coleta de dados), uma proposta de entrega e manutenção e o combinado de alterações e suporte. Pode usar IA para organizar os textos, mas os pedidos e as decisões de preço são seus, com base na sua pesquisa.</p></div>`,
@@ -617,7 +791,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#06B6D4','#3B82F6'], 2:['#3B82F6','#06B6D4'], 3:['#06B6D4','#3B82F6'] };
-const LIC = { '1.1':'🧭','1.2':'✍️','1.3':'🏪','1.4':'🚗','1.5':'🔎','1.6':'📝','2.1':'🛠️','2.2':'🌐','2.3':'🎨','2.4':'🗺️','2.5':'🧐','2.6':'🚀','3.1':'📱','3.2':'📁','3.3':'🔒','3.4':'💰','3.5':'🤝','3.6':'📋' };
+const LIC = { '1.1':'🧭','1.2':'✍️','1.3':'🏪','1.4':'🚗','1.5':'🔎','1.7':'🍲','1.8':'🧱','1.6':'📝','2.1':'🛠️','2.2':'🌐','2.3':'🎨','2.4':'🗺️','2.5':'🧐','2.7':'🧩','2.8':'🏬','2.6':'🚀','3.1':'📱','3.2':'📁','3.3':'🔒','3.4':'💰','3.5':'🤝','3.7':'🩺','3.8':'📒','3.6':'📋' };
 
 return {
   id: 'sites-simples-com-ia',

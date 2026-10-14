@@ -184,6 +184,84 @@ Prioridades: 1) corrigir bio e destaques; 2) voltar com 3 posts por semana; 3) r
             {t:'Ignorar os concorrentes, porque cada negócio é único.', ok:false, why:'Sem olhar a região, você perde pistas do que funciona e de onde há espaço para se destacar.'}
           ]}
       ]},
+    { id:'1.7', title:'Bio e destaques que respondem antes da pergunta', min:15,
+      body:[
+        `<div class="card analogy"><h3>🪧 A placa na fachada</h3><p>A placa da padaria diz o nome, o que vende e o horário. Quem passa de carro decide em poucos segundos se vale parar. A bio é a placa do perfil, e os destaques são o balcão de informações: respondem as dúvidas antes que o cliente precise perguntar.</p></div>`,
+        `<div class="card"><h3>As 5 respostas de uma boa bio</h3><ol class="golden"><li><span><b>O quê e para quem:</b> o que o negócio vende, em palavras simples.</span></li><li><span><b>Onde:</b> bairro e cidade, ou a região de entrega.</span></li><li><span><b>Quando:</b> dias e horários, ou o prazo de encomenda.</span></li><li><span><b>Como pedir:</b> um caminho só, claro (WhatsApp, link ou telefone comercial).</span></li><li><span><b>Diferencial verdadeiro:</b> algo que o cliente confirmou no briefing, sem "o melhor da cidade".</span></li></ol><p>O limite de caracteres muda conforme a plataforma: confira o atual antes de escrever.</p></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Antes (doceria)</h4>
+            <div class="node">"✨🍰 Doces com amor 💕✨ Encomendas no direct"</div><div class="arrow">▼</div>
+            <div class="node hot">Problemas<small>não diz bairro, horário nem prazo; emojis demais para o leitor de tela; "direct" sem prazo de resposta</small></div>
+          </div>
+          <div class="flow new"><h4>Depois</h4>
+            <div class="node">"Bolos e doces caseiros para festas no Jardim América, Goiânia"</div><div class="arrow">▼</div>
+            <div class="node">"Encomendas com 3 dias de antecedência · Ter a sáb, 9h às 18h"</div><div class="arrow">▼</div>
+            <div class="node good">"Peça pelo WhatsApp no link abaixo"<small>todas as informações confirmadas com a dona</small></div>
+          </div>
+        </div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Destaque</th><th>O que mostrar</th><th>Atualizar quando</th></tr><tr><td>Cardápio ou serviços</td><td>Itens e preços atuais</td><td>A cada mudança de preço</td></tr><tr><td>Como pedir</td><td>Prazo, formas de pagamento, entrega</td><td>Quando a regra mudar</td></tr><tr><td>Onde estamos</td><td>Endereço, ponto de referência, horário</td><td>Feriados e mudanças</td></tr><tr><td>Clientes</td><td>Fotos e frases autorizadas</td><td>Ao receber nova autorização</td></tr></table></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p>Destaque com preço de dois anos atrás; link quebrado; colocar o celular pessoal do dono sem ele querer; destaque de "clientes" com prints de conversas que mostram nome, foto e telefone de quem comprou, sem autorização. Isso expõe dados pessoais e vai contra a LGPD. Use só frases autorizadas e sem dados de contato.</p></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (ChatGPT, cerca de 4 minutos)</h3><ol class="golden"><li><span>Copie a bio atual de um negócio fictício ou de um conhecido que autorizou.</span></li><li><span>Escreva à mão as 5 respostas (o quê, onde, quando, como pedir, diferencial).</span></li><li><span>Escreva o seu pedido ao ChatGPT para gerar 3 versões curtas usando só essas respostas.</span></li><li><span>Corte qualquer informação que ele tenha inventado e escolha uma versão.</span></li><li><span>Proponha 4 destaques para o perfil.</span></li></ol><p>🔒 Não cole telefone pessoal, conversas ou dados de clientes no chat; use dados fictícios até o dono aprovar.</p></div>`
+      ],
+      ch:[
+        { who:'Cristiane, 44 anos, dona de uma loja de material de construção', says:'Minha bio diz só "Qualidade e preço justo desde 1998". Todo dia alguém pergunta no direct se a gente entrega.',
+          q:'Qual é a melhor revisão da bio?',
+          opts:[
+            {t:'Acrescentar mais adjetivos, como "a melhor loja da região".', ok:false, why:'Adjetivos não respondem a dúvida que se repete. O cliente continua sem saber se há entrega.'},
+            {t:'Dizer o que vende, o bairro, o horário, a informação de entrega confirmada com ela e um único caminho para pedir.', ok:true, why:'A bio passa a responder as perguntas mais comuns antes que alguém precise mandar mensagem.'},
+            {t:'Deixar a bio como está e responder cada pergunta no direct.', ok:false, why:'Responder a mesma dúvida todo dia gasta tempo, e muita gente desiste sem perguntar.'}
+          ]},
+        { who:'Fábio, 30 anos, social media de uma marmitaria', says:'Quero montar o destaque "Clientes" com prints das conversas de WhatsApp em que elogiam a comida.',
+          q:'Como fazer isso do jeito certo?',
+          opts:[
+            {t:'Postar os prints como estão, porque os clientes mandaram por vontade própria.', ok:false, why:'Mandar elogio no privado não autoriza expor nome, foto e telefone em público. Isso fere a privacidade e a LGPD.'},
+            {t:'Borrar só o telefone e manter o resto do print.', ok:false, why:'Nome e foto de perfil continuam identificando a pessoa, e ainda falta a autorização.'},
+            {t:'Pedir autorização a cada cliente e usar só a frase, com o primeiro nome se a pessoa permitir, sem prints com dados de contato.', ok:true, why:'Com autorização e sem dados pessoais, o depoimento ajuda o negócio sem expor ninguém.'}
+          ]},
+        { who:'Lívia, 27 anos, freelancer', says:'A IA escreveu na bio do salão "atendimento 24 horas, estacionamento grátis". Ficou ótimo, mas não sei se é verdade.',
+          q:'O que a Lívia deve fazer?',
+          opts:[
+            {t:'Tirar o que não foi confirmado e perguntar à dona sobre horário e estacionamento antes de publicar.', ok:true, why:'A bio é a informação mais vista do perfil. Fato não confirmado vira cliente frustrado na porta.'},
+            {t:'Publicar, porque deixa o salão mais atraente.', ok:false, why:'Quem chegar às 23h ou procurar o estacionamento vai se sentir enganado.'},
+            {t:'Trocar por "atendimento estendido", que é mais vago.', ok:false, why:'Ficar vago não resolve: a informação continua sem confirmação e ainda deixa o cliente na dúvida.'}
+          ]}
+      ]},
+    { id:'1.8', title:'Banco de ideias a partir das dúvidas dos clientes', min:16,
+      body:[
+        `<div class="card analogy"><h3>📒 O caderninho do balcão</h3><p>Na loja de material de construção, o atendente ouve "qual argamassa eu uso no banheiro?" dez vezes por semana. Se ele anota cada pergunta repetida num caderninho, ganha uma lista de posts que o público já pediu. O banco de ideias é esse caderninho, organizado.</p></div>`,
+        `<div class="term"><b>Banco de ideias</b> = lista organizada de temas para posts, com a origem de cada um. <b>Objeção</b> = motivo que faz o cliente hesitar, como "é caro" ou "demora". <b>Anonimizar</b> = registrar a dúvida sem nada que identifique quem perguntou.</div>`,
+        `<div class="card"><h3>Onde as boas ideias estão</h3><p>Perguntas no WhatsApp e no direct, comentários, dúvidas no balcão, avaliações públicas no Google, objeções que a equipe escuta e as respostas de enquetes nos stories. Peça ao dono e à equipe que anotem durante uma semana, com as palavras do cliente, sem nomes.</p></div>`,
+        `<div class="card"><h3>Exemplo resolvido: da dúvida ao post</h3><ol class="golden"><li><span><b>Dúvida anotada:</b> "Dá para congelar o bolo que sobrou da festa?" (6 vezes em março, confeitaria).</span></li><li><span><b>Conferir a resposta:</b> a confeiteira explica como e por quanto tempo, com as palavras dela.</span></li><li><span><b>Pilar e formato:</b> educar, carrossel de 5 telas.</span></li><li><span><b>Gancho:</b> a própria pergunta do cliente.</span></li><li><span><b>Chamada:</b> "Salve para a próxima festa".</span></li></ol></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Ideia solta</h4><div class="node hot">"Post sobre bolos"<small>vago, sem origem, igual ao de qualquer confeitaria</small></div></div>
+          <div class="flow new"><h4>Ideia do banco</h4><div class="node good">"Dá para congelar bolo de festa?"<small>pergunta real, resposta conferida, formato e chamada definidos</small></div></div>
+        </div>`,
+        `<div class="card"><h3>Erros comuns</h3><p>Guardar prints de conversas com nome e telefone na pasta de ideias (anote só a dúvida: a LGPD pede cuidado com dados pessoais, e você não precisa deles); responder dúvida técnica sem conferir com o dono; montar um banco de 200 ideias que ninguém usa; transformar toda dúvida em post de venda.</p></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Google Planilhas, cerca de 5 minutos)</h3><ol class="golden"><li><span>Crie as colunas: dúvida, origem, pilar, formato, gancho, conferido com o dono?</span></li><li><span>Anote 6 dúvidas do negócio fictício (ou peça ao dono), com as palavras do cliente.</span></li><li><span>Escolha pilar e formato de cada uma.</span></li><li><span>Escreva você mesmo os ganchos.</span></li><li><span>Marque as que precisam de conferência.</span></li></ol><p>🔒 Nada de nome, telefone ou print de cliente na planilha, e compartilhe só com quem trabalha no projeto.</p></div>`
+      ],
+      ch:[
+        { who:'Roberto, 47 anos, dono de uma ótica', says:'Não sei mais o que postar. Já fiz foto de todos os óculos da loja.',
+          q:'Qual é a fonte de ideias mais útil para ele?',
+          opts:[
+            {t:'Pedir à IA 50 ideias genéricas para óticas e postar uma por dia.', ok:false, why:'Ideias genéricas não têm a cara da loja nem respondem o que os clientes dele realmente perguntam.'},
+            {t:'Anotar por uma semana as dúvidas do balcão e do WhatsApp, como "lente antirreflexo vale a pena?", e transformar as repetidas em posts conferidos por ele.', ok:true, why:'Dúvidas reais mostram o que o público quer saber, e a resposta do dono garante que o post é correto.'},
+            {t:'Repetir as fotos dos óculos com filtros diferentes.', ok:false, why:'Muda a aparência, mas não traz nada novo para quem acompanha o perfil.'}
+          ]},
+        { who:'Aline, 33 anos, social media de uma clínica de fisioterapia', says:'A recepção me mandou a planilha de pacientes com as dúvidas de cada um, com nome e telefone, para eu tirar ideias.',
+          q:'Como ela deve agir?',
+          opts:[
+            {t:'Usar a planilha como está e colar tudo na IA para gerar posts.', ok:false, why:'São dados pessoais e de saúde. Colar em ferramentas externas expõe os pacientes e pode violar a LGPD.'},
+            {t:'Pedir à recepção só a lista das dúvidas, sem nomes nem contatos, apagar o arquivo recebido e conferir as respostas com a fisioterapeuta.', ok:true, why:'Para criar posts basta a dúvida. Anonimizar protege os pacientes e a clínica.'},
+            {t:'Guardar a planilha numa pasta compartilhada para consultar depois.', ok:false, why:'Guardar dados de pacientes sem necessidade aumenta o risco de vazamento.'}
+          ]},
+        { who:'Diego, 25 anos, freelancer', says:'Meu banco de ideias tem 180 temas, mas na hora de criar eu nunca sei qual escolher.',
+          q:'O que deixaria o banco útil?',
+          opts:[
+            {t:'Adicionar mais 100 temas para ter mais opções.', ok:false, why:'O problema já é excesso sem critério. Mais itens só aumentam a confusão.'},
+            {t:'Apagar o banco e criar só na hora.', ok:false, why:'Perder as dúvidas anotadas joga fora material valioso.'},
+            {t:'Registrar a origem e quantas vezes cada dúvida apareceu, e priorizar as mais repetidas e já conferidas ao montar o calendário.', ok:true, why:'Com origem e frequência, fica fácil escolher o que o público mais quer saber.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: diagnóstico, briefing e calendário de 2 semanas', min:30,
       body:[
         `<div class="card"><p>Hora de planejar de verdade. Escolha um pequeno negócio real (de um conhecido, da família ou do seu bairro, com autorização) ou, se ainda não tiver, um negócio fictício bem detalhado. Você vai produzir o diagnóstico, o briefing e o calendário que serviriam para começar a trabalhar amanhã. Pode usar IA para revisar e sugerir ideias, mas escreva o seu próprio pedido e confira cada fato com o dono do negócio.</p></div>`,
@@ -396,6 +474,94 @@ BOM: "Pizza de calabresa com cebola roxa saindo do forno a lenha. Texto na arte:
             {t:'Manter, porque mistério gera cliques.', ok:false, why:'É caça-clique: promete um segredo que não existe, frustra quem desliza e ainda insinua algo ruim sobre os pintores, que também são clientes da loja.'},
             {t:'Tirar a capa e começar direto pelo primeiro erro.', ok:false, why:'A capa é o que faz a pessoa parar e entender o assunto. Sem ela, o carrossel perde força.'},
             {t:'Trocar por uma capa honesta e específica, como "3 erros que deixam a parede manchada", e entregar exatamente isso nos slides.', ok:true, why:'A promessa clara atrai quem tem o problema, e o conteúdo cumpre o que a capa anunciou.'}
+          ]}
+      ]},
+    { id:'2.7', title:'Stories que conversam: enquetes, perguntas e sequências', min:16,
+      body:[
+        `<div class="card analogy"><h3>☕ O papo no portão</h3><p>O post do feed é o cartaz na vitrine: fica lá, arrumado. Os stories são o papo rápido no portão com a vizinha: informal, sobre o dia de hoje, e somem depois. Ninguém fica no portão ouvindo propaganda; a conversa funciona quando os dois lados falam.</p></div>`,
+        `<div class="term"><b>Sequência de stories</b> = 3 a 5 telas seguidas que contam uma pequena história. <b>Figurinha interativa</b> = enquete, caixinha de perguntas, teste ou link colocados no story. <b>Área segura</b> = a parte da tela que não fica escondida pelos botões do aplicativo.</div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Antes (pet shop)</h4>
+            <div class="node">1 tela: foto escura e "PROMOÇÃO HOJE!! CHAMA!!"</div><div class="arrow">▼</div>
+            <div class="node hot">Problemas<small>não diz qual promoção, até quando nem como pedir; letra pequena; nenhuma conversa</small></div>
+          </div>
+          <div class="flow new"><h4>Depois (sequência de 4 telas)</h4>
+            <div class="node">1. "8h e o primeiro banho do dia já começou" (bastidor, pet com autorização do tutor)</div><div class="arrow">▼</div>
+            <div class="node">2. "Ainda temos 2 horários hoje: 14h e 16h"</div><div class="arrow">▼</div>
+            <div class="node">3. Enquete: "Seu cão gosta de banho?" Ama / Foge</div><div class="arrow">▼</div>
+            <div class="node good">4. "Quer um horário? Toque no link do WhatsApp"<small>uma chamada, informação real e confirmada</small></div>
+          </div>
+        </div>`,
+        `<div class="card"><h3>Use as respostas</h3><p>As respostas da enquete e da caixinha de perguntas são ouro para o banco de ideias: se muita gente diz que o cão "foge" do banho, aí está o próximo carrossel. Se for mostrar uma pergunta recebida, apague o nome de usuário ou peça permissão a quem perguntou.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p>Texto escondido atrás dos botões do app; sequências de 20 telas; repostar o story de um cliente sem perguntar; usar elementos pagos do Canva e exportar com marca d'água; música sem conferir se o uso comercial é permitido; mostrar o rosto de clientes na loja sem autorização.</p></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Canva, cerca de 5 minutos)</h3><ol class="golden"><li><span>Crie um design no tamanho de story.</span></li><li><span>Monte 4 telas com as cores e a fonte do negócio fictício, deixando espaço livre para a figurinha que você colocará no app.</span></li><li><span>Escreva você os textos: contexto, informação, interação e chamada.</span></li><li><span>Confira se usou só elementos gratuitos, sem coroa nem marca d'água.</span></li><li><span>Exporte e veja no celular se cada tela se entende em 3 segundos.</span></li></ol><p>🔒 Use fotos suas ou do banco gratuito; rosto de cliente ou pet de cliente só com autorização.</p></div>`
+      ],
+      ch:[
+        { who:'Sandra, 39 anos, dona de uma loja de bolsas', says:'Posto stories todo dia, sempre uma foto de bolsa com o preço. As visualizações só caem.',
+          q:'Qual é a melhor mudança?',
+          opts:[
+            {t:'Postar o dobro de fotos de bolsas por dia.', ok:false, why:'Mais do mesmo cansa ainda mais. O problema é a falta de conversa, não a quantidade.'},
+            {t:'Montar sequências curtas com bastidor, informação real, uma enquete (como "alça curta ou longa?") e uma chamada clara.', ok:true, why:'A sequência conta uma história e convida a pessoa a participar, em vez de só exibir produto.'},
+            {t:'Parar de postar stories e focar só no feed.', ok:false, why:'Stories são ótimos para o dia a dia e para conversar. Abandonar perde esse canal.'}
+          ]},
+        { who:'Guilherme, 29 anos, social media de uma hamburgueria', says:'Na caixinha de perguntas, um cliente perguntou se o hambúrguer vegano é feito na mesma chapa da carne. Quero responder nos stories.',
+          q:'Como responder do jeito certo?',
+          opts:[
+            {t:'Responder na hora que é separado, porque é o que a maioria das hamburguerias faz.', ok:false, why:'Ele não sabe como é feito nessa cozinha. Responder no chute pode enganar quem tem restrição alimentar.'},
+            {t:'Confirmar com o dono como é o preparo, responder com a informação real e não mostrar o nome de usuário de quem perguntou sem permissão.', ok:true, why:'A resposta fica correta e a privacidade de quem perguntou é respeitada.'},
+            {t:'Ignorar a pergunta para não se comprometer.', ok:false, why:'Ignorar uma dúvida importante afasta clientes com restrição alimentar e passa descaso.'}
+          ]},
+        { who:'Paula, 31 anos, freelancer', says:'Fiz os stories no Canva com um modelo lindo, mas a arte exportou com marca d\'água no meio.',
+          q:'O que provavelmente aconteceu e como resolver?',
+          opts:[
+            {t:'É um defeito do Canva; basta exportar de novo.', ok:false, why:'Exportar de novo não muda nada se o elemento usado é do plano pago.'},
+            {t:'Recortar a marca d\'água da imagem antes de postar.', ok:false, why:'Usar elemento pago sem licença e esconder a marca desrespeita os termos de uso.'},
+            {t:'Ela usou um modelo ou elemento do plano pago; deve trocar por opções gratuitas ou ter a licença antes de usar para o cliente.', ok:true, why:'No plano grátis, elementos com coroa são do Pro. Trocar por gratuitos resolve sem violar os termos.'}
+          ]}
+      ]},
+    { id:'2.8', title:'Depoimentos e antes e depois com autorização', min:16,
+      body:[
+        `<div class="card analogy"><h3>🗣️ A indicação da vizinha</h3><p>Quando a vizinha diz "a costureira da rua de baixo é caprichosa", você confia mais do que em qualquer cartaz. Mas se descobrir que a costureira inventou a frase, a confiança some de vez. Depoimento é a indicação da vizinha em formato de post, e só vale se for verdadeiro.</p></div>`,
+        `<div class="term"><b>Prova social</b> = sinais de que outras pessoas compraram e gostaram, como depoimentos e avaliações. <b>Autorização de uso</b> = permissão, de preferência por escrito, dizendo o que será mostrado, onde e por quanto tempo. <b>Antes e depois</b> = comparação visual do mesmo caso, antes e depois do serviço.</div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Antes (costureira)</h4>
+            <div class="node">Print da conversa com nome, foto e telefone da cliente</div><div class="arrow">▼</div>
+            <div class="node">Legenda: "Mais uma cliente satisfeita!!! Somos as melhores!"</div><div class="arrow">▼</div>
+            <div class="node hot">Problemas<small>sem autorização; expõe dados pessoais (LGPD); adjetivo vazio; não conta o que foi feito</small></div>
+          </div>
+          <div class="flow new"><h4>Depois</h4>
+            <div class="node">Pedir autorização por escrito, dizendo onde o post vai aparecer</div><div class="arrow">▼</div>
+            <div class="node">Arte com a frase da cliente, como ela escreveu, e só o primeiro nome, se ela aceitar</div><div class="arrow">▼</div>
+            <div class="node">Foto real do vestido ajustado</div><div class="arrow">▼</div>
+            <div class="node good">Legenda: o que foi feito e o prazo, mais "Quer ajustar uma peça? Chame no WhatsApp"<small>autorização guardada na pasta do cliente</small></div>
+          </div>
+        </div>`,
+        `<div class="code">Oi, Márcia! Posso usar sua frase sobre o ajuste do vestido num post do ateliê no Instagram, com seu primeiro nome e a foto do vestido (sem seu rosto)? Se preferir sem nome, tudo bem. Você pode pedir para tirar quando quiser.</div>`,
+        `<div class="card"><h3>Antes e depois honesto</h3><p>Use fotos reais do mesmo caso, com luz e ângulo parecidos, sem filtro que mude o resultado. Saúde, estética e odontologia têm regras de publicidade que podem limitar ou proibir antes e depois: confira com o cliente e com o conselho da profissão antes de criar.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p>Pedir à IA para "criar depoimentos"; reescrever a frase da cliente para soar melhor; achar que avaliação pública no Google autoriza qualquer uso; mostrar crianças sem autorização dos responsáveis; trocar avaliações por desconto sem deixar isso claro.</p></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Canva e Claude, cerca de 5 minutos)</h3><ol class="golden"><li><span>Escolha uma frase de exemplo e marque-a como fictícia, ou use um elogio real ao seu trabalho, com autorização.</span></li><li><span>No Canva, monte a arte com a frase, o primeiro nome e uma foto de produto ou do banco gratuito.</span></li><li><span>Escreva você a mensagem de pedido de autorização.</span></li><li><span>No Claude, peça com suas palavras uma proposta de texto alternativo para a arte e ajuste o que não bater com a imagem.</span></li></ol><p>🔒 Nada de prints com telefone, foto de perfil ou sobrenome de clientes.</p></div>`
+      ],
+      ch:[
+        { who:'Mônica, 36 anos, dona de uma loja de roupas', says:'Ainda não tenho depoimentos no perfil. Pede para a IA escrever uns cinco, com nomes inventados.',
+          q:'Qual é a orientação correta?',
+          opts:[
+            {t:'Fazer como ela pediu, porque todo mundo começa assim.', ok:false, why:'Depoimento inventado engana o consumidor e, se descoberto, destrói a confiança na loja.'},
+            {t:'Usar depoimentos de outra loja, trocando os nomes.', ok:false, why:'Continua sendo falso, e ainda se apropria do que foi dito sobre outro negócio.'},
+            {t:'Explicar que depoimento precisa ser real, e pedir a clientes satisfeitas que autorizem usar o que já disseram.', ok:true, why:'Depoimento real e autorizado é a única prova social que se sustenta.'}
+          ]},
+        { who:'Tatiana, 41 anos, dentista', says:'Quero postar o antes e depois de um clareamento, com o rosto da paciente, para mostrar o resultado.',
+          q:'O que precisa ser verificado antes?',
+          opts:[
+            {t:'As regras de publicidade do conselho da profissão sobre antes e depois e a autorização por escrito da paciente.', ok:true, why:'Odontologia tem regras próprias de publicidade, e a imagem da paciente exige autorização clara.'},
+            {t:'Só se a foto está bonita e bem iluminada.', ok:false, why:'Qualidade da foto não resolve as regras do setor nem a autorização de uso de imagem.'},
+            {t:'Nada, porque a paciente ficou feliz com o resultado.', ok:false, why:'Ficar satisfeita não equivale a autorizar a exposição do rosto em público.'}
+          ]},
+        { who:'Rogério, 50 anos, dono de uma oficina', says:'Um cliente elogiou a oficina no Google com nome completo. Posso pôr o print no Instagram?',
+          q:'Qual é o melhor caminho?',
+          opts:[
+            {t:'Sim, porque a avaliação já é pública.', ok:false, why:'Ser público num lugar não autoriza qualquer uso em outro. O cliente pode não querer aparecer no Instagram da oficina.'},
+            {t:'Pedir autorização ao cliente e, se ele aceitar, usar a frase com o nome que ele preferir, sem foto de perfil.', ok:true, why:'Respeita a vontade do cliente e mostra um depoimento real.'},
+            {t:'Usar a frase sem nome, assim não precisa pedir.', ok:false, why:'Sem pedir, a frase ainda pode ser reconhecida e o cliente nem sabe que virou propaganda.'}
           ]}
       ]},
     { id:'2.6', title:'Projeto: 3 posts completos', min:30,
@@ -612,6 +778,86 @@ RESPOSTA (aprovada pelo dono): "Oi, Carla! Sentimos muito pela pizza fria e pela
             {t:'Proibir qualquer uso de IA no atendimento.', ok:false, why:'Com roteiro e revisão, a IA ajuda bastante. O problema é o uso sem supervisão, não a ferramenta.'}
           ]}
       ]},
+    { id:'3.7', title:'Agendar com segurança: da aprovação à publicação', min:15,
+      body:[
+        `<div class="card analogy"><h3>🚌 O ônibus que passa no horário</h3><p>O ônibus que passa sempre no mesmo horário ganha a confiança do passageiro. Ninguém quer depender da lembrança do motorista. Agendar os posts com antecedência é cumprir horário sem depender de lembrar às 23h, correndo, no celular.</p></div>`,
+        `<div class="term"><b>Agendamento</b> = deixar o post pronto para sair sozinho na data e hora escolhidas. <b>Acesso de parceiro</b> = permissão que a plataforma dá a outra pessoa para gerenciar a conta, sem compartilhar senha. <b>Versão aprovada</b> = o arquivo exato que o cliente aprovou.</div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Antes</h4>
+            <div class="node">Legenda no bloco de notas, arte perdida no WhatsApp</div><div class="arrow">▼</div>
+            <div class="node">Post publicado às 23h com a senha do cliente</div><div class="arrow">▼</div>
+            <div class="node hot">Problemas<small>versão antiga da arte; senha circulando; um dia esquecido</small></div>
+          </div>
+          <div class="flow new"><h4>Depois</h4>
+            <div class="node">Pasta da semana com arquivos nomeados: "12-03_educar_v2-aprovado"</div><div class="arrow">▼</div>
+            <div class="node">Agendamento no planejador, com acesso de parceiro</div><div class="arrow">▼</div>
+            <div class="node">Prévia conferida no formato de celular</div><div class="arrow">▼</div>
+            <div class="node good">Calendário marcado como "agendado" e conferência no dia<small>publicou? texto e arte certos?</small></div>
+          </div>
+        </div>`,
+        `<div class="card"><h3>Qual o melhor horário?</h3><p>Não existe horário mágico. Veja nas estatísticas quando os seguidores do cliente costumam estar online, teste alguns horários por algumas semanas e compare. Um restaurante pode ir melhor perto do almoço; uma loja de roupas, à noite.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><p>Pedir a senha do cliente em vez de usar o acesso de parceiro (e não remover o acesso quando o trabalho acaba); agendar uma oferta e não conferir se ela continua valendo; agendar e sumir quando responder comentários faz parte do escopo; deixar a pasta com fotos e dados de clientes aberta para "qualquer pessoa com o link", o que contraria a LGPD.</p></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Meta Business Suite, cerca de 5 minutos)</h3><ol class="golden"><li><span>Entre com uma página ou conta profissional sua ou de teste.</span></li><li><span>Crie um post com uma arte e uma legenda que você já fez no módulo 2.</span></li><li><span>Confira a prévia no formato de celular.</span></li><li><span>Agende para daqui a alguns dias e encontre o post na visão de calendário.</span></li><li><span>Edite o horário ou exclua o agendamento, para treinar.</span></li></ol><p>🔒 Não use a conta de um cliente sem autorização e nunca peça a senha dele.</p></div>`
+      ],
+      ch:[
+        { who:'Vera, 58 anos, dona de uma floricultura', says:'Te passo minha senha do Instagram e do e-mail, assim você posta quando quiser.',
+          q:'Qual é a resposta mais segura?',
+          opts:[
+            {t:'Aceitar as duas senhas, para facilitar.', ok:false, why:'A senha do e-mail dá acesso a muito mais que o Instagram. Se algo der errado, a responsabilidade fica confusa.'},
+            {t:'Recusar e explicar que pode ser adicionada como parceira ou pessoa com permissão pela ferramenta da plataforma, que a Vera pode remover quando quiser.', ok:true, why:'Acesso por permissão protege a conta da cliente e deixa claro quem faz o quê.'},
+            {t:'Aceitar só a senha do Instagram e anotar num papel.', ok:false, why:'Senha compartilhada continua sendo um risco, e anotada em papel pode se perder.'}
+          ]},
+        { who:'Caio, 26 anos, social media de uma lanchonete', says:'Agendei na segunda o post "Combo a R$ 29 até sábado". Na quarta, o dono subiu o preço para R$ 32.',
+          q:'O que deveria fazer parte da rotina dele?',
+          opts:[
+            {t:'Nada; o post foi aprovado e agendado, então está certo.', ok:false, why:'A aprovação valia para o preço antigo. Publicar o valor errado gera conflito no balcão.'},
+            {t:'Apagar todos os agendamentos e postar só na hora.', ok:false, why:'Perde as vantagens do agendamento. Basta conferir os fatos que podem mudar.'},
+            {t:'Combinar com o dono que mudanças de preço sejam avisadas e conferir os posts com oferta antes da data, pedindo novo ok quando algo mudar.', ok:true, why:'Agendar não dispensa a conferência. Preços e prazos são os fatos que mais mudam.'}
+          ]},
+        { who:'Débora, 34 anos, freelancer', says:'Li num blog que o melhor horário para postar é às 18h. Vou agendar tudo nesse horário para todos os clientes.',
+          q:'Qual é o melhor caminho?',
+          opts:[
+            {t:'Olhar nas estatísticas de cada perfil quando os seguidores estão online, testar alguns horários e comparar por algumas semanas.', ok:true, why:'Cada público tem a sua rotina. Dados do próprio perfil valem mais que uma regra geral.'},
+            {t:'Seguir o blog, porque a regra vale para todos.', ok:false, why:'Uma padaria e uma loja de roupas têm públicos com horários diferentes.'},
+            {t:'Postar de madrugada, quando há menos concorrência.', ok:false, why:'Pouca concorrência não ajuda se o público do cliente também está dormindo.'}
+          ]}
+      ]},
+    { id:'3.8', title:'Testes simples: o que repetir no próximo mês', min:14,
+      body:[
+        `<div class="card analogy"><h3>🍲 O prato do dia</h3><p>A dona do restaurante troca um ingrediente por semana e observa qual prato volta vazio. Ela não muda o cardápio inteiro de uma vez, porque aí não saberia o que funcionou. Testar posts é igual: mude uma coisa, observe e decida com calma.</p></div>`,
+        `<div class="term"><b>Teste</b> = comparação planejada entre duas opções. <b>Variável</b> = a única coisa que muda no teste, como o formato ou o tipo de gancho. <b>Amostra pequena</b> = poucos posts, que indicam um caminho mas não provam nada.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: hamburgueria em 4 semanas</h3><ol class="golden"><li><span><b>Pergunta:</b> carrossel de dicas gera mais mensagens que foto de produto?</span></li><li><span><b>Variável:</b> só o formato; mesmos dias, horários e chamada.</span></li><li><span><b>Período:</b> 4 semanas, sem feriado no meio.</span></li><li><span><b>Métrica:</b> mensagens e salvamentos, próximas do negócio.</span></li><li><span><b>Decisão:</b> o que repetir e o que observar de novo.</span></li></ol></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Formato (4 posts cada)</th><th>Salvamentos (média)</th><th>Mensagens (total)</th></tr><tr><td>Carrossel de dicas</td><td>35</td><td>18</td></tr><tr><td>Foto de produto</td><td>6</td><td>9</td></tr></table><p><small>Números de exemplo.</small></p></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Conclusão apressada</h4><div class="node hot">"O vídeo de sábado bombou, então agora só vamos fazer vídeo."<small>1 post, véspera de feriado, nada comparado</small></div></div>
+          <div class="flow new"><h4>Conclusão honesta</h4><div class="node good">"Em 4 semanas, os carrosséis tiveram mais salvamentos e mensagens. Vamos manter 2 por semana e observar de novo no próximo mês."<small>indica um caminho, sem prometer vendas</small></div></div>
+        </div>`,
+        `<div class="card"><h3>Erros comuns</h3><p>Mudar formato, horário e gancho ao mesmo tempo; concluir com um único post; comparar semana de feriado com semana comum; esconder do cliente o teste que não funcionou; colar na IA a lista de clientes com nomes e telefones para "analisar" (use só números somados, sem dados pessoais).</p></div>`,
+        `<div class="card"><h3>✋ Agora é sua vez (Napkin AI, cerca de 4 minutos)</h3><ol class="golden"><li><span>Escreva um parágrafo com números de exemplo, marcados como fictícios, comparando dois formatos em 4 semanas.</span></li><li><span>Gere um visual desse trecho no Napkin.</span></li><li><span>Confira se o gráfico mostra exatamente os seus números.</span></li><li><span>Escreva, com suas palavras, a decisão para o próximo mês, usando "indica" em vez de "prova".</span></li></ol><p>🔒 Só números somados, sem nomes nem contatos. No plano grátis o visual sai com a marca do Napkin: avise o cliente ou refaça o gráfico em outra ferramenta.</p></div>`
+      ],
+      ch:[
+        { who:'Marcela, 32 anos, social media de uma academia', says:'Neste mês mudei o horário, o tipo de gancho e o formato dos posts. As mensagens aumentaram! Qual mudança funcionou?',
+          q:'O que a Marcela pode concluir?',
+          opts:[
+            {t:'Que o formato novo foi o responsável, porque é a mudança mais visível.', ok:false, why:'Com três mudanças ao mesmo tempo, não dá para saber qual delas fez diferença.'},
+            {t:'Que não dá para saber qual mudança causou o aumento; no próximo mês, ela deve testar uma variável por vez.', ok:true, why:'Mudar uma coisa por vez é o que permite aprender com o teste.'},
+            {t:'Que todas as mudanças funcionaram igualmente.', ok:false, why:'Não há dados para afirmar isso. Pode ter sido uma só, ou nenhuma, como uma data comemorativa.'}
+          ]},
+        { who:'Alexandre, 45 anos, dono de uma loja de bicicletas', says:'O vídeo de sábado teve o triplo de visualizações. A partir de agora quero só vídeo.',
+          q:'Como orientar o Alexandre?',
+          opts:[
+            {t:'Concordar e trocar tudo por vídeo imediatamente.', ok:false, why:'Um único post pode ter ido bem por outros motivos, como o dia ou o assunto.'},
+            {t:'Ignorar o resultado, porque um post não significa nada.', ok:false, why:'Um bom resultado merece atenção. Ele é um sinal para testar, não para descartar.'},
+            {t:'Propor um teste de algumas semanas com mais vídeos, mantendo o resto igual, e comparar mensagens e visitas à loja antes de mudar tudo.', ok:true, why:'Transforma um sinal em teste, e a decisão passa a ter base.'}
+          ]},
+        { who:'Rita, 38 anos, freelancer', says:'Testei carrossel contra foto, e a foto foi melhor, ao contrário do que eu tinha recomendado à cliente. Melhor nem mostrar no relatório?',
+          q:'Qual é a atitude mais profissional?',
+          opts:[
+            {t:'Mostrar o resultado como foi, explicar o que aprendeu e ajustar o plano do próximo mês.', ok:true, why:'Honestidade com resultados contrários reforça a confiança e melhora as decisões.'},
+            {t:'Omitir o teste e mostrar só os números bons.', ok:false, why:'Esconder dados tira do cliente a chance de decidir bem e quebra a confiança se for descoberto.'},
+            {t:'Repetir o teste até o carrossel ganhar.', ok:false, why:'Testar de novo até dar o resultado desejado é forçar a conclusão, não aprender.'}
+          ]}
+      ]},
     { id:'3.6', title:'Projeto: relatório e proposta de pacote mensal', min:30,
       body:[
         `<div class="card"><p>Este projeto fecha o curso. Você vai preparar os documentos que transformam posts em um serviço contínuo: um relatório simples e uma proposta de pacote. Use o negócio dos projetos anteriores. Se ainda não houver números reais, faça um relatório-modelo e indique claramente que os números são de exemplo. Junto com os projetos dos módulos 1 e 2, ele forma o seu kit de portfólio. A trilha terá um projeto final próprio.</p></div>`,
@@ -661,7 +907,8 @@ const THEME = { 1:['#06B6D4','#3B82F6'], 2:['#3B82F6','#06B6D4'], 3:['#06B6D4','
 const LIC = {
   '1.1':'🎯','1.2':'🗓️','1.3':'🧰','1.4':'🔎','1.5':'🧭','1.6':'📋',
   '2.1':'✍️','2.2':'🎨','2.3':'🪝','2.4':'♿','2.5':'📚','2.6':'📝',
-  '3.1':'✅','3.2':'📁','3.3':'📊','3.4':'💰','3.5':'💬','3.6':'📑'
+  '3.1':'✅','3.2':'📁','3.3':'📊','3.4':'💰','3.5':'💬','3.6':'📑',
+  '1.7':'🪧','1.8':'📒','2.7':'☕','2.8':'🗣️','3.7':'🚌','3.8':'🧪'
 };
 
 return {

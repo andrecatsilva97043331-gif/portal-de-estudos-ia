@@ -150,8 +150,8 @@
     "ordem": 12,
     "recomendado_antes": ["base-profissional", "prompts-que-funcionam"],
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "pacotes-whatsapp-linkedin",
@@ -164,8 +164,8 @@
     "ordem": 13,
     "recomendado_antes": ["base-profissional", "posts-para-redes-sociais"],
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "sites-simples-com-ia",
@@ -178,8 +178,8 @@
     "ordem": 14,
     "recomendado_antes": ["base-profissional", "prompts-que-funcionam"],
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 4,
+    "versao": 2
   },
   {
     "id": "seu-primeiro-servico",
