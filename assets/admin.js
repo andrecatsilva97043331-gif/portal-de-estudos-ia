@@ -94,7 +94,7 @@ function contar(el){
   const t0 = performance.now();
   (function f(t){ const k = Math.min(1, (t - t0) / 900); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))) + suf; if (k < 1) requestAnimationFrame(f); })(t0);
 }
-const grafico = (titulo, sub, corpo, i) => `<div class="chart rise" style="${cor(i)};--d:${0.05 + i * 0.06}s"><div class="ch-h"><b>${titulo}</b><small>${sub}</small></div>${corpo}</div>`;
+const grafico = (titulo, sub, corpo, i, id) => `<div class="chart rise${id ? ' chart-largo" id="' + id : ''}" style="${cor(i)};--d:${0.05 + i * 0.06}s"><div class="ch-h"><b>${titulo}</b><small>${sub}</small></div>${corpo}</div>`;
 const vazio = msg => `<div class="ch-vazio">${msg}</div>`;
 
 function grafCadastros(rs){
@@ -152,6 +152,55 @@ function grafFunil(rs){
     + (c.projeto_final ? '' : barra('Certificado', turma.filter(a => cert.has(a)).length, 'Certificado emitido'));
   return grafico('Funil do curso · ' + esc(c.titulo), T + (T === 1 ? ' aluno' : ' alunos') + ' · toque num módulo para ver as lições',
     kpis + `<div class="hbars funil">${etapas}</div>`, 1);
+}
+
+/* Onde estão os alunos: estados pelo cadastro e cidades pelo CEP (consultado uma vez no ViaCEP e guardado neste navegador). */
+const UF_GRADE = { RR:[2,0], AP:[4,0], AM:[1,1], PA:[3,1], MA:[4,1], CE:[5,1], RN:[6,1], AC:[0,2], RO:[1,2], MT:[2,2], TO:[3,2], PI:[4,2], PE:[5,2], PB:[6,2],
+  MS:[2,3], GO:[3,3], DF:[4,3], BA:[5,3], AL:[6,3], SP:[3,4], MG:[4,4], ES:[5,4], SE:[6,4], PR:[3,5], RJ:[4,5], SC:[3,6], RS:[3,7] };
+const CHAVE_CEP = 'portal-estudos-cep-v1';
+const cepCache = () => { try { return JSON.parse(localStorage.getItem(CHAVE_CEP)) || {}; } catch(e){ return {}; } };
+const soDigitos = s => String(s || '').replace(/\D/g, '');
+const ehBrasil = a => !a.pais || /^bra[sz]il/i.test(String(a.pais).trim());
+let BUSCANDO_CEP = false, RS_LOCAL = [];
+async function completarCidades(){
+  if (BUSCANDO_CEP) return;
+  const cache = cepCache();
+  const faltam = [...new Set(RS_LOCAL.filter(r => ehBrasil(r.a)).map(r => soDigitos(r.a.cep)).filter(c => c.length === 8 && !(c in cache)))].slice(0, 80);
+  if (!faltam.length) return;
+  BUSCANDO_CEP = true;
+  for (const c of faltam) {
+    try { const r = await fetch('https://viacep.com.br/ws/' + c + '/json/').then(x => x.json()); cache[c] = r.erro ? '' : r.localidade + '|' + r.uf; }
+    catch(e){ break; }
+  }
+  try { localStorage.setItem(CHAVE_CEP, JSON.stringify(cache)); } catch(e){}
+  BUSCANDO_CEP = false;
+  const el = $('graf-local'); if (el) el.outerHTML = grafLocal(RS_LOCAL);
+}
+function grafLocal(rs){
+  const cache = cepCache(), porUF = {}, cidades = {}, fora = {};
+  let semCidade = 0;
+  rs.forEach(({ a }) => {
+    if (!ehBrasil(a)) { const p = String(a.pais).trim(); fora[p] = (fora[p] || 0) + 1; return; }
+    const uf = String(a.estado || '').trim().toUpperCase(); if (UF_GRADE[uf]) porUF[uf] = (porUF[uf] || 0) + 1;
+    const cid = cache[soDigitos(a.cep)];
+    if (cid) cidades[cid] = (cidades[cid] || 0) + 1; else if (cid === undefined && soDigitos(a.cep).length === 8) semCidade++;
+  });
+  if (!rs.length) return grafico('Onde estão seus alunos', 'Pelo estado e CEP do cadastro', vazio('Nenhum aluno ainda.'), 4, 'graf-local');
+  const max = Math.max(1, ...Object.values(porUF)), S = 44;
+  const mapa = `<svg class="br-mapa" viewBox="0 0 ${7 * S} ${8 * S}" role="img" aria-label="Alunos por estado">${Object.entries(UF_GRADE).map(([uf, [x, y]]) => {
+    const n = porUF[uf] || 0, cx = x * S + S / 2, cy = y * S + S / 2;
+    return `<g><title>${uf}: ${n} ${n === 1 ? 'aluno' : 'alunos'}</title><rect x="${x * S + 2}" y="${y * S + 2}" width="${S - 4}" height="${S - 4}" rx="9" class="br-uf${n ? ' tem' : ''}"${n ? ` style="fill-opacity:${(0.3 + 0.7 * n / max).toFixed(2)}"` : ''}/>
+      <text x="${cx}" y="${n ? cy - 3 : cy + 4}" class="br-sig${n ? ' tem' : ''}">${uf}</text>${n ? `<text x="${cx}" y="${cy + 12}" class="br-n">${n}</text>` : ''}</g>`; }).join('')}</svg>`;
+  const lista = (obj, n, rot) => Object.entries(obj).sort((x, y) => y[1] - x[1]).slice(0, n)
+    .map(([k, v]) => `<li><span>${esc(rot(k))}</span><b>${v}</b></li>`).join('');
+  const ufs = Object.keys(porUF).length, nCid = Object.keys(cidades).length, nFora = Object.values(fora).reduce((s, v) => s + v, 0);
+  return grafico('Onde estão seus alunos', ufs + (ufs === 1 ? ' estado' : ' estados') + (nCid ? ' · ' + nCid + (nCid === 1 ? ' cidade' : ' cidades') : '') + (nFora ? ' · ' + nFora + ' fora do Brasil' : ''),
+    `<div class="local">${mapa}<div class="local-lst">
+      <h4>Estados</h4><ol>${lista(porUF, 6, k => k) || '<li><span>Sem estado informado</span></li>'}</ol>
+      <h4>Cidades (pelo CEP)</h4><ol>${lista(cidades, 8, k => k.replace('|', ' · ')) || `<li><span>${semCidade ? 'Buscando as cidades…' : 'Sem CEP do Brasil ainda'}</span></li>`}</ol>
+      ${nFora ? `<h4>Fora do Brasil</h4><ol>${lista(fora, 5, k => k)}</ol>` : ''}
+      ${semCidade && nCid ? `<p class="nota">Buscando mais ${semCidade} ${semCidade === 1 ? 'cidade' : 'cidades'}…</p>` : ''}
+    </div></div>`, 4, 'graf-local');
 }
 
 function grafObjetivos(rs){
@@ -393,7 +442,7 @@ function renderDepoimentos(){
   $('titulo-dep').innerHTML = exemplo ? '💬 Depoimentos <span class="badge">EXEMPLOS · SÓ VOCÊ VÊ</span>'
     : '💬 Depoimentos (' + reais.length + ')' + (pend ? ' <small style="color:var(--muted);font-weight:400">· ' + pend + ' aguardando você</small>' : '');
   el.innerHTML = `${exemplo ? '<p class="nota" style="margin:12px 14px 0">Nenhum depoimento real ainda. Estes exemplos servem para você testar a imagem e as legendas; eles somem quando chegar o primeiro depoimento de um aluno, que aparece aqui com os botões Aprovar e Recusar.</p>' : ''}
-    <div class="deps">
+    <div class="adm-deps">
     ${lista.map(d => {
       const a = d.exemplo ? { nome:d.nome, estado:d.estado } : DADOS.alunos.find(x => x.id === d.aluno_id) || {}, publicavel = d.status === 'aprovado' && d.autoriza_publicar;
       return `<article class="dep ${esc(d.status)}">
@@ -547,7 +596,9 @@ function renderConfirmacoes(){
 const CURSOS_ABERTOS = new Set();
 function renderTabela(){
   const rs = linhas();
-  $('graficos').innerHTML = grafCadastros(rs) + grafFunil(rs) + grafObjetivos(rs) + grafSituacao(rs);
+  RS_LOCAL = rs;
+  $('graficos').innerHTML = grafCadastros(rs) + grafFunil(rs) + grafObjetivos(rs) + grafSituacao(rs) + grafLocal(rs);
+  completarCidades();
   renderAvisos(rs);
   $('titulo-tabela').textContent = 'Alunos (' + rs.length + ')';
   if (!rs.length) {
@@ -555,16 +606,16 @@ function renderTabela(){
     return;
   }
   $('tabela').innerHTML = `<table class="atbl"><thead><tr>
-      <th>Aluno</th><th class="hide-m">Perfil</th><th>Contato</th><th class="hide-m">Local</th><th>Cursos e progresso</th><th class="hide-m">Atividade</th>
+      <th>Aluno</th><th class="hide-m">Perfil</th><th class="hide-m">Contato</th><th class="hide-m">Local</th><th class="hide-m">Cursos e progresso</th><th class="hide-m">Atividade</th>
     </tr></thead><tbody>${rs.map(({ a, cursos }) => {
       const wa = linkWhats(a.telefone, a.pais), at = atividade(a.ultimo_acesso), aberto = CURSOS_ABERTOS.has(a.id);
       const media = cursos.length ? Math.round(cursos.reduce((s, c) => s + c.pct, 0) / cursos.length) : 0;
       return `<tr data-act="aluno" data-id="${esc(a.id)}">
-        <td><div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><div><button type="button" class="nome-aluno" data-act="cursos-aluno" data-id="${esc(a.id)}" aria-expanded="${aberto}" title="Mostrar ou esconder os cursos">${esc(a.nome)} <span aria-hidden="true">${aberto ? '▾' : '▸'}</span></button><br><small>${esc(a.idade)} anos · desde ${data(a.criado_em)}</small></div></div></td>
+        <td><div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><div><button type="button" class="nome-aluno" data-act="cursos-aluno" data-id="${esc(a.id)}" aria-expanded="${aberto}" title="Mostrar ou esconder os cursos">${esc(a.nome)} <span class="hide-m" aria-hidden="true">${aberto ? '▾' : '▸'}</span></button><small class="sub-aluno">${esc(a.idade)} anos · desde ${data(a.criado_em)}</small></div><span class="ver-m" aria-hidden="true">›</span></div></td>
         <td class="hide-m">${esc(a.ocupacao || a.profissao || '-')}<br><small>${esc(situacao(a))}${a.objetivo ? '<br>🎯 ' + esc(a.objetivo) : ''}</small></td>
-        <td>${wa ? `<a href="${wa}" target="_blank" rel="noopener" data-act="link">${esc(a.telefone)}</a>` : esc(a.telefone)}${a.email ? '<br><small>' + esc(a.email) + '</small>' : ''}<br>${selos(a)}</td>
+        <td class="hide-m">${wa ? `<a href="${wa}" target="_blank" rel="noopener" data-act="link">${esc(a.telefone)}</a>` : esc(a.telefone)}${a.email ? '<br><small>' + esc(a.email) + '</small>' : ''}<br>${selos(a)}</td>
         <td class="hide-m">${esc(a.estado)} · ${esc(a.pais)}<br><small>CEP ${esc(a.cep)}</small></td>
-        <td>${!cursos.length ? '<small>Sem matrícula</small>' : !aberto ? `<small>📚 ${cursos.length} ${cursos.length === 1 ? 'curso' : 'cursos'} · média ${media}%</small>` : cursos.map(c => {
+        <td class="hide-m">${!cursos.length ? '<small>Sem matrícula</small>' : !aberto ? `<small>📚 ${cursos.length} ${cursos.length === 1 ? 'curso' : 'cursos'} · média ${media}%</small>` : cursos.map(c => {
           const cc = cursoPorId(c.curso), cor = cc ? '--c:' + cc.cores[0] + ';--c2:' + cc.cores[1] : '';
           return `<div class="cprog" style="${cor}"><span>${esc(tituloCurso(c.curso))}</span><em>${c.feitas}/${c.total} · ${c.pct}%</em><div class="cbar" style="grid-column:1/-1"><i style="width:${c.pct}%"></i></div></div>`;
         }).join('')}</td>
@@ -666,6 +717,7 @@ document.addEventListener('click', e => {
   if (a === 'seg') { AV.seg = t.dataset.seg; renderAvisos(linhas()); }
   else if (a === 'modelo-padrao') { salvarModelo(AV.seg, MODELOS_PADRAO[AV.seg]); renderAvisos(linhas()); toast('Modelo restaurado'); }
   else if (a === 'enviar-api') enviarApi();
+  else if (a === 'cursos-aluno' && matchMedia('(max-width: 900px)').matches) abrirAluno(t.dataset.id);
   else if (a === 'cursos-aluno') { const id = t.dataset.id; CURSOS_ABERTOS.has(id) ? CURSOS_ABERTOS.delete(id) : CURSOS_ABERTOS.add(id); renderTabela(); }
   else if (a === 'aluno') abrirAluno(t.dataset.id);
   else if (a === 'fechar') fechar();
