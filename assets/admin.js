@@ -122,11 +122,36 @@ function grafFunil(rs){
   if (!c) return grafico('Funil de lições', 'Nenhum curso no catálogo', vazio('Sem dados ainda.'), 1);
   const turma = rs.filter(r => r.cursos.some(x => x.curso === c.id)).map(r => r.a.id);
   if (!turma.length) return grafico('Funil de lições · ' + esc(c.titulo), 'Onde os alunos param', vazio('Nenhum aluno neste curso ainda.'), 1);
-  const feitas = {};
-  DADOS.progresso.forEach(p => { if (p.curso_id === c.id && turma.includes(p.aluno_id)) feitas[p.licao_id] = (feitas[p.licao_id] || 0) + 1; });
-  return grafico('Funil de lições · ' + esc(c.titulo), turma.length + (turma.length === 1 ? ' aluno' : ' alunos') + ' · quantos concluíram cada lição',
-    `<div class="hbars funil">${c.licoes.map(l => { const n = feitas[l.id] || 0, p = Math.round(n / turma.length * 100);
-      return `<div class="hb" title="${esc(l.id + ' ' + l.title)}: ${n} de ${turma.length}"><span>${esc(l.id)}</span><div class="hbt"><i style="width:${p}%"></i></div><em>${p}%</em></div>`; }).join('')}</div>`, 1);
+  const T = turma.length, feito = {}, porLicao = {};
+  DADOS.progresso.forEach(p => {
+    if (p.curso_id !== c.id || !turma.includes(p.aluno_id)) return;
+    (feito[p.aluno_id] = feito[p.aluno_id] || new Set()).add(p.licao_id);
+    porLicao[p.licao_id] = (porLicao[p.licao_id] || 0) + 1;
+  });
+  const fez = (a, l) => !!(feito[a] && feito[a].has(l));
+  const pct = n => Math.round(n / T * 100);
+  const barra = (rot, n, dica) => `<div class="hb etapa" title="${esc(dica || rot)}: ${n} de ${T}"><span>${esc(rot)}</span><div class="hbt"><i style="width:${pct(n)}%"></i></div><em>${n} · ${pct(n)}%</em></div>`;
+  const mods = c.conteudo.modulos.map(m => ({ m, ls:c.licoes.filter(l => l.mod === m.id) })).filter(x => x.ls.length);
+  mods.forEach(x => { x.n = turma.filter(a => x.ls.every(l => fez(a, l.id))).length; });
+  const comecaram = turma.filter(a => feito[a] && feito[a].size).length;
+  const concluiram = turma.filter(a => c.licoes.every(l => fez(a, l.id))).length;
+  const cert = new Set((DADOS.certificados || []).filter(x => x.tipo !== 'trilha' && x.ref_id === c.id).map(x => x.aluno_id));
+  let antes = T, pior = null;
+  c.licoes.forEach(l => { const n = porLicao[l.id] || 0, q = antes - n; if (q > 0 && (!pior || q > pior.q)) pior = { l, q }; antes = n; });
+  let antesM = comecaram, piorM = null;
+  mods.forEach(x => { const q = antesM - x.n; if (q > 0 && (!piorM || q > piorM.q)) piorM = { m:x.m, q }; antesM = x.n; });
+  const kpis = `<div class="fn-kpis">
+    <div><b>${pct(concluiram)}%</b><small>concluíram o curso</small></div>
+    <div><b>${piorM ? 'Módulo ' + piorM.m.id : '-'}</b><small>${piorM ? piorM.q + (piorM.q === 1 ? ' aluno parou' : ' alunos pararam') + ' aqui' : 'ninguém parou ainda'}</small></div>
+    <div title="${pior ? esc(pior.l.id + ' ' + pior.l.title) : ''}"><b>${pior ? 'Lição ' + esc(pior.l.id) : '-'}</b><small>${pior ? 'maior queda: ' + pior.q + (pior.q === 1 ? ' aluno' : ' alunos') : 'sem quedas'}</small></div>
+  </div>`;
+  const etapas = barra('Matriculados', T) + barra('Começaram', comecaram, 'Fizeram ao menos uma lição')
+    + mods.map(x => `<details class="fn-mod"><summary>${barra('Módulo ' + x.m.id, x.n, 'Módulo ' + x.m.id + ': ' + x.m.title + ' (toque para ver as lições)')}</summary>
+      <div class="hbars fn-lic">${x.ls.map(l => { const n = porLicao[l.id] || 0;
+        return `<div class="hb" title="${esc(l.id + ' ' + l.title)}: ${n} de ${T}"><span>${esc(l.id)}</span><div class="hbt"><i style="width:${pct(n)}%"></i></div><em>${pct(n)}%</em></div>`; }).join('')}</div></details>`).join('')
+    + (c.projeto_final ? '' : barra('Certificado', turma.filter(a => cert.has(a)).length, 'Certificado emitido'));
+  return grafico('Funil do curso · ' + esc(c.titulo), T + (T === 1 ? ' aluno' : ' alunos') + ' · toque num módulo para ver as lições',
+    kpis + `<div class="hbars funil">${etapas}</div>`, 1);
 }
 
 function grafObjetivos(rs){
@@ -368,22 +393,25 @@ function renderDepoimentos(){
   $('titulo-dep').innerHTML = exemplo ? '💬 Depoimentos <span class="badge">EXEMPLOS · SÓ VOCÊ VÊ</span>'
     : '💬 Depoimentos (' + reais.length + ')' + (pend ? ' <small style="color:var(--muted);font-weight:400">· ' + pend + ' aguardando você</small>' : '');
   el.innerHTML = `${exemplo ? '<p class="nota" style="margin:12px 14px 0">Nenhum depoimento real ainda. Estes exemplos servem para você testar a imagem e as legendas; eles somem quando chegar o primeiro depoimento de um aluno, que aparece aqui com os botões Aprovar e Recusar.</p>' : ''}
-    <table class="atbl"><thead><tr><th>Aluno</th><th>Depoimento</th><th>Situação</th><th></th></tr></thead><tbody>
+    <div class="deps">
     ${lista.map(d => {
       const a = d.exemplo ? { nome:d.nome, estado:d.estado } : DADOS.alunos.find(x => x.id === d.aluno_id) || {}, publicavel = d.status === 'aprovado' && d.autoriza_publicar;
-      return `<tr>
-        <td>${esc(a.nome || '-')}<br><small>${esc(tituloCurso(d.curso_id))}<br>${d.exemplo ? 'Exemplo' : dataHora(d.criado_em)}</small></td>
-        <td style="max-width:420px">“${esc(d.texto)}”<br><small>${d.autoriza_publicar ? '✅ Autorizou publicar como ' + esc(nomePublico(a.nome)) + (a.estado ? ' · ' + esc(a.estado) : '') : '🔒 Não autorizou publicar: só para você ler'}</small></td>
-        <td>${SITUACAO_DEP[d.status] || esc(d.status)}</td>
-        <td><div class="avbtns">
+      return `<article class="dep ${esc(d.status)}">
+        <div class="dep-h"><span class="av" style="${corDe(a.nome || d.id)}">${esc(iniciais(a.nome))}</span>
+          <div class="dep-q"><b>${esc(a.nome || '-')}</b><small>${esc(tituloCurso(d.curso_id))} · ${d.exemplo ? 'Exemplo' : dataHora(d.criado_em)}</small></div>
+          <span class="dep-st">${SITUACAO_DEP[d.status] || esc(d.status)}</span></div>
+        <p class="dep-txt">“${esc(d.texto)}”</p>
+        ${String(d.texto || '').length > 200 ? '<button class="dep-mais" type="button" data-act="dep-mais">Ler tudo ▾</button>' : ''}
+        <small class="dep-pub">${d.autoriza_publicar ? '✅ Autorizou publicar como ' + esc(nomePublico(a.nome)) + (a.estado ? ' · ' + esc(a.estado) : '') : '🔒 Não autorizou publicar: só para você ler'}</small>
+        <div class="avbtns">
           ${!d.exemplo && d.status !== 'aprovado' ? `<button class="sbtn wa" data-act="dep-moderar" data-id="${d.id}" data-st="aprovado">✅ Aprovar</button>` : ''}
           ${!d.exemplo && d.status !== 'recusado' ? `<button class="sbtn" data-act="dep-moderar" data-id="${d.id}" data-st="recusado">🚫 Recusar</button>` : ''}
-          ${publicavel ? `<button class="sbtn" data-act="dep-imagem" data-id="${d.id}">🖼️ Baixar imagem</button>
-            <button class="sbtn" data-act="dep-legenda" data-id="${d.id}" data-rede="instagram">📋 Legenda Instagram</button>
-            <button class="sbtn" data-act="dep-legenda" data-id="${d.id}" data-rede="linkedin">📋 Legenda LinkedIn</button>` : ''}
-        </div></td>
-      </tr>`;
-    }).join('')}</tbody></table>`;
+          ${publicavel ? `<button class="sbtn" data-act="dep-imagem" data-id="${d.id}">🖼️ Imagem</button>
+            <button class="sbtn" data-act="dep-legenda" data-id="${d.id}" data-rede="instagram">📋 Instagram</button>
+            <button class="sbtn" data-act="dep-legenda" data-id="${d.id}" data-rede="linkedin">📋 LinkedIn</button>` : ''}
+        </div>
+      </article>`;
+    }).join('')}</div>`;
 }
 function dadosPost(id){
   const d = (DADOS.depoimentos || []).concat(EXEMPLOS_DEP).find(x => String(x.id) === String(id)); if (!d) return null;
@@ -660,6 +688,7 @@ document.addEventListener('click', e => {
       renderDepoimentos(); toast(st === 'aprovado' ? 'Depoimento aprovado ✅' : 'Depoimento recusado');
     }).catch(err => { console.error(err); t.disabled = false; toast('Não foi possível alterar agora.'); });
   }
+  else if (a === 'dep-mais') { const art = t.closest('.dep'); art.classList.toggle('aberto'); t.textContent = art.classList.contains('aberto') ? 'Mostrar menos ▴' : 'Ler tudo ▾'; }
   else if (a === 'dep-imagem') baixarImagemPost(t.dataset.id, t);
   else if (a === 'dep-legenda') { copiar(legendaPost(t.dataset.id, t.dataset.rede)); toast('Legenda copiada'); }
   else if (a === 'sair') DB.sairMaster().then(() => renderLogin());
