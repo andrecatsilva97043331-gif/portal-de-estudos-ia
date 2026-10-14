@@ -1787,6 +1787,25 @@ async function iniciar(){
 }
 window.addEventListener('focus', () => { checarLinkEmail(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checarLinkEmail(); });
+/* O app instalado no celular volta do fundo sem recarregar a página. Cada publicação no GitHub Pages
+   muda o ETag de todos os arquivos; ao voltar, se mudou, recarrega (ou avisa, se o aluno estiver escrevendo). */
+let VERSAO_SITE = null, ATUALIZAR_PENDENTE = false;
+const versaoSite = () => fetch('cursos/catalogo.json', { method:'HEAD', cache:'no-store' })
+  .then(r => r.ok ? (r.headers.get('etag') || r.headers.get('last-modified')) : null).catch(() => null);
+const escrevendo = () => [...document.querySelectorAll('textarea, input:not([type]), input[type=text], input[type=email], input[type=tel], input[type=number]')]
+  .some(e => e.value && e.value.trim());
+async function checarAtualizacao(){
+  const v = await versaoSite(); if (!v) return;
+  if (!VERSAO_SITE) { VERSAO_SITE = v; return; }
+  if (v === VERSAO_SITE && !ATUALIZAR_PENDENTE) return;
+  if (escrevendo()) {
+    if (!ATUALIZAR_PENDENTE) toast('🔄 O portal tem novidades. Elas aparecem quando você terminar e voltar ao app.');
+    ATUALIZAR_PENDENTE = true; return;
+  }
+  location.reload();
+}
+checarAtualizacao();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checarAtualizacao(); });
 /* Painel flutuante (notebook): abre no clique da aba Trilha e fecha ao afastar o mouse. */
 let FECHA_SB = null;
 const sbFlutuante = () => document.body.classList.contains('sb-flut') && innerWidth > 900 && !$('qr-modal') && !$('tn-modal');
