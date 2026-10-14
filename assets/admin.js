@@ -212,7 +212,7 @@ function grafLocal(rs){
       <text class="geo-n" x="${x}" y="${y + 4.5}">${n}</text></g>`;
   }).join('');
   const mapa = `<svg class="geo-mapa" viewBox="0 0 660 639" role="img" aria-label="Mapa do Brasil com alunos por estado">
-    <defs><linearGradient id="geo-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--c)"/><stop offset="1" stop-color="var(--c2)"/></linearGradient></defs>
+    <defs><linearGradient id="geo-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--c)"/><stop offset=".55" stop-color="var(--c2)"/><stop offset="1" stop-color="var(--c3)"/></linearGradient></defs>
     <g class="geo-estados">${Object.entries(M.ufs).map(([uf, e], i) => { const n = porUF[uf] || 0;
       return `<path class="geo-uf${n ? ' tem' : ''}${uf === LOCAL_SEL ? ' sel' : ''}" data-act="local-uf" data-uf="${uf}" style="--i:${i}${n ? ';fill-opacity:' + (0.3 + 0.6 * n / max).toFixed(2) : ''}" d="${e.d}"><title>${legenda(uf)}</title></path>`; }).join('')}</g>
     <g class="geo-marcas">${marcas}</g></svg>`;
@@ -634,7 +634,6 @@ function renderConfirmacoes(){
     </div>`;
 }
 
-const CURSOS_ABERTOS = new Set();
 function renderTabela(){
   const rs = linhas();
   RS_LOCAL = rs;
@@ -647,23 +646,10 @@ function renderTabela(){
     $('tabela').innerHTML = `<div class="empty">${DADOS.alunos.length ? 'Nenhum aluno encontrado com esse filtro.' : 'Nenhum aluno cadastrado ainda. Envie o link de convite para começar.'}</div>`;
     return;
   }
-  $('tabela').innerHTML = `<table class="atbl"><thead><tr>
-      <th>Aluno</th><th class="hide-m">Perfil</th><th class="hide-m">Contato</th><th class="hide-m">Local</th><th class="hide-m">Cursos e progresso</th><th class="hide-m">Atividade</th>
-    </tr></thead><tbody>${rs.map(({ a, cursos }) => {
-      const wa = linkWhats(a.telefone, a.pais), at = atividade(a.ultimo_acesso), aberto = CURSOS_ABERTOS.has(a.id);
-      const media = cursos.length ? Math.round(cursos.reduce((s, c) => s + c.pct, 0) / cursos.length) : 0;
-      return `<tr data-act="aluno" data-id="${esc(a.id)}">
-        <td><div class="pessoa"><span class="av" style="${corDe(a.id)}">${esc(iniciais(a.nome))}</span><div><button type="button" class="nome-aluno" data-act="cursos-aluno" data-id="${esc(a.id)}" aria-expanded="${aberto}" title="Mostrar ou esconder os cursos">${esc(a.nome)} <span class="hide-m" aria-hidden="true">${aberto ? '▾' : '▸'}</span></button><small class="sub-aluno">${esc(a.idade)} anos · desde ${data(a.criado_em)}</small></div><span class="ver-m" aria-hidden="true">›</span></div></td>
-        <td class="hide-m">${esc(a.ocupacao || a.profissao || '-')}<br><small>${esc(situacao(a))}${a.objetivo ? '<br>🎯 ' + esc(a.objetivo) : ''}</small></td>
-        <td class="hide-m">${wa ? `<a href="${wa}" target="_blank" rel="noopener" data-act="link">${esc(a.telefone)}</a>` : esc(a.telefone)}${a.email ? '<br><small>' + esc(a.email) + '</small>' : ''}<br>${selos(a)}</td>
-        <td class="hide-m">${esc(a.estado)} · ${esc(a.pais)}<br><small>CEP ${esc(a.cep)}</small></td>
-        <td class="hide-m">${!cursos.length ? '<small>Sem matrícula</small>' : !aberto ? `<small>📚 ${cursos.length} ${cursos.length === 1 ? 'curso' : 'cursos'} · média ${media}%</small>` : cursos.map(c => {
-          const cc = cursoPorId(c.curso), cor = cc ? '--c:' + cc.cores[0] + ';--c2:' + cc.cores[1] : '';
-          return `<div class="cprog" style="${cor}"><span>${esc(tituloCurso(c.curso))}</span><em>${c.feitas}/${c.total} · ${c.pct}%</em><div class="cbar" style="grid-column:1/-1"><i style="width:${c.pct}%"></i></div></div>`;
-        }).join('')}</td>
-        <td class="hide-m"><span class="act ${at[0]}">${at[1]}</span><br><small>${dataHora(a.ultimo_acesso)}</small></td>
-      </tr>`;
-    }).join('')}</tbody></table>`;
+  const ordem = rs.slice().sort((x, y) => String(x.a.nome || '').localeCompare(String(y.a.nome || ''), 'pt-BR', { sensitivity:'base' }));
+  $('tabela').innerHTML = `<table class="atbl"><thead><tr><th>Aluno</th></tr></thead><tbody>${ordem.map(({ a }) =>
+      `<tr data-act="aluno" data-id="${esc(a.id)}"><td><div class="pessoa"><button type="button" class="nome-aluno" data-act="aluno" data-id="${esc(a.id)}" title="Ver informações do aluno">${esc(a.nome)}</button><span class="ver-m" aria-hidden="true">›</span></div></td></tr>`
+    ).join('')}</tbody></table>`;
 }
 
 function abrirAluno(id){
@@ -759,8 +745,6 @@ document.addEventListener('click', e => {
   if (a === 'seg') { AV.seg = t.dataset.seg; renderAvisos(linhas()); }
   else if (a === 'modelo-padrao') { salvarModelo(AV.seg, MODELOS_PADRAO[AV.seg]); renderAvisos(linhas()); toast('Modelo restaurado'); }
   else if (a === 'enviar-api') enviarApi();
-  else if (a === 'cursos-aluno' && matchMedia('(max-width: 900px)').matches) abrirAluno(t.dataset.id);
-  else if (a === 'cursos-aluno') { const id = t.dataset.id; CURSOS_ABERTOS.has(id) ? CURSOS_ABERTOS.delete(id) : CURSOS_ABERTOS.add(id); renderTabela(); }
   else if (a === 'aluno') abrirAluno(t.dataset.id);
   else if (a === 'fechar') fechar();
   else if (a === 'atualizar') carregarDados().then(() => toast('Dados atualizados'));

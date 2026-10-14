@@ -446,7 +446,11 @@ html.cel .tn-ir, html.cel .tn-chamada.feito .ghost{margin-left:50px;}
 .chart-largo{grid-column:1/-1;}
 .geo-troca{animation:geoTroca .35s ease both;}
 @keyframes geoTroca{from{opacity:.6;}}
+#graf-local{--c:#22d3ee !important; --c2:#c084fc !important; --c3:#ec4899;}
 .geo-kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px;}
+.geo-kpi:nth-child(2){--c:#c084fc; --c2:#ec4899;}
+.geo-kpi:nth-child(3){--c:#ec4899; --c2:#ff5a5f;}
+.geo-kpi:nth-child(4){--c:#4ade80; --c2:#22d3ee;}
 .geo-kpi{position:relative; overflow:hidden; display:grid; grid-template-columns:auto 1fr; grid-template-rows:auto auto; column-gap:10px; align-items:center; padding:12px 14px; border-radius:16px;
   border:1px solid color-mix(in srgb,var(--c) 35%,var(--line)); background:linear-gradient(135deg,color-mix(in srgb,var(--c) 14%,#07070c),#07070c 70%);}
 .geo-kpi::after{content:''; position:absolute; inset:0; background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.07) 50%,transparent 70%); transform:translateX(-100%); animation:geoBrilho 4s ease-in-out infinite;}
@@ -580,10 +584,10 @@ a.sbtn{text-decoration:none; display:inline-flex; align-items:center;}
 .atbl tbody tr:hover{background:var(--s1);}
 .atbl small{color:var(--muted);}
 .atbl a{color:var(--ok);}
-.nome-aluno{all:unset; cursor:pointer; font-weight:700; color:var(--text); border-bottom:1px dashed var(--muted);}
-.nome-aluno:hover,.nome-aluno:focus-visible{color:var(--ok); border-bottom-color:var(--ok);}
-.atbl .sub-aluno{display:block;}
-.atbl .ver-m{display:none;}
+.nome-aluno{all:unset; flex:1; min-width:0; cursor:pointer; font-weight:700; color:var(--text);}
+.nome-aluno:hover,.nome-aluno:focus-visible{color:var(--ok);}
+.atbl .ver-m{display:block; color:var(--muted); font-size:22px; line-height:1;}
+.atbl tbody tr:hover .ver-m{color:var(--ok);}
 .cprog{display:grid; grid-template-columns:minmax(120px,1fr) 90px; gap:4px 10px; align-items:center; margin-bottom:6px;}
 .cprog span{font-size:13px;}
 .cprog em{font-style:normal; font-size:12px; color:var(--muted); text-align:right;}
@@ -650,8 +654,4 @@ a.sbtn{text-decoration:none; display:inline-flex; align-items:center;}
   .charts{grid-template-columns:1fr;}
   .stat b{font-size:28px;}
   .hide-m{display:none;}
-  .atbl .sub-aluno{display:none;}
-  .atbl .pessoa > div{flex:1; min-width:0;}
-  .atbl .nome-aluno{border-bottom:0;}
-  .atbl .ver-m{display:block; color:var(--muted); font-size:22px; line-height:1;}
 }
