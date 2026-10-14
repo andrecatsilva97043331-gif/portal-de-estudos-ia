@@ -419,6 +419,49 @@ Se duas fontes se contradisserem, mostre as duas e a data de cada uma.
             {t:'Não usar IA em saúde de forma alguma.', ok:false, why:'Como apoio ao profissional, com fontes, pode ser muito útil.'}
           ]}
       ]},
+    { id:'1.10', title:'Inventário de perguntas reais antes de construir', min:12,
+      body:[
+        `<div class="card analogy"><h3>📋 O alfaiate tira as medidas</h3><p>Nenhum alfaiate corta o tecido antes de medir o cliente. Num RAG, as medidas são as <b>perguntas reais</b> que as pessoas fazem: elas dizem quais documentos importam, quais faltam e quais perguntas nem deveriam ir para um RAG.</p></div>`,
+        `<div class="term"><b>Inventário de perguntas</b> = amostra de perguntas reais (de e-mails, chamados, conversas), com a frequência de cada assunto. <b>Tipo de pergunta</b> = fato em documento, cálculo sobre dados, lacuna (não há documento) ou decisão de uma pessoa. <b>Cobertura</b> = fração das perguntas que a base consegue responder com fonte.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: escritório de contabilidade</h3>
+          <p><b>Antes:</b> o plano era "indexar o drive inteiro" (4.000 arquivos) e ver o que acontecia.</p>
+          <p><b>Depois:</b> a equipe juntou 30 perguntas reais dos e-mails de clientes do último mês e classificou cada uma:</p>
+          <div class="tw"><table class="tbl"><tr><th>Tipo</th><th>Qtde</th><th>Exemplo</th><th>Caminho</th></tr>
+          <tr><td>Fato em documento</td><td>14</td><td>"Qual o prazo para enviar as notas do mês?"</td><td>RAG</td></tr>
+          <tr><td>Cálculo sobre dados</td><td>7</td><td>"Quanto paguei de imposto no trimestre?"</td><td>Consulta ao sistema</td></tr>
+          <tr><td>Lacuna</td><td>5</td><td>"Posso emitir nota para o exterior?"</td><td>Escrever o documento antes</td></tr>
+          <tr><td>Decisão</td><td>4</td><td>"Vale a pena mudar de regime?"</td><td>Contador responde</td></tr></table></div>
+          <div class="code">Cobertura do RAG hoje      = 14/30 = 47%
+Com as 5 lacunas escritas  = 19/30 = 63%
+Arquivos realmente usados  = cerca de 40 dos 4.000</div>
+          <p>Resultado: um escopo menor, uma lista de documentos a escrever (com dono) e 30 perguntas que já servem de primeiro conjunto de avaliação.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ol class="golden"><li><span><b>Inventar as perguntas em reunião</b>: gestores imaginam perguntas diferentes das que os clientes fazem. Use registros reais.</span></li><li><span><b>Ignorar a frequência</b>: um assunto que aparece 50 vezes por mês vale mais que dez assuntos raros.</span></li><li><span><b>Esconder as lacunas</b>: sem documento, o RAG vai dizer "não sei" (ou inventar). A lacuna é tarefa de conteúdo, não de tecnologia.</span></li><li><span><b>Misturar públicos</b>: perguntas de clientes e de funcionários exigem bases e permissões diferentes; separe no inventário.</span></li></ol></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (NotebookLM)</h3><ol class="golden"><li><span>Anote 10 perguntas que as pessoas fazem no seu trabalho (ou num tema público que você conhece), reescritas sem nomes nem dados pessoais.</span></li><li><span>Crie um caderno com 3 documentos públicos ligados a essas perguntas.</span></li><li><span>Faça as 10 perguntas e classifique cada uma: fato em documento, cálculo, lacuna ou decisão.</span></li><li><span>Calcule a cobertura e liste os documentos que faltam escrever.</span></li></ol>
+          <p>🔒 Não copie e-mails ou chamados reais: reescreva a pergunta sem nomes, CPFs ou valores de clientes.</p></div>`
+      ],
+      ch:[
+        { who:'Tadeu, 45 anos, diretor de operações', says:'Vamos começar indexando os 4.000 arquivos do drive. Depois vemos que perguntas aparecem.',
+          q:'Qual é o primeiro passo mais sensato?',
+          opts:[
+            {t:'Indexar tudo, porque mais documentos sempre melhoram a resposta.', ok:false, why:'Documentos irrelevantes ou antigos aumentam ruído e custo sem garantir cobertura.'},
+            {t:'Coletar uma amostra de perguntas reais, classificar por tipo e frequência e só então escolher os documentos a indexar.', ok:true, why:'As perguntas definem o escopo, revelam lacunas e já viram o conjunto de avaliação.'},
+            {t:'Escolher primeiro o banco vetorial.', ok:false, why:'A ferramenta vem depois de saber o que precisa ser respondido.'}
+          ]},
+        { who:'Ulisses, 36 anos, analista de atendimento', says:'De 40 perguntas reais: 18 são fatos em documentos, 10 são cálculos, 8 não têm documento nenhum e 4 dependem de decisão do gerente.',
+          q:'Qual é a cobertura do RAG hoje e o que fazer com as 8?',
+          opts:[
+            {t:'45%; escrever os documentos que faltam, com um dono, o que leva a cobertura a 65%.', ok:true, why:'18/40 = 45%; com as 8 lacunas preenchidas, 26/40 = 65%.'},
+            {t:'70%; as 8 o modelo responde com o conhecimento geral dele.', ok:false, why:'Sem fonte, a resposta não é confiável; e a conta inclui perguntas que o RAG não cobre.'},
+            {t:'45%; descartar as 8 do inventário.', ok:false, why:'São perguntas reais; descartá-las esconde um problema que vai aparecer em produção.'}
+          ]},
+        { who:'Vânia, 41 anos, coordenadora de RH', says:'Fizemos uma oficina com os diretores e eles listaram 25 perguntas que os funcionários "provavelmente" fazem.',
+          q:'Qual é o risco desse inventário?',
+          opts:[
+            {t:'Nenhum; os diretores conhecem a empresa.', ok:false, why:'Conhecem a empresa, mas não necessariamente as dúvidas do dia a dia dos funcionários.'},
+            {t:'Ter poucas perguntas; o ideal seria pedir 100 aos diretores.', ok:false, why:'Mais perguntas imaginadas não corrigem o viés.'},
+            {t:'As perguntas são imaginadas; complementar com registros reais (chamados do RH, e-mails), sem dados pessoais, e medir a frequência.', ok:true, why:'Perguntas reais mostram o vocabulário e os assuntos que de fato aparecem.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: mapa do seu caso de uso com dados', min:40,
       body:[
         `<div class="card"><h3>🗺️ Antes da tecnologia, o problema</h3><p>Escolha um conjunto real de documentos ou dados do seu trabalho (manual, base de artigos, contratos, planilhas) e as pessoas que precisam de respostas a partir dele. Você vai mapear as perguntas reais e decidir, com argumentos, qual combinação de abordagens atende cada tipo de pergunta.</p></div>`
@@ -846,6 +889,48 @@ Trecho F = (0, 1, 1)    norma √2 ≈ 1,414
             {t:'Desligar a deduplicação.', ok:false, why:'Voltariam as duplicatas no top-k para quem vê as duas pastas.'},
             {t:'Manter sempre a cópia mais restrita.', ok:false, why:'É justamente o que causou o problema.'},
             {t:'Deduplicar só entre cópias com o mesmo acesso (ou unir as permissões num único registro), para nunca tirar conteúdo de quem tem direito.', ok:true, why:'A deduplicação não pode alterar quem enxerga o quê.'}
+          ]}
+      ]},
+    { id:'2.10', title:'Trechos com contexto: o cabeçalho que a busca enxerga', min:12,
+      body:[
+        `<div class="card analogy"><h3>🪪 A página arrancada do livro</h3><p>Uma página solta diz "ele aceitou o acordo em 30 dias". Quem é "ele"? Que acordo? Sem a capa e o capítulo, a página é quase inútil. Um trecho cortado de um documento sofre do mesmo problema: a busca vê só aquelas linhas, sem saber de que documento e de que seção vieram.</p></div>`,
+        `<div class="term"><b>Trecho órfão</b> = trecho que não faz sentido sozinho (usa "ele", "este contrato", "o prazo"). <b>Cabeçalho de contexto</b> = uma linha curta com documento e seção (às vezes um resumo de uma frase) colada antes do trecho na hora de gerar o embedding. <b>Texto de busca × texto de citação</b> = o vetor é gerado com o cabeçalho; o que vai para a IA e para a citação continua sendo o trecho original, com os metadados.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: 12 contratos de fornecedores</h3>
+          <p>Pergunta: "Qual o prazo de rescisão do contrato com a Transportadora Alfa?"</p>
+          <p><b>Antes:</b> o trecho certo dizia só "O prazo é de 30 dias a partir da notificação." Outros 11 contratos tinham frases quase iguais. O trecho certo apareceu na <b>posição 9</b>; com top-5, a IA nunca o viu.</p>
+          <p><b>Depois:</b> o texto de busca ganhou um cabeçalho montado com os dados que a ingestão já tinha:</p>
+          <div class="code">[Contrato Transportadora Alfa, 2026 | Cláusula 12: Rescisão]
+O prazo é de 30 dias a partir da notificação.</div>
+          <p>O trecho certo subiu para a <b>posição 1</b>. Na ingestão, a mudança é pequena:</p>
+          <div class="code">texto_busca = f"[{doc.titulo} | {secao.caminho}]\\n{trecho}"
+vetor = embutir(texto_busca)
+salvar(id, vetor, texto=trecho, meta={"doc": doc.id, "secao": secao.caminho})</div>
+          <p>Custo: um cabeçalho de 20 tokens num trecho de 400 aumenta cerca de 5% os tokens de embedding, sem nenhuma chamada extra à IA. Já um <b>resumo gerado por IA</b> para cada trecho exige uma chamada por trecho (10.000 trechos, 10.000 chamadas): teste primeiro o cabeçalho estrutural.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ol class="golden"><li><span><b>Cabeçalho genérico</b> ("Documento interno") igual em todos os trechos: não ajuda a separar um do outro.</span></li><li><span><b>Mudar o formato e reindexar só parte da base</b>: trechos antigos e novos deixam de ser comparáveis. Reindexe tudo.</span></li><li><span><b>Resumo inventado</b>: o resumo gerado por IA pode afirmar o que o documento não diz. Confira uma amostra.</span></li><li><span><b>Não medir</b>: compare recall@k e MRR antes e depois, no mesmo conjunto de perguntas.</span></li></ol></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (Google Colab)</h3><ol class="golden"><li><span>Invente 3 documentos curtos e parecidos (por exemplo, 3 contratos ou 3 manuais) e corte-os em 8 a 10 trechos.</span></li><li><span>Gere os embeddings com um modelo multilíngue aberto, primeiro só com o trecho e depois com um cabeçalho que você mesmo definir.</span></li><li><span>Escreva 3 perguntas que citam o documento pelo nome e anote a posição do trecho certo nas duas versões.</span></li><li><span>Registre o que mudou e se valeria aplicar na sua base.</span></li></ol>
+          <p>🔒 Use apenas textos inventados ou públicos; não envie contratos reais nem dados de clientes ao Colab.</p></div>`
+      ],
+      ch:[
+        { who:'Wagner, 38 anos, desenvolvedor', says:'Temos 30 manuais de produtos e quase todos têm a frase "segure o botão por 10 segundos para reiniciar". A busca traz o manual errado.',
+          q:'Qual ajuste resolve na ingestão?',
+          opts:[
+            {t:'Aumentar o top-k para 30.', ok:false, why:'Encheria o pedido de trechos iguais, de produtos errados.'},
+            {t:'Colocar no texto de busca um cabeçalho com produto e seção, mantendo o trecho original para a citação.', ok:true, why:'O cabeçalho dá ao vetor a informação que separa um manual do outro.'},
+            {t:'Trocar o modelo de embeddings por um maior.', ok:false, why:'Os trechos são praticamente idênticos; nenhum modelo adivinha o produto que não está no texto.'}
+          ]},
+        { who:'Ximena, 33 anos, engenheira de dados', says:'Mudamos o formato do cabeçalho e reindexamos só os documentos novos. Agora a busca ficou estranha: documentos antigos quase nunca aparecem.',
+          q:'O que fazer?',
+          opts:[
+            {t:'Reindexar a base inteira com o mesmo formato e comparar com o conjunto de avaliação antes de liberar.', ok:true, why:'Vetores gerados com textos de formatos diferentes não competem em pé de igualdade.'},
+            {t:'Dar peso maior aos documentos antigos na busca.', ok:false, why:'É um remendo que esconde a inconsistência.'},
+            {t:'Apagar os documentos antigos.', ok:false, why:'Perde conteúdo válido para corrigir um problema de processo.'}
+          ]},
+        { who:'Yuri, 40 anos, líder técnico', says:'Queremos gerar com IA um resumo de contexto para cada um dos nossos 50.000 trechos. O orçamento está apertado.',
+          q:'Qual é a ordem mais sensata?',
+          opts:[
+            {t:'Gerar os 50.000 resumos de uma vez, porque é a técnica mais completa.', ok:false, why:'Gasta o orçamento sem saber se o ganho compensa.'},
+            {t:'Desistir de qualquer contexto nos trechos.', ok:false, why:'Ignora uma melhoria barata e eficaz.'},
+            {t:'Aplicar primeiro o cabeçalho estrutural (documento e seção), que não custa chamadas, e medir; testar resumos numa amostra só se o ganho não bastar.', ok:true, why:'Começar pelo mais barato e medir evita gastar onde não há retorno.'}
           ]}
       ]},
     { id:'2.6', title:'Projeto: plano de ingestão da sua base', min:45,
@@ -2074,6 +2159,46 @@ Registro mínimo de cada consulta:
             {t:'Mostrar uma barra de progresso.', ok:false, why:'Não resolve o ciclo.'}
           ]}
       ]},
+    { id:'5.10', title:'Cascata de modelos: barato primeiro, forte quando precisa', min:13,
+      body:[
+        `<div class="card analogy"><h3>🪜 A triagem do pronto-socorro</h3><p>No pronto-socorro, a triagem resolve ou encaminha os casos simples e chama o especialista só quando aparece um sinal de gravidade. Ninguém coloca o cirurgião para medir a pressão de todo mundo. Numa <b>cascata de modelos</b>, um modelo barato responde primeiro e um modelo forte só entra quando há um sinal objetivo de que a primeira resposta não serve.</p></div>`,
+        `<div class="term"><b>Cascata</b> = tentar com o modelo barato e escalar para o forte quando a resposta falha numa checagem. <b>Sinal de escalonamento</b> = critério verificável: citação inexistente, verificador de apoio reprovou, resposta "não encontrei" com trechos relevantes, pergunta de tema sensível. <b>Taxa de escalonamento</b> = fração das consultas que chegam ao modelo forte.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: 20.000 consultas por mês</h3>
+          <p>Preços ilustrativos por consulta (pergunta + trechos + resposta): modelo forte R$ 0,060; modelo barato R$ 0,006.</p>
+          <div class="code">ANTES  tudo no forte:  20.000 × 0,060 = R$ 1.200
+DEPOIS cascata com 25% de escalonamento:
+       todas no barato: 20.000 × 0,006 = R$ 120
+       escaladas:        5.000 × 0,060 = R$ 300
+       total = R$ 420  (economia de 65%)</div>
+          <p>Repare que as consultas escaladas pagam <b>duas vezes</b> e demoram mais. A cascata só economiza enquanto 0,006 + t × 0,060 &lt; 0,060, isto é, com taxa de escalonamento t abaixo de 90%; na prática, acima de uns 50% o ganho já não compensa a latência extra.</p>
+          <p>Antes de virar a chave, rode o conjunto de avaliação nos dois caminhos: se a cascata aprova 94% das respostas e só o modelo forte aprova 95%, a troca provavelmente vale; se cai para 80%, não vale.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ol class="golden"><li><span><b>Escalar pela "certeza" que o modelo declara</b>: o modelo pode dizer "tenho certeza" e estar errado. Use checagens externas.</span></li><li><span><b>Não acompanhar a taxa de escalonamento</b>: se ela sobe, algo mudou na base ou nas perguntas.</span></li><li><span><b>Mandar tema sensível para o barato</b>: saúde, jurídico e reclamações graves podem ir direto ao forte ou a uma pessoa.</span></li><li><span><b>Olhar só o custo</b>: meça também qualidade e tempo de resposta das consultas escaladas.</span></li></ol></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (OpenRouter)</h3><ol class="golden"><li><span>Na lista de modelos, escolha um modelo grátis e um pago mais forte; anote os preços de entrada e saída.</span></li><li><span>Estime o custo de uma consulta típica sua em cada um.</span></li><li><span>No chat, com um modelo grátis, faça 5 perguntas colando trechos de um documento público, e marque quais respostas você escalaria e por qual sinal.</span></li><li><span>Calcule a taxa de escalonamento e o custo mensal da cascata comparado a usar só o modelo forte.</span></li></ol>
+          <p>🔒 Cole só trechos públicos ou inventados; não envie documentos internos nem dados de clientes.</p></div>`
+      ],
+      ch:[
+        { who:'Zélia, 37 anos, gerente de produto', says:'São 10.000 consultas por mês. O modelo barato custa R$ 0,01 por consulta e o forte R$ 0,05. Na cascata, 30% escalam.',
+          q:'Quanto custa a cascata por mês?',
+          opts:[
+            {t:'R$ 150, só as escaladas no modelo forte.', ok:false, why:'Esqueceu que todas as consultas passam antes pelo modelo barato.'},
+            {t:'R$ 250: 10.000 × 0,01 + 3.000 × 0,05.', ok:true, why:'Todas pagam o barato (R$ 100) e as escaladas pagam também o forte (R$ 150); metade dos R$ 500 de usar só o forte.'},
+            {t:'R$ 220: 7.000 × 0,01 + 3.000 × 0,05.', ok:false, why:'As escaladas também passaram pelo barato antes; elas pagam duas vezes.'}
+          ]},
+        { who:'Artur, 34 anos, desenvolvedor', says:'Vou pedir ao modelo barato que informe a confiança de 0 a 100 e escalar quando ele disser menos de 70.',
+          q:'O que é mais confiável como sinal de escalonamento?',
+          opts:[
+            {t:'A confiança declarada, desde que o limite seja 90.', ok:false, why:'Mudar o limite não resolve: a nota que o modelo dá a si mesmo não é calibrada.'},
+            {t:'Escalar sempre que a resposta for longa.', ok:false, why:'Tamanho não indica erro.'},
+            {t:'Checagens externas: ids de citação que não existem, verificador de apoio reprovando, "não encontrei" com trechos relevantes, tema sensível.', ok:true, why:'São sinais verificáveis, que não dependem da autoavaliação do modelo.'}
+          ]},
+        { who:'Bianca, 42 anos, coordenadora de suporte', says:'Depois do lançamento de uma linha nova de produtos, a taxa de escalonamento pulou de 20% para 70%.',
+          q:'Qual é a leitura certa?',
+          opts:[
+            {t:'Tudo bem, a cascata está protegendo a qualidade.', ok:false, why:'Protege, mas com 70% o custo fica perto do modelo forte e as respostas ficam mais lentas.'},
+            {t:'Investigar a causa (provavelmente faltam documentos da linha nova ou a busca não os encontra) e corrigir; enquanto isso, rotear esse assunto direto ao forte.', ok:true, why:'O salto indica um problema na base ou na busca; corrigir a origem devolve a economia.'},
+            {t:'Trocar o modelo barato por outro barato.', ok:false, why:'Se o trecho certo não chega, nenhum modelo responde bem.'}
+          ]}
+      ]},
     { id:'5.6', title:'Projeto: plano de operação do seu sistema com dados', min:55,
       body:[
         `<div class="card"><h3>⚙️ O sistema no dia a dia</h3><p>Este é o projeto que fecha o curso. Retome as entregas dos módulos anteriores e escreva o plano que mantém o seu sistema útil e confiável depois do lançamento: atualização da base, custos, monitoramento, interface e evolução. Ajuste o que mudou com o que você aprendeu ao longo do curso.</p></div>`
@@ -2132,7 +2257,8 @@ const LIC = { '1.1':'📖','1.2':'🔎','1.3':'🧰','1.4':'📚','1.5':'🔦','
   '3.1':'✅','3.2':'🔐','3.3':'📏','3.4':'📄','3.5':'🔗','3.6':'📝','4.1':'🕵️','4.2':'🍽️','4.3':'📞','4.4':'🧮','4.5':'📝',
   '5.1':'🥛','5.2':'💰','5.3':'📮','5.4':'💊','5.5':'🔬','5.6':'🏁',
   '1.7':'📏','1.8':'🍰','1.9':'🗂️','2.7':'🏷️','2.8':'🍞','2.9':'🧭','3.7':'⬛','3.8':'⛏️','3.9':'📝',
-  '4.6':'🏅','4.7':'📇','4.8':'🏧','5.7':'📬','5.8':'💬','5.9':'🧾' };
+  '4.6':'🏅','4.7':'📇','4.8':'🏧','5.7':'📬','5.8':'💬','5.9':'🧾',
+  '1.10':'📋','2.10':'🪪','5.10':'🪜' };
 
 return {
   id: 'ia-com-seus-dados',
