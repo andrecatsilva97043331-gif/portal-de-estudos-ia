@@ -189,6 +189,159 @@ const MODULES = [
             {t:'Que é melhor desistir da ideia.', ok:false, why:'É viável, só exige mais planejamento e esforço.'}
           ]}
       ]},
+    { id:'1.6', title:'Os dados do app: o que guardar e como ligar', min:14,
+      body:[
+        `<div class="card analogy"><h3>🗃️ O caderno de fiado</h3><p>Na mercearia do bairro, o caderno de fiado tem uma página por cliente e, em cada linha, a data, o que a pessoa levou e quanto ficou devendo. Ninguém escreve o endereço do cliente de novo a cada compra. <b>Os dados de um app funcionam como esse caderno</b>: cada informação no seu lugar, ligada às outras, sem repetição. Se o caderno é bagunçado, nenhuma conta fecha, e com o app acontece o mesmo.</p></div>`,
+        `<div class="term"><b>Tabela</b> = lista de registros do mesmo tipo, como clientes ou produtos. <b>Campo</b> = cada informação de um registro, como nome ou preço. <b>Identificador (id)</b> = código único de cada registro, que nunca se repete. <b>Relação</b> = ligação entre tabelas, como "esta venda é deste cliente". <b>Dado pessoal</b> = qualquer informação que identifica uma pessoa, protegida pela LGPD.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o estoque da loja do Seu Jorge</h3><p>Seu Jorge tem uma loja de material de construção em Feira de Santana e quer saber quando repor cimento, areia e tinta, sem contar saco por saco toda semana.</p></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Pedido vago</h4>
+            <div class="node">"Faz um app de controle de estoque"</div><div class="arrow">▼</div>
+            <div class="node">A IA cria uma tabela só, com produto e quantidade</div><div class="arrow">▼</div>
+            <div class="node hot">Funcionário edita o número na mão<small>ninguém sabe quem mudou nem por quê</small></div>
+          </div>
+          <div class="flow new"><h4>Pedido especificado</h4>
+            <div class="node">Lista de tabelas, campos e regras</div><div class="arrow">▼</div>
+            <div class="node">Produtos + movimentações de entrada e saída</div><div class="arrow">▼</div>
+            <div class="node good">Saldo calculado a partir do histórico<small>dá para saber quem tirou o quê e quando</small></div>
+          </div>
+        </div>`,
+        `<div class="card" style="margin-top:14px"><h3>A descrição dos dados que foi para a IA</h3><pre class="code">produtos: id, nome, unidade (saco, m³, lata, metro), estoque_minimo, ativo
+movimentacoes: id, produto_id, tipo (entrada ou saída), quantidade, data, funcionario
+Regra: o saldo é a soma das entradas menos as saídas; não existe campo de saldo editável.
+Regra: saída maior que o saldo é bloqueada, com aviso explicando o motivo.
+Alerta: produto com saldo abaixo do estoque_minimo aparece no topo da lista.</pre>
+          <p><b>O bug que apareceu:</b> na primeira versão, a IA deixou a unidade como texto livre. Um funcionário escreveu "saco", outro "sc" e outro "Saco 50kg", e o relatório passou a mostrar três cimentos diferentes. <b>A correção:</b> transformar a unidade numa <b>lista fechada</b> de opções e revisar os registros de teste antes de publicar. Note que o problema não era de programação: era de descrição dos dados.</p></div>`,
+        `<div class="card"><h3>Erros comuns nos dados</h3>
+          <div class="tw"><table class="tbl"><tr><th>Erro</th><th>Como perceber</th><th>Como evitar</th></tr>
+          <tr><td>Mesmo dado guardado em dois lugares</td><td>O telefone do cliente está novo numa tela e antigo em outra</td><td>Guardar uma vez e ligar pelo id</td></tr>
+          <tr><td>Data ou valor em texto livre</td><td>Ordenar por data dá ordem errada; somas não fecham</td><td>Pedir campos do tipo data e número</td></tr>
+          <tr><td>Campo "observações" para tudo</td><td>Informação importante escondida num texto que ninguém filtra</td><td>Virar campo próprio tudo o que você precisa buscar ou somar</td></tr>
+          <tr><td>Coletar dado pessoal "por via das dúvidas"</td><td>CPF, data de nascimento e endereço sem uso em nenhuma tela</td><td>Perguntar "para que uso isso?"; sem resposta, não colete</td></tr>
+          <tr><td>Apagar registros em vez de desativar</td><td>Some o histórico de vendas de um produto que saiu de linha</td><td>Marcar como inativo</td></tr></table></div></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (ChatGPT, uns 5 minutos)</h3><ol class="golden"><li><span>Descreva seu app em 3 frases, usando o documento de uma página, e peça que a IA te entreviste, uma pergunta por vez, sobre as informações que o app precisa guardar.</span></li><li><span>Com as respostas, escreva <b>você mesmo</b> a lista de tabelas e campos, no formato do exemplo.</span></li><li><span>Para cada dado pessoal, responda "para que uso isso?" e risque o que ficar sem resposta.</span></li><li><span>Peça à IA para apontar dados repetidos, campos de texto livre que deveriam ser lista e o que falta para cumprir suas regras de negócio.</span></li></ol>
+          <p>🔒 Use exemplos fictícios: não cole nomes, telefones ou CPFs de clientes reais. O plano gratuito tem limite de uso; se acabar, continue depois.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que o caderno de fiado não repete o endereço do cliente em cada compra.</div>`
+      ],
+      ch:[
+        { who:'Marta, 44 anos, dona de um brechó em Belém', says:'No meu app, o nome e o WhatsApp da cliente são gravados de novo em cada compra. Quando alguém troca de número, vira bagunça.',
+          q:'Qual ajuste resolve o problema?',
+          opts:[
+            {t:'Criar uma tabela de clientes, guardar o contato uma vez só e ligar cada compra à cliente pelo id.', ok:true, why:'Com o dado num lugar só, basta atualizar uma vez e todas as compras passam a mostrar o número certo.'},
+            {t:'Pedir às clientes que não troquem de número.', ok:false, why:'O app precisa lidar com a vida real. O problema está na forma de guardar os dados.'},
+            {t:'Corrigir o número à mão em todas as compras antigas sempre que mudar.', ok:false, why:'Dá trabalho, é fácil esquecer uma e o problema volta na próxima troca.'}
+          ]},
+        { who:'Henrique, 35 anos, dono de uma distribuidora de bebidas em Uberlândia', says:'A IA criou o campo "data da entrega" como texto. Agora o relatório do mês mistura entregas de anos diferentes.',
+          q:'Qual é o melhor caminho?',
+          opts:[
+            {t:'Trocar de hospedagem, porque o servidor deve estar com defeito.', ok:false, why:'O servidor não tem culpa. Datas guardadas como texto são ordenadas como palavras, não como datas.'},
+            {t:'Apagar todos os registros e começar do zero.', ok:false, why:'Perde o histórico sem necessidade. Os dados antigos podem ser convertidos com cuidado.'},
+            {t:'Pedir um campo do tipo data, converter os registros antigos testando antes numa cópia e conferir o relatório.', ok:true, why:'Com o tipo certo, ordenar e filtrar por período funciona. Testar a conversão numa cópia evita estragar os dados reais.'}
+          ]},
+        { who:'Fernanda, 30 anos, dona de uma escola de inglês em Londrina', says:'Meu formulário de aula experimental pede CPF, RG, renda familiar e nome da mãe.',
+          q:'Qual é a melhor decisão?',
+          opts:[
+            {t:'Manter tudo, porque quanto mais dados, melhor.', ok:false, why:'Dado pessoal sem uso é risco sem benefício: pode vazar e a LGPD pede coletar só o necessário.'},
+            {t:'Pedir só o necessário para a aula experimental, como nome e contato, explicar para que serve e deixar o resto para a matrícula, se for mesmo preciso.', ok:true, why:'Coleta mínima reduz risco, cumpre a LGPD e ainda diminui a desistência no formulário.'},
+            {t:'Continuar pedindo, mas sem dizer para que os dados servem.', ok:false, why:'Esconder a finalidade piora: a pessoa tem direito de saber para que seus dados serão usados.'}
+          ]}
+      ]},
+    { id:'1.7', title:'Protótipo visual antes do código', min:13,
+      body:[
+        `<div class="card analogy"><h3>🎨 A prova da costureira</h3><p>Antes de cortar o tecido caro, a costureira faz a prova com alfinetes: a cliente veste, aponta onde aperta e só depois vem a costura definitiva. <b>Um protótipo é a prova com alfinetes do app</b>: mostra as telas para gente de verdade antes de você gastar dias construindo.</p></div>`,
+        `<div class="term"><b>Protótipo</b> = versão de mentira das telas, para ver e testar a ideia; não guarda dados de verdade. <b>Protótipo descartável</b> = feito para aprender e depois ser jogado fora. <b>Gerador de telas</b> = ferramenta de IA, como o v0, que cria um rascunho visual a partir de uma descrição. <b>Teste com tarefa</b> = pedir que a pessoa tente cumprir um objetivo na tela enquanto você observa.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o orçamento da marcenaria da Dona Neide</h3><p>Dona Neide faz móveis planejados em Juiz de Fora. Os clientes pedem orçamento por áudios longos no WhatsApp, sem medidas nem fotos, e ela perde horas perguntando de volta.</p>
+          <div class="pipe"><div class="node ink">Rascunho no papel</div><div class="ar">➜</div><div class="node ink">Descrição ao gerador</div><div class="ar">➜</div><div class="node yel">Teste com 3 clientes</div><div class="ar">➜</div><div class="node ink">Ajuste</div><div class="ar">➜</div><div class="node ink">Documento atualizado</div></div>
+          <div class="tw"><table class="tbl"><tr><th></th><th>Pedido vago</th><th>Pedido especificado</th></tr>
+          <tr><td>Descrição</td><td>"Faz uma tela de orçamento de marcenaria bonita"</td><td>Tela única para celular, para clientes leigos: tipo de móvel (lista), cômodo, medida aproximada, foto do espaço e WhatsApp; botão "Pedir orçamento"; mensagem de sucesso dizendo que a resposta chega em até 2 dias úteis</td></tr>
+          <tr><td>Resultado</td><td>14 campos, incluindo espessura do MDF e tipo de dobradiça</td><td>5 campos que um cliente comum sabe responder</td></tr></table></div></div>`,
+        `<div class="card"><h3>O que o teste revelou</h3><p>Dona Neide mostrou o protótipo a 3 clientes com uma tarefa: "peça orçamento de um armário para o quarto". Duas travaram no campo de medida: não sabiam medir e ficaram com vergonha de chutar. O ajuste foi trocar por <b>"medida aproximada (pode ser em passos)"</b> e tornar a <b>foto obrigatória</b>. Custo da correção: 5 minutos no protótipo. No app pronto, seriam formulário, banco de dados e validação refeitos.</p></div>`,
+        `<div class="card"><h3>Erros comuns com protótipos</h3><ol class="golden"><li><span><b>Confundir protótipo com app pronto</b>: o botão muda de tela, mas nada é salvo. Pergunte sempre "isso guarda dados de verdade?".</span></li><li><span><b>Se apaixonar pelo visual</b>: cores e animações tomam a conversa e ninguém testa o caminho. Comece simples.</span></li><li><span><b>Perguntar "gostou?"</b>: todo mundo diz que sim. Dê uma tarefa e observe sem ajudar.</span></li><li><span><b>Colar o código gerado direto no projeto</b>: geradores usam bibliotecas e estrutura próprias. Use como referência visual e construa em fatias com o agente, no próximo módulo.</span></li><li><span><b>Usar dados reais</b>: protótipos costumam ficar em links compartilháveis. Use nomes e fotos fictícios.</span></li></ol></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (v0 ou draw.io, uns 5 minutos)</h3><ol class="golden"><li><span>Pegue o desenho de telas da lição 1.3 e escolha a tela mais importante.</span></li><li><span>Escreva com suas palavras: quem usa, em qual aparelho, o que aparece, qual é o botão principal e o que acontece depois.</span></li><li><span>Gere o rascunho e peça no máximo 2 ajustes, anotando o que mudou.</span></li><li><span>Mostre a 2 pessoas do seu público com uma tarefa e anote onde travaram.</span></li><li><span>Atualize o documento de uma página com o que aprendeu.</span></li></ol>
+          <p>O plano gratuito do v0 tem créditos limitados: planeje a descrição antes de gerar. Sem créditos, desenhe no draw.io, que é gratuito. 🔒 Confira a visibilidade do projeto nas configurações.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos por que a costureira prende o tecido com alfinetes antes de costurar.</div>`
+      ],
+      ch:[
+        { who:'Rafael, 28 anos, aluga quadras de futevôlei no Rio de Janeiro', says:'O protótipo no v0 ficou lindo e os botões até mudam de tela. Já posso divulgar para os clientes reservarem?',
+          q:'O que você responde?',
+          opts:[
+            {t:'Sim, se as telas mudam, o app está funcionando.', ok:false, why:'Mudar de tela não significa guardar reservas. Clientes reservariam e nada ficaria registrado.'},
+            {t:'Ainda não: o protótipo não guarda reservas de verdade. Use-o para testar o caminho com clientes e depois construa a versão real com banco de dados e regras.', ok:true, why:'Protótipo serve para aprender rápido. A versão que recebe reservas precisa de dados, regras e testes.'},
+            {t:'Sim, mas peça para os clientes mandarem print da reserva.', ok:false, why:'É um remendo que gera confusão e horários duplicados.'}
+          ]},
+        { who:'Juliana, 34 anos, dona de uma confeitaria em Recife', says:'Mostrei o protótipo a 4 clientes e perguntei se gostaram. Todos disseram que sim.',
+          q:'Como tirar mais aprendizado do próximo teste?',
+          opts:[
+            {t:'Mostrar a mais clientes e perguntar de novo se gostaram.', ok:false, why:'Mais "sim" educados não revelam onde a pessoa trava.'},
+            {t:'Pedir notas de 0 a 10 para o visual.', ok:false, why:'Nota para o visual não mostra se a pessoa consegue fazer a encomenda.'},
+            {t:'Dar uma tarefa, como "encomende um bolo para sábado", e observar em silêncio onde a pessoa hesita.', ok:true, why:'Ver alguém tentando cumprir um objetivo mostra os pontos de dúvida que a opinião esconde.'}
+          ]},
+        { who:'Sérgio, 50 anos, dono de uma oficina mecânica em Caxias do Sul', says:'O gerador criou o código da tela com várias bibliotecas que eu não conheço. Vou colar tudo no meu projeto.',
+          q:'Qual é o caminho mais seguro?',
+          opts:[
+            {t:'Usar o protótipo como referência visual e pedir ao agente que construa a tela em fatia, no padrão do projeto, explicando qualquer biblioteca que precisar adicionar.', ok:true, why:'Assim o projeto continua organizado e você entende o que entrou. Código colado sem entender vira problema na manutenção.'},
+            {t:'Colar tudo, porque se a IA gerou deve estar certo.', ok:false, why:'O código pode conflitar com o resto do projeto e trazer dependências que você não sabe manter.'},
+            {t:'Desistir do protótipo, porque ele não serve para nada.', ok:false, why:'Ele serviu para testar a tela com clientes. Só não é o código final.'}
+          ]}
+      ]},
+    { id:'1.8', title:'Critérios de aceite: como saber que ficou pronto', min:14,
+      body:[
+        `<div class="card analogy"><h3>🔑 A vistoria na entrega das chaves</h3><p>Ao receber um apartamento novo, o comprador anda com uma lista: a torneira não pinga, as tomadas funcionam, a porta fecha. Sem a lista, descobre a infiltração só depois da mudança. <b>Critérios de aceite são a lista de vistoria de cada função do app</b>: escritos antes, dizem o que precisa funcionar para você aceitar a entrega.</p></div>`,
+        `<div class="term"><b>História de usuário</b> = frase no formato "Como [quem], quero [o quê], para [por quê]". <b>Critério de aceite</b> = condição que dá para verificar e que diz se a função está pronta. <b>Dado / Quando / Então</b> = jeito de escrever o critério: a situação inicial, a ação e o resultado esperado. <b>Caso de borda</b> = situação rara ou no limite, como o último horário do dia ou um campo vazio.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: cancelar horário no salão da Kátia</h3><p>Kátia tem um salão em Salvador e já usa um app de agendamento em construção. A próxima função é o cancelamento pela cliente.</p></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>História solta</h4>
+            <div class="node">"Cliente pode cancelar"</div><div class="arrow">▼</div>
+            <div class="node">A IA cria um botão Cancelar</div><div class="arrow">▼</div>
+            <div class="node hot">Cliente cancela 10 minutos antes<small>e ninguém avisa a manicure</small></div>
+          </div>
+          <div class="flow new"><h4>História com critérios</h4>
+            <div class="node">História + 3 critérios + casos de borda</div><div class="arrow">▼</div>
+            <div class="node">A IA implementa e você confere critério por critério</div><div class="arrow">▼</div>
+            <div class="node good">Prazo respeitado, horário liberado, salão avisado</div>
+          </div>
+        </div>`,
+        `<div class="card" style="margin-top:14px"><h3>Os critérios escritos pela Kátia</h3><pre class="code">História: Como cliente do salão, quero cancelar meu horário, para não pagar taxa de falta.
+Critério 1: Dado um horário daqui a 2 dias, quando a cliente toca em Cancelar e confirma,
+            então ele sai de "Meus horários" e volta a ficar livre na agenda.
+Critério 2: Dado um horário daqui a 3 horas, quando a cliente toca em Cancelar,
+            então aparece "Com menos de 24 h, cancele pelo WhatsApp do salão" e nada muda.
+Critério 3: Dado um cancelamento feito, então a dona vê o aviso no painel do dia.</pre>
+          <p><b>O bug:</b> ao testar o critério 1, Kátia viu que o horário cancelado continuava ocupado: a IA só tinha escondido o agendamento da tela da cliente. Como o critério estava escrito, o relato ao agente foi direto: "o critério 1 falha: o horário continua ocupado na agenda". A correção coube numa fatia.</p></div>`,
+        `<div class="card"><h3>Casos de borda que valem uma decisão</h3>
+          <div class="tw"><table class="tbl"><tr><th>Caso</th><th>Pergunta que você precisa responder</th></tr>
+          <tr><td>Exatamente 24 h antes</td><td>Vale ou não? Escreva "24 h ou mais"</td></tr>
+          <tr><td>Dois horários no mesmo dia</td><td>Cancelar um cancela o outro?</td></tr>
+          <tr><td>Feriado com o salão fechado</td><td>Os horários desse dia aparecem?</td></tr>
+          <tr><td>Internet cai no meio do cancelamento</td><td>A cliente fica sabendo se deu certo?</td></tr></table></div>
+          <p>A IA é ótima para listar casos de borda. Quem decide a regra de cada um é você, porque é regra do seu negócio.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ul><li><b>Critério que não dá para testar</b>: "ser rápido" ou "ser fácil". Troque por algo observável, como "a cliente agenda em até 4 toques".</li><li><b>Só o caminho feliz</b>: os problemas reais moram nos casos de borda.</li><li><b>Critérios escritos depois do código</b>: viram uma descrição do que a IA fez, inclusive os erros.</li><li><b>Critérios esquecidos na gaveta</b>: eles viram o seu roteiro de teste no próximo módulo.</li></ul></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (ChatGPT, uns 5 minutos)</h3><ol class="golden"><li><span>Escolha a função mais importante do seu app.</span></li><li><span>Escreva <b>você mesmo</b> a história de usuário e 3 critérios no formato Dado / Quando / Então.</span></li><li><span>Peça à IA que liste casos de borda que você esqueceu, sem decidir as regras por você.</span></li><li><span>Decida a regra de cada caso relevante e acrescente ao documento de uma página.</span></li></ol>
+          <p>🔒 Descreva o negócio sem dados reais de clientes.</p></div>`
+      ],
+      ch:[
+        { who:'Cláudio, 39 anos, dono de uma pizzaria em Bauru', says:'Meu critério de aceite para o app de pedidos é: "o app deve ser rápido e fácil".',
+          q:'Como melhorar esse critério?',
+          opts:[
+            {t:'Deixar assim, porque todo mundo entende o que é rápido e fácil.', ok:false, why:'Cada pessoa entende de um jeito. Sem algo observável, não dá para dizer se ficou pronto.'},
+            {t:'Transformar em algo verificável, como "o cliente faz um pedido em até 5 toques" e "o cardápio aparece sem travar no 4G".', ok:true, why:'Critérios observáveis podem ser testados por qualquer pessoa e deixam claro quando a entrega está aceita.'},
+            {t:'Pedir à IA que decida o que é rápido e fácil.', ok:false, why:'A IA não conhece seus clientes. A definição de pronto é sua.'}
+          ]},
+        { who:'Lívia, 26 anos, organiza corridas de rua em Teresina', says:'Escrevi só o caminho feliz da inscrição. No dia, o app aceitou 340 inscritos numa corrida de 300 vagas.',
+          q:'O que faltou nos critérios?',
+          opts:[
+            {t:'Nada, foi azar.', ok:false, why:'Vagas esgotadas são um caso previsível em qualquer inscrição.'},
+            {t:'Um visual mais bonito na tela de inscrição.', ok:false, why:'O problema é uma regra que não foi escrita, não o visual.'},
+            {t:'Um caso de borda: "Dado que há 300 inscritos, quando a 301ª pessoa tenta se inscrever, então ela vê aviso de vagas esgotadas e pode entrar na lista de espera".', ok:true, why:'Escrito como critério, o limite vira comportamento do app e vira teste antes do lançamento.'}
+          ]},
+        { who:'Mateus, 31 anos, criando um app para a associação de moradores em Cuiabá', says:'Vou deixar o agente construir e depois escrevo os critérios com base no que ele fez.',
+          q:'Qual é o problema dessa ordem?',
+          opts:[
+            {t:'Escritos depois, os critérios só descrevem o que a IA fez, inclusive os erros. Escritos antes, servem para conferir se ela fez o que você precisava.', ok:true, why:'Critério de aceite é a lista de vistoria: precisa existir antes da entrega para ter valor.'},
+            {t:'Nenhum, a ordem não importa.', ok:false, why:'Importa: depois do código, é fácil aceitar como certo o que veio.'},
+            {t:'O problema é só que vai demorar mais.', ok:false, why:'O risco maior é aceitar regras erradas sem perceber.'}
+          ]}
+      ]},
     { id:'1.5', title:'Projeto: o plano do seu app', min:40,
       body:[`<div class="card"><p>Escolha uma ideia de app <b>sua</b>, de preferência para um problema do seu trabalho ou de alguém próximo, e prepare tudo o que a IA vai precisar para construí-lo bem. Ainda sem código.</p></div>`],
       projeto:{
@@ -441,6 +594,162 @@ const MODULES = [
             {t:'Pedir aos alunos que avisem se algo quebrar.', ok:false, why:'Os alunos viram testadores involuntários, e a confiança no app cai.'}
           ]}
       ]},
+    { id:'2.7', title:'O mapa do projeto e o console do navegador', min:14,
+      body:[
+        `<div class="card analogy"><h3>🔌 O quadro de luz da casa</h3><p>Você não precisa ser eletricista para morar numa casa, mas precisa saber onde fica o quadro de luz e qual disjuntor desliga a cozinha. <b>No projeto do app é igual</b>: você não precisa escrever cada linha, mas precisa saber quais arquivos fazem o quê e onde olhar quando algo apaga.</p></div>`,
+        `<div class="term"><b>HTML</b> = a estrutura da página: textos, botões, campos. <b>CSS</b> = a aparência: cores, tamanhos, posições. <b>JavaScript</b> = o comportamento: o que acontece ao tocar num botão. <b>Servidor local (localhost)</b> = o app rodando só no seu computador, para testes. <b>Cache</b> = cópia que o navegador guarda para abrir mais rápido, e que às vezes esconde a sua mudança.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o cardápio da lanchonete do Marcos</h3><p>O cardápio digital da lanchonete em Aracaju ganhou um botão "Adicionar ao pedido", que monta uma mensagem pronta para o WhatsApp. Antes de mexer, Marcos pediu ao agente o mapa do projeto e guardou no README:</p>
+          <div class="tw"><table class="tbl"><tr><th>Arquivo</th><th>O que faz</th><th>Quando mexer</th></tr>
+          <tr><td><code>index.html</code></td><td>Telas, textos e botões</td><td>Mudar um texto, incluir um campo</td></tr>
+          <tr><td><code>style.css</code></td><td>Aparência</td><td>Cor, tamanho da letra, ajuste no celular</td></tr>
+          <tr><td><code>app.js</code></td><td>Comportamento</td><td>Botões, cálculo do total, mensagem do WhatsApp</td></tr>
+          <tr><td><code>cardapio.js</code></td><td>Lista de lanches e preços</td><td>Trocar preço ou incluir lanche</td></tr></table></div></div>`,
+        `<div class="card"><h3>O bug e a investigação</h3><p>Depois de uma fatia nova, o botão "Adicionar" parou de responder. Marcos apertou F12, abriu a aba Console e encontrou:</p>
+          <pre class="code">Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')
+    at app.js:12</pre>
+          <p>Traduzindo: na linha 12 de <code>app.js</code>, o código procurou um elemento da página e não achou nada (<code>null</code>). A causa: o agente tinha renomeado o botão no HTML, mas o JavaScript ainda procurava o nome antigo. Marcos colou a mensagem completa para o agente, pediu a causa provável antes da correção, testou e fez commit.</p>
+          <div class="pipe"><div class="node ink">Sintoma</div><div class="ar">➜</div><div class="node ink">Console (F12)</div><div class="ar">➜</div><div class="node yel">Arquivo e linha</div><div class="ar">➜</div><div class="node ink">Relato ao agente</div><div class="ar">➜</div><div class="node ink">Teste e commit</div></div></div>`,
+        `<div class="card"><h3>Erros comuns e como perceber</h3>
+          <div class="tw"><table class="tbl"><tr><th>Sintoma</th><th>Causa comum</th><th>O que fazer</th></tr>
+          <tr><td>A mudança não aparece</td><td>Cache do navegador ou arquivo errado editado</td><td>Recarregar forçado (Ctrl+Shift+R) e conferir se o arquivo foi salvo</td></tr>
+          <tr><td>Página toda em branco</td><td>Erro de JavaScript que interrompe o resto</td><td>Olhar o console antes de qualquer coisa</td></tr>
+          <tr><td>Funciona no computador, não no celular</td><td>Medidas fixas ou elementos largos demais</td><td>Usar o modo celular do navegador (F12, ícone de celular)</td></tr>
+          <tr><td>Erro de "CORS" ao abrir com dois cliques</td><td>Página aberta como arquivo, sem servidor local</td><td>Rodar um servidor local; peça ao agente para explicar como</td></tr>
+          <tr><td>Uma chave aparece no console ou no código da página</td><td>Segredo indo para o navegador</td><td>Se for secreta, trocar a chave e movê-la para o servidor</td></tr></table></div></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Cursor, uns 5 minutos)</h3><ol class="golden"><li><span>Abra seu projeto (ou um de teste) no Cursor e peça ao agente, com suas palavras, um mapa dos arquivos.</span></li><li><span>Confira abrindo cada arquivo: encontre onde está o texto do botão principal.</span></li><li><span>Rode o app no navegador e abra o console (F12).</span></li><li><span>Provoque um erro de propósito, como mudar um nome no JavaScript, recarregue e leia a mensagem.</span></li><li><span>Desfaça pelo Git e confirme que o console ficou limpo.</span></li></ol>
+          <p>O plano gratuito do Cursor tem limite de uso do agente: ler o console e testar você mesmo economiza pedidos.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique a uma criança de 10 anos para que serve saber onde fica o quadro de luz da casa.</div>`
+      ],
+      ch:[
+        { who:'Eduardo, 37 anos, criou o site da sua autoescola em Mossoró', says:'Pedi ao Cursor para trocar a cor do botão, salvei, mas no navegador continua igual.',
+          q:'O que conferir primeiro?',
+          opts:[
+            {t:'Pedir ao agente que refaça o site inteiro.', ok:false, why:'É exagero. A mudança pode estar certa e só não aparecer por causa do navegador.'},
+            {t:'Desistir da cor nova.', ok:false, why:'O problema provavelmente é simples de resolver.'},
+            {t:'Recarregar forçando (Ctrl+Shift+R) e conferir se o arquivo alterado foi salvo e é o que a página usa.', ok:true, why:'Cache e arquivo errado são as causas mais comuns de "mudei e não aparece".'}
+          ]},
+        { who:'Aline, 29 anos, fez uma lista de presentes de casamento em Maringá', says:'A página abre em branco. No console aparece "Uncaught SyntaxError: Unexpected token at app.js:48".',
+          q:'Qual é o melhor próximo passo?',
+          opts:[
+            {t:'Colar a mensagem completa para o agente, com o arquivo e a linha, e pedir a causa provável antes de alterar.', ok:true, why:'A mensagem aponta o lugar exato. Pedir a causa antes evita correções às cegas.'},
+            {t:'Dizer ao agente só "a página quebrou, conserta".', ok:false, why:'Sem a mensagem e a linha, o agente adivinha e pode mexer onde não precisa.'},
+            {t:'Apagar o arquivo app.js.', ok:false, why:'O app perderia todo o comportamento. O erro está numa linha específica.'}
+          ]},
+        { who:'Gustavo, 42 anos, criou um app de orçamentos para a sua gráfica em Joinville', says:'Abrindo o console, vi a chave secreta do serviço de e-mail impressa numa mensagem.',
+          q:'O que fazer?',
+          opts:[
+            {t:'Nada, só ele abre o console.', ok:false, why:'Qualquer visitante pode abrir o console e ver a chave.'},
+            {t:'Considerar a chave exposta: trocar no painel do serviço, mover o envio de e-mail para o servidor e remover a mensagem que a imprime.', ok:true, why:'Chave secreta que chegou ao navegador já pode ter sido copiada. Trocar e corrigir o caminho é o único jeito seguro.'},
+            {t:'Apenas apagar a linha que imprime a chave.', ok:false, why:'A chave continua no código do navegador e pode já ter sido copiada.'}
+          ]}
+      ]},
+    { id:'2.8', title:'Formulários e validação: dados certos na entrada', min:14,
+      body:[
+        `<div class="card analogy"><h3>🏦 O caixa da lotérica</h3><p>O atendente da lotérica confere o boleto antes de pagar: código legível, valor, vencimento. Se algo está errado, avisa na hora e explica o que corrigir. <b>Um formulário bem feito é esse caixa atento</b>: não deixa entrar dado errado e diz com clareza como acertar.</p></div>`,
+        `<div class="term"><b>Validação</b> = conferir se o dado faz sentido antes de guardar. <b>Validação na tela</b> = aviso imediato para o usuário; ajuda muito, mas pode ser contornada. <b>Validação no servidor ou no banco</b> = a conferência que vale, porque ninguém pula. <b>Máscara</b> = formato automático do campo, como (32) 99999-9999. <b>Envio duplicado</b> = o mesmo pedido gravado duas vezes por toques repetidos.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o formulário de verdade da Dona Neide</h3><p>O protótipo da marcenaria foi aprovado e virou formulário real, com banco de dados.</p></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Pedido vago</h4>
+            <div class="node">"Faça o formulário de orçamento funcionar"</div><div class="arrow">▼</div>
+            <div class="node">Campos aceitam qualquer coisa</div><div class="arrow">▼</div>
+            <div class="node hot">WhatsApp "123", medida "grande"<small>e o mesmo pedido gravado 3 vezes</small></div>
+          </div>
+          <div class="flow new"><h4>Pedido com regras por campo</h4>
+            <div class="node">Tabela de regras e mensagens</div><div class="arrow">▼</div>
+            <div class="node">Validação na tela e no banco, um campo por fatia</div><div class="arrow">▼</div>
+            <div class="node good">Pedidos completos, um por envio</div>
+          </div>
+        </div>`,
+        `<div class="card" style="margin-top:14px"><h3>As regras que foram para o agente</h3>
+          <div class="tw"><table class="tbl"><tr><th>Campo</th><th>Regra</th><th>Mensagem de erro</th></tr>
+          <tr><td>WhatsApp</td><td>DDD + 8 ou 9 dígitos</td><td>"Confira o WhatsApp com DDD, ex.: (32) 99999-9999"</td></tr>
+          <tr><td>Tipo de móvel</td><td>Lista fechada</td><td>"Escolha o tipo de móvel"</td></tr>
+          <tr><td>Medida aproximada</td><td>Número entre 0,3 e 10 metros, aceitando vírgula</td><td>"Informe a medida em metros, ex.: 2,5"</td></tr>
+          <tr><td>Foto</td><td>Obrigatória, só imagem, com tamanho máximo</td><td>"Envie uma foto do espaço (JPG ou PNG)"</td></tr></table></div>
+          <p><b>Bug 1:</b> clientes digitavam "2,5" e recebiam erro, porque o código esperava ponto, no padrão americano. Correção: aceitar vírgula e testar com "2,5" e "2.5".</p>
+          <p><b>Bug 2:</b> com internet lenta, um cliente tocou três vezes em "Pedir orçamento" e gerou três pedidos. Correção em duas camadas: desativar o botão mostrando "Enviando..." até a resposta e, no banco, impedir pedidos iguais do mesmo WhatsApp em poucos minutos.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ol class="golden"><li><span><b>Validar só na tela</b>: quem sabe usar o console envia qualquer coisa. Regra importante vale também no servidor ou no banco.</span></li><li><span><b>Mensagem genérica</b> como "dados inválidos": diga qual campo e como corrigir.</span></li><li><span><b>Apagar tudo o que a pessoa digitou</b> quando dá erro: ela desiste.</span></li><li><span><b>Formato estrangeiro</b>: vírgula decimal, data dia/mês/ano, CEP e celular com 9 dígitos são o padrão aqui.</span></li><li><span><b>Sem confirmação clara</b>: sem "Pedido enviado!", a pessoa envia de novo.</span></li><li><span><b>Upload sem limite</b>: arquivos enormes estouram o armazenamento do plano gratuito.</span></li></ol></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Cursor, uns 5 minutos)</h3><ol class="golden"><li><span>Liste os campos do formulário principal do seu app e escreva, para cada um, a regra e a mensagem de erro.</span></li><li><span>Peça ao agente, com suas palavras, a validação de <b>um campo por vez</b>.</span></li><li><span>Teste valores errados de propósito: campo vazio, letras no telefone, número com vírgula, dois toques rápidos no botão.</span></li><li><span>Faça commit a cada campo aprovado.</span></li></ol>
+          <p>🔒 Teste com dados fictícios e peça só os dados pessoais que o app realmente usa.</p></div>`
+      ],
+      ch:[
+        { who:'Leandro, 33 anos, dono de um lava-jato em Joinville', says:'Meu formulário de agendamento já bloqueia telefone errado na tela. Então não preciso de regra no banco, certo?',
+          q:'O que você responde?',
+          opts:[
+            {t:'Certo, a tela já resolve.', ok:false, why:'A validação na tela pode ser contornada por quem envia dados direto, sem passar pelo formulário.'},
+            {t:'Precisa: a tela ajuda o usuário, mas regras importantes também devem estar no servidor ou no banco, que ninguém pula.', ok:true, why:'São duas camadas: a tela dá conforto, o servidor e o banco dão garantia.'},
+            {t:'Basta esconder o botão quando o telefone estiver errado.', ok:false, why:'Esconder botão é só aparência. Não impede dados ruins de chegarem ao banco.'}
+          ]},
+        { who:'Simone, 46 anos, dona de uma loja de tecidos em Brusque', says:'As clientes reclamam que pedir "1,5 metro" dá erro no formulário.',
+          q:'Qual é a correção certa?',
+          opts:[
+            {t:'Aceitar vírgula como separador decimal, que é o padrão brasileiro, e testar com "1,5" e "1.5".', ok:true, why:'O formulário precisa seguir o jeito que o público escreve. Testar os dois formatos evita o erro voltar.'},
+            {t:'Colocar um aviso pedindo para usar ponto.', ok:false, why:'Joga o problema para a cliente. Muita gente não lê o aviso e desiste.'},
+            {t:'Aceitar só metros inteiros.', ok:false, why:'Metragem quebrada é comum em tecido. A loja perderia vendas.'}
+          ]},
+        { who:'Paulo, 38 anos, organiza um retiro da igreja em Sorocaba', says:'Recebi várias inscrições repetidas da mesma pessoa, com poucos segundos de diferença.',
+          q:'O que resolve melhor?',
+          opts:[
+            {t:'Apagar as repetidas à mão toda semana.', ok:false, why:'Trata o sintoma e continua dando trabalho.'},
+            {t:'Pedir aos inscritos que toquem uma vez só.', ok:false, why:'Com internet lenta, a pessoa toca de novo achando que não foi.'},
+            {t:'Desativar o botão com "Enviando..." até a resposta, mostrar confirmação clara e criar uma regra no banco que impeça inscrição duplicada.', ok:true, why:'A tela evita o toque repetido e o banco garante que, mesmo assim, não entra duplicado.'}
+          ]}
+      ]},
+    { id:'2.9', title:'Experimentar sem medo: branches e pontos de restauração', min:14,
+      body:[
+        `<div class="card analogy"><h3>🌿 A folha de rascunho</h3><p>Na prova de matemática, o aluno faz a conta no rascunho antes de passar a limpo. Se errar, amassa a folha e a prova continua limpa. <b>Um branch é a folha de rascunho do seu projeto</b>: você experimenta à vontade e a versão principal fica intacta até você decidir.</p></div>`,
+        `<div class="term"><b>Branch (ramo)</b> = uma linha paralela do projeto, para experimentar sem mexer na versão principal. <b>main</b> = o ramo principal, normalmente o que vai para o ar. <b>Merge (juntar)</b> = trazer para o principal as mudanças aprovadas no ramo. <b>Conflito</b> = quando os dois ramos mudaram o mesmo trecho e o Git pede que você escolha. <b>Ponto de restauração do agente</b> = recurso do Cursor para voltar os arquivos ao estado de antes de um pedido; confira como funciona na sua versão.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: leitor de código de barras no estoque do Seu Jorge</h3><p>O app de estoque está em uso pelos funcionários. Seu Jorge quer testar a leitura do código de barras pela câmera do celular, mas não sabe se vai funcionar.</p></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Sem branch</h4>
+            <div class="node">Pede o leitor direto no main</div><div class="arrow">▼</div>
+            <div class="node">O agente altera 9 arquivos</div><div class="arrow">▼</div>
+            <div class="node hot">Leitor falha e a tela de saída quebra<small>a loja abre amanhã às 7h</small></div>
+          </div>
+          <div class="flow new"><h4>Com branch</h4>
+            <div class="node">Cria o ramo "leitor-codigo"</div><div class="arrow">▼</div>
+            <div class="node">Experimenta, testa no celular, faz commits</div><div class="arrow">▼</div>
+            <div class="node good">Deu certo? Merge. Não deu? O main segue intacto</div>
+          </div>
+        </div>`,
+        `<div class="card" style="margin-top:14px"><h3>Os comandos por trás dos botões</h3><pre class="code">git switch -c leitor-codigo   (cria o ramo e entra nele)
+... pedidos ao agente, testes, commits ...
+git switch main               (volta ao principal, intacto)
+git merge leitor-codigo       (só depois de rodar o roteiro de teste)</pre>
+          <p>O painel de controle de versões do Cursor faz o mesmo com cliques, e o nome do ramo atual aparece na barra inferior.</p>
+          <p><b>O bug:</b> o leitor funcionava no computador, mas no celular a câmera não abria. Motivo: navegadores só liberam a câmera em páginas seguras (https) ou no próprio localhost, e no celular ele acessava o computador pelo endereço da rede, sem https. A solução foi testar no endereço de prévia publicado com https, que você verá no próximo módulo.</p></div>`,
+        `<div class="card"><h3>Qual ferramenta usar para voltar atrás</h3>
+          <div class="tw"><table class="tbl"><tr><th>Situação</th><th>Ferramenta</th></tr>
+          <tr><td>O último pedido ao agente estragou algo, há poucos minutos</td><td>Ponto de restauração do agente</td></tr>
+          <tr><td>Guardar uma versão boa</td><td>Commit</td></tr>
+          <tr><td>Experimento maior, que pode levar dias ou ser abandonado</td><td>Branch</td></tr>
+          <tr><td>Desfazer algo que já foi para o principal, sem apagar o histórico</td><td>Reverter o commit (git revert)</td></tr></table></div></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ol class="golden"><li><span><b>Esquecer em qual ramo está</b>: confira o nome na barra do Cursor antes de pedir.</span></li><li><span><b>Juntar sem testar</b>: o roteiro de teste roda antes do merge.</span></li><li><span><b>Ramo esquecido por semanas</b>: o principal muda e a junção vira um monte de conflitos. Prefira experimentos curtos.</span></li><li><span><b>Aceitar "resolva todos os conflitos"</b> sem ler: peça ao agente para explicar cada um antes de escolher.</span></li><li><span><b>Achar que ramo protege segredo</b>: um <code>.env</code> commitado em qualquer ramo entra no histórico. Se foi para o GitHub, troque a chave.</span></li></ol></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Cursor e GitHub, uns 5 minutos)</h3><ol class="golden"><li><span>Garanta que o main está com tudo commitado.</span></li><li><span>Crie um ramo com o nome do experimento, pelo painel do Cursor.</span></li><li><span>Peça ao agente, com suas palavras, uma mudança pequena e visível.</span></li><li><span>Volte ao main e confirme que a mudança não está lá; depois volte ao ramo.</span></li><li><span>Se aprovou, faça o merge; se não, apague o ramo. Envie ao GitHub e veja os ramos no site.</span></li></ol></div>`
+      ],
+      ch:[
+        { who:'Natália, 32 anos, dona de um estúdio de tatuagem em Florianópolis', says:'Quero testar um redesenho completo das telas, que pode levar uma semana. Mas os clientes já agendam pelo app todos os dias.',
+          q:'Qual é o caminho mais seguro?',
+          opts:[
+            {t:'Fazer o redesenho direto no main, com cuidado.', ok:false, why:'Qualquer erro no meio do caminho vai para os clientes que estão agendando.'},
+            {t:'Parar os agendamentos por uma semana.', ok:false, why:'Prejudica o negócio sem necessidade.'},
+            {t:'Fazer o redesenho num ramo separado, testar com calma e só fazer o merge depois de rodar o roteiro de teste.', ok:true, why:'O app em uso continua estável enquanto o experimento acontece no rascunho.'}
+          ]},
+        { who:'Vítor, 27 anos, criando um app de rifas beneficentes em Juazeiro do Norte', says:'Há 5 minutos pedi uma mudança ao agente e a tela principal quebrou. Meu último commit foi de manhã.',
+          q:'O que fazer?',
+          opts:[
+            {t:'Usar o ponto de restauração do agente para voltar ao estado de antes desse pedido, testar e fazer commit do que estava bom.', ok:true, why:'Volta só o último pedido, sem perder o trabalho feito desde a manhã.'},
+            {t:'Apagar a pasta e baixar de novo do GitHub.', ok:false, why:'Perderia tudo o que fez desde o último envio.'},
+            {t:'Pedir ao agente "conserta" várias vezes seguidas até voltar.', ok:false, why:'Correções em cima de correções costumam piorar a situação.'}
+          ]},
+        { who:'Bruna, 35 anos, mantém o app da sua loja de cosméticos em Ribeirão Preto', says:'O merge deu conflito no arquivo app.js. O agente oferece resolver tudo de uma vez.',
+          q:'Qual é a melhor atitude?',
+          opts:[
+            {t:'Aceitar, porque o agente sabe o que faz.', ok:false, why:'Ele pode escolher o lado errado e apagar uma mudança importante sem você perceber.'},
+            {t:'Pedir que explique cada conflito em linguagem simples, escolher conscientemente e rodar o roteiro de teste antes do commit.', ok:true, why:'Conflito é uma decisão sobre o comportamento do app. Entender cada um evita perder trabalho.'},
+            {t:'Desistir do ramo e apagar tudo.', ok:false, why:'O conflito tem solução. Desistir joga fora o experimento.'}
+          ]}
+      ]},
     { id:'2.6', title:'Projeto: a primeira fatia funcionando', min:45,
       body:[`<div class="card"><p>Use o plano do módulo anterior e construa no Cursor as primeiras fatias do seu app. O foco não é terminar o app, e sim praticar o ciclo: pedir com contexto, ler o plano, conferir as diferenças, testar e salvar.</p></div>`],
       projeto:{
@@ -631,6 +940,160 @@ const MODULES = [
             {t:'Restringir a chave ao domínio do site, configurar limites e alertas de uso e trocar a chave exposta.', ok:true, why:'Restringir a chave impede o uso por outros sites, e os alertas avisam antes de a conta disparar.'},
             {t:'Tirar o mapa do site para sempre.', ok:false, why:'O mapa é útil. Com a chave protegida e limites, dá para mantê-lo.'},
             {t:'Mudar a cor do mapa.', ok:false, why:'Visual não tem relação com o uso indevido da chave.'}
+          ]}
+      ]},
+    { id:'3.6', title:'Segredos e variáveis de ambiente na prática', min:14,
+      body:[
+        `<div class="card analogy"><h3>🔑 A chave do portão e a chave do cofre</h3><p>No condomínio, a chave do portão social fica com todos os moradores. A do cofre da administração, só com o síndico. Ninguém pendura a chave do cofre no quadro da portaria. <b>No app existem chaves dos dois tipos</b>, e misturar uma com a outra é um dos erros mais caros de quem está começando.</p></div>`,
+        `<div class="term"><b>Variável de ambiente</b> = configuração guardada fora do código, como o endereço do banco e as chaves. <b>.env</b> = arquivo no seu computador com essas variáveis, fora do Git. <b>Chave pública</b> = feita para ir ao navegador e protegida pelas regras de acesso (no Supabase, a chave anon ou publicável). <b>Chave secreta</b> = dá poder total, como a service role do Supabase; só no servidor. <b>Rotacionar</b> = gerar uma chave nova e invalidar a antiga.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: os pedidos da marmitaria da Rose</h3><p>Rose vende marmitas em Belo Horizonte. O app de pedidos usa Supabase e funcionava perfeitamente no computador. Ela publicou na Vercel e...</p></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>"Funciona no meu computador"</h4>
+            <div class="node">.env local com o endereço e a chave</div><div class="arrow">▼</div>
+            <div class="node">App publicado na Vercel</div><div class="arrow">▼</div>
+            <div class="node hot">Tela branca no ar<small>console: "supabaseUrl is required."</small></div>
+          </div>
+          <div class="flow new"><h4>Variáveis em cada ambiente</h4>
+            <div class="node">Cadastrar as variáveis no painel da Vercel, com os mesmos nomes</div><div class="arrow">▼</div>
+            <div class="node">Publicar de novo</div><div class="arrow">▼</div>
+            <div class="node good">App no ar lê as chaves certas</div>
+          </div>
+        </div>`,
+        `<div class="card" style="margin-top:14px"><h3>Por que quebrou</h3><p>O <code>.env</code> está no <code>.gitignore</code>, então não vai para o GitHub, e a Vercel não o recebe. Cada lugar onde o app roda precisa das próprias variáveis, e mudanças só valem numa nova publicação.</p>
+          <pre class="code"># .env (só no seu computador, fora do Git)
+VITE_SUPABASE_URL=https://xxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=chave-publica...      pode ir para o navegador
+SUPABASE_SERVICE_ROLE_KEY=chave-secreta...   só no servidor</pre>
+          <p>Atenção ao prefixo: em muitas ferramentas, variáveis que começam com <code>VITE_</code> ou <code>NEXT_PUBLIC_</code> são embutidas no código do navegador. <b>Nunca dê esse prefixo a uma chave secreta.</b></p>
+          <p><b>O segundo susto:</b> diante de um erro de permissão, o agente sugeriu usar a service role no navegador, "porque assim funciona". Funciona porque ela ignora as regras de acesso: qualquer visitante poderia ler todos os pedidos. Rose recusou e corrigiu a regra de acesso, como você verá na próxima lição.</p></div>`,
+        `<div class="card"><h3>Se uma chave secreta vazou</h3><ol class="golden"><li><span><b>Rotacione já</b> no painel do serviço.</span></li><li><span>Atualize a chave nova no <code>.env</code> e na hospedagem, e publique de novo.</span></li><li><span>Apagar o arquivo não basta: a chave continua no <b>histórico do Git</b>.</span></li><li><span>Confira uso e cobranças estranhas no serviço.</span></li><li><span>Descubra como vazou, para não repetir.</span></li></ol></div>`,
+        `<div class="card"><h3>Sinais de que algo está errado</h3>
+          <div class="tw"><table class="tbl"><tr><th>Sinal</th><th>Provável significado</th></tr>
+          <tr><td>"is required" ou "undefined" só no app publicado</td><td>Variável não cadastrada na hospedagem ou com nome diferente</td></tr>
+          <tr><td>Cadastrou e continua igual</td><td>Faltou publicar de novo</td></tr>
+          <tr><td>Chave aparece na aba Fontes do F12</td><td>Está no código do navegador; se for secreta, rotacione</td></tr>
+          <tr><td>Alerta do GitHub sobre segredo</td><td>O GitHub pode detectar chaves conhecidas; trate como vazada</td></tr>
+          <tr><td>Chave secreta colada num chat de IA</td><td>Considere exposta e rotacione</td></tr></table></div></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Vercel e Supabase, uns 5 minutos)</h3><ol class="golden"><li><span>Liste as chaves do seu app e marque cada uma como pública ou secreta, conferindo na documentação do serviço.</span></li><li><span>Confira que o <code>.env</code> está no <code>.gitignore</code> e peça ao agente para procurar chaves nos commits; leia o resultado.</span></li><li><span>Cadastre as variáveis no painel da Vercel e publique de novo.</span></li><li><span>Teste no celular e abra a aba Fontes para confirmar que nenhuma chave secreta aparece.</span></li></ol>
+          <p>O plano Hobby da Vercel é para uso não comercial: um app que gera receita para um negócio pode exigir plano pago. Confira os termos.</p></div>`
+      ],
+      ch:[
+        { who:'Anderson, 31 anos, vende açaí por encomenda em Manaus', says:'No meu computador o app funciona. Publicado, aparece tela branca e o console diz "supabaseUrl is required."',
+          q:'Qual é a causa mais provável e a correção?',
+          opts:[
+            {t:'O Supabase está fora do ar; é só esperar.', ok:false, why:'A mensagem diz que o endereço do banco nem chegou ao app. É configuração, não queda do serviço.'},
+            {t:'As variáveis do .env não existem na hospedagem: cadastrá-las no painel com os mesmos nomes e publicar de novo.', ok:true, why:'O .env fica fora do Git e não chega à hospedagem. Cada ambiente precisa das próprias variáveis.'},
+            {t:'Colocar o endereço e as chaves direto no código para garantir.', ok:false, why:'Funciona, mas espalha configuração pelo código e abre caminho para vazar chaves.'}
+          ]},
+        { who:'Camila, 36 anos, criando um app de clube de leitura em Campinas', says:'Deu erro de permissão no banco e o agente sugeriu usar a chave service role no código do navegador.',
+          q:'O que ela deve fazer?',
+          opts:[
+            {t:'Aceitar, porque o erro some.', ok:false, why:'O erro some porque a service role ignora todas as regras de acesso, e qualquer visitante passa a ter poder total.'},
+            {t:'Aceitar só por enquanto e trocar antes do lançamento.', ok:false, why:'Provisório costuma ficar, e a chave já vai parar no histórico e no navegador.'},
+            {t:'Recusar, manter a service role só no servidor e corrigir a regra de acesso que está bloqueando.', ok:true, why:'O erro de permissão é um sinal de que falta uma regra, não de que a proteção deve ser desligada.'}
+          ]},
+        { who:'Diego, 29 anos, faz apps como freelancer em Londrina', says:'Percebi que enviei o .env com a chave secreta para um repositório público há 2 dias. Já apaguei o arquivo e fiz um commit novo.',
+          q:'Isso basta?',
+          opts:[
+            {t:'Não: a chave continua no histórico e pode ter sido copiada. Ele precisa rotacioná-la, atualizar onde for usada e conferir uso estranho no serviço.', ok:true, why:'Robôs procuram chaves em repositórios públicos o tempo todo. Só uma chave nova encerra o risco.'},
+            {t:'Sim, o arquivo não existe mais.', ok:false, why:'Apagar não remove do histórico: qualquer pessoa ainda acessa versões antigas.'},
+            {t:'Basta tornar o repositório privado.', ok:false, why:'Ajuda daqui para frente, mas a chave ficou pública por 2 dias e pode ter sido copiada.'}
+          ]}
+      ]},
+    { id:'3.7', title:'Regras de acesso na prática: RLS sem mistério', min:14,
+      body:[
+        `<div class="card analogy"><h3>🛡️ A lista da portaria</h3><p>O porteiro tem uma lista: "o 302 recebe visitas de quem o morador autorizou". Sem lista nenhuma, ele tem duas opções ruins: deixar todo mundo entrar ou não deixar ninguém. <b>No banco de dados é igual</b>: ligar a segurança sem escrever regras é o porteiro que barra todos; desligar é o portão escancarado.</p></div>`,
+        `<div class="term"><b>RLS (segurança por linha)</b> = o banco confere, linha por linha, quem pode ler ou alterar. <b>Política (policy)</b> = cada regra, como "a cliente lê só os próprios agendamentos". <b>auth.uid()</b> = função do Supabase que devolve o id do usuário logado. <b>using</b> = condição para enxergar ou mexer em linhas existentes. <b>with check</b> = condição para gravar linhas novas ou alteradas.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a agenda do salão da Kátia</h3><p>A tabela <code>agendamentos</code> tem: id, cliente_id, servico, inicio e status. Antes de qualquer código, Kátia escreveu as regras em português:</p>
+          <div class="tw"><table class="tbl"><tr><th>Quem</th><th>Pode</th><th>Não pode</th></tr>
+          <tr><td>Cliente logada</td><td>Ver, criar e cancelar os próprios agendamentos</td><td>Ver ou alterar agendamentos de outras clientes</td></tr>
+          <tr><td>Dona do salão</td><td>Ver e gerenciar todos</td><td>Nada a restringir neste app</td></tr>
+          <tr><td>Visitante sem login</td><td>Ver quais horários estão livres</td><td>Ver nome ou telefone de qualquer cliente</td></tr></table></div></div>`,
+        `<div class="card"><h3>Como as duas primeiras regras ficaram no banco</h3><pre class="code">alter table agendamentos enable row level security;
+
+create policy "cliente vê os próprios"
+  on agendamentos for select
+  using (auth.uid() = cliente_id);
+
+create policy "cliente cria para si mesma"
+  on agendamentos for insert
+  with check (auth.uid() = cliente_id);</pre>
+          <p>Você não precisa decorar a sintaxe. Precisa conseguir <b>ler e conferir</b> se cada regra diz o que você escreveu em português. Para o visitante ver horários livres sem dados pessoais, o comum é uma consulta separada que devolva só os horários ocupados; peça ao agente para explicar as opções e teste sem login.</p></div>`,
+        `<div class="card"><h3>Os dois bugs mais comuns, vividos pela Kátia</h3><div class="why-chain">
+            <div>"Liguei o RLS e a lista de agendamentos ficou vazia, sem erro nenhum."</div>
+            <div>Por quê? → Com RLS ligado e nenhuma política de leitura, o banco nega tudo em silêncio.</div>
+            <div class="root">Correção: criar a política de leitura e testar de novo.</div>
+          </div>
+          <div class="why-chain">
+            <div>"O agente consertou: agora tudo aparece!"</div>
+            <div>Por quê? → Ele criou uma política com <code>using (true)</code>: todo mundo lê tudo.</div>
+            <div class="root">O teste das duas contas pegou. Desconfie de qualquer política com "true".</div>
+          </div></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ol class="golden"><li><span><b>Proteger só a leitura</b>: ver e alterar são permissões separadas. Sem regra de update e delete bem feita, alguém pode mexer no que é do outro.</span></li><li><span><b>Desligar o RLS "só para testar"</b> e esquecer.</span></li><li><span><b>Testar logado só como dono</b>: teste com duas clientes e sem login.</span></li><li><span><b>Ignorar avisos do painel</b>: o Supabase tem um verificador de segurança que aponta tabelas expostas; confira e resolva.</span></li></ol></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Supabase, uns 5 minutos)</h3><ol class="golden"><li><span>Escreva em português, numa tabela como a do exemplo, quem pode ler, criar, alterar e apagar em cada tabela.</span></li><li><span>Ligue o RLS e crie as políticas uma por vez. O assistente de IA do painel pode explicar cada uma: leia antes de rodar.</span></li><li><span>Teste com 2 usuários e sem login: tente ler, criar, alterar e apagar o que é do outro.</span></li><li><span>Rode o verificador de segurança do painel e resolva os avisos.</span></li></ol>
+          <p>🔒 Use usuários e dados fictícios. No plano gratuito, o projeto pausa se ficar inativo por um tempo.</p></div>`
+      ],
+      ch:[
+        { who:'Rodrigo, 34 anos, professor particular em Natal', says:'Liguei o RLS na tabela de alunos e agora a lista aparece vazia, sem nenhum erro.',
+          q:'O que está acontecendo?',
+          opts:[
+            {t:'Falta uma política de leitura: com RLS ligado e sem política, o banco nega tudo em silêncio. Ele deve criar "o professor vê os próprios alunos" e testar.', ok:true, why:'O RLS começa negando tudo. Cada permissão precisa de uma política escrita.'},
+            {t:'Os dados foram apagados ao ligar o RLS.', ok:false, why:'Os dados continuam lá. Eles só não podem ser lidos sem uma política.'},
+            {t:'Desligar o RLS resolve de vez.', ok:false, why:'Resolve a lista e abre os dados de todos os alunos para qualquer pessoa.'}
+          ]},
+        { who:'Helena, 37 anos, dona de uma floricultura em Porto Alegre', says:'Criei a política de leitura e testei: uma cliente não vê os pedidos da outra. Está tudo protegido?',
+          q:'O que ainda falta conferir?',
+          opts:[
+            {t:'Nada, se não vê, não mexe.', ok:false, why:'Ver e alterar são permissões diferentes. Sem regras de alteração, alguém pode mudar pedidos alheios direto pelo banco.'},
+            {t:'Regras e testes também para criar, alterar e apagar pedidos.', ok:true, why:'Cada operação tem a sua política. Proteger só a leitura deixa portas abertas.'},
+            {t:'Só esconder os botões de editar.', ok:false, why:'Botão escondido não protege: a regra precisa estar no banco.'}
+          ]},
+        { who:'Márcia, 41 anos, criando um app de controle de vacinas para o seu pet shop em Londrina', says:'O agente criou uma política com "using (true)" e agora tudo funciona.',
+          q:'Qual é o problema?',
+          opts:[
+            {t:'Nenhum, se funciona está certo.', ok:false, why:'Funciona porque libera tudo: qualquer usuário lê os dados de todos os clientes.'},
+            {t:'Só o desempenho fica pior.', ok:false, why:'O problema é segurança e LGPD, não velocidade.'},
+            {t:'"true" libera todas as linhas para todos. Ela deve trocar por uma regra que compare auth.uid() com o dono do registro e refazer o teste das duas contas.', ok:true, why:'A política precisa dizer quem pode o quê. O teste das duas contas confirma.'}
+          ]}
+      ]},
+    { id:'3.8', title:'LGPD na prática para apps pequenos', min:14,
+      body:[
+        `<div class="card analogy"><h3>📜 O fichário do consultório</h3><p>Um consultório guarda a ficha de cada paciente só com o necessário, num armário trancado, e o paciente pode pedir uma cópia. Ninguém deixa o fichário aberto na recepção. <b>A LGPD pede esse mesmo cuidado com qualquer dado pessoal do seu app</b>, seja de dez ou de dez mil pessoas.</p></div>`,
+        `<div class="term"><b>LGPD</b> = Lei Geral de Proteção de Dados (Lei 13.709/2018). <b>Titular</b> = a pessoa a quem os dados se referem. <b>Controlador</b> = quem decide o que fazer com os dados: você ou o negócio dono do app. <b>Dado sensível</b> = saúde, religião, origem racial, biometria, vida sexual, opinião política, entre outros; exige cuidado maior. <b>Incidente</b> = vazamento ou acesso indevido. Esta lição não é consultoria jurídica: com dados sensíveis ou muitos usuários, consulte um especialista.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a matrícula da escolinha de futebol do Marcão</h3><p>Marcão tem uma escolinha em Contagem e pediu "um formulário de matrícula completo". A IA devolveu: CPF e RG da criança, endereço, escola, foto, tipo sanguíneo e renda familiar. Uma semana depois, um professor exportou a planilha com tudo e mandou no grupo de pais "para conferirem". Era um incidente com dados de crianças.</p>
+          <div class="pipe"><div class="node ink">Listar cada dado</div><div class="ar">➜</div><div class="node yel">"Para quê?"</div><div class="ar">➜</div><div class="node ink">Coleta mínima</div><div class="ar">➜</div><div class="node ink">Acesso por perfil</div><div class="ar">➜</div><div class="node ink">Exclusão a pedido</div></div>
+          <div class="tw"><table class="tbl"><tr><th>Dado</th><th>Para quê?</th><th>Decisão</th></tr>
+          <tr><td>Nome e data de nascimento da criança</td><td>Montar turmas por idade</td><td>Coletar</td></tr>
+          <tr><td>Nome e WhatsApp do responsável</td><td>Avisos e contato</td><td>Coletar</td></tr>
+          <tr><td>Alergias e condições de saúde</td><td>Segurança no treino</td><td>Dado sensível: só o necessário, com consentimento específico do responsável e acesso restrito</td></tr>
+          <tr><td>CPF e RG da criança, renda</td><td>Nenhum uso hoje</td><td>Não coletar</td></tr>
+          <tr><td>Foto</td><td>Divulgação nas redes</td><td>Autorização separada e opcional, nunca pré-marcada</td></tr></table></div>
+          <p>Com crianças e adolescentes, a lei exige atenção redobrada e, em geral, consentimento específico de um dos pais ou responsável. A correção do bug: o botão "Exportar" ficou só para a coordenação, sem os dados de saúde.</p></div>`,
+        `<div class="card"><h3>O mínimo que um app pequeno deveria ter</h3><ol class="golden"><li><span><b>Aviso de privacidade</b> simples: quais dados, para quê, por quanto tempo, com quem compartilha e um contato.</span></li><li><span>Um jeito de a pessoa pedir <b>acesso, correção e exclusão</b>, nem que seja um e-mail.</span></li><li><span><b>Coletar só o necessário.</b></span></li><li><span><b>Acesso por perfil</b>, com regras de acesso no banco.</span></li><li><span>Saber <b>onde os dados ficam</b>: banco, planilhas, e-mails, backups e serviços externos, inclusive IA.</span></li><li><span>Um <b>plano para incidentes</b>: a lei prevê comunicar à ANPD e aos titulares incidentes que possam causar risco ou dano relevante.</span></li></ol></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ul><li>Caixa de "aceito" <b>já marcada</b>, ou um consentimento genérico para tudo.</li><li><b>Dados reais em testes</b> e em conversas com IA.</li><li><b>Prints do painel</b> com dados de clientes em grupos.</li><li><b>Guardar para sempre</b> dados de quem já saiu, sem motivo.</li><li>Enviar dados pessoais a um <b>serviço de IA</b> dentro do app sem avisar no aviso de privacidade.</li></ul></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Supabase, uns 5 minutos)</h3><ol class="golden"><li><span>Abra as tabelas do seu app e liste cada dado pessoal.</span></li><li><span>Escreva "para quê?" ao lado de cada um e marque: coletar, não coletar ou sensível.</span></li><li><span>Remova do formulário, em fatia, o que não tem uso.</span></li><li><span>Escreva você mesmo o aviso de privacidade; a IA pode revisar a clareza, mas o conteúdo deve refletir o que seu app faz de verdade.</span></li><li><span>Teste a exclusão com um usuário fictício e confirme que os dados sumiram.</span></li></ol></div>`
+      ],
+      ch:[
+        { who:'Thiago, 28 anos, mantém o app de agendamento de uma barbearia em São Luís', says:'Um cliente pediu por e-mail para apagar os dados dele. Não sei nem onde tudo está guardado.',
+          q:'Qual é o caminho certo?',
+          opts:[
+            {t:'Mapear onde ficam os dados (banco, planilhas, e-mails, serviços externos), apagar ou anonimizar o que não precisa ser mantido, responder ao cliente e transformar isso num processo.', ok:true, why:'Atender o pedido exige saber onde os dados estão. O mapa vale para os próximos pedidos e para incidentes.'},
+            {t:'Ignorar, porque o app é pequeno.', ok:false, why:'A LGPD vale para apps pequenos também, e o titular tem direito de pedir a exclusão.'},
+            {t:'Apagar só a conta de login.', ok:false, why:'Os dados podem continuar em agendamentos, planilhas e backups.'}
+          ]},
+        { who:'Marcão, 45 anos, dono de uma escolinha de futebol em Contagem', says:'Vou manter CPF e RG das crianças no formulário, por garantia. Vai que um dia eu preciso.',
+          q:'O que você recomenda?',
+          opts:[
+            {t:'Manter, porque mais dados dão mais segurança.', ok:false, why:'Dado sem uso não traz segurança, só risco. E dados de crianças pedem cuidado redobrado.'},
+            {t:'Não coletar o que não tem uso hoje e pedir só quando houver uma finalidade clara, explicada ao responsável.', ok:true, why:'Coleta mínima é um princípio da LGPD e reduz o estrago se algo vazar.'},
+            {t:'Coletar, mas guardar numa planilha separada.', ok:false, why:'Muda o lugar, não o problema. A planilha separada também pode vazar.'}
+          ]},
+        { who:'Lúcia, 43 anos, dona de uma clínica de fisioterapia em Aracaju', says:'Quero que uma IA resuma as fichas dos pacientes. Vou mandar a ficha inteira, com nome e CPF, para o provedor.',
+          q:'Qual é o caminho responsável?',
+          opts:[
+            {t:'Mandar tudo, porque o provedor é uma empresa grande.', ok:false, why:'Tamanho do provedor não dispensa os cuidados com dado de saúde, que é sensível.'},
+            {t:'Desistir de qualquer uso de IA na clínica.', ok:false, why:'A IA pode ajudar com os cuidados certos.'},
+            {t:'Enviar só o necessário, sem nome e CPF quando possível, conferir os termos do provedor, informar no aviso de privacidade e manter a revisão do fisioterapeuta.', ok:true, why:'Dado de saúde exige minimização, transparência e responsabilidade profissional.'}
           ]}
       ]},
     { id:'3.5', title:'Projeto: publicar e testar com usuários reais', min:45,
@@ -833,6 +1296,171 @@ const MODULES = [
             {t:'Não usar IA em nada na clínica.', ok:false, why:'A IA pode ajudar muito, com revisão profissional.'}
           ]}
       ]},
+    { id:'4.6', title:'Logs e alertas: saber do erro antes do cliente', min:14,
+      body:[
+        `<div class="card analogy"><h3>📟 A caixa-preta do avião</h3><p>A caixa-preta registra tudo o que acontece no voo. Quando algo dá errado, os investigadores não dependem da memória de ninguém: está tudo gravado, com hora. <b>Logs são a caixa-preta do seu app</b>, e os alertas são o aviso no painel do piloto antes de o problema virar acidente.</p></div>`,
+        `<div class="term"><b>Log</b> = registro de um evento com data e hora, como "pedido 381 criado". <b>Log do servidor</b> = registros das funções que rodam na hospedagem; não aparecem no console do cliente. <b>Monitoramento de erros</b> = ferramenta que junta os erros que os usuários encontram e avisa você. <b>Alerta</b> = aviso automático quando algo passa do normal.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o delivery de açaí da Jéssica</h3><p>Jéssica vende açaí em Manaus com pagamento por Pix. Numa terça à noite, vários pedidos ficaram "aguardando pagamento", embora os clientes jurassem que tinham pagado.</p></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Sem logs</h4>
+            <div class="node">Clientes reclamam no WhatsApp</div><div class="arrow">▼</div>
+            <div class="node">Jéssica pede prints e chuta causas</div><div class="arrow">▼</div>
+            <div class="node hot">Ninguém sabe se falhou o Pix, o app ou o serviço<small>3 dias de chute</small></div>
+          </div>
+          <div class="flow new"><h4>Com logs</h4>
+            <div class="node">A função que recebe a confirmação registra cada aviso</div><div class="arrow">▼</div>
+            <div class="node">O painel da hospedagem mostra o erro repetido</div><div class="arrow">▼</div>
+            <div class="node good">Causa encontrada em 15 minutos</div>
+          </div>
+        </div>`,
+        `<div class="card" style="margin-top:14px"><h3>O que os logs mostraram</h3><pre class="code">21:14:03  confirmacao-pagamento  recebido   pedido=381
+21:14:03  confirmacao-pagamento  ERRO 401   assinatura inválida
+21:15:10  confirmacao-pagamento  recebido   pedido=382
+21:15:10  confirmacao-pagamento  ERRO 401   assinatura inválida</pre>
+          <p>Na semana anterior, a chave que verifica os avisos do serviço de pagamento tinha sido trocada no painel do serviço, mas não na hospedagem. Todo aviso de "pago" era recusado. <b>Correção:</b> atualizar a variável, publicar de novo, conferir no painel do serviço os pedidos do período e liberá-los, e criar um alerta: mais de 3 erros de confirmação em 10 minutos geram um e-mail.</p></div>`,
+        `<div class="card"><h3>O que registrar e o que nunca registrar</h3><ol class="golden"><li><span><b>Eventos do negócio</b>: pedido criado, pago, cancelado.</span></li><li><span><b>Falhas com contexto</b>: qual função, qual pedido, qual mensagem.</span></li><li><span><b>Integrações</b>: o que foi enviado ao serviço externo e qual resposta voltou.</span></li><li><span><b>Nunca</b>: senhas, chaves, dados de cartão, dados de saúde, CPF completo. Use o id do pedido em vez do nome do cliente.</span></li></ol>
+          <div class="tw"><table class="tbl"><tr><th>Onde olhar</th><th>O que aparece</th></tr>
+          <tr><td>Console do navegador</td><td>Erros na tela de um usuário, só no aparelho dele</td></tr>
+          <tr><td>Logs da hospedagem (ex.: Vercel)</td><td>Funções do servidor, como a confirmação de pagamento</td></tr>
+          <tr><td>Logs do banco (ex.: Supabase)</td><td>Login, consultas recusadas, erros de regras de acesso</td></tr>
+          <tr><td>Painel do serviço externo</td><td>Avisos enviados e respostas recebidas</td></tr></table></div>
+          <p>Planos gratuitos costumam guardar logs por pouco tempo: confira quanto e olhe logo quando algo acontecer.</p></div>`,
+        `<div class="card"><h3>Erros comuns</h3><ul><li><b>Erro engolido</b>: o código captura a falha e segue em silêncio. Peça que todo erro capturado seja registrado e mostrado ao usuário com mensagem clara.</li><li><b>Log demais</b> vira ruído; <b>log de menos</b> não ajuda.</li><li><b>Dados pessoais no log</b>: viram um vazamento esperando acontecer.</li><li><b>Alerta para tudo</b>: dispara toda hora e passa a ser ignorado.</li></ul></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Claude, uns 5 minutos)</h3><ol class="golden"><li><span>Abra os logs da hospedagem do seu app, ou provoque um erro numa função de teste.</span></li><li><span>Copie um trecho apagando chaves, e-mails, nomes e qualquer dado que identifique pessoas.</span></li><li><span>Peça ao Claude, com suas palavras, que explique o que o trecho mostra e a causa provável, sem pedir código ainda.</span></li><li><span>Confirme a hipótese no app antes de corrigir.</span></li><li><span>Liste 3 eventos que seu app deveria registrar e 1 alerta que você quer receber.</span></li></ol>
+          <p>O plano gratuito do Claude tem limite de mensagens: escreva o relato completo de uma vez.</p></div>`
+      ],
+      ch:[
+        { who:'Wellington, 36 anos, vende ingressos de shows pela internet em Recife', says:'Clientes dizem que pagaram e o ingresso não chegou. No console do navegador não aparece nenhum erro.',
+          q:'Onde investigar?',
+          opts:[
+            {t:'Pedir aos clientes que limpem o cache.', ok:false, why:'O problema provavelmente não está no aparelho do cliente.'},
+            {t:'Concluir que os clientes estão mentindo.', ok:false, why:'Sem olhar os registros, isso é chute, e afasta clientes.'},
+            {t:'Nos logs da função do servidor que recebe a confirmação de pagamento e no painel do serviço de pagamento.', ok:true, why:'A confirmação acontece no servidor, longe do navegador. É lá que a falha deixa rastro.'}
+          ]},
+        { who:'Priscila, 33 anos, mantém o app de uma clínica veterinária em Santos', says:'O agente adicionou um log que grava os dados completos do tutor, com CPF e telefone, em cada requisição.',
+          q:'O que ela deve fazer?',
+          opts:[
+            {t:'Trocar por logs com o id e o evento, sem dados pessoais, e apagar os registros antigos que contenham esses dados.', ok:true, why:'Logs são lidos por várias pessoas e ferramentas. Dados pessoais neles aumentam o risco e ferem a LGPD.'},
+            {t:'Manter, porque ajuda a investigar.', ok:false, why:'O id já permite investigar sem expor dados pessoais.'},
+            {t:'Desligar todos os logs.', ok:false, why:'Ficaria sem nenhum rastro quando algo der errado.'}
+          ]},
+        { who:'Ronaldo, 45 anos, dono de uma loja de peças de moto em Teresina', says:'Configurei alerta para qualquer aviso do app. Recebo 200 e-mails por dia e parei de ler.',
+          q:'Como ajustar?',
+          opts:[
+            {t:'Desligar os alertas.', ok:false, why:'Ficaria sem saber dos problemas graves.'},
+            {t:'Deixar alerta só para o que exige ação, como falhas repetidas de pagamento acima de um limite, e mandar o resto num resumo.', ok:true, why:'Alerta bom é raro e importante. Assim ele volta a ser lido.'},
+            {t:'Criar uma pasta para os e-mails e olhar uma vez por mês.', ok:false, why:'Um problema grave esperaria semanas para ser visto.'}
+          ]}
+      ]},
+    { id:'4.7', title:'Evoluir sem quebrar: mudanças no banco e versões de prévia', min:14,
+      body:[
+        `<div class="card analogy"><h3>🔧 Reforma com a família morando</h3><p>Reformar a cozinha com a família morando na casa exige ordem: não dá para tirar o fogão antes de o novo chegar. A obra vai por etapas e a casa continua funcionando. <b>Mudar um app que já está em uso é igual</b>: as pessoas continuam usando enquanto você mexe.</p></div>`,
+        `<div class="term"><b>Migração</b> = mudança registrada na estrutura do banco, como uma coluna nova, aplicada de forma controlada. <b>Prévia (preview)</b> = endereço temporário que a hospedagem gera para um ramo, antes de ir para o principal. <b>Produção</b> = o app de verdade, usado pelas pessoas. <b>Valor nulo (null)</b> = campo vazio, sem valor. <b>Compatibilidade</b> = a mudança nova não quebrar dados e telas antigas.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: validade dos produtos no estoque do Seu Jorge</h3><p>Tintas e argamassas vencem. Seu Jorge quer registrar a validade e ver no topo o que está para vencer.</p></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Direto em produção</h4>
+            <div class="node">Altera a tabela pelo painel, no banco de verdade</div><div class="arrow">▼</div>
+            <div class="node">Publica o código novo no mesmo minuto</div><div class="arrow">▼</div>
+            <div class="node hot">App quebra para os funcionários<small>no meio do expediente</small></div>
+          </div>
+          <div class="flow new"><h4>Por etapas</h4>
+            <div class="node">Ramo novo + migração em arquivo + backup</div><div class="arrow">▼</div>
+            <div class="node">Teste na prévia com produtos antigos e novos</div><div class="arrow">▼</div>
+            <div class="node good">Merge, migração em produção e conferência no ar</div>
+          </div>
+        </div>`,
+        `<div class="card" style="margin-top:14px"><h3>O bug que a prévia pegou</h3><p>Na prévia, a lista de produtos ficou em branco. O console mostrou:</p>
+          <pre class="code">TypeError: Cannot read properties of null (reading 'split')</pre>
+          <p>O código novo formatava a validade de todos os produtos, mas cimento e areia não têm validade: o campo estava vazio (<code>null</code>). <b>Correção:</b> mostrar "sem validade" quando o campo estiver vazio e incluir no roteiro de teste um produto antigo e um novo. Se isso tivesse ido direto para produção, a loja ficaria sem estoque na tela.</p>
+          <p><b>O segundo tropeço:</b> na prévia tudo passou, mas no ar apareceu "coluna validade não existe". A migração tinha sido aplicada só no banco de teste. O arquivo de migração no projeto permitiu repetir exatamente a mesma mudança em produção, depois do backup.</p></div>`,
+        `<div class="card"><h3>Regras para mudar o banco com segurança</h3><ol class="golden"><li><span><b>Acrescentar é mais seguro que renomear ou apagar</b>: coluna nova opcional, ou com valor padrão.</span></li><li><span><b>Renomear em etapas</b>: criar a nova, copiar os dados, passar o app a usar a nova e só depois remover a antiga.</span></li><li><span><b>Backup antes</b> de qualquer migração, e saber restaurar.</span></li><li><span><b>Migração em arquivo</b>, versionada no Git, em vez de cliques soltos no painel; peça ao agente para explicar como sua plataforma faz isso.</span></li><li><span>Se possível, um <b>banco separado para testes</b>, com dados fictícios.</span></li><li><span>Mudou regras de acesso? Rode de novo o <b>teste das duas contas</b>.</span></li></ol></div>`,
+        `<div class="card"><h3>Sintomas comuns</h3>
+          <div class="tw"><table class="tbl"><tr><th>Sintoma</th><th>Causa provável</th></tr>
+          <tr><td>Tela quebra só com registros antigos</td><td>O código não trata campo vazio</td></tr>
+          <tr><td>Funciona na prévia, quebra no ar</td><td>Migração não aplicada em produção ou variáveis diferentes</td></tr>
+          <tr><td>Dados novos somem depois de renomear coluna</td><td>Alguma parte do app ainda grava na coluna antiga</td></tr>
+          <tr><td>Usuários reclamam que "o botão sumiu"</td><td>Mudança visível sem aviso; avise as novidades</td></tr></table></div></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Claude e Cursor, uns 5 minutos)</h3><ol class="golden"><li><span>Escolha uma melhoria da sua lista que mude o banco.</span></li><li><span>Descreva a mudança ao Claude com suas palavras e peça os riscos para os dados antigos e um plano em etapas, sem colar dados reais.</span></li><li><span>No Cursor, faça num ramo, com backup antes.</span></li><li><span>Teste na prévia com registros antigos e novos; só então faça o merge e confira no ar.</span></li></ol></div>`
+      ],
+      ch:[
+        { who:'Alexandre, 38 anos, dono de um restaurante em Belém', says:'Adicionei o campo "calorias" no cardápio. Agora os pratos antigos sumiram da tela e o console fala em null.',
+          q:'Qual é a correção?',
+          opts:[
+            {t:'Tratar o campo vazio no código, mostrando algo como "não informado", e testar com pratos antigos e novos.', ok:true, why:'Registros antigos não têm o campo novo. O código precisa conviver com o vazio.'},
+            {t:'Apagar os pratos antigos e cadastrar tudo de novo.', ok:false, why:'Trabalho desnecessário, e o problema volta na próxima coluna nova.'},
+            {t:'Remover o campo calorias para sempre.', ok:false, why:'A melhoria é válida. Só faltou compatibilidade com os dados antigos.'}
+          ]},
+        { who:'Cristiane, 40 anos, controla as mensalidades de uma academia em Cuiabá', says:'Quero renomear a coluna "telefone" para "whatsapp" direto no banco de produção, na sexta às 18h.',
+          q:'O que você sugere?',
+          opts:[
+            {t:'Fazer assim, é uma mudança pequena.', ok:false, why:'Renomear de uma vez quebra todas as partes do app que usam o nome antigo, em pleno horário de pico.'},
+            {t:'Fazer em etapas: backup, criar a coluna nova, copiar os dados, passar o app a usá-la, testar na prévia e remover a antiga depois, fora do horário de pico.', ok:true, why:'Etapas mantêm o app funcionando o tempo todo e permitem voltar atrás.'},
+            {t:'Desistir da mudança.', ok:false, why:'A mudança é possível. Só precisa ser feita do jeito certo.'}
+          ]},
+        { who:'Lara, 29 anos, mantém o app de uma escola de música em Vitória', says:'Na prévia funcionou tudo. No ar, apareceu erro de coluna inexistente.',
+          q:'Qual é a explicação mais provável?',
+          opts:[
+            {t:'A hospedagem apagou a coluna.', ok:false, why:'Hospedagem não altera a estrutura do banco sozinha.'},
+            {t:'É um erro aleatório que vai sumir sozinho.', ok:false, why:'Erro de coluna inexistente não some: a coluna realmente falta.'},
+            {t:'A migração foi aplicada só no banco de teste. Ela deve fazer backup e aplicar o mesmo arquivo de migração em produção.', ok:true, why:'Prévia e produção podem usar bancos diferentes. A migração em arquivo garante a mesma mudança nos dois.'}
+          ]}
+      ]},
+    { id:'4.8', title:'Refatorar com IA: arrumar a casa sem derrubar paredes', min:14,
+      body:[
+        `<div class="card analogy"><h3>🧹 Arrumar o armário da cozinha</h3><p>Depois de meses, a cozinha funciona, mas ninguém acha nada: panelas misturadas com potes, três abridores em gavetas diferentes. Arrumar não muda o que se cozinha, mas deixa tudo mais rápido e seguro. E arruma-se <b>uma prateleira por vez</b>, conferindo se tudo continua ao alcance. Com o código do app é igual.</p></div>`,
+        `<div class="term"><b>Refatorar</b> = reorganizar o código sem mudar o que o app faz. <b>Dívida técnica</b> = atalhos tomados para entregar rápido, que cobram "juros" a cada mudança futura. <b>Código duplicado</b> = a mesma lógica copiada em vários lugares. <b>Comportamento</b> = o que o usuário vê e o que as regras fazem; numa refatoração, ele não pode mudar.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a agenda do salão da Kátia, 8 meses depois</h3><div class="why-chain">
+            <div>"Mudar o horário de funcionamento do salão levou 2 dias."</div>
+            <div>Por quê? → O horário estava escrito em 4 arquivos diferentes.</div>
+            <div>Por quê? → Cada fatia nova copiou o trecho em vez de reaproveitar.</div>
+            <div class="root">Dívida técnica: regras duplicadas, sem um lugar único.</div>
+          </div></div>`,
+        `<div class="flows">
+          <div class="flow old"><h4>Pedido vago</h4>
+            <div class="node">"Refatore o projeto todo para ficar melhor"</div><div class="arrow">▼</div>
+            <div class="node">O agente reescreve 30 arquivos</div><div class="arrow">▼</div>
+            <div class="node hot">A regra das 24 h some do painel da dona<small>ninguém percebe por uma semana</small></div>
+          </div>
+          <div class="flow new"><h4>Plano em etapas</h4>
+            <div class="node">Diagnóstico primeiro, sem alterar nada</div><div class="arrow">▼</div>
+            <div class="node">Uma etapa por vez + roteiro de teste + commit</div><div class="arrow">▼</div>
+            <div class="node good">Mesmo comportamento, código em ordem</div>
+          </div>
+        </div>`,
+        `<div class="card" style="margin-top:14px"><h3>O bug que o roteiro de teste pegou</h3><p>Na etapa "juntar a regra das 24 h numa função única", o roteiro de teste mostrou que cancelar exatamente 24 h antes passou a ser recusado. Lendo as diferenças:</p>
+          <pre class="code">antes:   if (horasAteOHorario >= 24) permitirCancelamento()
+depois:  if (horasAteOHorario > 24)  permitirCancelamento()   mudou a regra!</pre>
+          <p>Um único sinal mudou o comportamento. Como Kátia tinha escrito o critério "24 h ou mais", o relato ao agente foi preciso e a correção, imediata.</p></div>`,
+        `<div class="card"><h3>Como refatorar com IA com segurança</h3><ol class="golden"><li><span>Tenha o <b>roteiro de teste</b> pronto antes; se possível, testes automáticos das regras principais.</span></li><li><span>Peça um <b>diagnóstico</b>: onde há duplicação e quais partes são mais arriscadas, sem alterar nada.</span></li><li><span>Escolha <b>uma etapa pequena</b> e deixe claro que o comportamento não pode mudar.</span></li><li><span><b>Leia as diferenças</b> procurando mudanças de regra: sinais, prazos, textos, valores.</span></li><li><span>Rode o roteiro, faça commit e só então siga para a próxima etapa.</span></li><li><span><b>Nunca misture</b> refatoração com função nova no mesmo pedido.</span></li></ol>
+          <div class="tw"><table class="tbl"><tr><th>Vale refatorar quando...</th><th>Pode esperar quando...</th></tr>
+          <tr><td>A mesma correção precisa ser feita em vários lugares</td><td>O código é feio, mas ninguém precisa mexer nele</td></tr>
+          <tr><td>Você tem medo de mexer numa parte</td><td>Há um lançamento ou campanha nos próximos dias</td></tr>
+          <tr><td>Cada fatia nova quebra outra coisa</td><td>O app será substituído em breve</td></tr></table></div></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Claude e Cursor, uns 5 minutos)</h3><ol class="golden"><li><span>Escolha um arquivo ou função do seu app em que você tem medo de mexer.</span></li><li><span>Cole no Claude, sem chaves nem dados reais, e peça com suas palavras uma explicação do que faz e onde há duplicação, sem reescrever ainda.</span></li><li><span>Escolha uma única melhoria e faça no Cursor, deixando claro que o comportamento não pode mudar.</span></li><li><span>Leia as diferenças, rode o roteiro de teste, faça commit e anote no histórico de manutenção.</span></li></ol></div>`
+      ],
+      ch:[
+        { who:'Jonas, 33 anos, mantém o app de fidelidade de uma hamburgueria em Goiânia', says:'Depois da refatoração, o roteiro de teste mostrou que o lanche grátis do 10º pedido parou de ser aplicado.',
+          q:'O que fazer?',
+          opts:[
+            {t:'A refatoração mudou o comportamento: voltar ao commit anterior ou ler as diferenças para achar a regra alterada e corrigir antes de seguir.', ok:true, why:'Refatorar não pode mudar regras. O roteiro pegou o problema antes dos clientes.'},
+            {t:'Publicar assim e corrigir depois.', ok:false, why:'Clientes perderiam o benefício e a confiança na promoção.'},
+            {t:'Desligar o roteiro de teste, que está atrapalhando.', ok:false, why:'O roteiro fez exatamente o seu trabalho: avisou que algo mudou.'}
+          ]},
+        { who:'Beatriz, 37 anos, dona de uma loja de presentes em Campo Grande', says:'A campanha de Dia das Mães começa amanhã. O código está bagunçado, mas funcionando. Quero refatorar hoje à noite.',
+          q:'Qual é a melhor decisão?',
+          opts:[
+            {t:'Refatorar tudo hoje, para a campanha rodar num código limpo.', ok:false, why:'Mexer na véspera arrisca quebrar o app justamente no dia de maior movimento.'},
+            {t:'Deixar a refatoração para depois da campanha e, até lá, fazer só correções necessárias.', ok:true, why:'Refatoração é investimento para o futuro. Perto de um pico de vendas, estabilidade vale mais.'},
+            {t:'Nunca refatorar, se está funcionando.', ok:false, why:'A dívida técnica cresce e cada mudança futura fica mais cara. Só precisa da hora certa.'}
+          ]},
+        { who:'Sandra, 48 anos, dona de uma padaria em Campinas', says:'Vou pedir ao agente: "refatore o app inteiro e já adicione o delivery".',
+          q:'Qual é o problema desse pedido?',
+          opts:[
+            {t:'Nenhum, economiza tempo.', ok:false, why:'Se algo quebrar, não dá para saber se foi a reorganização ou o delivery.'},
+            {t:'Só o custo do plano do agente.', ok:false, why:'O risco principal é de qualidade, não de custo.'},
+            {t:'Mistura refatoração com função nova e pede tudo de uma vez. O certo é refatorar em etapas pequenas com teste e depois construir o delivery em fatias.', ok:true, why:'Separar mantém cada mudança testável e fácil de desfazer.'}
+          ]}
+      ]},
     { id:'4.5', title:'Projeto: plano de manutenção e próxima melhoria', min:40,
       body:[`<div class="card"><p>Seu app está no ar. Agora organize a vida dele: o que medir, o que melhorar primeiro, quanto custa e como garantir que ele continue funcionando mesmo se você se afastar.</p></div>`],
       projeto:{
@@ -857,9 +1485,9 @@ const MODULES = [
 ];
 
 const MODDONE = {
-  1: 'Você tem uma ideia pequena, uma frase clara, um documento que explica o app sem deixar dúvida e o caminho das telas desenhado.',
-  2: 'Você sabe conduzir o Cursor como mestre de obras: dá contexto, pede com clareza, confere as diferenças e avança em fatias.',
-  3: 'Seu app protege os dados, é acessível e vai ao ar do jeito certo: testado com poucos antes de chegar a muitos.',
+  1: 'Você tem uma ideia pequena, uma frase clara, um documento que explica o app sem deixar dúvida, os dados organizados, o caminho das telas testado num protótipo e critérios de aceite escritos.',
+  2: 'Você sabe conduzir o Cursor como mestre de obras: dá contexto, pede com clareza, confere as diferenças, lê o console, valida os formulários e experimenta em ramos sem medo.',
+  3: 'Seu app guarda segredos no lugar certo, tem regras de acesso testadas, respeita a LGPD, é acessível e vai ao ar do jeito certo: testado com poucos antes de chegar a muitos.',
   4: 'Parabéns, você concluiu o curso Criando Apps com IA! Você sabe levar um app da ideia ao uso real, com segurança, testes e manutenção. Seu certificado do curso já está disponível. Próximo passo da trilha: o curso Agentes de IA.'
 };
 
@@ -879,7 +1507,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#F59E0B','#F97316'], 2:['#F97316','#FB923C'], 3:['#EA580C','#F59E0B'], 4:['#F59E0B','#EAB308'] };
-const LIC = { '1.1':'💡','1.2':'📝','1.3':'🗺️','1.4':'🏠','1.5':'🛠️','2.1':'🤖','2.2':'🧱','2.3':'🧭','2.4':'🗂️','2.5':'🧪','2.6':'🛠️','3.1':'🔐','3.2':'🚀','3.3':'✅','3.4':'🔌','3.5':'🛠️','4.1':'🩺','4.2':'🍽️','4.3':'🚗','4.4':'🤖','4.5':'🛠️' };
+const LIC = { '1.1':'💡','1.2':'📝','1.3':'🗺️','1.4':'🏠','1.5':'🛠️','1.6':'🗃️','1.7':'🎨','1.8':'🔑','2.1':'🤖','2.2':'🧱','2.3':'🧭','2.4':'🗂️','2.5':'🧪','2.6':'🛠️','2.7':'🔎','2.8':'📋','2.9':'🌿','3.1':'🔐','3.2':'🚀','3.3':'✅','3.4':'🔌','3.5':'🛠️','3.6':'🗝️','3.7':'🛡️','3.8':'📜','4.1':'🩺','4.2':'🍽️','4.3':'🚗','4.4':'🤖','4.5':'🛠️','4.6':'📟','4.7':'🔧','4.8':'🧹' };
 
 return {
   id: 'criando-apps-com-ia',

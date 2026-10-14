@@ -46,8 +46,8 @@
     "ordem": 4,
     "recomendado_antes": ["ia-no-trabalho"],
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 6,
+    "versao": 2
   },
   {
     "id": "criando-apps-com-ia",
@@ -59,8 +59,8 @@
     "ordem": 5,
     "recomendado_antes": ["prompts-que-funcionam"],
     "status": "disponivel",
-    "carga_horaria": 2,
-    "versao": 1
+    "carga_horaria": 6,
+    "versao": 2
   },
   {
     "id": "arquiteto-solucoes-ia",
@@ -71,8 +71,8 @@
     "nivel": "intermediario",
     "ordem": 6,
     "status": "disponivel",
-    "carga_horaria": 3,
-    "versao": 2
+    "carga_horaria": 6,
+    "versao": 3
   },
   {
     "id": "agentes-de-ia",
