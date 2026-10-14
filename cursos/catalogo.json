@@ -97,8 +97,8 @@
     "ordem": 8,
     "recomendado_antes": ["prompts-que-funcionam", "criando-apps-com-ia"],
     "status": "disponivel",
-    "carga_horaria": 4,
-    "versao": 1
+    "carga_horaria": 8,
+    "versao": 2
   },
   {
     "id": "ia-em-producao",
