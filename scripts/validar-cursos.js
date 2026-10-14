@@ -49,7 +49,7 @@ for (const meta of catalogo) {
 
   if (meta.carga_horaria !== undefined && !(Number.isInteger(meta.carga_horaria) && meta.carga_horaria >= 1 && meta.carga_horaria <= 40))
     erro(onde, '"carga_horaria" deve ser um número inteiro de horas (1 a 40)');
-  else if (meta.carga_horaria === undefined && meta.status !== 'arquivado') erro(onde, 'falta "carga_horaria" (horas do certificado)');
+  else if (meta.carga_horaria === undefined && meta.status !== 'arquivado' && !meta.projeto_final) erro(onde, 'falta "carga_horaria" (horas do certificado)');
 
   if (meta.recomendado_antes !== undefined) {
     const rec = meta.recomendado_antes;
@@ -114,7 +114,7 @@ function validarCurso(meta, c) {
   if (c.id !== meta.id) erro(onde, 'id no curso.js ("' + c.id + '") difere do catálogo');
   if (!Array.isArray(c.modulos) || !c.modulos.length) { erro(onde, 'precisa de pelo menos 1 módulo'); return; }
   const licoes = new Set();
-  let minutos = 0;
+  let minutos = 0, ocultos = 0;
   c.modulos.forEach((m, i) => {
     const om = onde + ' módulo ' + (m.id != null ? m.id : i + 1);
     if (m.id !== i + 1) erro(om, 'ids dos módulos devem ser 1, 2, 3... em ordem');
@@ -129,7 +129,8 @@ function validarCurso(meta, c) {
       if (!l.title) erro(ol, 'falta "title"');
       if (l.soon) { avisos.push(ol + ': marcada como em construção'); return; }
       if (!Number.isFinite(l.min) || l.min <= 0) erro(ol, 'falta "min" (minutos estimados, contando leitura e prática)');
-      else minutos += l.min;
+      else if (!l.projeto || meta.projeto_final) minutos += l.min;
+      if (l.projeto && !meta.projeto_final) ocultos++;
       if (l.projeto) {
         const p = l.projeto;
         if (l.ch) erro(ol, 'lição de projeto não usa "ch"');
@@ -154,7 +155,10 @@ function validarCurso(meta, c) {
       });
     });
   });
-  if (meta.carga_horaria !== undefined && minutos < meta.carga_horaria * 60 * 0.9)
+  if (!meta.projeto_final) c.modulos.forEach(m => { if (Array.isArray(m.lessons) && m.lessons.length && m.lessons.every(l => l.projeto))
+    erro(onde + ' módulo ' + m.id, 'só tem lições de projeto, que ficam ocultas fora do projeto final da trilha'); });
+  /* Projetos de módulo ficam ocultos e não contam na carga; o projeto final da trilha não emite certificado. */
+  if (!meta.projeto_final && meta.carga_horaria !== undefined && minutos < meta.carga_horaria * 60 * 0.9)
     erro(onde, 'carga_horaria de ' + meta.carga_horaria + ' h, mas o conteúdo soma só ' + minutos + ' min (precisa de pelo menos ' + Math.ceil(meta.carga_horaria * 54) + ' min)');
   if (c.habilidades !== undefined && !(Array.isArray(c.habilidades) && c.habilidades.length >= 1 && c.habilidades.length <= 5 && c.habilidades.every(h => typeof h === 'string' && h.length <= 40)))
     erro(onde, '"habilidades" deve ser uma lista de 1 a 5 textos curtos (até 40 caracteres), que aparecem no certificado');
@@ -167,7 +171,7 @@ function validarCurso(meta, c) {
   });
   Object.keys(c.aoAbrirLicao || {}).forEach(k => { if (!licoes.has(k)) erro(onde, 'aoAbrirLicao aponta para a lição ' + k + ', que não existe'); });
   Object.keys(c.iconesLicao || {}).forEach(k => { if (!licoes.has(k)) avisos.push(onde + ': iconesLicao tem a lição ' + k + ', que não existe'); });
-  console.log('✔ ' + meta.id + ' [' + meta.status + ']: ' + c.modulos.length + ' módulos, ' + licoes.size + ' lições, ' + minutos + ' min' + (meta.carga_horaria ? ' (carga ' + meta.carga_horaria + ' h)' : ''));
+  console.log('✔ ' + meta.id + ' [' + meta.status + ']: ' + c.modulos.length + ' módulos, ' + (licoes.size - ocultos) + ' lições' + (ocultos ? ' (+' + ocultos + ' projetos ocultos)' : '') + ', ' + minutos + ' min' + (meta.carga_horaria ? ' (carga ' + meta.carga_horaria + ' h)' : ''));
 }
 
 avisos.forEach(a => console.log('⚠ ' + a));

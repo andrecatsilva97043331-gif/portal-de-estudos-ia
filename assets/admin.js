@@ -396,7 +396,7 @@ function legendaPost(id, rede){
   u.searchParams.set('utm_source', rede);
   u.searchParams.set('utm_campaign', 'depoimento');
   return '💬 “' + p.d.texto + '”\n\n— ' + p.nome + (p.estado ? ', ' + p.estado : '') + ', concluiu o curso ' + p.c.titulo + ' no Portal de Estudos IA.\n\n'
-    + 'Quer começar também? Os cursos são gratuitos, com projetos práticos e certificado com QR de validação.\n'
+    + 'Quer começar também? Os cursos são gratuitos, com desafios práticos e certificado com QR de validação.\n'
     + (rede === 'instagram' ? '👉 Link na bio.' : '👉 ' + u.href) + '\n\n#InteligenciaArtificial #IA #Carreira #Estudos #PortalDeEstudosIA';
 }
 const IMG_CDN = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js';
@@ -468,10 +468,11 @@ function renderDivulgacao(){
       : '<div class="empty">Nenhum aluno cadastrado ainda.</div>'}`;
 }
 
-/* Envia ao Supabase os cursos publicados e as lições que valem certificado (o servidor confere a conclusão por esta lista). */
+/* Envia ao Supabase os cursos publicados e as lições que valem certificado (o servidor confere a conclusão por esta lista).
+   Fica de fora o projeto final das trilhas (só estudo): sem a linha dele, o servidor também recusa o certificado de trilha. */
 let SYNC = '';
 async function sincronizarCertificados(){
-  const lista = CURSOS.filter(c => PORTAL.disponivel(c)).map(PORTAL.dadosCertificado);
+  const lista = CURSOS.filter(c => PORTAL.disponivel(c) && !c.projeto_final).map(PORTAL.dadosCertificado);
   try { await DB.sincronizarCertificados(lista); SYNC = '✅ ' + lista.length + ' cursos publicados emitem certificado. A lista é atualizada sozinha sempre que você abre este painel.'; }
   catch(e){ console.error(e); SYNC = '⚠️ Não foi possível atualizar a lista de cursos com certificado. Confira se o arquivo supabase/certificados.sql já foi rodado no Supabase.'; }
   const el = $('cert-sync'); if (el) el.textContent = SYNC;

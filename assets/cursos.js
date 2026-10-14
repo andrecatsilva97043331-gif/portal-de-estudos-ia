@@ -56,7 +56,7 @@ PORTAL.gruposRenda = [
 ];
 PORTAL.catalogo = [];
 
-/* Trilhas com certificado próprio. O projeto final de cada uma é um curso com "projeto_final": "<trilha>" no catálogo. */
+/* Trilhas. O projeto final de cada uma é um curso de estudo com "projeto_final": "<trilha>" no catálogo (não emite certificado). */
 PORTAL.trilhas = { ia:'Trilha de IA', renda:'Trilha Renda com IA' };
 PORTAL.trilhaDe = c => c.projeto_final || (c.trilha === 'renda' ? 'renda' : PORTAL.niveis.some(n => n.id === c.nivel) ? 'ia' : null);
 /* O que vale certificado em um curso já carregado (mesmo formato da tabela certificados_cursos do Supabase). */
@@ -71,6 +71,15 @@ PORTAL.dadosCertificado = c => {
   };
 };
 
+/* Projetos de fim de módulo ficam ocultos: não aparecem nem contam para progresso, XP ou certificado.
+   O conteúdo original continua no curso.js (e em conteudo.modulosComProjetos). Só os cursos de projeto final mantêm as lições de projeto. */
+PORTAL.ocultarProjetos = (conteudo, meta) => {
+  if (meta.projeto_final || conteudo.modulosComProjetos) return conteudo;
+  conteudo.modulosComProjetos = conteudo.modulos;
+  conteudo.modulos = conteudo.modulos.map(m => Object.assign({}, m, { lessons:m.lessons.filter(l => !l.projeto) }));
+  return conteudo;
+};
+
 /* Retorna os cursos do catálogo já com o conteúdo carregado.
    todos=true inclui rascunhos e arquivados (usado no painel do master). */
 PORTAL.carregarCursos = async function(todos){
@@ -81,7 +90,7 @@ PORTAL.carregarCursos = async function(todos){
   await Promise.all(visiveis.flatMap(c => [carregarScript('cursos/' + c.id + '/curso.js?v=' + (c.versao || 1)),
     carregarScript('cursos/' + c.id + '/ferramentas.js?v=' + (c.versao || 1), true)]));
   return visiveis.filter(c => PORTAL.cursos[c.id]).map((c, i) => {
-    const conteudo = PORTAL.cursos[c.id];
+    const conteudo = PORTAL.ocultarProjetos(PORTAL.cursos[c.id], c);
     const licoes = conteudo.modulos.flatMap(m => m.lessons.map(l => Object.assign({}, l, { mod:m.id })));
     return Object.assign({ cores:PORTAL.paleta(i), icone:'📘' }, c, { conteudo, licoes, total:licoes.length });
   });

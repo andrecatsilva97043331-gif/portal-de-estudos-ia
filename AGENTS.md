@@ -40,9 +40,9 @@ Status: `disponivel` (aberto a todos; `publicado` é o nome antigo e equivale), 
 }
 ```
 
-- `carga_horaria`: horas do certificado. Padrão: iniciante 4, intermediário 6, avançado 8, Renda com IA 4. O `npm run validar` exige que a soma dos `min` das lições e projetos chegue a pelo menos 90% disso: amplie o conteúdo (mais lições, perguntas e projetos), nunca infle os minutos.
+- `carga_horaria`: horas do certificado = tempo real das lições (soma dos `min` das lições sem projeto, arredondada para baixo em horas inteiras, mínimo 1). O `npm run validar` exige que essa soma chegue a pelo menos 90% da carga: para aumentar a carga, amplie o conteúdo (mais lições e perguntas), nunca infle os minutos. Nos cursos de projeto final o campo é opcional (não há certificado).
 
-- Certificados: cada curso publicado emite certificado ao concluir 100% das lições e projetos (`supabase/certificados.sql`; o Painel do Master envia a lista de lições ao Supabase sempre que é aberto). O projeto final de cada trilha é um curso com `"projeto_final": "ia"` ou `"renda"` (sem `nivel`, `trilha` nem `grupo`, só lições de `projeto`): ele libera quando o aluno conclui todos os cursos da trilha e emite o certificado da trilha completa. No `curso.js`, `habilidades: ['...']` (até 5) define os selos do certificado; sem o campo, usa os títulos dos módulos. A página pública de validação é `validar.html?c=CIA-AAAA-XXXXXXXX`.
+- Certificados: cada curso publicado emite certificado ao concluir 100% das lições (`supabase/certificados.sql`; o Painel do Master envia a lista de lições ao Supabase sempre que é aberto, já sem projetos). O projeto final de cada trilha é um curso com `"projeto_final": "ia"` ou `"renda"` (sem `nivel`, `trilha` nem `grupo`, só lições de `projeto`): é só estudo, libera quando o aluno conclui todos os cursos da trilha e não emite certificado (não há mais certificado de trilha completa; os já emitidos continuam válidos). No `curso.js`, `habilidades: ['...']` (até 5) define os selos do certificado; sem o campo, usa os títulos dos módulos. A página pública de validação é `validar.html?c=CIA-AAAA-XXXXXXXX`.
 - `nivel`: `iniciante` (verde), `intermediario` (amarelo/laranja) ou `avancado` (vermelho/rosa). Sem `nivel`, o curso aparece em "Outros cursos", fora da trilha.
 - `ordem`: posição na Trilha de IA (1, 2, 3...), sem repetir.
 
@@ -79,9 +79,9 @@ PORTAL.registrarCurso({
 ```
 
 - Módulos numerados 1, 2, 3...; lições com id `"<módulo>.<n>"`; cada desafio com exatamente uma alternativa certa.
-- `min` é obrigatório e realista: tempo de leitura (cerca de 150 palavras por minuto) + 2 min por pergunta; no projeto, o tempo real da tarefa.
+- `min` é obrigatório e realista: tempo de leitura (cerca de 150 palavras por minuto) + 2 min por pergunta; no projeto (só no projeto final), o tempo real da tarefa.
 - Várias perguntas por lição: `ch` pode ser uma lista (`ch: [ {...}, {...}, {...} ]`, até 6). Elas aparecem em sequência e a lição só conclui quando todas forem acertadas.
-- Projeto prático: lição sem `ch`, com `projeto`. O aluno escreve a entrega (mínimo de caracteres) e confere a checklist para concluir. Use no fim de cada módulo. Não crie módulo "Projeto final" dentro do curso: o certificado do curso sai ao concluir 100% das lições e projetos de módulo; o projeto final existe uma vez só, para o certificado da trilha completa.
+- Projeto prático: lição sem `ch`, com `projeto`. O aluno escreve a entrega (mínimo de caracteres) e confere a checklist para concluir. Só vale nos cursos de projeto final da trilha. Não crie mais projetos no fim dos módulos: nos cursos normais, as lições com `projeto` ficam ocultas (`PORTAL.ocultarProjetos` em `assets/cursos.js`), não contam para progresso, XP nem certificado, e o módulo conclui na última lição com desafio. As que já existem ficam no `curso.js` só para preservar o histórico; não apague. A prática do módulo fica no `ferramentas.js`.
 
 ```js
 { id: '1.5', title: 'Projeto: seu primeiro plano', min: 25,

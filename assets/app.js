@@ -104,7 +104,7 @@ function renderCursos(){
     topo = `<section class="hero rise">
       <div><div class="eyebrow">Modo master</div>
       <h1 class="hh">Olá, <span class="grad">Master</span>! 🛡️</h1>
-      <p class="hp">Tudo liberado para testar na prática: cursos em prévia, lições fora de ordem, desafios, projetos, Toolbox e projetos finais. O seu progresso de teste fica salvo neste navegador.</p>
+      <p class="hp">Tudo liberado para testar na prática: cursos em prévia, lições fora de ordem, desafios, Toolbox e projetos finais. O seu progresso de teste fica salvo neste navegador.</p>
       <div class="chips"><span class="chip">🎓 ${totalCursos} ${totalCursos === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🔓 Sem bloqueios</span></div>
       <div class="hbtns"><a class="next" href="admin.html">🛡️ Painel do Master</a><button class="link" data-act="sair">Sair</button></div>${botaoIndicar()}</div>
       <div class="orb" aria-hidden="true"><span>🛡️</span></div>
@@ -113,7 +113,7 @@ function renderCursos(){
     topo = `<section class="hero hero-visita rise">
       <div class="hv-txt"><div class="eyebrow">Portal de Estudos IA</div>
       <h1 class="hh">Aprenda na prática com <span class="grad">desafios reais</span></h1>
-      <p class="hp">Lições curtas, casos de clientes de verdade e projetos práticos. Faça seu cadastro gratuito e comece agora.</p>
+      <p class="hp">Lições curtas, casos de clientes de verdade e prática em ferramentas de IA. Faça seu cadastro gratuito e comece agora.</p>
       <div class="chips"><span class="chip">🎓 ${totalCursos} ${totalCursos === 1 ? 'curso' : 'cursos'}</span><span class="chip">📘 ${totalLicoes} lições</span><span class="chip">🆓 Gratuito</span><span class="chip">📱 Funciona no celular</span></div>
       <div class="hbtns"><button class="next" data-act="cadastro">Criar meu cadastro ➜</button><button class="ghost" data-act="entrar">Já tenho cadastro</button>${botaoInstalar()}</div>${dicaIos()}${cartaoFundador('fd-cel')}</div>
       <div class="hv-acoes">${botaoIndicar()}
@@ -175,23 +175,23 @@ function renderCursos(){
   }).join('');
   const cartaoFinal = t => {
     const pf = projetoFinal(t); if (!pf) return '';
-    const lista = cursosDaTrilha(t), feitos = lista.filter(completo).length, livre = trilhaLiberada(t), cert = certDe('trilha', t);
-    const horas = lista.concat(pf).reduce((s, c) => s + (c.carga_horaria || 0), 0);
+    const lista = cursosDaTrilha(t), feitos = lista.filter(completo).length, livre = trilhaLiberada(t), fim = MATR.includes(pf.id) && completo(pf);
+    const projetos = `🛠️ ${pf.total} ${pf.total === 1 ? 'projeto prático' : 'projetos práticos'}`;
     if (!ALUNO && !MASTER) return `<div class="nivel final" style="${ccor(pf)}">
       <div class="nhead"><span class="npill">🏁 Projeto final</span><small>Fecha a ${PORTAL.trilhas[t]}</small></div>
       <div class="grid"><div class="mc pfinal vit rise" role="button" tabindex="0" data-act="cadastro" style="${ccor(pf)}">
         <div class="mhead"><div class="mtile">${pf.icone}</div><span class="pctpill novo">🆓 Gratuito</span></div>
         <div><div class="mt">${esc(pf.titulo)}</div><div class="ms">${esc(pf.descricao)}</div></div>
-        <div class="vit-ap"><small>Como funciona</small><span>📚 Conclua os ${lista.length} cursos</span><span>🛠️ Faça o projeto final</span><span>🎓 Certificado da trilha</span></div>
-        <div class="mfoot"><span>🎓 Certificado da ${PORTAL.trilhas[t]} · ${horas} horas</span><span class="mst">🔐 Entre para estudar</span></div>
+        <div class="vit-ap"><small>Como funciona</small><span>📚 Conclua os ${lista.length} cursos</span><span>🛠️ Faça o projeto final</span></div>
+        <div class="mfoot"><span>${projetos}</span><span class="mst">🔐 Entre para estudar</span></div>
       </div></div></div>`;
-    const selo = cert ? '🎓 Certificado emitido' : !livre ? '🔒 Bloqueado' : MATR.includes(pf.id) ? pctCurso(pf) + '%' : '✨ Liberado';
+    const selo = !livre ? '🔒 Bloqueado' : fim ? '✅ Concluído' : MATR.includes(pf.id) ? pctCurso(pf) + '%' : '✨ Liberado';
     return `<div class="nivel final" style="${ccor(pf)}">
       <div class="nhead"><span class="npill">🏁 Projeto final</span><small>${feitos} de ${lista.length} cursos concluídos</small></div>
-      <div class="grid"><div class="mc pfinal rise ${livre ? '' : 'lock'} ${cert ? 'fin' : ''}" role="button" tabindex="0" data-act="curso" data-id="${esc(pf.id)}" style="${ccor(pf)}">
+      <div class="grid"><div class="mc pfinal rise ${livre ? '' : 'lock'} ${fim ? 'fin' : ''}" role="button" tabindex="0" data-act="curso" data-id="${esc(pf.id)}" style="${ccor(pf)}">
         <div class="mhead"><div class="mtile">${pf.icone}</div><span class="pctpill">${selo}</span></div>
         <div><div class="mt">${esc(pf.titulo)}</div><div class="ms">${esc(pf.descricao)}</div></div>
-        <div class="mfoot"><span>🎓 Certificado da ${PORTAL.trilhas[t]} · ${horas} horas</span><span class="mst">${livre ? '▶ Abrir' : 'Conclua todos os cursos da trilha'}</span></div>
+        <div class="mfoot"><span>${projetos}</span><span class="mst">${livre ? '▶ Abrir' : 'Conclua todos os cursos da trilha'}</span></div>
       </div></div></div>`;
   };
   const outros = CURSOS.filter(c => !c.projeto_final && c.trilha !== 'renda' && !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
@@ -310,7 +310,7 @@ function mensagemIndicacao(){
   const abre = ALUNO ? `Estou estudando Inteligência Artificial no Portal de Estudos IA e lembrei de você!` : `Achei um portal que ensina Inteligência Artificial e lembrei de você!`;
   return `🚀 *Oportunidade: aprenda IA de graça!*\n\n${abre}\n\n`
     + `São ${CURSOS.filter(c => !c.projeto_final).length} cursos, do zero ao avançado, direto no celular:\n`
-    + `✅ Lições curtas e práticas\n✅ Desafios com casos reais\n✅ Projetos para o seu portfólio\n✅ Certificado com validação online\n✅ 100% gratuito, sem pegadinha\n\n`
+    + `✅ Lições curtas e práticas\n✅ Desafios com casos reais\n✅ Prática em ferramentas de IA gratuitas\n✅ Certificado com validação online\n✅ 100% gratuito, sem pegadinha\n\n`
     + `A IA já está mudando o mercado de trabalho, e quem aprende agora sai na frente. 💡\n\n`
     + `Cadastro em 2 minutos. Bora estudar junto? 👇\n${u}`;
 }
@@ -360,7 +360,7 @@ function abrirQr(){
 function fecharQr(){ const m = $('qr-modal'); if (m) m.remove(); }
 
 /* Carrossel de certificados de exemplo na tela inicial (mesmo desenho do PORTAL.cert), com ID que não existe na validação.
-   Entram todos os que um aluno pode ganhar hoje: cada curso disponível e o certificado de cada trilha completa. */
+   Entram todos os que um aluno pode ganhar hoje: um por curso disponível (o projeto final da trilha não tem certificado). */
 function dadosExemplo(m, i){
   const c = cursoPorId(m.id);
   if (c && c.conteudo) { const d = PORTAL.dadosCertificado(c); return Object.assign(d, { detalhe:d.licoes.length + ' lições' }); }
@@ -376,18 +376,9 @@ function certsExemplo(){
     lista.push(Object.assign({}, base, { tipo:'curso', ref_id:m.id, titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.detalhe, habilidades:d.habilidades,
       leg:'🎓 Certificado: <b>' + esc(d.titulo) + '</b>' + (nv ? ' · nível ' + nv.titulo.toLowerCase() : g ? ' · Renda com IA' : '') }));
   };
-  const trilha = t => {
-    const pf = disp.find(m => m.projeto_final === t); if (!pf) return;
-    const cursos = disp.filter(m => !m.projeto_final && PORTAL.trilhaDe(m) === t);
-    const pd = dadosExemplo(pf, 0), soma = cursos.reduce((s, m, i) => s + dadosExemplo(m, i).carga_horaria, 0) + pd.carga_horaria;
-    lista.push(Object.assign({}, base, { tipo:'trilha', ref_id:t, titulo:PORTAL.trilhas[t], subtitulo:cursos.length + ' cursos + projeto final', icone:pd.icone, cores:pd.cores,
-      carga_horaria:soma, detalhe:cursos.length + ' cursos', habilidades:pd.habilidades, leg:'🏆 Trilha completa: <b>' + esc(PORTAL.trilhas[t]) + '</b>' }));
-  };
   PORTAL.niveis.forEach(nv => disp.filter(m => !m.projeto_final && m.nivel === nv.id && m.trilha !== 'renda').forEach(curso));
-  trilha('ia');
   PORTAL.gruposRenda.forEach(g => disp.filter(m => !m.projeto_final && m.trilha === 'renda' && m.grupo === g.id).forEach(curso));
   disp.filter(m => !m.projeto_final && m.trilha === 'renda' && !PORTAL.gruposRenda.some(g => g.id === m.grupo)).forEach(curso);
-  trilha('renda');
   disp.filter(m => !m.projeto_final && !PORTAL.trilhaDe(m)).forEach(curso);
   return lista;
 }
@@ -632,8 +623,8 @@ function avisoTrilha(){
     <button class="nfechar" type="button" data-act="fechar-aviso" aria-label="Fechar aviso">✕</button>
     <h2 class="ntit">🚀 Novidade: a Trilha de IA do Portal de Estudos IA</h2>
     <p class="nsub">Do zero ao arquiteto, de graça. Escolha seu ponto de partida.</p>
-    <p class="ncorpo">Nunca usou IA? Já usa e quer ir mais longe? Agora o portal tem uma trilha completa com 3 níveis e 10 cursos curtos, em português, para estudar no celular, com lições curtas. Siga a trilha na ordem ou escolha só o curso de que você precisa. Cada lição termina com desafios práticos e cada módulo, com um projeto.</p>
-    <div class="nchips"><span class="chip">✅ Os 10 cursos já estão disponíveis</span><span class="chip">🛠️ Projetos práticos em cada módulo</span><span class="chip">🆓 100% gratuito</span></div>
+    <p class="ncorpo">Nunca usou IA? Já usa e quer ir mais longe? Agora o portal tem uma trilha completa com 3 níveis e 10 cursos curtos, em português, para estudar no celular, com lições curtas. Siga a trilha na ordem ou escolha só o curso de que você precisa. Cada lição termina com desafios práticos e cada módulo sugere ferramentas de IA gratuitas para praticar.</p>
+    <div class="nchips"><span class="chip">✅ Os 10 cursos já estão disponíveis</span><span class="chip">🧰 Prática em ferramentas gratuitas</span><span class="chip">🆓 100% gratuito</span></div>
     <button class="next" type="button" data-act="ver-trilha">Ver a trilha ➜</button>
   </section>`;
 }
@@ -1016,28 +1007,24 @@ function renderHome(){
   countUp($('bignum'), pct);
 }
 
-/* Certificado: do curso (100% das lições e projetos) ou, no projeto final, da trilha inteira. */
-const refCertificado = () => C.projeto_final ? ['trilha', C.projeto_final] : ['curso', C.id];
+/* Certificado do curso (100% das lições). O projeto final da trilha é só estudo: não tem certificado nem relato. */
+const refCertificado = () => ['curso', C.id];
+const temCertificado = () => !!ALUNO && !C.projeto_final && completo(C);
 function botaoCertificado(){
   const [tipo, ref] = refCertificado();
   return `<button class="next cert-btn" data-act="certificado" data-tipo="${tipo}" data-ref="${esc(ref)}">🎓 ${certDe(tipo, ref) ? 'Ver meu certificado' : 'Emitir meu certificado'} ➜</button>`;
 }
 function blocoCertificado(){
-  if (!ALUNO || !completo(C)) return '';
+  if (!temCertificado()) return '';
   const [tipo, ref] = refCertificado(), cert = certDe(tipo, ref);
   return `<div class="cert-cta rise"><div class="cert-ico">🎓</div>
-    <div><b>${tipo === 'trilha' ? 'Certificado da ' + PORTAL.trilhas[ref] : 'Certificado do curso'}</b>
+    <div><b>Certificado do curso</b>
     <span>${cert ? 'ID da credencial: <code>' + esc(cert.codigo) + '</code>' : 'Você concluiu 100%. Conte como foi sua experiência no curso logo abaixo e emita o seu certificado com ID da credencial e QR de validação.'}</span></div>
     ${botaoCertificado()}</div>`;
 }
 function infoCertificado(tipo, ref){
-  if (tipo === 'curso') {
-    const d = PORTAL.dadosCertificado(cursoPorId(ref));
-    return { curso_id:d.curso_id, licoes:d.licoes, certificado:{ titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.licoes.length + ' lições', habilidades:d.habilidades } };
-  }
-  const pf = PORTAL.dadosCertificado(projetoFinal(ref)), lista = cursosDaTrilha(ref).map(PORTAL.dadosCertificado).concat(pf), n = lista.length - 1;
-  return { cursos:lista, certificado:{ titulo:PORTAL.trilhas[ref], subtitulo:n + ' cursos + projeto final', icone:pf.icone, cores:pf.cores,
-    carga_horaria:lista.reduce((s, c) => s + c.carga_horaria, 0), detalhe:n + ' cursos', habilidades:pf.habilidades } };
+  const d = PORTAL.dadosCertificado(cursoPorId(ref));
+  return { curso_id:d.curso_id, licoes:d.licoes, certificado:{ titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.licoes.length + ' lições', habilidades:d.habilidades } };
 }
 async function abrirCertificado(btn){
   const tipo = btn.dataset.tipo, ref = btn.dataset.ref;
@@ -1092,7 +1079,7 @@ async function carregarDepoimentos(){
   return DEPS;
 }
 function blocoDepoimento(){
-  if (!ALUNO || !completo(C)) return '';
+  if (!temCertificado()) return '';
   DEP_EDITAR = false; RELATO_AVISO = false;
   setTimeout(preencherDepoimento, 0);
   return `<div class="card dep-box rise" id="dep-box"></div>`;
@@ -1150,7 +1137,8 @@ function avisoRecomendado(){
 
 function renderModuloConcluido(){
   const mod = modOf(S.modDone || 1), next = C.conteudo.modulos.find(x => x.id === mod.id + 1);
-  const msg = (C.conteudo.conclusaoModulo || {})[mod.id] || '';
+  const msg = C.projeto_final && !next ? 'Você concluiu o projeto final e toda a ' + PORTAL.trilhas[C.projeto_final] + '. Guarde as suas entregas: elas mostram na prática o que você aprendeu.'
+    : (C.conteudo.conclusaoModulo || {})[mod.id] || '';
   const tem = !!prompts()[mod.id];
   $('main').setAttribute('style', tstyle(mod.id));
   $('main').innerHTML = `<div class="crumb">Módulo ${mod.id}: ${mod.title}</div>
@@ -1159,7 +1147,7 @@ function renderModuloConcluido(){
     <p>${msg}${tem ? ' As missões de prompt deste módulo foram liberadas no Code Toolbox: agora é a sua vez de escrever.' : ''}</p>
     <div class="row">${tem ? `<button class="next alt" data-act="tool" data-mod="${mod.id}">🧰 Abrir Code Toolbox</button>` : ''}
     ${next ? `<button class="next" data-act="go" data-id="${next.lessons[0].id}" style="${tstyle(next.id)}">Ir para o Módulo ${next.id} ➜</button>`
-      : `${ALUNO && completo(C) ? botaoCertificado() : ''}<button class="next${ALUNO && completo(C) ? ' alt' : ''}" data-act="cursos">Ver outros cursos</button>`}</div></div>
+      : `${temCertificado() ? botaoCertificado() : ''}<button class="next${temCertificado() ? ' alt' : ''}" data-act="cursos">Ver outros cursos</button>`}</div></div>
     ${blocoFerramentas(mod)}${next ? '' : blocoDepoimento()}`;
 }
 
@@ -1374,7 +1362,7 @@ window.addEventListener('popstate', e => {
   if (view === 'verificar' || view === 'confirmar-whats') view = 'cursos';
   if (!VIEWS_PORTAL.includes(view) && (!c || !(MASTER || (ALUNO && MATR.includes(c.id))))) view = 'cursos';
   if (c && !VIEWS_PORTAL.includes(view)) C = c;
-  if (view === 'lesson' && !(st.cur && unlocked(st.cur))) view = 'home';
+  if (view === 'lesson' && !(st.cur && C && byId(st.cur) && unlocked(st.cur))) view = 'home';
   S.view = view; S.cur = st.cur; S.modDone = st.modDone; TB.open = false; closeMenu();
   NAV_POP = true; renderAll(); NAV_POP = false;
   history.replaceState(Object.assign({}, st, { k:chaveNav(), view:S.view }), '');
