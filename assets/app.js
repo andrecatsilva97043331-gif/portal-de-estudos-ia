@@ -315,7 +315,7 @@ function mensagemIndicacao(){
     + `Cadastro em 2 minutos. Bora estudar junto? 👇\n${u}`;
 }
 function indicarAmigo(){ window.open('https://wa.me/?text=' + encodeURIComponent(mensagemIndicacao()), '_blank', 'noopener'); }
-const cartaoFundador = (cls = '') => `<a class="fundador rise ${cls}" href="historia.html"><img src="assets/andre.jpg" alt="" width="72" height="72" loading="lazy"><span class="fd-tx"><small>Conheça o fundador</small><b>Do caderno compartilhado ao futuro da IA</b><span>A história de André Luiz, que dividia um caderno e um lápis com uma de suas irmãs para poderem estudar, e hoje fundou o Portal de Estudos IA.</span></span><span class="fd-cta">Ler minha história ➜</span></a>`;
+const cartaoFundador = (cls = '') => `<a class="fundador rise ${cls}" href="historia.html"><span class="fd-foto"><img src="assets/andre.jpg" alt="" width="84" height="84" loading="lazy"></span><span class="fd-tx"><small class="fd-sel"><i></i>Conheça o fundador</small><b>Do caderno compartilhado <em>ao futuro da IA</em></b><span class="fd-desc">A história de André Luiz, que dividia um caderno e um lápis com uma de suas irmãs para poderem estudar, e hoje fundou o Portal de Estudos IA.</span><span class="fd-tags"><i>⚙️ Engenheiro Mecânico</i><i>🎓 MBA pela UFRJ</i><i>🚀 Fundador do Portal</i></span></span><span class="fd-cta">Ler minha história <i aria-hidden="true">➜</i></span></a>`;
 const botaoIndicar = () => `<button class="indica" type="button" data-act="indicar"><span class="ind-ic" aria-hidden="true">🎁</span><span class="ind-tx"><b>Indique um amigo</b><small>Envie o convite pelo WhatsApp</small></span><span class="ind-seta" aria-hidden="true">➜</span></button>`;
 
 /* Ícone Cursos do rodapé (celular): lista compacta com os ícones dos cursos. */
