@@ -746,6 +746,39 @@ const MODULES = [
             {t:'Aumentar para "segurança de nível bancário".', ok:false, why:'É outra promessa que ela não consegue provar.'}
           ]}
       ]},
+    { id:'3.9', title:'Primeiro mês no ar: acompanhar contatos e mandar um relatório simples', min:15,
+      body:[
+        `<div class="card analogy"><h3>🌱 A muda recém-plantada</h3><p>Quem planta uma muda não vai embora no mesmo dia. Nas primeiras semanas, rega, olha se as folhas estão firmes e protege do sol forte. Também não arranca a muda para ver se a raiz cresceu. O primeiro mês do site é parecido: você confere se tudo funciona, observa os primeiros contatos e ajusta o que for preciso, sem prometer frutos antes da hora.</p></div>`,
+        `<div class="term"><b>Origem do contato</b> = por onde o cliente chegou: site, indicação, Instagram, placa na rua. <b>Mensagem de origem</b> = texto já preenchido no link do WhatsApp, como "vim pelo site" (lição 1.3), que ajuda o dono a contar quem veio da página. <b>Relatório de acompanhamento</b> = mensagem curta ao cliente com o que foi conferido, o que chegou e o próximo ajuste.</div>`,
+        `<div class="card"><h3>Roteiro do primeiro mês</h3><ol class="golden"><li><span><b>Semana 1:</b> refaça os testes no celular: botão de WhatsApp, formulário, mapa e telefone. Confira se a mensagem de origem aparece na conversa.</span></li><li><span><b>Semana 2:</b> pergunte ao dono quantas conversas começaram com "vim pelo site" e quais dúvidas chegaram.</span></li><li><span><b>Semana 3:</b> ajuste o que as dúvidas mostraram, como incluir nas perguntas frequentes a pergunta que mais se repetiu.</span></li><li><span><b>Semana 4:</b> mande o relatório de acompanhamento e combine os próximos passos, incluindo a manutenção, se ela fizer parte do combinado.</span></li></ol></div>`,
+        `<div class="card"><h3>Exemplo resolvido: Lavanderia da Dona Rosa, em Curitiba (ilustrativo)</h3><p>O site ficou pronto e o Gustavo, que fez a página, precisava fechar o primeiro mês.</p><div class="flows"><div class="flow old"><h4>Antes</h4><div class="node">"Oi, Dona Rosa! O site tá funcionando certinho. Com ele a senhora vai ter muito mais clientes! Qualquer coisa me chama 😉"</div></div><div class="flow new"><h4>Depois</h4><div class="node">"Oi, Dona Rosa! Resumo do primeiro mês do site:<br>1. Testei botão, mapa e formulário no celular: tudo funcionando.<br>2. A senhora contou 9 conversas com 'vim pelo site' (número ilustrativo).<br>3. A dúvida que mais apareceu foi o prazo para edredom; já coloquei a resposta nas perguntas frequentes.<br>4. Próximo passo: trocar as fotos da fachada, que estão escuras. Posso fazer na semana que vem?"</div></div></div></div>`,
+        `<div class="card"><h3>O que mudou e por quê</h3><ol class="golden"><li><span>Saiu a promessa de "muito mais clientes": ninguém controla isso, e a promessa vira cobrança no futuro.</span></li><li><span>Entrou o que foi conferido, com fatos que a dona consegue checar.</span></li><li><span>O número veio da contagem dela, e não de uma ferramenta que ela não conhece.</span></li><li><span>A mensagem termina com um ajuste concreto e uma pergunta simples, que mantém a conversa viva sem pressão.</span></li></ol></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Prometer resultado:</b> o site ajuda o cliente a ser encontrado, mas preço, atendimento e época do ano pesam nas vendas. <b>Instalar rastreadores sem avisar:</b> ferramentas de estatística e cookies precisam aparecer no aviso de privacidade (lição 3.3); para começar, a mensagem de origem e a pergunta "como nos conheceu?" bastam. <b>Pedir a senha do dono</b> para ver estatísticas do Perfil da Empresa: peça para ser adicionado como administrador ou que ele mesmo olhe e te conte. <b>Relatório com jargão:</b> troque "taxa de rejeição" por frases que a dona entende. <b>Colocar nomes de clientes no relatório:</b> conte números, sem identificar ninguém.</p></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (Claude, cerca de 5 minutos)</h3><ol class="golden"><li><span>Escolha o site que você montou no módulo 2 ou um negócio fictício.</span></li><li><span>Escreva você um relatório de primeiro mês com 4 itens: o que testou, o que chegou (com número inventado), o que ajustou e o próximo passo.</span></li><li><span>Mande ao Claude com o seu pedido: que aponte jargão, promessas que você não controla e trechos confusos, sem reescrever tudo.</span></li><li><span>Decida você as mudanças e salve a versão final como modelo para os próximos clientes.</span></li></ol><p>🔒 Não cole nomes, telefones ou conversas dos clientes do negócio. Use números redondos e dados fictícios.</p></div>`
+      ],
+      ch:[
+        { who:'Renan, 25 anos, entregou o site de uma loja de materiais de construção', says:'O dono quer saber se o site está trazendo cliente. Vou instalar uma ferramenta de estatística e um monte de cookies hoje mesmo, sem avisar ninguém.',
+          q:'Qual é o caminho mais adequado para começar?',
+          opts:[
+            {t:'Instalar tudo, porque quanto mais dados, melhor.', ok:false, why:'Rastreamento sem aviso fere a transparência exigida pela LGPD e ainda gera dados que o dono não sabe ler.'},
+            {t:'Começar pela mensagem de origem no link do WhatsApp e pela pergunta "como nos conheceu?", e, se for usar estatísticas, atualizar o aviso de privacidade antes.', ok:true, why:'São formas simples e transparentes de contar contatos. Ferramentas de rastreamento só entram com aviso.'},
+            {t:'Dizer ao dono que não tem como saber e encerrar o assunto.', ok:false, why:'Existem formas simples de acompanhar. Deixar o dono sem resposta enfraquece a confiança no trabalho.'}
+          ]},
+        { who:'Tatiane, 32 anos, vai mandar o relatório do primeiro mês de um site de manicure', says:'Chegaram poucas conversas com "vim pelo site". Vou escrever que o resultado foi ótimo e que no próximo mês vai triplicar.',
+          q:'O que ela deve fazer?',
+          opts:[
+            {t:'Mandar como planejou, para a cliente não desistir da manutenção.', ok:false, why:'Prometer que vai triplicar é enganoso. Quando não acontecer, a cliente perde a confiança e cancela do mesmo jeito.'},
+            {t:'Não mandar relatório neste mês e esperar números melhores.', ok:false, why:'Sumir justamente quando o resultado é fraco passa a impressão de que ela esconde algo.'},
+            {t:'Contar o número real, o que já foi conferido e um ajuste possível, como deixar o botão de WhatsApp mais visível ou divulgar o link no perfil do Google.', ok:true, why:'Número honesto com um próximo passo concreto ajuda a cliente a decidir e mostra o valor do acompanhamento.'}
+          ]},
+        { who:'Seu Raimundo, 66 anos, dono de uma serralheria', says:'Esse negócio de relatório eu não entendo. Fala na minha língua: o site está servindo para alguma coisa?',
+          q:'Qual resposta combina com o que a lição ensina?',
+          opts:[
+            {t:'"O site teve boa taxa de rejeição e o SEO está otimizado."', ok:false, why:'Jargão não responde à pergunta do Seu Raimundo e afasta o cliente.'},
+            {t:'"Tudo funcionando no celular. Este mês o senhor contou 6 pessoas que chegaram dizendo que viram o site, e a dúvida mais comum foi sobre portão. Já coloquei a resposta lá."', ok:true, why:'Fatos simples, números que ele mesmo contou e um ajuste feito: é a língua dele.'},
+            {t:'"Pode ficar tranquilo, o site vai encher a serralheria de clientes."', ok:false, why:'É promessa sem base. O relatório mostra o que aconteceu, não o que se espera que aconteça.'}
+          ]}
+      ]},
     { id:'3.6', title:'Projeto: testes, proposta e combinado de suporte', min:30,
       body:[
         `<div class="card"><p>Este projeto fecha o curso. Pegue o site publicado em rascunho no projeto 2.6 e coloque à prova. Depois, prepare os documentos que um cliente receberia: o registro dos testes, o aviso de privacidade (se houver coleta de dados), uma proposta de entrega e manutenção e o combinado de alterações e suporte. Pode usar IA para organizar os textos, mas os pedidos e as decisões de preço são seus, com base na sua pesquisa.</p></div>`,
@@ -791,7 +824,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#06B6D4','#3B82F6'], 2:['#3B82F6','#06B6D4'], 3:['#06B6D4','#3B82F6'] };
-const LIC = { '1.1':'🧭','1.2':'✍️','1.3':'🏪','1.4':'🚗','1.5':'🔎','1.7':'🍲','1.8':'🧱','1.6':'📝','2.1':'🛠️','2.2':'🌐','2.3':'🎨','2.4':'🗺️','2.5':'🧐','2.7':'🧩','2.8':'🏬','2.6':'🚀','3.1':'📱','3.2':'📁','3.3':'🔒','3.4':'💰','3.5':'🤝','3.7':'🩺','3.8':'📒','3.6':'📋' };
+const LIC = { '1.1':'🧭','1.2':'✍️','1.3':'🏪','1.4':'🚗','1.5':'🔎','1.7':'🍲','1.8':'🧱','1.6':'📝','2.1':'🛠️','2.2':'🌐','2.3':'🎨','2.4':'🗺️','2.5':'🧐','2.7':'🧩','2.8':'🏬','2.6':'🚀','3.1':'📱','3.2':'📁','3.3':'🔒','3.4':'💰','3.5':'🤝','3.7':'🩺','3.8':'📒','3.9':'🌱','3.6':'📋' };
 
 return {
   id: 'sites-simples-com-ia',

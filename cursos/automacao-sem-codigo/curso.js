@@ -688,6 +688,46 @@ const MODULES = [
             {t:'Apagar a linha da aula cancelada para o fluxo não encontrar.', ok:false, why:'Funciona, mas perde o histórico. Uma coluna de status é mais segura.'}
           ]}
       ]},
+    { id:'2.10', title:'Mensagens com campos variáveis: modelos que não constrangem', min:13,
+      body:[
+        `<div class="card analogy"><h3>✉️ A carta de mala direta</h3><p>Sabe aquela carta que chega escrita "Prezado(a) {NOME}" ou "Olá, ,"? Alguém montou um modelo, mas não pensou no que acontece quando o campo vem vazio ou estranho. <b>Uma mensagem automática é um modelo com lacunas</b>, e cada lacuna precisa de um plano para quando o dado vier faltando, longo demais ou no formato errado.</p></div>`,
+        `<div class="term"><b>Modelo de mensagem</b> = texto fixo com lacunas que o fluxo preenche. <b>Campo variável</b> = a lacuna, ligada a um dado da etapa anterior (nome, data, valor). <b>Valor padrão</b> = o texto usado quando o campo vem vazio. <b>Pré-visualização</b> = conferir a mensagem montada com dados de teste antes de enviar a alguém.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: confirmação de encomenda numa confeitaria</h3><p>A confeitaria da Bruna, em Juiz de Fora, recebe encomendas por formulário. O fluxo manda um e-mail de confirmação com os dados do pedido.</p>
+          <div class="flows"><div class="flow old"><h4>Antes: o modelo ingênuo</h4><div class="node">"Olá, {nome completo}! Seu bolo de {sabor} fica pronto em {data}. Total: {valor}."</div><div class="arrow">▼</div><div class="node">Saiu: "Olá, MARIA APARECIDA DOS SANTOS OLIVEIRA! Seu bolo de  fica pronto em 2026-10-17T00:00:00. Total: 180."</div><div class="arrow">▼</div><div class="node">Cliente ligou achando que o pedido estava errado</div></div>
+          <div class="flow new"><h4>Depois: lacuna por lacuna</h4><div class="node">Nome: só o primeiro nome, com só a primeira letra maiúscula</div><div class="arrow">▼</div><div class="node">Sabor vazio: a frase vira "Recebemos seu pedido e vamos confirmar o sabor com você"</div><div class="arrow">▼</div><div class="node">Data formatada como "sábado, 17/10"; valor como "R$ 180,00"</div><div class="arrow">▼</div><div class="node">Assinatura com telefone para dúvidas e número do pedido</div></div></div>
+          <p>No Make e no Zapier, isso se faz com as funções de texto e de data que aparecem ao clicar no campo (por exemplo, pegar a primeira palavra, formatar data e número), ou com uma etapa de formatação antes do envio. Para o campo vazio, uma condição simples: se vazio, use a frase alternativa.</p></div>`,
+        `<div class="card"><h3>Checklist de cada lacuna</h3><div class="tw"><table class="tbl"><tr><th>Pergunta</th><th>Exemplo de decisão</th></tr>
+          <tr><td>E se vier vazio?</td><td>Valor padrão ("Olá!") ou frase alternativa</td></tr>
+          <tr><td>E se vier em maiúsculas, minúsculas ou com espaços sobrando?</td><td>Padronizar antes de usar</td></tr>
+          <tr><td>Data e dinheiro estão no formato brasileiro?</td><td>dd/mm e R$ com vírgula</td></tr>
+          <tr><td>E se vier muito longo?</td><td>Cortar ou resumir (ex.: lista de itens com mais de 5 linhas vira "e mais 3 itens")</td></tr>
+          <tr><td>O dado é de quem vai ler?</td><td>Nunca mostrar dados de outro cliente nem observações internas</td></tr></table></div></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ul><li><b>Testar só com o dado perfeito</b>: o seu nome, bem digitado, com todos os campos preenchidos.</li><li><b>Usar o campo errado</b> no mapeamento, como "observações internas" no lugar de "observações do cliente". Isso já expôs comentários como "cliente chato" em e-mails reais.</li><li><b>Prometer o que o fluxo não garante</b>: "seu pedido está confirmado" quando ele ainda depende de aprovação.</li><li><b>Mensagem sem saída</b>: nenhum contato para a pessoa responder se algo estiver errado.</li></ul></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez no Make (cerca de 5 min)</h3><ol class="golden"><li><span>No fluxo de formulário que você já montou, escreva com suas palavras o modelo do e-mail de confirmação, com pelo menos 3 lacunas.</span></li><li><span>Para cada lacuna, responda às perguntas do checklist e aplique a formatação ou a condição que decidir.</span></li><li><span>Envie 3 respostas de teste: uma perfeita, uma com campo vazio e uma com nome em maiúsculas e data de outro mês.</span></li><li><span>Leia os 3 e-mails como se fosse o cliente: algum constrangeria? Ajuste e teste de novo.</span></li></ol><p>🔒 Teste só com dados inventados e com o seu próprio e-mail como destinatário.</p></div>`
+      ],
+      ch:[
+        { who:'Rodrigo, 39 anos, dono de uma loja de suplementos em Campinas', says:'Meu e-mail de boas-vindas saiu como "Olá, !" para quem não preencheu o nome no cadastro. O campo nome é opcional.',
+          q:'Qual é o melhor ajuste?',
+          opts:[
+            {t:'Tornar o nome obrigatório no cadastro só para o e-mail funcionar.', ok:false, why:'Mudar a experiência do cliente para esconder uma falha do modelo pode reduzir cadastros. O modelo é que precisa tratar o vazio.'},
+            {t:'Adicionar uma condição: com nome, "Olá, Ana!"; sem nome, "Olá!". E testar os dois casos.', ok:true, why:'Valor padrão para campo opcional resolve na origem do problema, e testar os dois caminhos garante que ambos ficam naturais.'},
+            {t:'Tirar a saudação de todos os e-mails.', ok:false, why:'Resolve o erro, mas perde a personalização para a maioria, que preencheu o nome.'}
+          ]},
+        { who:'Fernanda, 34 anos, dona de uma clínica veterinária em Londrina', says:'O lembrete de vacina chegou assim para um tutor: "Vacina de Thor em 2026-11-03. Obs.: tutor costuma atrasar pagamento."',
+          q:'Quais são os dois problemas e o que corrigir primeiro?',
+          opts:[
+            {t:'Data em formato técnico e uma observação interna exposta. Primeiro, tirar a observação interna do modelo e conferir o mapeamento dos campos; depois, formatar a data.', ok:true, why:'Expor anotação interna ofende o cliente e é um problema de dados pessoais: é o mais grave. A data é um ajuste de formato.'},
+            {t:'Só a data está errada; a observação ajuda o tutor a se organizar.', ok:false, why:'Uma anotação interna sobre o cliente nunca deveria chegar a ele. É o erro mais sério da mensagem.'},
+            {t:'Trocar a ferramenta de automação, porque ela formata mal.', ok:false, why:'A ferramenta faz o que o modelo manda. O erro está no campo mapeado e na falta de formatação.'}
+          ]},
+        { who:'Caio, 27 anos, cuida do marketing de uma ótica em Belém', says:'Testei o e-mail de orçamento com o meu cadastro e ficou ótimo. Posso ligar para todos os clientes?',
+          q:'O que fazer antes de ligar?',
+          opts:[
+            {t:'Ligar e pedir que os clientes avisem se algo vier estranho.', ok:false, why:'O cliente não é testador. Uma mensagem estranha passa uma imagem ruim antes de alguém avisar.'},
+            {t:'Testar com mais um cadastro perfeito, de outra pessoa da equipe.', ok:false, why:'Outro caso perfeito não revela o que acontece com campos vazios, longos ou mal digitados.'},
+            {t:'Testar com casos difíceis: campo vazio, nome em maiúsculas, lista longa de itens e valor com centavos, lendo cada mensagem como cliente.', ok:true, why:'Os problemas aparecem nos dados imperfeitos. Pré-visualizar esses casos evita o constrangimento em produção.'}
+          ]}
+      ]},
     { id:'2.6', title:'Projeto: seu primeiro fluxo funcionando', min:45,
       body:[`<div class="card"><p>Hora de montar de verdade. Use a ferramenta que você escolheu (no plano gratuito) e construa um fluxo simples a partir do mapa do projeto anterior, ou de um caso novo do seu dia a dia. Teste antes de usar com pessoas reais.</p></div>`],
       projeto:{
@@ -989,6 +1029,47 @@ const MODULES = [
             {t:'Contratar um plano maior.', ok:false, why:'Resolve com dinheiro um desperdício que dá para eliminar reorganizando o fluxo.'},
             {t:'Apagar a etapa que confere o pagamento.', ok:false, why:'Aí pedidos não pagos seguiriam como se estivessem pagos.'},
             {t:'Mover o filtro de pagamento para logo depois do gatilho, para os pedidos não pagos pararem antes das outras etapas.', ok:true, why:'Filtrar cedo evita gastar etapas com o que vai ser descartado de qualquer jeito.'}
+          ]}
+      ]},
+    { id:'3.9', title:'O fluxo que não roda: conexões vencidas e sinal de vida', min:13,
+      body:[
+        `<div class="card analogy"><h3>📭 A caixa de correio sem cartas</h3><p>Se o carteiro deixa uma carta rasgada, você percebe na hora. Mas se ele simplesmente para de passar, a caixa fica vazia e parece um dia tranquilo. <b>O alerta de erro só avisa quando o fluxo roda e falha.</b> Quando ele nem começa, não há erro nenhum para avisar: há silêncio. E silêncio, numa automação, precisa ser vigiado também.</p></div>`,
+        `<div class="term"><b>Conexão</b> = a autorização que liga a ferramenta de automação à sua conta (e-mail, planilha, formulário). <b>Conexão vencida</b> = autorização que expirou ou foi revogada, por troca de senha, por exemplo. <b>Fluxo desativado</b> = cenário que a ferramenta pausou sozinha, por erros repetidos ou por limite do plano. <b>Sinal de vida</b> = uma conferência periódica que avisa quando algo que deveria ter acontecido não aconteceu.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: inscrições de uma corrida de rua</h3><p>A assessoria esportiva do Leandro, em Vitória, recebe inscrições por formulário. O fluxo grava na planilha e manda o e-mail com o número de peito. Ele já tinha alerta de erro, como você viu nas lições anteriores.</p>
+          <div class="flows"><div class="flow old"><h4>Antes: só alerta de erro</h4><div class="node">A sócia trocou a senha da conta Google</div><div class="arrow">▼</div><div class="node">A conexão com o formulário perdeu a autorização e o gatilho deixou de disparar</div><div class="arrow">▼</div><div class="node">Nenhuma execução, logo nenhum erro, logo nenhum alerta</div><div class="arrow">▼</div><div class="node">Cinco dias depois, atletas perguntando pelo número de peito</div></div>
+          <div class="flow new"><h4>Depois: erro e silêncio vigiados</h4><div class="node">Um segundo fluxo, agendado todo dia às 20h</div><div class="arrow">▼</div><div class="node">Conta quantas linhas novas entraram na planilha hoje</div><div class="arrow">▼</div><div class="node">Se for zero em dia de campanha aberta, manda e-mail: "Nenhuma inscrição hoje. Confira o fluxo e as conexões."</div><div class="arrow">▼</div><div class="node">Toda segunda: olhar a lista de conexões e o status dos cenários (5 minutos)</div></div></div>
+          <p>O sinal de vida não sabe <i>por que</i> parou; ele só avisa que algo esperado não aconteceu. A causa você descobre olhando conexões, status do cenário e consumo do plano.</p></div>`,
+        `<div class="card"><h3>Por que um fluxo para sem erro</h3><div class="tw"><table class="tbl"><tr><th>Causa</th><th>Onde conferir</th></tr>
+          <tr><td>Senha trocada, acesso revogado ou autorização expirada</td><td>Lista de conexões da ferramenta: reautorizar</td></tr>
+          <tr><td>Cenário pausado por erros seguidos</td><td>Status do cenário (ligado ou desligado) e histórico</td></tr>
+          <tr><td>Limite de operações do plano gratuito atingido</td><td>Painel de consumo do mês</td></tr>
+          <tr><td>Formulário ou planilha renomeado, movido ou apagado</td><td>Primeira etapa do fluxo: o gatilho ainda aponta para o lugar certo?</td></tr>
+          <tr><td>Conta pessoal de alguém que saiu da empresa</td><td>Dono de cada conexão: prefira contas da empresa</td></tr></table></div>
+          <p><b>Como escolher o limite do sinal de vida:</b> use o ritmo normal do processo. Se entram 20 pedidos por dia, zero é alarme; se entram 2 por semana, confira por semana. Limite apertado demais gera alarme falso, e alarme falso ensina a ignorar alarmes.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ul><li><b>Achar que "sem alerta" quer dizer "tudo certo"</b>.</li><li><b>Mandar o aviso pelo mesmo caminho que pode quebrar</b>: se a conexão do e-mail vence, o aviso por e-mail também não sai. Quando der, use outro canal ou outra conta.</li><li><b>Conexões em nome de uma pessoa</b> que pode trocar de senha ou sair da empresa.</li><li><b>Sinal de vida sem dono</b>: o aviso chega para alguém que não sabe o que fazer com ele.</li></ul></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez no Make (cerca de 5 min)</h3><ol class="golden"><li><span>Abra a lista de conexões da sua conta e anote, para cada uma: qual conta usa, quem é o dono e quais cenários dependem dela.</span></li><li><span>Defina, com suas palavras, o ritmo normal do seu fluxo e o limite que deveria disparar um aviso.</span></li><li><span>Crie um cenário agendado que conta as linhas novas da planilha de teste no dia e te avisa se o número estiver abaixo do limite.</span></li><li><span>Teste: rode num dia sem linhas novas e confira se o aviso chega.</span></li></ol><p>🔒 Use a planilha de teste com dados fictícios e não compartilhe as conexões com contas de terceiros.</p></div>`
+      ],
+      ch:[
+        { who:'Simone, 46 anos, dona de uma escola de idiomas em Ribeirão Preto', says:'O fluxo de matrículas não mostra nenhum erro há duas semanas. Mas também não chegou nenhuma matrícula nova, em plena época de rematrícula.',
+          q:'O que você investiga primeiro?',
+          opts:[
+            {t:'Nada: sem erro no histórico, o fluxo está funcionando.', ok:false, why:'Sem execução não há erro. Zero matrículas em época de pico é exatamente o sinal de que o fluxo pode ter parado.'},
+            {t:'Se o fluxo está rodando: status do cenário, conexões com o formulário e a planilha, e consumo do plano no mês.', ok:true, why:'Silêncio fora do normal aponta para gatilho parado. Conexão vencida, cenário pausado e limite do plano são as causas mais comuns.'},
+            {t:'Refazer o fluxo inteiro do zero.', ok:false, why:'Antes de refazer, é preciso saber a causa. Muitas vezes basta reautorizar uma conexão.'}
+          ]},
+        { who:'Paulo, 52 anos, dono de uma distribuidora de bebidas em Uberlândia', says:'Coloquei o sinal de vida para avisar a cada hora sem pedido. Recebo aviso toda madrugada e já nem abro mais.',
+          q:'Qual é o ajuste?',
+          opts:[
+            {t:'Ajustar o limite ao ritmo real: conferir só no horário comercial, ou por dia, com um número mínimo que faça sentido para o negócio.', ok:true, why:'De madrugada não há pedidos, então o aviso é falso. Alarme falso frequente faz a pessoa ignorar o alarme verdadeiro.'},
+            {t:'Desligar o sinal de vida, porque ele só incomoda.', ok:false, why:'O problema é o limite mal escolhido, e não a ideia. Sem o sinal, a parada silenciosa volta a passar despercebida.'},
+            {t:'Mandar o aviso para mais pessoas, para alguém ler.', ok:false, why:'Mais pessoas recebendo alarme falso só espalha o hábito de ignorar.'}
+          ]},
+        { who:'Juliana, 30 anos, assistente administrativa de uma imobiliária em Joinville', says:'Os fluxos da empresa estão conectados ao e-mail pessoal do antigo gerente. Ele sai da empresa na sexta.',
+          q:'O que fazer antes da saída dele?',
+          opts:[
+            {t:'Pedir a senha do e-mail dele e continuar usando a conta.', ok:false, why:'Usar a conta pessoal de quem saiu é inseguro e frágil: quando ele trocar a senha ou encerrar a conta, tudo para.'},
+            {t:'Esperar parar e então resolver.', ok:false, why:'É conhecida a data da quebra. Esperar significa perder pedidos ou contatos no meio do caminho.'},
+            {t:'Recriar as conexões com uma conta da empresa, testar cada fluxo e anotar o novo dono de cada conexão.', ok:true, why:'Conexão em conta da empresa sobrevive à saída de pessoas. Testar e registrar o dono fecha a brecha antes que vire parada silenciosa.'}
           ]}
       ]},
     { id:'3.5', title:'Projeto: plano de confiabilidade do seu fluxo', min:40,
@@ -1361,7 +1442,8 @@ const PROMPTS = {
 
 const THEME = { 1:['#F59E0B','#F97316'], 2:['#F97316','#FB923C'], 3:['#EA580C','#F59E0B'], 4:['#F59E0B','#EAB308'] };
 const LIC = { '1.1':'⚙️','1.2':'🔔','1.3':'🗺️','1.4':'🧩','1.5':'🛠️','2.1':'🧰','2.2':'📋','2.3':'📮','2.4':'📞','2.5':'📰','2.6':'🛠️','3.1':'🚨','3.2':'🔐','3.3':'📒','3.4':'📦','3.5':'🛠️','4.1':'📬','4.2':'🧾','4.3':'✈️','4.4':'🎯','4.5':'🛠️',
-  '1.6':'🍊','1.7':'🫙','1.8':'⚖️','2.7':'🔀','2.8':'🛍️','2.9':'⏰','3.6':'🛵','3.7':'🚧','3.8':'🫗','4.6':'🏛️','4.7':'📋','4.8':'👩‍🍳' };
+  '1.6':'🍊','1.7':'🫙','1.8':'⚖️','2.7':'🔀','2.8':'🛍️','2.9':'⏰','3.6':'🛵','3.7':'🚧','3.8':'🫗','4.6':'🏛️','4.7':'📋','4.8':'👩‍🍳',
+  '2.10':'✉️','3.9':'📭' };
 
 return {
   id: 'automacao-sem-codigo',

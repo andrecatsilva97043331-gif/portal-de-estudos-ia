@@ -1096,6 +1096,46 @@ create policy "cliente cria para si mesma"
             {t:'Enviar só o necessário, sem nome e CPF quando possível, conferir os termos do provedor, informar no aviso de privacidade e manter a revisão do fisioterapeuta.', ok:true, why:'Dado de saúde exige minimização, transparência e responsabilidade profissional.'}
           ]}
       ]},
+    { id:'3.9', title:'App lento no celular: imagens, carregamento e o que medir', min:13,
+      body:[
+        `<div class="card analogy"><h3>🧳 A mala de viagem</h3><p>Quem leva três malas para um fim de semana passa mais tempo carregando do que passeando. Um app que manda fotos enormes, bibliotecas sobrando e dados que ninguém pediu faz o celular do usuário <b>carregar malas em vez de mostrar a tela</b>. E no 4G fraco, a pessoa desiste antes de ver o primeiro botão.</p></div>`,
+        `<div class="term"><b>Peso da página</b> = soma de tudo que o celular baixa para abrir a tela (imagens, código, fontes, dados). <b>Maior elemento visível</b> = quanto tempo leva para aparecer o conteúdo principal da tela; no PageSpeed Insights, aparece como LCP. <b>Pulo de layout</b> = quando a página "pula" enquanto carrega e o dedo toca no lugar errado; aparece como CLS. <b>Carregamento sob demanda</b> = só baixar uma imagem quando ela está para aparecer na tela.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o cardápio digital de uma pizzaria</h3><p>Rafael fez com o Cursor o cardápio da pizzaria do tio, em Belo Horizonte. No computador, abria rápido. No celular do entregador, no 4G, demorava muito, e os clientes mandavam mensagem perguntando o preço.</p>
+          <div class="flows"><div class="flow old"><h4>Antes</h4><div class="node">40 fotos tiradas no celular, cada uma com vários MB, todas baixadas ao abrir</div><div class="arrow">▼</div><div class="node">Fotos sem tamanho definido: a lista "pulava" e o cliente tocava na pizza errada</div><div class="arrow">▼</div><div class="node">O app buscava no banco todos os pedidos antigos só para mostrar o cardápio</div><div class="arrow">▼</div><div class="node">PageSpeed para celular: nota de desempenho baixa e conteúdo principal demorando vários segundos</div></div>
+          <div class="flow new"><h4>Depois, uma fatia por vez</h4><div class="node">Fotos redimensionadas para a largura em que aparecem e convertidas para WebP</div><div class="arrow">▼</div><div class="node">Carregamento sob demanda nas fotos abaixo da primeira tela</div><div class="arrow">▼</div><div class="node">Largura e altura definidas em cada imagem: acabou o pulo</div><div class="arrow">▼</div><div class="node">A tela do cardápio passou a buscar só os produtos ativos</div></div></div>
+          <p>Cada mudança foi um pedido separado ao agente, com commit e nova medição. Assim, Rafael soube o que realmente ajudou: as fotos responderam pela maior parte do ganho.</p></div>`,
+        `<div class="card"><h3>Onde costuma estar o peso</h3><div class="tw"><table class="tbl"><tr><th>Sinal no PageSpeed</th><th>Causa comum</th><th>Pedido ao agente (com suas palavras)</th></tr>
+          <tr><td>Imagens grandes demais ou em formato antigo</td><td>Foto original do celular no app</td><td>Redimensionar e converter as imagens, mantendo a qualidade visível</td></tr>
+          <tr><td>Pulo de layout alto</td><td>Imagem ou anúncio sem tamanho reservado</td><td>Definir largura e altura dos elementos que carregam depois</td></tr>
+          <tr><td>Muito código sem uso</td><td>Biblioteca inteira para usar uma função</td><td>Mostrar quais bibliotecas pesam mais e se dá para trocar ou tirar</td></tr>
+          <tr><td>Tela demora mesmo com pouca imagem</td><td>Consulta que traz dados demais do banco</td><td>Buscar só os campos e linhas que a tela usa, com paginação</td></tr></table></div>
+          <p><b>Leia a nota com calma:</b> o teste de laboratório muda um pouco a cada rodada. Compare tendências e rode duas ou três vezes antes de concluir. E sempre confira no seu próprio celular, de preferência fora do Wi-Fi.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ul><li><b>Testar só no computador</b>, com internet rápida.</li><li><b>Pedir ao agente "deixe o app rápido"</b>: pedido vago gera mudanças grandes e difíceis de conferir. Um problema por vez.</li><li><b>Correr atrás da nota 100</b> e esquecer o que o usuário sente: abrir a tela principal rápido e sem pulos.</li><li><b>Comprimir demais</b> e deixar a foto do produto feia, justamente o que vende.</li></ul></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (PageSpeed Insights, uns 5 minutos)</h3><ol class="golden"><li><span>Rode a análise para celular no endereço publicado do seu app e anote a nota de desempenho, o tempo do maior elemento visível e o pulo de layout.</span></li><li><span>Leia as sugestões e escolha a que parece mais simples e com mais ganho.</span></li><li><span>Escreva você mesmo o pedido ao agente do Cursor, só sobre esse ponto, faça commit e publique.</span></li><li><span>Rode a análise de novo (duas vezes) e compare com o que anotou.</span></li></ol><p>🔒 Analise só páginas públicas: telas de login ou com dados de usuários não precisam passar pelo teste.</p></div>`
+      ],
+      ch:[
+        { who:'Débora, 36 anos, dona de um ateliê de roupas infantis em Blumenau', says:'Meu catálogo tem 60 fotos dos produtos e demora muito no celular das clientes. A IA sugeriu tirar todas as fotos.',
+          q:'O que você recomenda?',
+          opts:[
+            {t:'Tirar as fotos, porque velocidade é o que importa.', ok:false, why:'Num catálogo de roupas, a foto é o que vende. O objetivo é deixá-las leves, e não sumir com elas.'},
+            {t:'Redimensionar as fotos para o tamanho em que aparecem, usar um formato moderno e carregar sob demanda as que estão abaixo da primeira tela.', ok:true, why:'Ataca a causa (peso das imagens) sem perder o que vende, e cada passo pode ser medido no PageSpeed.'},
+            {t:'Trocar a hospedagem por uma mais cara.', ok:false, why:'Uma hospedagem mais rápida não diminui o tamanho das fotos que o celular precisa baixar.'}
+          ]},
+        { who:'Igor, 25 anos, fez um app de agendamento para uma clínica de estética em Natal', says:'Os clientes dizem que tocam em "Agendar" e acabam abrindo "Cancelar", porque a tela muda de lugar enquanto carrega.',
+          q:'Qual é a causa provável e o ajuste?',
+          opts:[
+            {t:'Os clientes tocam rápido demais; basta avisar para esperar.', ok:false, why:'O problema é do app. Pedir ao usuário para compensar não resolve e ainda irrita.'},
+            {t:'Falta de memória no celular dos clientes.', ok:false, why:'Vários clientes com o mesmo sintoma apontam para o app. Memória não faz botões trocarem de lugar.'},
+            {t:'Pulo de layout: algo carrega depois (imagem, aviso) sem espaço reservado. Definir o tamanho desses elementos e conferir o indicador no PageSpeed.', ok:true, why:'Elementos sem tamanho empurram os botões quando chegam. Reservar o espaço elimina o pulo e o toque errado.'}
+          ]},
+        { who:'Nathalia, 31 anos, mantém o app de pedidos de uma marmitaria em Teresina', says:'Pedi ao agente para "otimizar tudo" de uma vez. Ele mexeu em 25 arquivos, a nota subiu, mas o carrinho parou de somar o frete.',
+          q:'O que ela deveria ter feito?',
+          opts:[
+            {t:'Escolher um problema medido por vez, pedir só aquela mudança, rodar o roteiro de teste, fazer commit e medir de novo.', ok:true, why:'Mudanças pequenas mostram o que ajudou e o que quebrou, e podem ser desfeitas sem perder o resto.'},
+            {t:'Aceitar: nota mais alta compensa o frete errado.', ok:false, why:'Velocidade não vale nada se o pedido sai com valor errado. A regra do negócio vem primeiro.'},
+            {t:'Pedir ao agente para otimizar de novo, agora com mais cuidado.', ok:false, why:'Repetir um pedido gigante repete o risco. O problema é o tamanho do pedido, não o cuidado.'}
+          ]}
+      ]},
     { id:'3.5', title:'Projeto: publicar e testar com usuários reais', min:45,
       body:[`<div class="card"><p>Coloque o seu app (ou a parte que já existe) no ar e faça o primeiro teste com pessoas reais. Antes, passe pelo checklist de lançamento. Depois, observe, anote e corrija.</p></div>`],
       projeto:{
@@ -1461,6 +1501,42 @@ depois:  if (horasAteOHorario > 24)  permitirCancelamento()   mudou a regra!</pr
             {t:'Mistura refatoração com função nova e pede tudo de uma vez. O certo é refatorar em etapas pequenas com teste e depois construir o delivery em fatias.', ok:true, why:'Separar mantém cada mudança testável e fácil de desfazer.'}
           ]}
       ]},
+    { id:'4.9', title:'Quando algo dá errado para o usuário: mensagens de erro e canal de suporte', min:13,
+      body:[
+        `<div class="card analogy"><h3>🚇 O aviso no metrô</h3><p>Quando o trem para entre estações, o pior é o silêncio. Um aviso curto como "Estamos parados por falha na via; previsão de 5 minutos" acalma, porque diz o que houve e o que esperar. <b>Uma boa mensagem de erro faz o mesmo</b>: explica em linguagem simples, diz o que a pessoa pode fazer agora e mostra a quem recorrer.</p></div>`,
+        `<div class="term"><b>Mensagem de erro para o usuário</b> = o texto que a pessoa lê na tela quando algo falha; é diferente da mensagem técnica que fica no console ou no log. <b>Código de referência</b> = um número curto mostrado junto do erro, que liga o relato do usuário ao registro no seu log. <b>Canal de suporte</b> = o caminho que o usuário usa para pedir ajuda (botão de contato, e-mail, WhatsApp). <b>Falha de rede</b> = o pedido não chegou ao servidor, comum no celular com sinal fraco.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: reservas de quadra num clube</h3><p>Vanessa mantém o app de reservas de um clube em Campo Grande. Os sócios reclamavam no grupo do clube, e ela não conseguia descobrir o que tinha acontecido.</p>
+          <div class="flows"><div class="flow old"><h4>Antes</h4><div class="node">Tela de erro: "Error: duplicate key value violates unique constraint reservas_pkey"</div><div class="arrow">▼</div><div class="node">Sem internet, o botão girava para sempre e o formulário se apagava</div><div class="arrow">▼</div><div class="node">Relato no grupo: "o app não funciona"</div><div class="arrow">▼</div><div class="node">Vanessa sem saber quem, quando nem em qual tela</div></div>
+          <div class="flow new"><h4>Depois</h4><div class="node">"Esse horário acabou de ser reservado por outra pessoa. Escolha outro horário abaixo."</div><div class="arrow">▼</div><div class="node">Sem internet: "Sem conexão. Seus dados continuam aqui; tente de novo quando o sinal voltar."</div><div class="arrow">▼</div><div class="node">Erro inesperado: "Algo deu errado do nosso lado. Código R-4821" + botão "Falar com o clube"</div><div class="arrow">▼</div><div class="node">O botão abre o contato já com o código e a tela; o código aponta para o registro no log</div></div></div>
+          <p>A mensagem técnica não sumiu: continua no log, onde só a Vanessa vê. O usuário recebe a versão que ajuda a decidir o que fazer, e ela recebe o código que leva direto ao problema.</p></div>`,
+        `<div class="card"><h3>A receita de uma boa mensagem</h3><ol class="golden"><li><span><b>O que aconteceu</b>, em linguagem do usuário, sem culpá-lo.</span></li><li><span><b>O que fazer agora</b>: tentar de novo, escolher outra opção, conferir um campo.</span></li><li><span><b>O que foi preservado</b>: "seus dados continuam aqui", "nada foi cobrado".</span></li><li><span><b>A quem recorrer</b>, com código de referência quando o erro for do sistema.</span></li><li><span><b>Nada de detalhes técnicos na tela</b>: nomes de tabela, trechos de código e mensagens do banco ajudam um atacante e assustam o usuário.</span></li></ol>
+          <p><b>E o suporte?</b> Combine com quem é dono do app: qual canal, em que horário e em quanto tempo alguém responde. Junte os relatos numa lista simples (data, código, tela, o que a pessoa tentou) e revise toda semana: erro que se repete vira prioridade.</p></div>`,
+        `<div class="card"><h3>⚠️ Erros comuns</h3><ul><li><b>Mensagem genérica para tudo</b> ("Erro, tente novamente"), inclusive quando tentar de novo não resolve.</li><li><b>Apagar o que a pessoa digitou</b> quando o envio falha.</li><li><b>Mostrar o erro técnico na tela</b> achando que ajuda o suporte.</li><li><b>Canal de suporte que ninguém lê</b>: pior do que não ter, porque a pessoa espera resposta.</li><li><b>Pedir ao usuário dados sensíveis</b> no relato, como senha ou foto de documento.</li></ul></div>`,
+        `<div class="card"><h3>👉 Agora é sua vez (Claude e Cursor, uns 5 minutos)</h3><ol class="golden"><li><span>No seu app, provoque 3 falhas: um envio sem internet (modo avião), um dado repetido ou inválido e um erro do sistema (por exemplo, numa versão de prévia).</span></li><li><span>Anote o que a tela mostra em cada caso.</span></li><li><span>Reescreva você mesmo as 3 mensagens seguindo a receita e peça ao Claude uma revisão de clareza e tom, sem colar código com chaves nem dados reais.</span></li><li><span>Peça ao agente do Cursor para aplicar as mensagens, uma de cada vez, e teste de novo as 3 falhas.</span></li></ol><p>🔒 Antes de colar qualquer trecho de erro numa IA, apague chaves, e-mails e dados de usuários.</p></div>`
+      ],
+      ch:[
+        { who:'Hugo, 29 anos, fez um app de inscrições para um campeonato de futsal em Feira de Santana', says:'Quando o pagamento falha, a tela mostra "TypeError: Cannot read properties of undefined (reading id)". Os pais acham que foram cobrados.',
+          q:'Qual é o melhor ajuste?',
+          opts:[
+            {t:'Deixar a mensagem técnica, porque é a mais precisa.', ok:false, why:'Precisa para o desenvolvedor, inútil e assustadora para os pais. E ainda revela detalhes internos do app.'},
+            {t:'Mostrar "O pagamento não foi concluído e nada foi cobrado. Tente de novo ou fale com a organização (código P-1032)", e manter o detalhe técnico só no log.', ok:true, why:'Diz o que aconteceu, tranquiliza sobre a cobrança, indica o próximo passo e liga o relato ao log pelo código.'},
+            {t:'Esconder o erro e voltar para a tela inicial sem dizer nada.', ok:false, why:'O silêncio deixa a pessoa sem saber se pagou, e ela tende a tentar de novo e pagar duas vezes, ou desistir.'}
+          ]},
+        { who:'Cláudia, 47 anos, dona de uma loja de artesanato em Olinda', says:'Minhas clientes preenchem um pedido longo, com medidas e cores. Quando o sinal cai no envio, o formulário volta vazio e elas desistem.',
+          q:'O que pedir ao agente?',
+          opts:[
+            {t:'Diminuir o formulário para metade dos campos.', ok:false, why:'As medidas e cores são necessárias para o pedido. O problema é perder o que foi digitado, e não o tamanho.'},
+            {t:'Mostrar só "Erro de conexão".', ok:false, why:'Explica a causa, mas a cliente continua perdendo tudo o que digitou.'},
+            {t:'Manter os dados preenchidos quando o envio falhar, avisar que a conexão caiu e oferecer um botão para tentar de novo.', ok:true, why:'Preservar o trabalho da cliente e indicar o próximo passo transforma uma desistência em um envio tranquilo.'}
+          ]},
+        { who:'Marcelo, 41 anos, mantém o app de uma rede de academias em Curitiba', says:'Recebo relatos como "o app deu erro ontem" pelo WhatsApp pessoal, a qualquer hora, e nunca consigo encontrar o problema.',
+          q:'O que organizar primeiro?',
+          opts:[
+            {t:'Um canal de suporte oficial dentro do app, com horário combinado, e mensagens de erro com código de referência, para cada relato chegar com código, tela e horário.', ok:true, why:'O canal tira o suporte do WhatsApp pessoal, e o código liga o relato ao log, tornando o problema encontrável.'},
+            {t:'Pedir aos alunos que mandem a senha para ele testar na conta deles.', ok:false, why:'Pedir senha é um risco grave de segurança. O código de referência resolve sem acessar a conta de ninguém.'},
+            {t:'Responder só quando o mesmo erro chegar de várias pessoas.', ok:false, why:'Sem informação nos relatos, nem dá para saber se é o mesmo erro. O primeiro passo é estruturar o relato.'}
+          ]}
+      ]},
     { id:'4.5', title:'Projeto: plano de manutenção e próxima melhoria', min:40,
       body:[`<div class="card"><p>Seu app está no ar. Agora organize a vida dele: o que medir, o que melhorar primeiro, quanto custa e como garantir que ele continue funcionando mesmo se você se afastar.</p></div>`],
       projeto:{
@@ -1507,7 +1583,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#F59E0B','#F97316'], 2:['#F97316','#FB923C'], 3:['#EA580C','#F59E0B'], 4:['#F59E0B','#EAB308'] };
-const LIC = { '1.1':'💡','1.2':'📝','1.3':'🗺️','1.4':'🏠','1.5':'🛠️','1.6':'🗃️','1.7':'🎨','1.8':'🔑','2.1':'🤖','2.2':'🧱','2.3':'🧭','2.4':'🗂️','2.5':'🧪','2.6':'🛠️','2.7':'🔎','2.8':'📋','2.9':'🌿','3.1':'🔐','3.2':'🚀','3.3':'✅','3.4':'🔌','3.5':'🛠️','3.6':'🗝️','3.7':'🛡️','3.8':'📜','4.1':'🩺','4.2':'🍽️','4.3':'🚗','4.4':'🤖','4.5':'🛠️','4.6':'📟','4.7':'🔧','4.8':'🧹' };
+const LIC = { '1.1':'💡','1.2':'📝','1.3':'🗺️','1.4':'🏠','1.5':'🛠️','1.6':'🗃️','1.7':'🎨','1.8':'🔑','2.1':'🤖','2.2':'🧱','2.3':'🧭','2.4':'🗂️','2.5':'🧪','2.6':'🛠️','2.7':'🔎','2.8':'📋','2.9':'🌿','3.1':'🔐','3.2':'🚀','3.3':'✅','3.4':'🔌','3.5':'🛠️','3.6':'🗝️','3.7':'🛡️','3.8':'📜','4.1':'🩺','4.2':'🍽️','4.3':'🚗','4.4':'🤖','4.5':'🛠️','4.6':'📟','4.7':'🔧','4.8':'🧹','3.9':'🧳','4.9':'🚇' };
 
 return {
   id: 'criando-apps-com-ia',

@@ -238,6 +238,39 @@ Oi, [NOME]! Seu pedido de [QUANTIDADE] marmitas está confirmado para [DATA]. A 
             {t:'Tirar a frase e só usar prazo e taxa de entrega que vierem do briefing, confirmados pelo dono.', ok:true, why:'Política vem do dono. A IA ajuda no texto, mas não decide as regras do negócio.'}
           ]}
       ]},
+    { id:'1.9', title:'Um modelo-base, vários nichos: adaptar o pacote sem começar do zero', min:15,
+      body:[
+        `<div class="card analogy"><h3>🍰 A massa básica da confeiteira</h3><p>A confeiteira não inventa uma receita nova a cada encomenda. Ela tem uma massa básica que já sabe fazer bem e muda o recheio, a cobertura e o tamanho conforme o cliente. A base economiza tempo; o recheio é o que faz o cliente sentir que o bolo foi feito para ele. Com pacotes de mensagens é igual: a estrutura se repete, o conteúdo de cada nicho, não.</p></div>`,
+        `<div class="term"><b>Modelo-base</b> = a estrutura do pacote que se repete: etapas da jornada, campos como [NOME] e um próximo passo em cada mensagem. <b>Ficha do nicho</b> = meia página com o público, o tom, as palavras do dia a dia, as políticas e o momento em que esse tipo de negócio mais perde clientes. <b>Troca cega</b> = só trocar o nome do negócio e manter o resto igual.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: do salão para o pet shop</h3><p>Rita fez um pacote para um salão de beleza e conseguiu o segundo cliente: um pet shop de bairro. Antes de reescrever, ela preencheu a ficha do nicho com o dono: o cliente é o tutor, não o animal; o tom é carinhoso; o momento crítico é a busca e a entrega do pet; e há regras próprias, como o horário de retirada.</p></div>`,
+        `<div class="flows"><div class="flow old"><h4>Antes (troca cega)</h4><div class="node">Oi, [NOME]! Seu horário está confirmado para [DATA] às [HORA]. Chegue 10 minutos antes para não atrasar o atendimento. Até lá! 💇‍♀️</div></div><div class="flow new"><h4>Depois (adaptada)</h4><div class="node">Oi, [NOME]! O banho do [NOME DO PET] está confirmado para [DATA] às [HORA]. A gente busca entre [JANELA DE BUSCA] e devolve cheiroso até [HORA DE ENTREGA]. Ele tem alguma alergia ou cuidado especial que a gente precisa saber? 🐾</div></div></div>`,
+        `<div class="card"><h3>O que mudou e o que ficou</h3><ol class="golden"><li><span><b>Ficou:</b> a confirmação com data, hora e um próximo passo claro. Essa é a massa básica.</span></li><li><span><b>Mudou o vocabulário:</b> "banho", "tutor" e o nome do pet entram; "chegue antes" sai, porque quem vai buscar é o pet shop.</span></li><li><span><b>Mudou a jornada:</b> o pet shop ganhou uma mensagem que o salão não tinha, a de "seu pet está pronto".</span></li><li><span><b>Mudaram as políticas:</b> janela de busca e entrega vieram do dono, e não do pacote anterior.</span></li></ol><p>Na prática, quem reaproveita a estrutura costuma gastar menos horas no segundo pacote do mesmo tipo. O tempo economizado não deve virar trabalho apressado: use-o para ouvir melhor o novo cliente.</p></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Troca cega:</b> o cliente percebe na hora que o texto foi feito para outro negócio. <b>Levar a política de um cliente para o outro:</b> prazo, taxa e regra de cancelamento vêm sempre do briefing do novo dono. <b>Reaproveitar o que é do cliente anterior:</b> a estrutura e o seu jeito de trabalhar são seus; textos com a marca, as promoções e os casos do primeiro cliente são dele. Combine isso por escrito no início. <b>Esquecer o momento crítico:</b> cada nicho perde cliente num ponto diferente da jornada; a ficha do nicho existe para achar esse ponto.</p></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (Claude, cerca de 5 minutos)</h3><ol class="golden"><li><span>Escolha 3 mensagens do pacote que você já escreveu e um nicho novo, real ou fictício.</span></li><li><span>Escreva você a ficha do nicho em 5 linhas: público, tom, palavras do dia a dia, políticas e momento crítico.</span></li><li><span>Reescreva você as 3 mensagens para o nicho novo.</span></li><li><span>Mande a ficha e as 3 versões ao Claude, com o seu pedido: que ele aponte só onde o texto ainda parece do nicho antigo. Decida você o que muda.</span></li></ol><p>🔒 Use campos como [NOME] no lugar de qualquer dado real e não cole conversas nem contatos de clientes dos dois negócios.</p></div>`
+      ],
+      ch:[
+        { who:'Bruno, 26 anos, fez um pacote para uma academia', says:'Fechei com uma escola de inglês. Vou usar o mesmo pacote: troco "academia" por "escola" e "treino" por "aula", e entrego hoje.',
+          q:'Qual é o melhor caminho?',
+          opts:[
+            {t:'Entregar assim, porque a estrutura já foi testada na academia.', ok:false, why:'A estrutura foi testada, mas o conteúdo não. Políticas, público e momento crítico da escola são outros, e a troca cega aparece na primeira leitura.'},
+            {t:'Fazer a ficha do nicho com o dono da escola, manter a estrutura e reescrever o conteúdo e as políticas a partir do novo briefing.', ok:true, why:'A base economiza tempo; a ficha garante que as mensagens falem a língua da escola e sigam as regras dela.'},
+            {t:'Jogar fora o pacote da academia e começar do zero, para não correr risco.', ok:false, why:'Recomeçar desperdiça a estrutura que funciona. O risco está no conteúdo, e ele se resolve com a ficha do nicho.'}
+          ]},
+        { who:'Fernanda, 31 anos, vai adaptar um pacote de uma clínica de estética para outra clínica', says:'A primeira clínica tinha uma promoção de aniversário ótima. Vou colocar a mesma promoção no pacote da segunda.',
+          q:'O que ela deve fazer com a promoção?',
+          opts:[
+            {t:'Manter, porque promoção boa funciona em qualquer clínica.', ok:false, why:'A promoção é uma regra comercial da primeira clínica. A segunda pode não querer nem conseguir oferecer o mesmo.'},
+            {t:'Tirar e perguntar à nova clínica se ela tem alguma promoção; se tiver, escrever com as regras que ela passar.', ok:true, why:'Política e promoção vêm do dono de cada negócio. Copiar de um cliente para outro gera promessa que ninguém autorizou.'},
+            {t:'Manter, mas com um desconto maior para parecer diferente.', ok:false, why:'Continua sendo uma regra inventada, agora com um custo que a clínica nem aprovou.'}
+          ]},
+        { who:'Seu Valter, 58 anos, dono de uma oficina mecânica', says:'Esse pacote que você fez para mim, você vai vender igualzinho para a oficina do outro lado da rua?',
+          q:'Qual é a resposta mais honesta e profissional?',
+          opts:[
+            {t:'Dizer que não, mesmo pretendendo reaproveitar tudo.', ok:false, why:'Mentir sobre o próprio método quebra a confiança assim que o cliente descobrir.'},
+            {t:'Dizer que sim, porque o pacote é seu e você vende para quem quiser.', ok:false, why:'Os textos com a marca, os casos e as regras do Seu Valter são dele. Vender igual ao concorrente desrespeita o combinado e o cliente.'},
+            {t:'Explicar que a estrutura e o método são seus e se repetem, mas os textos com a marca, as regras e os casos dele são exclusivos, e deixar isso escrito no combinado.', ok:true, why:'Separar método de conteúdo exclusivo é transparente e protege os dois lados.'}
+          ]}
+      ]},
     { id:'1.6', title:'Projeto: pacote de 10 mensagens para a jornada de um negócio', min:30,
       body:[
         `<div class="card"><p>Agora é com você. Escolha um negócio real (de alguém que você conhece, com autorização) ou um negócio fictício bem detalhado. Faça o briefing, mapeie a jornada e escreva as 10 mensagens que mais fariam diferença no dia a dia dele. Você pode usar IA para rascunhos, mas escreva o seu próprio pedido, com o contexto do negócio, e revise cada mensagem com as dicas da lição 1.2.</p></div>`,
@@ -518,6 +551,40 @@ O pacote organiza o atendimento; não garante aumento de vendas.</div>`,
             {t:'Aceitar um post por dia e publicar sem aprovação quando atrasar.', ok:false, why:'Publicar sem aprovação num escritório de advocacia é arriscado, e o ritmo prometido não se sustenta.'},
             {t:'Desistir do calendário, porque eles não têm tempo.', ok:false, why:'Sem plano, os posts param de vez. O problema é o ritmo, não a ideia de planejar.'},
             {t:'Um calendário de um post por semana com pilares, aprovando o mês inteiro numa reunião curta.', ok:true, why:'Um ritmo que cabe na rotina de aprovação se mantém, e a reunião mensal resolve o gargalo.'}
+          ]}
+      ]},
+    { id:'2.9', title:'Medir o resultado do pacote: antes e depois em números simples', min:15,
+      body:[
+        `<div class="card analogy"><h3>📏 A marca de altura na porta</h3><p>Em muitas casas, as crianças encostam na porta e alguém risca a altura com a data. Meses depois, um risco novo mostra quanto cresceram. Sem o primeiro risco, ninguém saberia dizer. Com o pacote de mensagens é igual: se você não anota como o atendimento estava antes, não tem como mostrar o que mudou depois.</p></div>`,
+        `<div class="term"><b>Indicador</b> = um número simples que mostra como algo está, como "orçamentos pedidos na semana". <b>Linha de base</b> = o número de antes, anotado antes de o pacote entrar em uso. <b>Período de comparação</b> = o mesmo intervalo de tempo antes e depois, como 2 semanas e 2 semanas.</div>`,
+        `<div class="card"><h3>Três indicadores que qualquer dono consegue anotar</h3><ol class="golden"><li><span><b>Tempo até a primeira resposta:</b> quanto o cliente espera pelo primeiro retorno, olhando algumas conversas por dia.</span></li><li><span><b>Orçamentos pedidos e fechados:</b> contados com etiquetas do WhatsApp Business, como "orçamento enviado" e "pedido feito".</span></li><li><span><b>Perguntas repetidas:</b> quantas vezes por semana alguém pergunta horário, endereço ou preço. O perfil e as respostas rápidas devem reduzir esse número.</span></li></ol></div>`,
+        `<div class="card"><h3>Exemplo resolvido: a padaria do Seu Antônio</h3><p>Duas semanas antes de usar o pacote, o dono anotou os números. Duas semanas depois, anotou de novo. <b>Números ilustrativos.</b></p><div class="tw"><table class="tbl"><tr><th>Indicador</th><th>Antes (2 semanas)</th><th>Depois (2 semanas)</th></tr><tr><td>Tempo até a primeira resposta</td><td>cerca de 3 horas</td><td>cerca de 40 minutos</td></tr><tr><td>Encomendas de bolo pedidas / fechadas</td><td>12 / 5</td><td>14 / 8</td></tr><tr><td>Perguntas sobre horário e endereço</td><td>20</td><td>7</td></tr></table></div></div>`,
+        `<div class="flows"><div class="flow old"><h4>Antes: o relatório que não diz nada</h4><div class="node">"Seu Antônio, o atendimento melhorou MUITO com o pacote!!! As vendas vão decolar 🚀"</div></div><div class="flow new"><h4>Depois: o relatório que ajuda a decidir</h4><div class="node">"Seu Antônio, comparando duas semanas antes e duas depois: a primeira resposta caiu de umas 3 horas para uns 40 minutos, e as perguntas de horário caíram de 20 para 7. As encomendas fechadas foram de 5 para 8, mas teve feriado no meio, então vale olhar mais um mês. Sugestão: criar uma resposta rápida para a dúvida que mais sobrou, a de entrega."</div></div></div>`,
+        `<div class="card"><h3>Por que o segundo relatório é melhor</h3><p>Ele mostra o número de antes e o de depois, no mesmo período. Ele diz com honestidade o que pode ter influenciado, como o feriado, e não atribui tudo ao pacote. E termina com um próximo passo. Esse relatório também vira uma prova honesta para o seu portfólio, desde que o dono autorize e você não exponha dados dos clientes dele.</p></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Esquecer a linha de base:</b> combine a contagem antes de entregar o pacote. <b>Prometer resultado:</b> o pacote melhora o atendimento, mas preço, produto e época do ano também pesam nas vendas. <b>Copiar dados pessoais para a contagem:</b> conte números, sem nomes nem telefones dos clientes finais. <b>Medir demais:</b> três indicadores bem anotados valem mais que dez esquecidos na segunda semana.</p></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (Google Docs, cerca de 5 minutos)</h3><ol class="golden"><li><span>Crie um documento "Resultado do pacote" com uma tabela de 3 linhas e 4 colunas: indicador, antes, depois e observação.</span></li><li><span>Escolha você os 3 indicadores que fazem sentido para um negócio fictício e preencha com números inventados.</span></li><li><span>Escreva 3 frases de conclusão: o que melhorou, o que pode ter influenciado e o próximo ajuste.</span></li><li><span>Releia como se fosse o dono: dá para entender sem você explicar?</span></li></ol><p>🔒 No documento de um cliente real, só números e categorias: nada de nomes, telefones ou prints de conversas. Compartilhe só com quem o dono autorizar.</p></div>`
+      ],
+      ch:[
+        { who:'Juliana, 29 anos, vai entregar um pacote para uma loja de cosméticos', says:'Daqui a um mês quero mostrar para a dona que o pacote funcionou. Começo a anotar os números depois da entrega.',
+          q:'O que está faltando no plano dela?',
+          opts:[
+            {t:'Nada: um mês de números depois da entrega já basta para mostrar o resultado.', ok:false, why:'Sem o número de antes, não existe comparação. Ela vai mostrar um retrato, não uma mudança.'},
+            {t:'Anotar a linha de base antes da entrega, com os mesmos indicadores e o mesmo período que vai usar depois.', ok:true, why:'O antes e o depois no mesmo período são o que permite dizer o que mudou de verdade.'},
+            {t:'Pedir à dona os prints de todas as conversas do mês para contar tudo com a IA.', ok:false, why:'Prints expõem dados dos clientes finais. Etiquetas e contagens simples dão os mesmos números sem esse risco.'}
+          ]},
+        { who:'Leandro, 34 anos, terminou o pacote de um lava-rápido', says:'As lavagens agendadas subiram de 30 para 45 no mês. Vou escrever no relatório que o pacote aumentou as vendas em 50%.',
+          q:'Como ele deveria apresentar esse resultado?',
+          opts:[
+            {t:'Mostrar os números de antes e depois, dizer o que mais pode ter influenciado, como o tempo seco ou uma promoção, e sugerir acompanhar mais um mês.', ok:true, why:'É honesto e útil: o dono vê a mudança sem receber uma promessa que o pacote sozinho não garante.'},
+            {t:'Escrever que o pacote aumentou as vendas em 50%, porque o número é real.', ok:false, why:'O número é real, mas a causa não está provada. Atribuir tudo ao pacote é exagero e pode virar cobrança no futuro.'},
+            {t:'Não mostrar número nenhum, para não se comprometer.', ok:false, why:'Sem números, o dono não consegue avaliar o trabalho, e Leandro perde uma prova honesta para o portfólio.'}
+          ]},
+        { who:'Dona Lúcia, 63 anos, dona de uma loja de tecidos', says:'Você quer que eu anote um monte de coisa todo dia? Eu não tenho tempo para isso.',
+          q:'Qual é a proposta mais adequada?',
+          opts:[
+            {t:'Insistir em dez indicadores, porque quanto mais dados, melhor.', ok:false, why:'Medição que dá trabalho demais é abandonada na primeira semana.'},
+            {t:'Desistir de medir e confiar na impressão dela no fim do mês.', ok:false, why:'Impressão engana. Um mínimo de números ajuda a decidir o que manter e o que ajustar.'},
+            {t:'Combinar só 2 ou 3 contagens simples, como usar etiquetas no WhatsApp Business e anotar as perguntas repetidas uma vez por semana.', ok:true, why:'Poucos indicadores, fáceis de anotar, cabem na rotina e já mostram o que mudou.'}
           ]}
       ]},
     { id:'2.6', title:'Projeto: perfil, 3 posts e 3 mensagens de LinkedIn', min:30,
@@ -824,7 +891,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#06B6D4','#3B82F6'], 2:['#3B82F6','#06B6D4'], 3:['#06B6D4','#3B82F6'] };
-const LIC = { '1.1':'📦','1.2':'💬','1.3':'🗺️','1.4':'⚡','1.5':'📝','1.6':'🛠️','2.1':'💼','2.2':'🗂️','2.3':'🪪','2.4':'👔','2.5':'📬','2.6':'🛠️','3.1':'⚖️','3.2':'📁','3.3':'🚦','3.4':'🧾','3.5':'🤝','3.6':'🛠️','1.7':'🏪','1.8':'🪡','2.7':'📄','2.8':'📅','3.7':'📋','3.8':'🔐' };
+const LIC = { '1.1':'📦','1.2':'💬','1.3':'🗺️','1.4':'⚡','1.5':'📝','1.6':'🛠️','2.1':'💼','2.2':'🗂️','2.3':'🪪','2.4':'👔','2.5':'📬','2.6':'🛠️','3.1':'⚖️','3.2':'📁','3.3':'🚦','3.4':'🧾','3.5':'🤝','3.6':'🛠️','1.7':'🏪','1.8':'🪡','2.7':'📄','2.8':'📅','3.7':'📋','3.8':'🔐','1.9':'🍰','2.9':'📏' };
 
 return {
   id: 'pacotes-whatsapp-linkedin',

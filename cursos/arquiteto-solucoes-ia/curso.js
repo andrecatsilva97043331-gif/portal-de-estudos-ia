@@ -700,6 +700,60 @@ const MODULES = [
             {t:'Arquivar a planilha como somente leitura e tornar o sistema a fonte única; a segurança vem do backup do banco e da conciliação feita.', ok:true, why:'O cliente fica com a cópia para consulta e uma só fonte viva. O medo dele é atendido por backup, não por duas planilhas.'}
           ]}
       ]},
+    { id:'2.8', title:'Histórico e auditoria: quem mudou o quê, e quando', min:14,
+      body:[
+        `<div class="card analogy"><h3>📓 O livro de ocorrências do condomínio</h3><p>Na portaria de um prédio, o porteiro não apaga o que escreveu ontem: ele anota uma nova linha, com data, hora e assinatura. Quando surge uma briga sobre quem deixou a garagem aberta, o livro responde. <b>Um banco sem histórico é uma portaria sem livro</b>: mostra como as coisas estão agora, mas não conta como chegaram até ali.</p></div>`,
+        `<div class="term"><b>Trilha de auditoria</b> = registro de cada mudança importante: o que mudou, valor antigo, valor novo, quem mudou e quando. <b>Carimbo de tempo</b> = colunas como "criado_em" e "atualizado_em", preenchidas pelo banco. <b>Exclusão lógica</b> = em vez de apagar a linha, marcar uma coluna "excluido_em"; a linha some das telas, mas continua consultável. <b>Tabela de histórico</b> = tabela à parte que só recebe novas linhas, nunca edições.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o desconto que ninguém deu</h3><p><b>Caso:</b> uma oficina mecânica com três atendentes usa um sistema de ordens de serviço feito sob medida. No fechamento do mês, o dono encontrou uma OS de R$ 2.400 cobrada por R$ 1.200. Ninguém lembrava de ter mexido.</p>
+          <div class="flows"><div class="flow old"><h4>Antes: só o estado atual</h4><div class="node">Tabela ordens_servico com cliente, serviço, valor e status</div><div class="arrow">▼</div><div class="node">Qualquer atendente edita qualquer campo, e o valor antigo é sobrescrito</div><div class="arrow">▼</div><div class="node">OS canceladas eram apagadas "para limpar a tela"</div><div class="arrow">▼</div><div class="node">Resultado: impossível saber quem, quando ou por quê</div></div>
+          <div class="flow new"><h4>Depois: estado atual + livro de ocorrências</h4><div class="node">Colunas criado_em, atualizado_em e atualizado_por, preenchidas pelo banco</div><div class="arrow">▼</div><div class="node">Tabela historico_os: os_id, campo, valor_antigo, valor_novo, usuario, data e motivo</div><div class="arrow">▼</div><div class="node">Mudança de valor ou status gera linha no histórico automaticamente, e desconto acima de 10% exige motivo</div><div class="arrow">▼</div><div class="node">Cancelar vira exclusão lógica; o histórico só aceita novas linhas, ninguém edita nem apaga</div></div></div>
+          <p>No mês seguinte, uma diferença parecida foi explicada em dois minutos: "desconto de garantia, aprovado pelo dono, com motivo registrado". O histórico não serve só para achar culpados; serve para encerrar dúvidas sem briga.</p>
+          <p><b>Como pedir ao Cursor:</b> descreva quais tabelas e campos precisam de histórico, que o registro deve ser feito <b>pelo próprio banco</b> (um gatilho no Supabase, por exemplo) e não pela tela, e que a regra de acesso da tabela de histórico permita inserir e ler, mas não editar nem apagar. Peça que o agente explique cada parte antes de aplicar.</p></div>`,
+        `<div class="card"><h3>O que registrar (e o que não)</h3><div class="tw"><table class="tbl"><tr><th>Registrar</th><th>Evitar</th></tr>
+          <tr><td>Valores, preços, descontos e status</td><td>Cada clique ou cada leitura de tela, que só gera volume</td></tr>
+          <tr><td>Permissões e papéis de usuário</td><td>Senhas, tokens ou dados de cartão, nem "por precaução"</td></tr>
+          <tr><td>Exclusões e cancelamentos</td><td>Cópias inteiras de documentos sensíveis a cada mudança</td></tr>
+          <tr><td>Quem aprovou exceções, com motivo</td><td>Histórico sem prazo para dados pessoais</td></tr></table></div>
+          <p><b>E a LGPD?</b> O histórico também guarda dados pessoais. Defina por quanto tempo ele fica, quem pode ler e como tratar um pedido de exclusão: em geral, anonimizar os dados pessoais e manter os valores e as datas de que o negócio precisa (obrigações fiscais, por exemplo), registrando a decisão.</p></div>`,
+        `<div class="card"><h3>Erros comuns e como detectar</h3>
+          <ol class="golden">
+            <li><span><b>Histórico gravado pela tela</b>: se alguém altera pelo painel do banco ou por outra integração, a mudança não é registrada. Sinal: valores diferentes sem nenhuma linha no histórico.</span></li>
+            <li><span><b>Histórico editável</b>: quem errou consegue apagar o rastro. Sinal: a regra de acesso permite atualizar ou apagar na tabela de histórico.</span></li>
+            <li><span><b>Usuário genérico</b>: todos entram com o mesmo login "recepcao", e o histórico diz só isso. Cada pessoa precisa do próprio acesso.</span></li>
+            <li><span><b>Apagar de verdade o que tem valor de negócio</b>: OS, pedidos e pagamentos cancelados devem ser marcados, não removidos.</span></li>
+          </ol></div>`,
+        `<div class="card"><h3>🛠️ Agora é sua vez (Supabase, cerca de 5 min)</h3>
+          <ol class="golden">
+            <li><span>Num projeto de teste, escolha uma tabela fictícia (pedidos ou agendamentos) e liste, com suas palavras, os 3 campos cuja mudança precisa de rastro.</span></li>
+            <li><span>Crie a tabela de histórico com as colunas da lição e acrescente criado_em e atualizado_em na tabela principal, com valor padrão de data e hora.</span></li>
+            <li><span>Peça ao assistente de IA do painel que explique como um gatilho registraria as mudanças e como impedir edição e exclusão no histórico; leia e confira antes de rodar qualquer coisa.</span></li>
+            <li><span>Altere duas linhas, confira o histórico e tente apagar uma linha do histórico com um usuário comum: a regra precisa impedir.</span></li>
+          </ol><p>🔒 Só dados inventados no projeto de teste, e nunca a chave secreta (service role) fora do servidor.</p></div>`,
+        `<div class="feyn"><b>🧒 Técnica Feynman:</b> explique para o dono da oficina, sem jargão, por que o histórico precisa ser gravado pelo banco e não pode ser apagado nem por ele.</div>`
+      ],
+      ch:[
+        { who:'Dono de uma rede de três farmácias', says:'O preço de um medicamento mudou no sistema e ninguém sabe quem mudou. Quero descobrir e evitar que se repita.',
+          q:'O que você propõe para o sistema?',
+          opts:[
+            {t:'Uma tabela de histórico gravada pelo próprio banco, com valor antigo, valor novo, usuário e data, que ninguém pode editar ou apagar, e login individual para cada funcionário.', ok:true, why:'Gravação no banco cobre qualquer caminho de alteração, histórico imutável impede apagar o rastro e login individual dá nome a cada mudança.'},
+            {t:'Pedir que cada funcionário anote numa planilha toda vez que mudar um preço.', ok:false, why:'Depende de memória e boa vontade, e justamente quem erra ou frauda não anota.'},
+            {t:'Proibir qualquer mudança de preço no sistema.', ok:false, why:'Preços precisam mudar. O objetivo é saber quem mudou e por quê, e não travar a operação.'}
+          ]},
+        { who:'Gerente de uma clínica odontológica', says:'Para manter a tela limpa, apagamos os agendamentos cancelados. Agora o dono quer saber quantos cancelamentos tivemos no semestre.',
+          q:'Qual é a orientação para daqui em diante?',
+          opts:[
+            {t:'Continuar apagando e contar os cancelamentos pelo WhatsApp da recepção.', ok:false, why:'Conversas espalhadas não são fonte confiável, e o dado continua se perdendo.'},
+            {t:'Exclusão lógica: marcar o cancelamento com data e motivo; as telas escondem esses registros, mas os relatórios ainda os contam.', ok:true, why:'A tela fica limpa e o dado de negócio continua disponível. O motivo do cancelamento ainda vira informação útil.'},
+            {t:'Nunca cancelar: manter o agendamento como se fosse acontecer.', ok:false, why:'Distorce a agenda e os relatórios. O cancelamento precisa existir, só que registrado.'}
+          ]},
+        { who:'Desenvolvedor da equipe', says:'Já fiz o histórico: o botão "Salvar" da tela grava uma linha nova toda vez que alguém edita um pedido.',
+          q:'Qual risco continua aberto?',
+          opts:[
+            {t:'Nenhum: se a tela grava, todas as mudanças ficam registradas.', ok:false, why:'Só as mudanças feitas por aquela tela. Painel do banco, integrações e outras telas passam por fora.'},
+            {t:'O histórico vai ocupar espaço demais no banco.', ok:false, why:'Registrando só os campos importantes, o volume é pequeno. O risco maior é a falta de cobertura.'},
+            {t:'Mudanças feitas por outro caminho (painel do banco, uma automação, outra tela) não entram no histórico. O registro deve ficar no banco, com um gatilho, e a tabela de histórico deve bloquear edição e exclusão.', ok:true, why:'Auditoria só é confiável se cobre todos os caminhos e não pode ser alterada. Gravar no banco garante as duas coisas.'}
+          ]}
+      ]},
     { id:'2.5', title:'Projeto: a planta de dados do seu cliente', min:35,
       body:[
         `<div class="card"><p>Retome o diagnóstico do módulo 1 (ou escolha outro caso real) e transforme a solução escolhida numa planta de dados pronta para virar pedido ao Cursor. Não precisa programar nada: o objetivo é decidir, por escrito, o que o sistema guarda, como liga as informações e quem acessa o quê.</p></div>`
@@ -1746,7 +1800,7 @@ const PROMPTS = {
 
 const THEME = { 1:['#ff5a5f','#ff9a3c'], 2:['#22d3ee','#3b82f6'], 3:['#c084fc','#ec4899'], 4:['#4ade80','#a3e635'], 5:['#fbbf24','#f472b6'] };
 const LIC = { '1.1':'🩺','1.2':'🗺️','1.3':'💰','1.4':'🎯','1.5':'🛠️','2.1':'🗃️','2.2':'⚖️','2.3':'📐','2.4':'🪪','2.5':'🛠️','3.1':'🍽️','3.2':'🔔','3.3':'💬','3.4':'📖','3.5':'🛠️','4.1':'🏭','4.2':'🤖','4.3':'🌙','4.4':'🔍','4.5':'🛠️','5.1':'📝','5.2':'🔐','5.3':'🔑','5.4':'🏁',
-  '1.6':'🧰','1.7':'🎂','2.6':'📚','2.7':'📦','3.6':'🚕','3.7':'📝','4.6':'🚚','4.7':'✅','5.5':'🏗️','5.6':'🛟' };
+  '1.6':'🧰','1.7':'🎂','2.6':'📚','2.7':'📦','3.6':'🚕','3.7':'📝','4.6':'🚚','4.7':'✅','5.5':'🏗️','5.6':'🛟','2.8':'📓' };
 
 function calc(root){
   const $ = id => root.querySelector('#' + id);

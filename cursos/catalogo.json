@@ -47,7 +47,7 @@
     "recomendado_antes": ["ia-no-trabalho"],
     "status": "disponivel",
     "carga_horaria": 6,
-    "versao": 2
+    "versao": 3
   },
   {
     "id": "criando-apps-com-ia",
@@ -60,7 +60,7 @@
     "recomendado_antes": ["prompts-que-funcionam"],
     "status": "disponivel",
     "carga_horaria": 6,
-    "versao": 2
+    "versao": 3
   },
   {
     "id": "arquiteto-solucoes-ia",
@@ -72,7 +72,7 @@
     "ordem": 6,
     "status": "disponivel",
     "carga_horaria": 6,
-    "versao": 3
+    "versao": 4
   },
   {
     "id": "agentes-de-ia",
@@ -165,7 +165,7 @@
     "recomendado_antes": ["base-profissional", "posts-para-redes-sociais"],
     "status": "disponivel",
     "carga_horaria": 4,
-    "versao": 2
+    "versao": 3
   },
   {
     "id": "sites-simples-com-ia",
@@ -179,7 +179,7 @@
     "recomendado_antes": ["base-profissional", "prompts-que-funcionam"],
     "status": "disponivel",
     "carga_horaria": 4,
-    "versao": 2
+    "versao": 3
   },
   {
     "id": "seu-primeiro-servico",
@@ -193,7 +193,7 @@
     "recomendado_antes": ["base-profissional"],
     "status": "disponivel",
     "carga_horaria": 4,
-    "versao": 2
+    "versao": 3
   },
   {
     "id": "primeiros-clientes",
@@ -221,7 +221,7 @@
     "recomendado_antes": ["seu-primeiro-servico", "primeiros-clientes"],
     "status": "disponivel",
     "carga_horaria": 4,
-    "versao": 2
+    "versao": 3
   },
   {
     "id": "projeto-final-ia",

@@ -500,6 +500,40 @@ const MODULES = [
             {t:'Esconder os custos do cálculo para o preço ficar parecido.', ok:false, why:'Esconder custos não os faz sumir: eles continuam saindo do caixa.'}
           ]}
       ]},
+    { id:'2.9', title:'Provisões: guardar todo mês para os gastos que você já sabe que virão', min:15,
+      body:[
+        `<div class="card analogy"><h3>🔥 O botijão de gás</h3><p>Todo mundo sabe que o gás vai acabar; só não sabe o dia exato. Quem separa um pouco por semana troca o botijão sem susto. Quem não separa descobre no meio do almoço e tem que se virar. No negócio, muitos gastos são assim: o notebook que vai envelhecer, a assinatura anual que vai renovar, os dias de descanso sem trabalho. Não são imprevistos: são certezas sem data marcada.</p></div>`,
+        `<div class="term"><b>Provisão</b> = dinheiro separado todo mês para um gasto previsível do futuro. <b>Reserva de emergência</b> = dinheiro para o que ninguém previu, como uma doença ou um mês sem clientes (lição 3.4). <b>Vida útil</b> = por quanto tempo um equipamento costuma servir antes de precisar ser trocado.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: o Rafael, editor de vídeos</h3><p>Rafael é MEI e edita vídeos curtos com ajuda de IA para pequenos negócios. Ele trabalha o ano todo, nunca tira férias e usa um notebook de 3 anos. Como é MEI, não tem patrão pagando férias nem 13º: se ele quiser descansar, precisa guardar antes. <b>Valores ilustrativos.</b></p></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Gasto previsível</th><th>Quanto custa</th><th>Em quanto tempo</th><th>Provisão por mês</th></tr><tr><td>Notebook novo</td><td>R$ 4.200</td><td>36 meses de vida útil</td><td>R$ 117</td></tr><tr><td>20 dias de descanso sem trabalhar</td><td>R$ 1.400 da retirada</td><td>12 meses</td><td>R$ 117</td></tr><tr><td>Assinatura anual de uma ferramenta</td><td>R$ 600</td><td>12 meses</td><td>R$ 50</td></tr><tr><td><b>Total</b></td><td></td><td></td><td><b>R$ 284 por mês</b></td></tr></table></div><p>A conta é sempre a mesma: valor do gasto dividido pelo número de meses até ele chegar.</p>`,
+        `<div class="flows"><div class="flow old"><h4>Antes</h4><div class="node">O notebook trava no meio de uma entrega</div><div class="node">Compra outro parcelado no cartão, com juros</div><div class="node">A renovação da assinatura cai junto e o mês fecha no vermelho</div><div class="node">Férias? "Ano que vem, quem sabe"</div></div><div class="flow new"><h4>Depois</h4><div class="node">Todo mês, R$ 284 vão para uma conta ou "caixinha" separada, com nome</div><div class="node">A planilha tem uma aba "Provisões" com o saldo de cada uma</div><div class="node">Quando o notebook cansar, o dinheiro já está lá</div><div class="node">As férias entram no calendário, com aviso aos clientes</div></div></div>`,
+        `<div class="card"><h3>E o preço?</h3><p>Provisão é custo do negócio. Se ela não cabe no que você cobra hoje, o preço está baixo (lição 2.3). No exemplo, Rafael somou os R$ 284 aos outros custos do mês antes de calcular o valor de cada vídeo. Sem isso, cada vídeo parece dar lucro, mas o notebook do futuro está sendo pago com dinheiro que ainda não existe.</p></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><ol class="golden"><li><span><b>Misturar com a reserva de emergência:</b> se a provisão do notebook paga um imprevisto, registre e reponha; senão as duas somem.</span></li><li><span><b>Guardar na conta pessoal:</b> o dinheiro se mistura com o mercado do mês. Use uma conta ou divisão separada do negócio.</span></li><li><span><b>Esquecer de revisar:</b> quando o preço de um equipamento ou de uma assinatura muda, refaça a conta.</span></li><li><span><b>Guardar onde não dá para resgatar:</b> o dinheiro precisa estar disponível quando o gasto chegar. Para escolher onde guardar, procure fontes oficiais de educação financeira e desconfie de promessas de rendimento alto.</span></li></ol><p>Para a guia mensal e as demais obrigações do MEI, use os valores e prazos atuais: confira no Portal do Empreendedor.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (Google Planilhas, cerca de 6 minutos)</h3><ol class="golden"><li><span>Na sua planilha, crie uma aba "Provisões" com as colunas: gasto, valor estimado, meses até acontecer, provisão por mês e saldo guardado.</span></li><li><span>Liste você pelo menos 3 gastos previsíveis do seu negócio, com números redondos.</span></li><li><span>Escreva a fórmula da provisão por mês (valor dividido pelos meses) e some o total no fim.</span></li><li><span>Compare o total com o seu preço atual e anote se ele cabe ou se o preço precisa de ajuste.</span></li></ol><p>Privacidade e cuidado: não coloque senhas, dados bancários completos nem dados de clientes na planilha. Se pedir ajuda a uma IA com a fórmula, use só números inventados.</p></div>`
+      ],
+      ch:[
+        { who:'Cíntia, 36 anos, é MEI e faz bolos de festa', says:'O forno vai precisar ser trocado daqui a uns 2 anos e custa uns R$ 2.400. Quando quebrar, eu vejo o que faço.',
+          q:'Qual é o plano mais adequado?',
+          opts:[
+            {t:'Esperar quebrar e parcelar no cartão, porque é o que todo mundo faz.', ok:false, why:'Parcelar com juros um gasto que ela já sabia que viria encarece o forno e aperta os meses seguintes.'},
+            {t:'Separar cerca de R$ 100 por mês numa provisão do forno (R$ 2.400 em 24 meses, valores ilustrativos) e incluir esse custo no preço dos bolos.', ok:true, why:'Dividir o gasto pelos meses até ele chegar transforma um susto grande num valor pequeno e previsível.'},
+            {t:'Tirar o dinheiro da reserva de emergência quando o forno quebrar.', ok:false, why:'A reserva é para o que ninguém previu. Gastá-la com algo previsível deixa o negócio sem proteção para um imprevisto de verdade.'}
+          ]},
+        { who:'Wellington, 29 anos, é MEI e dá aulas particulares de violão', says:'Queria tirar 15 dias de férias em janeiro, mas MEI não tem férias, né? Então não tem jeito.',
+          q:'O que a lição sugere?',
+          opts:[
+            {t:'Que o MEI não tem férias pagas por patrão, mas pode criar uma provisão mensal para cobrir a retirada dos dias de descanso e avisar os alunos com antecedência.', ok:true, why:'O descanso vira um gasto previsível. Guardando um pouco por mês, a retirada de janeiro já está paga.'},
+            {t:'Que ele deve trabalhar o ano todo, porque autônomo não descansa.', ok:false, why:'Sem descanso, a qualidade e a saúde caem. Dá para planejar as férias como qualquer outro gasto.'},
+            {t:'Que ele deve cobrar as aulas de janeiro dos alunos mesmo sem dar aula.', ok:false, why:'Cobrar sem entregar quebra o combinado. O caminho honesto é se planejar antes.'}
+          ]},
+        { who:'Aline, 41 anos, é MEI e organiza festas infantis', says:'Fiz a provisão das assinaturas, mas guardo tudo na minha conta pessoal. No fim do mês nunca sobra o que eu separei.',
+          q:'Qual é o ajuste mais importante?',
+          opts:[
+            {t:'Parar de fazer provisões, já que o dinheiro some mesmo.', ok:false, why:'O problema não é a provisão, é onde ela fica guardada.'},
+            {t:'Guardar a provisão em dinheiro vivo dentro de casa.', ok:false, why:'Dinheiro em casa corre risco de perda e roubo e continua fácil de gastar sem registro.'},
+            {t:'Guardar a provisão numa conta ou divisão separada do negócio, com nome, e registrar o saldo na aba de provisões da planilha.', ok:true, why:'Separar e dar nome ao dinheiro evita que ele se misture com os gastos pessoais do mês.'}
+          ]}
+      ]},
     { id:'2.6', title:'Projeto: planilha de entradas e saídas', min:30,
       body:[
         `<div class="card"><p>Neste projeto, você monta a planilha de entradas e saídas do SEU negócio, com categorias que façam sentido para você. A IA pode ajudar a sugerir colunas e fórmulas, mas a estrutura, as categorias e os números são seus. Não envie dados pessoais de clientes nem extratos completos a ferramentas de IA.</p></div>`
@@ -810,7 +844,7 @@ const PROMPTS = {
 };
 
 const THEME = { 1:['#10B981','#84CC16'], 2:['#84CC16','#10B981'], 3:['#10B981','#84CC16'] };
-const LIC = { '1.1':'🏛️','1.2':'📋','1.3':'🔐','1.4':'👟','1.5':'🚲','1.6':'🧭','2.1':'🧮','2.2':'🧾','2.3':'🍰','2.4':'🚰','2.5':'🚪','2.6':'📊','3.1':'📅','3.2':'📈','3.3':'🤝','3.4':'🩺','3.5':'🧰','3.6':'🗓️','1.7':'⚖️','1.8':'🏁','2.7':'🧹','2.8':'🎯','3.7':'🔁','3.8':'🛟' };
+const LIC = { '1.1':'🏛️','1.2':'📋','1.3':'🔐','1.4':'👟','1.5':'🚲','1.6':'🧭','2.1':'🧮','2.2':'🧾','2.3':'🍰','2.4':'🚰','2.5':'🚪','2.6':'📊','3.1':'📅','3.2':'📈','3.3':'🤝','3.4':'🩺','3.5':'🧰','3.6':'🗓️','1.7':'⚖️','1.8':'🏁','2.7':'🧹','2.8':'🎯','2.9':'🔥','3.7':'🔁','3.8':'🛟' };
 
 return {
   id: 'formalizando-mei-e-financas',

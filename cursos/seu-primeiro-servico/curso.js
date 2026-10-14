@@ -503,6 +503,39 @@ const MODULES = [
             {t:'Fazer um recibo simples com os dois nomes, serviço, valor, forma de pagamento e data, e pesquisar a formalização no gov.br ou com um contador.', ok:true, why:'O recibo registra o pagamento de forma honesta; a formalização e a nota fiscal seguem regras oficiais que vale conferir.'}
           ]}
       ]},
+    { id:'2.9', title:'Ferramentas de trabalho: conferir limites, regras de uso e ter um plano B', min:15,
+      body:[
+        `<div class="card analogy"><h3>🧰 A maleta do eletricista</h3><p>O eletricista chega na casa do cliente com as ferramentas que conhece bem e uma de reserva para o que mais quebra. Ele não aparece com uma furadeira emprestada que nunca usou, nem descobre na hora que a bateria acabou. Quem presta serviço com IA também tem uma maleta: as ferramentas que usa em cada etapa. Conhecer os limites delas antes do cliente chegar evita o susto no dia da entrega.</p></div>`,
+        `<div class="term"><b>Limite do plano gratuito</b> = quantidade de uso permitida sem pagar, que pode mudar a qualquer momento. <b>Termos de uso</b> = regras da ferramenta, incluindo se o resultado pode ser usado para fins comerciais e o que acontece com o que você envia. <b>Plano B</b> = outra ferramenta ou outro jeito de fazer a mesma etapa, já testado.</div>`,
+        `<div class="card"><h3>Exemplo resolvido: a Larissa e os posts do salão</h3><p>Larissa vende pacotes de posts para salões. Ela criava as imagens numa ferramenta gratuita que nunca tinha lido com atenção.</p><div class="flows"><div class="flow old"><h4>Antes</h4><div class="node">No dia da entrega, o limite semanal da conta acabou no terceiro post.</div><div class="node">Ela descobriu que, no plano gratuito, as imagens ficavam públicas, inclusive uma com o logo do salão.</div><div class="node">Correu para uma ferramenta nova, sem saber usar, e atrasou a entrega.</div></div><div class="flow new"><h4>Depois</h4><div class="node">Montou uma tabela com as ferramentas de cada etapa, o limite conferido na página oficial e a data em que conferiu.</div><div class="node">Leu nos termos se o uso comercial é permitido e o que fica público ou é guardado.</div><div class="node">Testou um plano B para cada etapa e passou a criar as imagens no começo da semana, longe do prazo.</div></div></div></div>`,
+        `<div class="tw"><table class="tbl"><tr><th>Etapa</th><th>Ferramenta</th><th>Limite conferido (data)</th><th>Uso comercial?</th><th>O que nunca envio</th><th>Plano B</th></tr><tr><td>Rascunho dos textos</td><td>Assistente de IA A</td><td>Limite por período (conferido em [DATA])</td><td>Conferido nos termos</td><td>Dados de clientes do salão</td><td>Assistente de IA B</td></tr><tr><td>Imagens</td><td>Gerador de imagens C</td><td>Créditos por semana; imagens públicas no grátis</td><td>Conferido nos termos</td><td>Logo e fotos do salão</td><td>Fotos próprias e editor simples</td></tr><tr><td>Organização</td><td>Planilha</td><td>Sem limite relevante</td><td>Sim</td><td>Senhas</td><td>Caderno</td></tr></table></div>`,
+        `<div class="card"><h3>E quando vale pagar?</h3><p>Pague quando o limite gratuito trava a entrega com frequência e você já tem clientes que cobrem o custo. Aí a assinatura entra no preço, como qualquer custo (lição 2.2). Exemplo com <b>valores ilustrativos</b>: uma assinatura de R$ 60 por mês, dividida entre 4 clientes, acrescenta R$ 15 ao custo de cada um. Assinar antes de ter cliente é gastar com uma ideia que ainda não foi testada.</p></div>`,
+        `<div class="card"><h3>Erros comuns e como evitar</h3><p><b>Confiar no limite de memória:</b> limites mudam; confira na página oficial e anote a data. <b>Não ler sobre uso comercial:</b> algumas ferramentas restringem o uso do resultado em trabalho pago, ou deixam o que você cria visível para todos. <b>Enviar dados do cliente sem pensar:</b> antes de colar qualquer coisa, pergunte se aquilo precisa mesmo ir para a ferramenta. <b>Usar a conta pessoal do cliente:</b> trabalhe nas suas contas e entregue os arquivos a ele. <b>Plano B nunca testado:</b> o plano B só ajuda se você já usou pelo menos uma vez.</p></div>`,
+        `<div class="card"><h3>✍️ Agora é sua vez (Google Planilhas, cerca de 6 minutos)</h3><ol class="golden"><li><span>Crie uma planilha com as colunas: etapa, ferramenta, limite conferido, data, uso comercial, o que nunca envio e plano B.</span></li><li><span>Preencha uma linha para cada etapa do serviço que você escolheu.</span></li><li><span>Para cada ferramenta, abra a página oficial de planos ou de termos e anote, com as suas palavras, o que encontrou e a data.</span></li><li><span>Escolha um plano B para a etapa mais importante e marque um dia para testá-lo.</span></li></ol><p>🔒 Na planilha, nada de senhas, CPF ou dados de clientes. Se não encontrar a informação sobre uso comercial, anote "não encontrei" e trate como dúvida, não como permissão.</p></div>`
+      ],
+      ch:[
+        { who:'Gabriel, 23 anos, cria cardápios com IA para lanchonetes', says:'Tenho três entregas na sexta. Uso o plano grátis de um gerador de imagens e acho que o limite dá, mas nunca contei.',
+          q:'O que ele deve fazer agora?',
+          opts:[
+            {t:'Conferir hoje o limite na página oficial, adiantar as imagens no começo da semana e deixar um plano B testado.', ok:true, why:'Saber o limite com antecedência e ter alternativa transforma um susto na sexta numa semana tranquila.'},
+            {t:'Esperar a sexta e, se o limite acabar, pedir mais prazo aos três clientes.', ok:false, why:'Pedir prazo por falta de planejamento queima a confiança justamente no começo da relação.'},
+            {t:'Assinar o plano mais caro da ferramenta hoje, para garantir.', ok:false, why:'Pode até resolver, mas é gastar sem saber se precisa. Primeiro confira o limite e calcule se o custo cabe no preço.'}
+          ]},
+        { who:'Priscila, 35 anos, faz posts para uma clínica veterinária', says:'Vou colar na IA a lista de clientes da clínica com nome e telefone, para ela sugerir posts personalizados.',
+          q:'Qual é a orientação correta?',
+          opts:[
+            {t:'Pode colar, porque a ferramenta é famosa e confiável.', ok:false, why:'Ser famosa não autoriza o uso dos dados. Os clientes da clínica não aceitaram que os contatos fossem para uma ferramenta de IA.'},
+            {t:'Colar só os telefones, sem os nomes.', ok:false, why:'Telefone também identifica a pessoa. Continua sendo dado pessoal enviado sem necessidade.'},
+            {t:'Não enviar dados de clientes; descrever o público em termos gerais, como "tutores de cães e gatos do bairro", que já é suficiente para os posts.', ok:true, why:'Para criar posts, um perfil geral do público basta. Dado pessoal fica fora da ferramenta.'}
+          ]},
+        { who:'Otávio, 40 anos, quer vender legendas de produtos para lojas virtuais', says:'Achei uma ferramenta grátis ótima, mas não sei se posso usar o que ela gera num trabalho pago.',
+          q:'Qual é o passo mais adequado?',
+          opts:[
+            {t:'Usar à vontade, porque ferramenta grátis libera tudo.', ok:false, why:'Grátis não significa uso comercial liberado. Cada ferramenta define isso nos termos.'},
+            {t:'Ler os termos de uso e a página de planos na fonte oficial, anotar o que diz e a data, e tratar como dúvida o que não estiver claro.', ok:true, why:'A regra está nos termos. Anotar com data ajuda a conferir de novo quando mudar.'},
+            {t:'Perguntar num grupo de rede social e seguir a opinião da maioria.', ok:false, why:'Opinião de grupo pode estar desatualizada ou errada. A fonte é a página oficial da ferramenta.'}
+          ]}
+      ]},
     { id:'2.6', title:'Projeto: sua oferta em um parágrafo e o preço calculado', min:30,
       body:[
         `<div class="card"><p>Hora de transformar o serviço escolhido no módulo 1 em uma oferta que você pode mandar a um cliente amanhã. Você vai escrever a oferta, calcular o preço com o método de custo, valor e mercado, montar o seu modelo de combinado escrito e preparar respostas honestas para as dúvidas mais prováveis. Use os seus próprios números: o tempo real da amostra, custos reais, pesquisa real na sua região.</p></div>`
@@ -817,7 +850,7 @@ const PROMPTS = {
 const THEME = { 1:['#10B981','#84CC16'], 2:['#84CC16','#10B981'], 3:['#10B981','#84CC16'] };
 const LIC = {
   '1.1':'🔍','1.2':'🎯','1.3':'🩺','1.4':'🪧','1.5':'⏱️','1.6':'🗺️','1.7':'🔭','1.8':'🚦',
-  '2.1':'📦','2.2':'💲','2.3':'🤝','2.4':'✈️','2.5':'💬','2.6':'📝','2.7':'🧱','2.8':'🧾',
+  '2.1':'📦','2.2':'💲','2.3':'🤝','2.4':'✈️','2.5':'💬','2.6':'📝','2.7':'🧱','2.8':'🧾','2.9':'🧰',
   '3.1':'🧪','3.2':'📁','3.3':'🧁','3.4':'🖼️','3.5':'🍳','3.6':'🚀','3.7':'🧯','3.8':'🏁'
 };
 
