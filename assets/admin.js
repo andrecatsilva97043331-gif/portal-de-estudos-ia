@@ -217,7 +217,7 @@ function grafLocal(rs){
     <g class="geo-estados">${Object.entries(M.ufs).map(([uf, e], i) => { const n = porUF[uf] || 0;
       return `<path class="geo-uf${n ? ' tem' : ''}${uf === LOCAL_SEL ? ' sel' : ''}" data-act="local-uf" data-uf="${uf}" style="--i:${i}${n ? ';fill-opacity:' + (0.3 + 0.6 * n / max).toFixed(2) : ''}" d="${e.d}"><title>${legenda(uf)}</title></path>`; }).join('')}</g>
     <g class="geo-marcas">${marcas}</g></svg>`;
-  const kpi = (n, rot, ico) => `<div class="geo-kpi"><span>${ico}</span><b data-n="${n}">${n}</b><small>${rot}</small></div>`;
+  const kpi = (n, rot, img) => `<div class="geo-kpi"><img class="geo-ico" src="assets/admin/local-${img}.webp" alt="" decoding="async"><b data-n="${n}">${n}</b><small>${rot}</small></div>`;
   const nCid = Object.keys(cidades).length;
   const barras = (itens, maxV) => itens.map(([k, v], i) => `<div class="geo-bar" style="--d:${(i * 0.06).toFixed(2)}s"><span>${esc(k)}</span><div class="hbt"><i style="width:${Math.max(4, v / maxV * 100)}%"></i></div><em>${v}</em></div>`).join('');
   let painel;
@@ -235,7 +235,7 @@ function grafLocal(rs){
   const top = ranking.slice(0, 5);
   return grafico('Onde estão seus alunos', 'Toque num estado para ver as cidades · dados do cadastro, não em tempo real',
     `<div class="geo">
-      <div class="geo-kpis">${kpi(total, 'alunos', '👥')}${kpi(ranking.length, ranking.length === 1 ? 'estado' : 'estados', '🗺️')}${kpi(nCid, nCid === 1 ? 'cidade' : 'cidades', '🏙️')}${kpi(nFora, 'fora do Brasil', '🌎')}</div>
+      <div class="geo-kpis">${kpi(total, 'alunos', 1)}${kpi(ranking.length, ranking.length === 1 ? 'estado' : 'estados', 2)}${kpi(nCid, nCid === 1 ? 'cidade' : 'cidades', 3)}${kpi(nFora, 'fora do Brasil', 4)}</div>
       <div class="geo-corpo">
         <div class="geo-tela">${mapa}${nFora ? `<button class="geo-fora${LOCAL_SEL === 'FORA' ? ' sel' : ''}" type="button" data-act="local-uf" data-uf="FORA">🌎 ${nFora} fora do Brasil</button>` : ''}</div>
         <div class="geo-painel">${painel}
