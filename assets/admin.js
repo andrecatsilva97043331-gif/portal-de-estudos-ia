@@ -78,6 +78,7 @@ function renderLogin(msg){
 
 /* ============ VISUAL ============ */
 const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const icoSec = n => `<img class="sec-ico" src="assets/admin/sec-${n}.webp" alt="" decoding="async">`;
 const cor = i => { const p = PORTAL.paleta(i); return '--c:' + p[0] + ';--c2:' + p[1]; };
 function corDe(txt){ let h = 0; for (const ch of String(txt)) h = (h * 31 + ch.charCodeAt(0)) | 0; return cor(Math.abs(h)); }
 function iniciais(nome){ const p = String(nome || '?').trim().split(/\s+/); return (p[0][0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase(); }
@@ -348,8 +349,8 @@ function renderAvisos(rs){
   lista.sort((x, y) => { const ux = ultimoAviso(x.a.id), uy = ultimoAviso(y.a.id); return (ux ? 1 : 0) - (uy ? 1 : 0) || String(ux && ux.enviado_em).localeCompare(String(uy && uy.enviado_em)); });
   const modelo = modelos()[AV.seg];
   const api = lista.filter(p => p.seg !== 'pendente' && p.a.aceita_contato);
-  el.innerHTML = `<div class="segs">${SEGMENTOS.map(s => `<button class="seg ${s.id === AV.seg ? 'on' : ''}" data-act="seg" data-seg="${s.id}" style="--c:${s.cor[0]};--c2:${s.cor[1]}" title="${esc(s.desc)}">
-      <span class="sgi">${s.ico}</span><span class="sgt"><b>${s.nome}</b><small>${s.desc}</small></span><em>${grupos[s.id].length}</em></button>`).join('')}</div>
+  el.innerHTML = `<div class="segs">${SEGMENTOS.map((s, i) => `<button class="seg ${s.id === AV.seg ? 'on' : ''}" data-act="seg" data-seg="${s.id}" style="--c:${s.cor[0]};--c2:${s.cor[1]}" title="${esc(s.desc)}">
+      <span class="sgi com-img"><img src="assets/admin/seg-${i + 1}.webp" alt="" decoding="async"></span><span class="sgt"><b>${s.nome}</b><small>${s.desc}</small></span><em>${grupos[s.id].length}</em></button>`).join('')}</div>
     <div class="avbody" style="--c:${seg.cor[0]};--c2:${seg.cor[1]}">
       <div class="avmodelo">
         <div class="ch-h"><b>${seg.ico} Mensagem modelo · ${seg.nome}</b><small>Use as variáveis ${VARIAVEIS.map(v => '<code>{' + v + '}</code>').join(' ')}. Linhas com variável vazia são removidas.</small></div>
@@ -442,23 +443,23 @@ function renderPainel(){
       ${ajuda('ferramentas')}
     </div>
     <section class="dsec rise" id="confirmacoes" style="--c:#4ade80;--c2:#22d3ee"></section>
-    <h2 class="sec-t" style="--c:#22d3ee;--c2:#c084fc">📈 Gráficos ${ajuda('graficos')}</h2>
+    <h2 class="sec-t" style="--c:#22d3ee;--c2:#c084fc">${icoSec(1)}Gráficos ${ajuda('graficos')}</h2>
     <div class="charts" id="graficos"></div>
     <section class="dsec rise" style="--c:#22d3ee;--c2:#c084fc">
-      <h2 class="sec-t">📲 Central de avisos no WhatsApp ${ajuda('avisos')}</h2>
+      <h2 class="sec-t">${icoSec(3)}Central de avisos no WhatsApp ${ajuda('avisos')}</h2>
       <div id="avisos"></div></section>
     <section class="dsec rise" style="--c:#c084fc;--c2:#ec4899">
-      <h2 class="sec-t"><span id="titulo-tabela">Alunos</span> ${ajuda('alunos')}</h2>
+      <h2 class="sec-t">${icoSec(4)}<span id="titulo-tabela">Alunos</span> ${ajuda('alunos')}</h2>
       <div id="tabela"></div></section>
     <section class="dsec rise" style="--c:#4ade80;--c2:#22d3ee">
-      <h2 class="sec-t"><span id="titulo-cert">🎓 Certificados emitidos</span> ${ajuda('certificados')}</h2>
+      <h2 class="sec-t">${icoSec(5)}<span id="titulo-cert">Certificados emitidos</span> ${ajuda('certificados')}</h2>
       <p class="cert-sync" id="cert-sync">${esc(SYNC)}</p>
       <div class="dtab" id="certificados"></div></section>
     <section class="dsec rise" style="--c:#ec4899;--c2:#c084fc">
-      <h2 class="sec-t">📣 Divulgação ${ajuda('divulgacao')}</h2>
+      <h2 class="sec-t">${icoSec(6)}Divulgação ${ajuda('divulgacao')}</h2>
       <div id="divulgacao"></div></section>
     <section class="dsec rise" style="--c:#22d3ee;--c2:#3b82f6">
-      <h2 class="sec-t"><span id="titulo-dep">💬 Depoimentos</span> ${ajuda('depoimentos')}</h2>
+      <h2 class="sec-t">${icoSec(7)}<span id="titulo-dep">Depoimentos</span> ${ajuda('depoimentos')}</h2>
       <div id="depoimentos"></div></section>`;
   document.querySelectorAll('.stat b[data-n]').forEach(contar);
   renderConfirmacoes();
@@ -485,8 +486,8 @@ function renderDepoimentos(){
   const reais = (DADOS.depoimentos || []).slice().sort((x, y) => (x.status === 'pendente' ? 0 : 1) - (y.status === 'pendente' ? 0 : 1));
   const exemplo = !reais.length, lista = exemplo ? EXEMPLOS_DEP : reais;
   const pend = reais.filter(d => d.status === 'pendente').length;
-  $('titulo-dep').innerHTML = exemplo ? '💬 Depoimentos <span class="badge">EXEMPLOS · SÓ VOCÊ VÊ</span>'
-    : '💬 Depoimentos (' + reais.length + ')' + (pend ? ' <small style="color:var(--muted);font-weight:400">· ' + pend + ' aguardando você</small>' : '');
+  $('titulo-dep').innerHTML = exemplo ? 'Depoimentos <span class="badge">EXEMPLOS · SÓ VOCÊ VÊ</span>'
+    : 'Depoimentos (' + reais.length + ')' + (pend ? ' <small style="color:var(--muted);font-weight:400">· ' + pend + ' aguardando você</small>' : '');
   el.innerHTML = `${exemplo ? '<p class="nota" style="margin:12px 14px 0">Nenhum depoimento real ainda. Estes exemplos servem para você testar a imagem e as legendas; eles somem quando chegar o primeiro depoimento de um aluno, que aparece aqui com os botões Aprovar e Recusar.</p>' : ''}
     <div class="adm-deps">
     ${lista.map(d => {
@@ -604,7 +605,7 @@ async function sincronizarCertificados(){
 function renderCertificados(){
   const el = $('certificados'); if (!el) return;
   const lista = DADOS.certificados || [];
-  $('titulo-cert').textContent = '🎓 Certificados emitidos (' + lista.length + ')';
+  $('titulo-cert').textContent = 'Certificados emitidos (' + lista.length + ')';
   if (!lista.length) { el.innerHTML = '<div class="empty">Nenhum certificado emitido ainda. Ele aparece aqui quando um aluno conclui 100% de um curso e clica em "Emitir meu certificado".</div>'; return; }
   el.innerHTML = `<table class="atbl"><thead><tr><th>Aluno</th><th>Certificado</th><th>ID da credencial</th><th>Emitido em</th><th>Situação</th></tr></thead><tbody>
     ${lista.map(c => `<tr>
@@ -622,7 +623,7 @@ function renderConfirmacoes(){
   const pediram = pend.filter(a => a.whatsapp_solicitado_em).sort((x, y) => String(y.whatsapp_solicitado_em).localeCompare(String(x.whatsapp_solicitado_em)));
   const faltam = pend.length - pediram.length;
   if (!pend.length) { el.innerHTML = ''; return; }
-  el.innerHTML = `<h2 class="sec-t">✅ Confirmações de WhatsApp ${ajuda('confirmacoes')} <small style="color:var(--muted);font-weight:400">· ${pediram.length} aguardando você</small></h2>
+  el.innerHTML = `<h2 class="sec-t">${icoSec(2)}Confirmações de WhatsApp ${ajuda('confirmacoes')} <small style="color:var(--muted);font-weight:400">· ${pediram.length} aguardando você</small></h2>
     <div>
       <p class="nota" style="margin:0 0 12px">Quando o aluno toca em "Enviar confirmação", chega no seu WhatsApp uma mensagem com o código. Confira se o <b>número de quem mandou</b> e o <b>código</b> batem com os daqui e clique em Confirmar.</p>
       <div class="confs">${pediram.map(a => {
