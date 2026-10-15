@@ -370,7 +370,7 @@ function dadosExemplo(m, i){
     subtitulo:m.projeto_final ? 'Projeto final · ' + PORTAL.trilhas[t] : nv ? 'Trilha de IA · Nível ' + nv.titulo.toLowerCase() : g ? 'Renda com IA · ' + g.titulo : '' };
 }
 function certsExemplo(){
-  const nomes = ['Cosmo José da Silva', 'José Porfírio da Silva', 'Severina Maria da Silva', 'Neusa Maria Ribeiro Silveira', 'Lúcia Ribeiro dos Santos'];
+  const nomes = ['Cosmo José da Silva', 'José Porfírio da Silva', 'Severina Maria da Silva', 'Neusa Maria Ribeiro Silveira', 'Lúcia Ribeiro dos Santos', 'Thatiany Matos Machado'];
   const base = { codigo:'CIA-0000-EXEMPLO', emitido_em:new Date().toISOString(), revogado:false };
   const disp = PORTAL.catalogo.filter(PORTAL.disponivel), lista = [];
   const curso = (m, i) => {
