@@ -317,7 +317,7 @@ function mensagemIndicacao(){
 }
 function indicarAmigo(){ window.open('https://wa.me/?text=' + encodeURIComponent(mensagemIndicacao()), '_blank', 'noopener'); }
 const cartaoFundador = (cls = '') => `<a class="fundador rise ${cls}" href="historia.html"><span class="fd-foto"><img src="assets/andre.jpg" alt="" width="84" height="84" loading="lazy"></span><span class="fd-tx"><small class="fd-sel"><i></i>Conheça o fundador</small><b>Do caderno compartilhado <em>ao futuro da IA</em></b><span class="fd-desc">A história de André Luiz, que dividia um caderno e um lápis com uma de suas irmãs para poderem estudar, e hoje fundou o Portal de Estudos IA.</span></span><span class="fd-cta">Ler minha história <i aria-hidden="true">➜</i></span></a>`;
-const botaoIndicar = () => `<button class="indica" type="button" data-act="indicar"><span class="ind-ic" aria-hidden="true">🎁</span><span class="ind-tx"><b>Indique um amigo</b><small>Envie o convite pelo WhatsApp</small></span><span class="ind-seta" aria-hidden="true">➜</span></button>`;
+const botaoIndicar = () => `<button class="indica" type="button" data-act="indicar"><img class="ind-img" src="assets/indique-amigo.webp" alt="" width="320" height="240" decoding="async"><span class="ind-tx"><b>Indique um amigo</b><small>Envie o convite pelo WhatsApp</small></span><span class="ind-seta" aria-hidden="true">➜</span></button>`;
 
 /* Ícone Cursos do rodapé (celular): lista compacta com os ícones dos cursos. */
 function abrirListaCursos(){
@@ -370,7 +370,7 @@ function dadosExemplo(m, i){
     subtitulo:m.projeto_final ? 'Projeto final · ' + PORTAL.trilhas[t] : nv ? 'Trilha de IA · Nível ' + nv.titulo.toLowerCase() : g ? 'Renda com IA · ' + g.titulo : '' };
 }
 function certsExemplo(){
-  const nomes = ['Cosmo José da Silva', 'José Porfírio da Silva', 'Severina Maria da Silva', 'Neusa Maria Ribeiro Silveira'];
+  const nomes = ['Cosmo José da Silva', 'José Porfírio da Silva', 'Severina Maria da Silva', 'Neusa Maria Ribeiro Silveira', 'Lúcia Ribeiro dos Santos'];
   const base = { codigo:'CIA-0000-EXEMPLO', emitido_em:new Date().toISOString(), revogado:false };
   const disp = PORTAL.catalogo.filter(PORTAL.disponivel), lista = [];
   const curso = (m, i) => {
