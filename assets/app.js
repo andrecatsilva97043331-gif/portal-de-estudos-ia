@@ -58,6 +58,7 @@ const idxOf = id => C.licoes.findIndex(l => l.id === id);
 function unlocked(id){ if (MASTER) return true; const i = idxOf(id), d = D(); for (let k=0;k<i;k++){ if(!d[C.licoes[k].id]) return false; } return true; }
 function modDone(m){ return m.lessons.every(l => D()[l.id]); }
 function modCount(m){ return m.lessons.filter(l => D()[l.id]).length; }
+const barraPct = p => `<div class="mpct"><b>${p}%</b><span>concluído</span></div>`;
 function modPct(m){ return Math.round(modCount(m) / m.lessons.length * 100); }
 function xp(){ return FLAT().filter(l => D()[l.id]).length * 100 + C.conteudo.modulos.filter(modDone).length * 200; }
 function level(x){ return ((C.conteudo.niveis || NIVEIS_PADRAO).find(n => x >= n[0]) || [0,''])[1]; }
@@ -126,32 +127,35 @@ function renderCursos(){
         <p class="hc-leg" id="hc-leg" aria-live="polite">🎓 Exemplos de certificados</p></div>` : ''}
     </section>`;
   }
+  /* Card com capa: a frente é só a imagem; o clique vira o card e mostra as informações e o botão da ação. */
+  const cartaoMc = ({ c, cls = '', act, style, selo, corpo, botao }) => {
+    const alvo = act ? ` data-act="${act}"${act === 'curso' ? ` data-id="${esc(c.id)}"` : ''}` : '';
+    if (!c.capa) return `<div class="mc ${cls}"${act ? ' role="button" tabindex="0"' + alvo : ' aria-disabled="true"'} style="${style}">
+      <div class="mhead"><div class="mtile">${c.icone || '📘'}</div>${selo}</div>${corpo}</div>`;
+    return `<div class="mc com-capa ${cls}" role="button" tabindex="0" aria-expanded="false" data-act="virar" title="Ver detalhes" style="${style}">
+      <div class="mcapa"><img src="${esc(c.capa)}" alt="${esc(c.titulo)}" width="390" height="300" loading="lazy" decoding="async">${selo}<span class="mdica" aria-hidden="true">ⓘ Detalhes</span></div>
+      <div class="mverso">${corpo}${act && botao ? `<button type="button" class="mabrir"${alvo}>${botao}</button>` : ''}</div></div>`;
+  };
   const vitrine = (c, i) => {
     const mods = c.conteudo.modulos;
-    return `<div class="mc vit rise" role="button" tabindex="0" data-act="curso" data-id="${esc(c.id)}" style="${ccor(c)};--d:${0.15 + i * 0.08}s">
-      <div class="mhead"><div class="mtile">${c.icone}</div><span class="pctpill novo">🆓 Gratuito</span></div>
+    return cartaoMc({ c, cls:'vit rise', act:'curso', style:`${ccor(c)};--d:${0.15 + i * 0.08}s`, selo:'', botao:'🔐 Entre para estudar', corpo:`
       <div><div class="mt">${esc(c.titulo)}</div><div class="ms">${esc(c.descricao)}</div></div>
       <div class="vit-ap"><small>Você vai aprender</small>${mods.slice(0, 3).map(m => `<span>${m.icon} ${esc(m.title)}</span>`).join('')}${mods.length > 3 ? `<span class="vit-mais">+ ${mods.length - 3} ${mods.length - 3 === 1 ? 'módulo' : 'módulos'}</span>` : ''}</div>
-      <div class="mfoot"><span>${c.total} lições${c.carga_horaria ? ' · ' + c.carga_horaria + 'h' : ''} · 🎓 certificado</span><span class="mst">🔐 Entre para estudar</span></div>
-    </div>`;
+      <div class="mfoot"><span>${c.total} lições${c.carga_horaria ? ' · ' + c.carga_horaria + 'h' : ''} · 🎓 certificado</span><span class="mst">🔐 Entre para estudar</span></div>` });
   };
   const cartao = (c, i) => {
     if (!ALUNO && !MASTER) return vitrine(c, i);
-    const matr = MATR.includes(c.id), pct = pctCurso(c), fim = matr && pct === 100, d = PROG[c.id] || {};
+    const matr = MATR.includes(c.id), pct = pctCurso(c), fim = matr && pct === 100;
     const acao = fim ? '✅ Concluído' : matr ? '▶ Continuar' : '✨ Iniciar curso';
-    const dots = c.conteudo.modulos.map(m => `<i class="${m.lessons.every(l => d[l.id]) ? 'on' : ''}" title="Módulo ${m.id}: ${esc(m.title)}"></i>`).join('');
-    return `<div class="mc rise ${fim?'fin':''}" role="button" tabindex="0" data-act="curso" data-id="${esc(c.id)}" style="${ccor(c)};--d:${0.15 + i * 0.08}s">
-      <div class="mhead"><div class="mtile">${c.icone}</div>${c.status === 'rascunho' ? '<span class="badge">RASCUNHO</span>' : c.status === 'em_breve' ? `<span class="badge">${seloPrevia()}</span>` : matr ? `<span class="pctpill">${pct}%</span>` : '<span class="pctpill novo">Novo</span>'}</div>
+    return cartaoMc({ c, cls:`rise ${fim ? 'fin' : ''}`, act:'curso', style:`${ccor(c)};--d:${0.15 + i * 0.08}s`, botao:fim ? '✅ Rever o curso' : acao,
+      selo:c.status === 'rascunho' ? '<span class="badge">RASCUNHO</span>' : c.status === 'em_breve' ? `<span class="badge">${seloPrevia()}</span>` : '', corpo:`
       <div><div class="mt">${esc(c.titulo)}</div><div class="ms">${esc(c.descricao)}</div></div>
-      <div class="mdots">${dots}</div>
-      <div class="mfoot"><span>${c.conteudo.modulos.length} módulos · ${c.total} lições</span><span class="mst">${acao}</span></div>
-    </div>`;
+      ${barraPct(matr ? pct : 0)}
+      <div class="mfoot"><span>${c.conteudo.modulos.length} módulos · ${c.total} lições</span><span class="mst">${acao}</span></div>` });
   };
-  const emBreve = (m, i, num = m.ordem) => `<div class="mc lock breve rise" aria-disabled="true" style="${ccor(Object.assign({ cores:PORTAL.paleta(i) }, m))};--d:${0.15 + i * 0.06}s">
-      <div class="mhead"><div class="mtile">${m.icone || '📘'}</div><span class="pctpill novo">🔜 Em breve</span></div>
+  const emBreve = (m, i, num = m.ordem) => cartaoMc({ c:m, cls:'lock breve rise', style:`${ccor(Object.assign({ cores:PORTAL.paleta(i) }, m))};--d:${0.15 + i * 0.06}s`, selo:'<span class="pctpill novo">🔜 Em breve</span>', corpo:`
       <div><div class="mt">${esc(m.titulo)}</div><div class="ms">${esc(m.descricao)}</div></div>
-      <div class="mfoot"><span>Curso ${num || ''} da trilha</span></div>
-    </div>`;
+      <div class="mfoot"><span>Curso ${num || ''} da trilha</span></div>` });
   const carregado = id => CURSOS.find(c => c.id === id);
   let n = 0;
   const niveis = PORTAL.niveis.map((nv, k) => {
@@ -179,20 +183,17 @@ function renderCursos(){
     const projetos = `🛠️ ${pf.total} ${pf.total === 1 ? 'projeto prático' : 'projetos práticos'}`;
     if (!ALUNO && !MASTER) return `<div class="nivel final" style="${ccor(pf)}">
       <div class="nhead"><span class="npill">🏁 Projeto final</span><small>Fecha a ${PORTAL.trilhas[t]}</small></div>
-      <div class="grid"><div class="mc pfinal vit rise" role="button" tabindex="0" data-act="cadastro" style="${ccor(pf)}">
-        <div class="mhead"><div class="mtile">${pf.icone}</div><span class="pctpill novo">🆓 Gratuito</span></div>
+      <div class="grid">${cartaoMc({ c:pf, cls:'pfinal vit rise', act:'cadastro', style:ccor(pf), selo:'', botao:'🔐 Entre para estudar', corpo:`
         <div><div class="mt">${esc(pf.titulo)}</div><div class="ms">${esc(pf.descricao)}</div></div>
         <div class="vit-ap"><small>Como funciona</small><span>📚 Conclua os ${lista.length} cursos</span><span>🛠️ Faça o projeto final</span></div>
-        <div class="mfoot"><span>${projetos}</span><span class="mst">🔐 Entre para estudar</span></div>
-      </div></div></div>`;
-    const selo = !livre ? '🔒 Bloqueado' : fim ? '✅ Concluído' : MATR.includes(pf.id) ? pctCurso(pf) + '%' : '✨ Liberado';
+        <div class="mfoot"><span>${projetos}</span><span class="mst">🔐 Entre para estudar</span></div>` })}</div></div>`;
+    const selo = !livre ? '🔒 Bloqueado' : fim ? '✅ Concluído' : MATR.includes(pf.id) ? '' : '✨ Liberado';
     return `<div class="nivel final" style="${ccor(pf)}">
       <div class="nhead"><span class="npill">🏁 Projeto final</span><small>${feitos} de ${lista.length} cursos concluídos</small></div>
-      <div class="grid"><div class="mc pfinal rise ${livre ? '' : 'lock'} ${fim ? 'fin' : ''}" role="button" tabindex="0" data-act="curso" data-id="${esc(pf.id)}" style="${ccor(pf)}">
-        <div class="mhead"><div class="mtile">${pf.icone}</div><span class="pctpill">${selo}</span></div>
+      <div class="grid">${cartaoMc({ c:pf, cls:`pfinal rise ${livre ? '' : 'lock'} ${fim ? 'fin' : ''}`, act:'curso', style:ccor(pf), selo:selo ? `<span class="pctpill">${selo}</span>` : '', botao:livre ? '▶ Abrir' : '🔒 Ver o que falta', corpo:`
         <div><div class="mt">${esc(pf.titulo)}</div><div class="ms">${esc(pf.descricao)}</div></div>
-        <div class="mfoot"><span>${projetos}</span><span class="mst">${livre ? '▶ Abrir' : 'Conclua todos os cursos da trilha'}</span></div>
-      </div></div></div>`;
+        ${livre ? barraPct(MATR.includes(pf.id) ? pctCurso(pf) : 0) : ''}
+        <div class="mfoot"><span>${projetos}</span><span class="mst">${livre ? '▶ Abrir' : 'Conclua todos os cursos da trilha'}</span></div>` })}</div></div>`;
   };
   const outros = CURSOS.filter(c => !c.projeto_final && c.trilha !== 'renda' && !PORTAL.niveis.some(nv => nv.id === c.nivel)).map(c => cartao(c, n++)).join('');
   $('main').removeAttribute('style');
@@ -994,13 +995,12 @@ function renderHome(){
       <button class="next" data-act="continue">${n===0?'Começar agora':(n===total?'Revisar o curso':'Continuar estudando')} ➜</button></div>
       <div class="bigring" id="bigring"><div class="bigin"><b id="bignum">0%</b><span>concluído</span></div></div>
     </section>${blocoCertificado()}${blocoDepoimento()}${avisoRecomendado()}
-    <div class="grid">${C.conteudo.modulos.map((m,i) => {
+    <div class="grid mods">${C.conteudo.modulos.map((m,i) => {
       const lock = !unlocked(m.lessons[0].id), fin = modDone(m);
-      return `<div class="mc ${lock?'lock':''} ${fin?'fin':''}" role="button" tabindex="0" data-act="openmod" data-mod="${m.id}" style="${tstyle(m.id)};--d:${i*0.5}s">
-        <div class="mtile">${m.icon}</div>
-        <div><h3>Módulo ${m.id}</h3><div class="mt">${m.title}</div><div class="ms">${m.sub || ''}</div></div>
-        <div class="mdots">${m.lessons.map(l => `<i class="${D()[l.id]?'on':''}" title="${esc(l.title)}"></i>`).join('')}</div>
-        <div class="mfoot"><span>${modCount(m)} de ${m.lessons.length} lições</span><span class="mst">${fin?'✅ Concluído':lock?'🔒 Bloqueado':'▶ Abrir'}</span></div>
+      return `<div class="mc mod ${lock?'lock':''} ${fin?'fin':''}" role="button" tabindex="0" data-act="openmod" data-mod="${m.id}" style="${tstyle(m.id)};--d:${i*0.5}s">
+        <div class="mhead"><div class="mtile">${m.icon}</div>
+        <div><h3>Módulo ${m.id}</h3><div class="mt">${m.title}</div><div class="ms">${m.sub || ''}</div></div></div>
+        <div class="mfoot">${barraPct(Math.round(modCount(m) / m.lessons.length * 100))}<span>${modCount(m)} de ${m.lessons.length} lições</span><span class="mst">${fin?'✅ Concluído':lock?'🔒 Bloqueado':'▶ Abrir'}</span></div>
         ${ferramentas(m.id).length ? `<button class="fr-chip" type="button" data-act="ferramentas" data-mod="${m.id}">🧰 Ferramentas do módulo <b>${ferramentas(m.id).length}</b></button>` : ''}
       </div>`; }).join('')}</div>`;
   setTimeout(() => { const r = $('bigring'); if (r) r.style.setProperty('--p', pct); }, 60);
@@ -1630,6 +1630,11 @@ document.addEventListener('click', e => {
   const a = t.dataset.act;
   if (a !== 'cursos-lista' && a !== 'cl-box') fecharListaCursos();
   if (a === 'cursos-lista') abrirListaCursos();
+  else if (a === 'virar') {
+    const abrir = !t.classList.contains('aberto');
+    document.querySelectorAll('.mc.aberto').forEach(m => { m.classList.remove('aberto'); m.setAttribute('aria-expanded', 'false'); });
+    if (abrir) { t.classList.add('aberto'); t.setAttribute('aria-expanded', 'true'); }
+  }
   else if (a === 'cursos') irParaCursos();
   else if (a === 'cadastro') { S.escolhido = S.escolhido || (CURSOS[0] && CURSOS[0].id); S.view = 'cadastro'; renderAll(); }
   else if (a === 'entrar') { VER = {}; S.view = 'entrar'; renderAll(); }
@@ -1752,7 +1757,7 @@ document.addEventListener('input', e => {
 }));
 document.addEventListener('focusout', e => { if (e.target.name === 'cep' && e.target.form && e.target.form.id === 'f-cad') buscarCep(e.target); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { fecharQr(); fecharTeste(); fecharListaCursos(); fecharFerramentas(); }
+  if (e.key === 'Escape') { fecharQr(); fecharTeste(); fecharListaCursos(); fecharFerramentas(); document.querySelectorAll('.mc.aberto').forEach(m => { m.classList.remove('aberto'); m.setAttribute('aria-expanded', 'false'); }); }
   if (e.key === 'Escape') { TB.open = false; renderToolbox(); renderProgress(); closeMenu(); }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('role') === 'button') { e.preventDefault(); e.target.click(); }
 });

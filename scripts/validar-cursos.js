@@ -51,6 +51,11 @@ for (const meta of catalogo) {
     erro(onde, '"carga_horaria" deve ser um número inteiro de horas (1 a 40)');
   else if (meta.carga_horaria === undefined && meta.status !== 'arquivado' && !meta.projeto_final) erro(onde, 'falta "carga_horaria" (horas do certificado)');
 
+  if (meta.capa !== undefined) {
+    if (typeof meta.capa !== 'string' || !/^assets\/capas\/[a-z0-9-]+\.(webp|jpg|png)$/.test(meta.capa)) erro(onde, '"capa" deve ser um arquivo em assets/capas/ (.webp, .jpg ou .png)');
+    else if (!fs.existsSync(path.join(raiz, meta.capa))) erro(onde, '"capa" aponta para ' + meta.capa + ', que não existe');
+  }
+
   if (meta.recomendado_antes !== undefined) {
     const rec = meta.recomendado_antes;
     if (!Array.isArray(rec) || rec.some(r => typeof r !== 'string')) erro(onde, '"recomendado_antes" deve ser uma lista de ids');
