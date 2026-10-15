@@ -432,7 +432,7 @@ function renderPainel(){
   $('main').innerHTML = `
     <div class="adm-h rise"><div><div class="eyebrow">Painel do master ${ajuda('inicio')}</div><h1 class="h1">Visão geral dos <span class="grad">seus alunos</span></h1></div>
       <span class="live"><i></i>${DB.modo === 'demo' ? 'Demonstração' : 'Dados ao vivo'}</span></div>
-    <div class="stats">${stats.map((s, i) => `<div class="stat rise" style="${cor(i + 1)};--d:${i * 0.06}s"><div class="sico">${s[0]}</div><b data-n="${s[1]}" data-suf="${s[2]}">0</b><span>${s[3]}</span><small>${s[4]}</small></div>`).join('')}</div>
+    <div class="stats">${stats.map((s, i) => `<div class="stat com-arte rise" style="${['--c:#3b82f6;--c2:#22d3ee', '--c:#4ade80;--c2:#22c55e', '--c:#ff9a3c;--c2:#ff5a5f', '--c:#ec4899;--c2:#c084fc'][i]};--d:${i * 0.06}s"><img class="sarte" src="assets/admin/visao-${i + 1}.webp" alt="" decoding="async"><div class="sico">${s[0]}</div><b data-n="${s[1]}" data-suf="${s[2]}">0</b><span>${s[3]}</span><small>${s[4]}</small></div>`).join('')}</div>
     <div class="tools">
       <input class="inp" id="busca" type="search" placeholder="Buscar por nome, e-mail, telefone, estado, profissão ou objetivo" value="${esc(F.busca)}">
       <select class="inp" id="filtro-curso"><option value="">Todos os cursos</option>${opCursos}</select>

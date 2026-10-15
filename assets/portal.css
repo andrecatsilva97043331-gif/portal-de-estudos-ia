@@ -446,6 +446,13 @@ html.cel .tn-ir, html.cel .tn-chamada.feito .ghost{margin-left:50px;}
 .stat b{display:block; font-family:var(--font-d); font-size:34px; font-weight:800; line-height:1.1;}
 .stat span{display:block; font-size:14px; color:var(--text); font-weight:500;}
 .stat small{display:block; font-size:12px; color:var(--c); margin-top:2px; font-weight:600;}
+.stat.com-arte{padding-right:118px; min-height:132px; display:flex; flex-direction:column; justify-content:center;}
+.stat.com-arte .sico{display:none;}
+.sarte{position:absolute; right:4px; top:50%; transform:translateY(-50%); width:118px; height:auto; mix-blend-mode:screen; pointer-events:none;}
+@media (max-width:600px){
+  .stat.com-arte{padding-right:14px; justify-content:flex-start;}
+  .sarte{position:static; transform:none; width:82px; margin:-6px 0 4px -6px;}
+}
 .charts{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:22px;}
 .chart{display:flex; flex-direction:column; border-radius:20px; padding:16px 18px; border:1px solid color-mix(in srgb,var(--c) 30%,var(--line)); background:linear-gradient(160deg,color-mix(in srgb,var(--c) 9%,#0a0a0f),#0a0a0f 65%); min-width:0;}
 .ch-h{margin-bottom:14px;}
