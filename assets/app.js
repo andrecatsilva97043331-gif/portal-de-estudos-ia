@@ -370,11 +370,12 @@ function dadosExemplo(m, i){
     subtitulo:m.projeto_final ? 'Projeto final · ' + PORTAL.trilhas[t] : nv ? 'Trilha de IA · Nível ' + nv.titulo.toLowerCase() : g ? 'Renda com IA · ' + g.titulo : '' };
 }
 function certsExemplo(){
-  const base = { codigo:'CIA-0000-EXEMPLO', nome:'Cosmo José da Silva', emitido_em:new Date().toISOString(), revogado:false };
+  const nomes = ['Cosmo José da Silva', 'José Porfírio da Silva', 'Severina Maria da Silva', 'Neusa Maria Ribeiro Silveira'];
+  const base = { codigo:'CIA-0000-EXEMPLO', emitido_em:new Date().toISOString(), revogado:false };
   const disp = PORTAL.catalogo.filter(PORTAL.disponivel), lista = [];
   const curso = (m, i) => {
     const d = dadosExemplo(m, i), nv = PORTAL.niveis.find(n => n.id === m.nivel), g = PORTAL.gruposRenda.find(x => x.id === m.grupo);
-    lista.push(Object.assign({}, base, { tipo:'curso', ref_id:m.id, titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.detalhe, habilidades:d.habilidades,
+    lista.push(Object.assign({}, base, { nome:nomes[lista.length % nomes.length], tipo:'curso', ref_id:m.id, titulo:d.titulo, subtitulo:d.subtitulo, icone:d.icone, cores:d.cores, carga_horaria:d.carga_horaria, detalhe:d.detalhe, habilidades:d.habilidades,
       leg:'🎓 Certificado: <b>' + esc(d.titulo) + '</b>' + (nv ? ' · nível ' + nv.titulo.toLowerCase() : g ? ' · Renda com IA' : '') }));
   };
   PORTAL.niveis.forEach(nv => disp.filter(m => !m.projeto_final && m.nivel === nv.id && m.trilha !== 'renda').forEach(curso));
