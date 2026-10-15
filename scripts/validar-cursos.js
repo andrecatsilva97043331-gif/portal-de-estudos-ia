@@ -79,6 +79,13 @@ for (const meta of catalogo) {
   if (registrados.length !== 1) { erro('cursos/' + meta.id + '/curso.js', 'deve chamar PORTAL.registrarCurso exatamente 1 vez'); continue; }
   validarCurso(meta, registrados[0]);
   validarFerramentas(meta, registrados[0]);
+  if (meta.capas_modulos !== undefined) {
+    if (meta.capas_modulos !== true) erro(onde, '"capas_modulos" deve ser true (ou ficar de fora)');
+    else registrados[0].modulos.forEach(m => {
+      const img = 'assets/capas/modulos/' + meta.id + '-' + m.id + '.webp';
+      if (!fs.existsSync(path.join(raiz, img))) erro(onde, '"capas_modulos": falta ' + img);
+    });
+  }
 }
 
 /* cursos/<id>/ferramentas.js (opcional): apps gratuitos de IA sugeridos ao fim de cada módulo. */

@@ -998,9 +998,9 @@ function renderHome(){
     </section>${blocoCertificado()}${blocoDepoimento()}${avisoRecomendado()}
     <div class="grid mods">${C.conteudo.modulos.map((m,i) => {
       const lock = !unlocked(m.lessons[0].id), fin = modDone(m);
-      return `<div class="mc mod ${lock?'lock':''} ${fin?'fin':''}" role="button" tabindex="0" data-act="openmod" data-mod="${m.id}" style="${tstyle(m.id)};--d:${i*0.5}s">
-        <div class="mhead"><div class="mtile">${m.icon}</div>
-        <div><h3>Módulo ${m.id}</h3><div class="mt">${m.title}</div><div class="ms">${m.sub || ''}</div></div></div>
+      return `<div class="mc mod ${lock?'lock':''} ${fin?'fin':''} ${C.capas_modulos?'com-arte':''}" role="button" tabindex="0" data-act="openmod" data-mod="${m.id}" style="${tstyle(m.id)};--d:${i*0.5}s">
+        ${C.capas_modulos ? `<div class="mod-arte"><img src="assets/capas/modulos/${esc(C.id)}-${m.id}.webp" alt="Módulo ${m.id}: ${esc(m.title)}" loading="lazy" decoding="async"></div>` : `<div class="mhead"><div class="mtile">${m.icon}</div>
+        <div><h3>Módulo ${m.id}</h3><div class="mt">${m.title}</div><div class="ms">${m.sub || ''}</div></div></div>`}
         <div class="mfoot">${barraPct(Math.round(modCount(m) / m.lessons.length * 100))}<span>${modCount(m)} de ${m.lessons.length} lições</span><span class="mst">${fin?'✅ Concluído':lock?'🔒 Bloqueado':'▶ Abrir'}</span></div>
         ${ferramentas(m.id).length ? `<button class="fr-chip" type="button" data-act="ferramentas" data-mod="${m.id}">🧰 Ferramentas do módulo <b>${ferramentas(m.id).length}</b></button>` : ''}
       </div>`; }).join('')}</div>`;
