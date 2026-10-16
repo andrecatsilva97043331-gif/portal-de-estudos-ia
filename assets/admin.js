@@ -234,7 +234,7 @@ function grafLocal(rs){
     const maxC = doEstado.length ? doEstado[0][1].length : 1;
     painel = `<div class="geo-sel"><small>Estado selecionado · ${ranking.findIndex(x => x[0] === LOCAL_SEL) + 1}º lugar</small><h3>${esc(UF_NOME[LOCAL_SEL])}</h3>
         <div class="geo-pct"><i style="width:${p}%"></i></div><p><b>${n}</b> ${n === 1 ? 'aluno' : 'alunos'} · ${p}% da sua turma</p></div>
-      ${LOCAL_FECHADO ? '<p class="nota">Toque no estado de novo para ver as cidades e os alunos.</p>' : `<h4>Cidades</h4>${doEstado.length ? doEstado.map(([k, al], i) => barras([[k[0] === '?' ? (semCidade ? '📡 Buscando cidade pelo CEP…' : 'Cidade não identificada pelo CEP') : k.split('|')[0], al.length]], maxC).replace('--d:0.00s', '--d:' + (i * 0.06).toFixed(2) + 's') + listaNomes(al)).join('') : `<p class="nota">${semCidade ? '📡 Buscando as cidades pelo CEP…' : 'Nenhuma cidade identificada pelo CEP.'}</p>`}`}`;
+      ${LOCAL_FECHADO ? '<p class="nota">Toque no estado de novo para ver as cidades e os alunos.</p>' : `<h4>Cidades</h4>${doEstado.length ? doEstado.map(([k, al], i) => `<div class="geo-cid${k[0] === '?' ? ' sem' : ''}" style="${k[0] === '?' ? '' : cor(i + 1)}">${barras([[(k[0] === '?' ? '' : '📍 ') + (k[0] === '?' ? (semCidade ? '📡 Buscando cidade pelo CEP…' : 'Cidade não identificada pelo CEP') : k.split('|')[0]), al.length]], maxC).replace('--d:0.00s', '--d:' + (i * 0.06).toFixed(2) + 's')}${listaNomes(al)}</div>`).join('') : `<p class="nota">${semCidade ? '📡 Buscando as cidades pelo CEP…' : 'Nenhuma cidade identificada pelo CEP.'}</p>`}`}`;
   } else painel = '<p class="nota">Nenhum aluno com estado informado ainda.</p>';
   const top = ranking.slice(0, 5);
   return grafico('Onde estão seus alunos', 'Toque num estado para ver as cidades · dados do cadastro, não em tempo real',
@@ -243,7 +243,7 @@ function grafLocal(rs){
       <div class="geo-corpo">
         <div class="geo-tela">${mapa}${nFora ? `<button class="geo-fora${LOCAL_SEL === 'FORA' ? ' sel' : ''}" type="button" data-act="local-uf" data-uf="FORA">🌎 ${nFora} fora do Brasil</button>` : ''}</div>
         <div class="geo-painel">${painel}
-          ${top.length > 1 ? `<h4>Ranking de estados</h4>${top.map(([uf, v], i) => `<button type="button" class="geo-rank${uf === LOCAL_SEL ? ' sel' : ''}" data-act="local-uf" data-uf="${uf}"><span class="geo-pos">${i + 1}</span><span class="geo-rn">${esc(UF_NOME[uf])}</span><div class="hbt"><i style="width:${v / top[0][1] * 100}%"></i></div><em>${v}</em></button>`).join('')}` : ''}
+          ${top.length > 1 ? `<h4>Ranking de estados</h4>${top.map(([uf, v], i) => `<button type="button" class="geo-rank${uf === LOCAL_SEL ? ' sel' : ''}" data-act="local-uf" data-uf="${uf}" style="${cor(i + 4)}"><span class="geo-pos">${i + 1}</span><span class="geo-rn">${esc(UF_NOME[uf])}</span><div class="hbt"><i style="width:${v / top[0][1] * 100}%"></i></div><em>${v}</em></button>`).join('')}` : ''}
         </div>
       </div>
     </div>`, 4, 'graf-local');
