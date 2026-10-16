@@ -180,25 +180,27 @@ async function completarCidades(){
 const UF_NOME = { AC:'Acre', AL:'Alagoas', AP:'Amapá', AM:'Amazonas', BA:'Bahia', CE:'Ceará', DF:'Distrito Federal', ES:'Espírito Santo', GO:'Goiás', MA:'Maranhão',
   MT:'Mato Grosso', MS:'Mato Grosso do Sul', MG:'Minas Gerais', PA:'Pará', PB:'Paraíba', PR:'Paraná', PE:'Pernambuco', PI:'Piauí', RJ:'Rio de Janeiro', RN:'Rio Grande do Norte',
   RS:'Rio Grande do Sul', RO:'Rondônia', RR:'Roraima', SC:'Santa Catarina', SP:'São Paulo', SE:'Sergipe', TO:'Tocantins' };
-let LOCAL_SEL = null;
+let LOCAL_SEL = null, LOCAL_FECHADO = false;
 /* Estados pequenos e vizinhos: o marcador sai para o lado, ligado ao estado por uma linha. */
 const MARCA_DESLOCADA = { RN:[632,150], PB:[640,186], PE:[640,222], AL:[634,258], SE:[612,292], ES:[566,408], RJ:[520,480], DF:[452,300] };
 function redesenharLocal(){ const el = $('graf-local'); if (!el) return; el.outerHTML = grafLocal(RS_LOCAL); animarLocal(); }
 function animarLocal(){ document.querySelectorAll('#graf-local b[data-n]').forEach(contar); }
 function dadosLocal(rs){
-  const cache = cepCache(), porUF = {}, cidades = {}, fora = {};
+  const cache = cepCache(), porUF = {}, cidades = {}, fora = {}, nomes = {};
   let semCidade = 0;
   rs.forEach(({ a }) => {
     if (!ehBrasil(a)) { const p = String(a.pais).trim(); fora[p] = (fora[p] || 0) + 1; return; }
     const uf = String(a.estado || '').trim().toUpperCase(); if (UF_GRADE[uf]) porUF[uf] = (porUF[uf] || 0) + 1;
     const cid = cache[soDigitos(a.cep)];
     if (cid) cidades[cid] = (cidades[cid] || 0) + 1; else if (cid === undefined && soDigitos(a.cep).length === 8) semCidade++;
+    const chave = cid && cid.endsWith('|' + uf) ? cid : '?|' + uf;
+    (nomes[chave] = nomes[chave] || []).push(a);
   });
-  return { porUF, cidades, fora, semCidade };
+  return { porUF, cidades, fora, semCidade, nomes };
 }
 function grafLocal(rs){
   if (!rs.length) return grafico('Onde estão seus alunos', 'Pelo estado e CEP do cadastro', vazio('Nenhum aluno ainda.'), 4, 'graf-local');
-  const { porUF, cidades, fora, semCidade } = dadosLocal(rs);
+  const { porUF, cidades, fora, semCidade, nomes } = dadosLocal(rs);
   const total = rs.length, nFora = Object.values(fora).reduce((s, v) => s + v, 0);
   const ranking = Object.entries(porUF).sort((x, y) => y[1] - x[1]);
   if (LOCAL_SEL !== 'FORA' && !porUF[LOCAL_SEL]) LOCAL_SEL = ranking.length ? ranking[0][0] : (nFora ? 'FORA' : null);
@@ -227,10 +229,12 @@ function grafLocal(rs){
       <h4>Países</h4>${barras(itens, itens[0][1])}`;
   } else if (LOCAL_SEL) {
     const n = porUF[LOCAL_SEL], p = Math.round(n / total * 100);
-    const cid = Object.entries(cidades).filter(([k]) => k.endsWith('|' + LOCAL_SEL)).sort((x, y) => y[1] - x[1]).map(([k, v]) => [k.split('|')[0], v]);
+    const doEstado = Object.entries(nomes).filter(([k]) => k.endsWith('|' + LOCAL_SEL)).sort((x, y) => y[1].length - x[1].length || (x[0][0] === '?') - (y[0][0] === '?'));
+    const listaNomes = alunos => `<div class="geo-nomes">${alunos.slice().sort((x, y) => String(x.nome || '').localeCompare(String(y.nome || ''), 'pt-BR')).map(a => `<button type="button" data-act="aluno" data-id="${esc(a.id)}">${esc(a.nome)}</button>`).join('')}</div>`;
+    const maxC = doEstado.length ? doEstado[0][1].length : 1;
     painel = `<div class="geo-sel"><small>Estado selecionado · ${ranking.findIndex(x => x[0] === LOCAL_SEL) + 1}º lugar</small><h3>${esc(UF_NOME[LOCAL_SEL])}</h3>
         <div class="geo-pct"><i style="width:${p}%"></i></div><p><b>${n}</b> ${n === 1 ? 'aluno' : 'alunos'} · ${p}% da sua turma</p></div>
-      <h4>Cidades</h4>${cid.length ? barras(cid.slice(0, 6), cid[0][1]) : `<p class="nota">${semCidade ? '📡 Buscando as cidades pelo CEP…' : 'Nenhuma cidade identificada pelo CEP.'}</p>`}`;
+      ${LOCAL_FECHADO ? '<p class="nota">Toque no estado de novo para ver as cidades e os alunos.</p>' : `<h4>Cidades</h4>${doEstado.length ? doEstado.map(([k, al], i) => barras([[k[0] === '?' ? (semCidade ? '📡 Buscando cidade pelo CEP…' : 'Cidade não identificada pelo CEP') : k.split('|')[0], al.length]], maxC).replace('--d:0.00s', '--d:' + (i * 0.06).toFixed(2) + 's') + listaNomes(al)).join('') : `<p class="nota">${semCidade ? '📡 Buscando as cidades pelo CEP…' : 'Nenhuma cidade identificada pelo CEP.'}</p>`}`}`;
   } else painel = '<p class="nota">Nenhum aluno com estado informado ainda.</p>';
   const top = ranking.slice(0, 5);
   return grafico('Onde estão seus alunos', 'Toque num estado para ver as cidades · dados do cadastro, não em tempo real',
@@ -772,7 +776,7 @@ document.addEventListener('click', e => {
       renderDepoimentos(); toast(st === 'aprovado' ? 'Depoimento aprovado ✅' : 'Depoimento recusado');
     }).catch(err => { console.error(err); t.disabled = false; toast('Não foi possível alterar agora.'); });
   }
-  else if (a === 'local-uf') { LOCAL_SEL = t.dataset.uf; const el = $('graf-local'); if (el) { el.outerHTML = grafLocal(RS_LOCAL); const n = $('graf-local'); n.classList.remove('rise'); n.classList.add('geo-troca'); } }
+  else if (a === 'local-uf') { LOCAL_FECHADO = LOCAL_SEL === t.dataset.uf && !LOCAL_FECHADO; LOCAL_SEL = t.dataset.uf; const el = $('graf-local'); if (el) { el.outerHTML = grafLocal(RS_LOCAL); const n = $('graf-local'); n.classList.remove('rise'); n.classList.add('geo-troca'); } }
   else if (a === 'dep-mais') { const art = t.closest('.dep'); art.classList.toggle('aberto'); t.textContent = art.classList.contains('aberto') ? 'Mostrar menos ▴' : 'Ler tudo ▾'; }
   else if (a === 'dep-imagem') baixarImagemPost(t.dataset.id, t);
   else if (a === 'dep-legenda') { copiar(legendaPost(t.dataset.id, t.dataset.rede)); toast('Legenda copiada'); }

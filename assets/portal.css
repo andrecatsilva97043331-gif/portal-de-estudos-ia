@@ -539,6 +539,9 @@ html.cel .tn-ir, html.cel .tn-chamada.feito .ghost{margin-left:50px;}
 .geo-pct{height:8px; border-radius:99px; background:#1c1c27; overflow:hidden;}
 .geo-pct i{display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--c),var(--c2)); box-shadow:0 0 12px var(--c); transform-origin:left; animation:growx .9s cubic-bezier(.2,.8,.2,1) both;}
 .geo-bar{display:grid; grid-template-columns:minmax(90px,38%) 1fr 28px; gap:10px; align-items:center; font-size:13.5px; animation:geoTroca .4s ease both; animation-delay:var(--d);}
+.geo-nomes{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 12px;}
+.geo-nomes button{font:inherit; font-size:12px; color:var(--text); background:color-mix(in srgb,var(--c) 10%,#0a0a0f); border:1px solid color-mix(in srgb,var(--c) 30%,var(--line)); border-radius:999px; padding:3px 10px; cursor:pointer; transition:border-color .2s, background .2s;}
+.geo-nomes button:hover{border-color:var(--c); background:color-mix(in srgb,var(--c) 20%,#0a0a0f);}
 .geo-bar span,.geo-rn{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .geo-bar em,.geo-rank em{font-style:normal; font-weight:800; text-align:right; color:var(--c);}
 .geo-rank{all:unset; box-sizing:border-box; display:grid; grid-template-columns:22px minmax(80px,38%) 1fr 28px; gap:10px; align-items:center; font-size:13.5px; padding:6px 8px; border-radius:10px; cursor:pointer; border:1px solid transparent;}

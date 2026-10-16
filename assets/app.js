@@ -1449,6 +1449,8 @@ async function enviarCadastro(form){
   else if (!dados.estado) msg = 'Informe o estado.';
   else if (!dados.cep) msg = 'Informe o CEP / código postal.';
   else if (ehBrasil() && dados.cep.replace(/\D/g, '').length !== 8) msg = 'O CEP deve ter 8 números.';
+  else if (ehBrasil() && (await buscarCep(f.cep), f.cep.dataset.valido === 'nao')) msg = 'CEP não encontrado. Confira os números do seu CEP.';
+  else if (ehBrasil() && f.cep.dataset.uf && f.estado.value.trim().toUpperCase() !== f.cep.dataset.uf) msg = 'O seu CEP é de ' + f.cep.dataset.uf + '. Confira o CEP ou o estado.';
   else if (!dados.profissao) msg = 'Informe sua profissão (ou "Nenhuma").';
   else if (!dados.ocupacao) msg = 'Informe sua ocupação atual.';
   else if (dados.trabalhando === null) msg = 'Diga se está trabalhando.';
@@ -1591,19 +1593,23 @@ async function sair(){
   irParaCursos(); toast('Você saiu da sua conta.');
 }
 
-async function buscarCep(input){
+function buscarCep(input){
   const cep = input.value.replace(/\D/g, '');
-  if (!ehBrasil() || cep.length !== 8 || input.dataset.buscado === cep) return;
+  if (!ehBrasil() || cep.length !== 8 || input.dataset.buscado === cep) return input._busca;
   input.dataset.buscado = cep;
+  input.dataset.valido = ''; input.dataset.uf = '';
   input.value = cep.slice(0,5) + '-' + cep.slice(5);
   const info = $('cep-info'); info.textContent = 'Buscando…';
-  try {
-    const r = await fetch('https://viacep.com.br/ws/' + cep + '/json/').then(x => x.json());
-    if (r.erro) { info.textContent = 'CEP não encontrado. Confira os números.'; return; }
-    info.textContent = r.localidade + ' / ' + r.uf;
-    renderEstado(r.uf);
-    atualizarPreenchimento();
-  } catch(e){ info.textContent = ''; }
+  return input._busca = (async () => {
+    try {
+      const r = await fetch('https://viacep.com.br/ws/' + cep + '/json/').then(x => x.json());
+      if (r.erro) { input.dataset.valido = 'nao'; info.textContent = 'CEP não encontrado. Confira os números.'; return; }
+      input.dataset.valido = 'sim'; input.dataset.uf = r.uf;
+      info.textContent = r.localidade + ' / ' + r.uf;
+      renderEstado(r.uf);
+      atualizarPreenchimento();
+    } catch(e){ info.textContent = ''; }
+  })();
 }
 
 async function responder(i){
