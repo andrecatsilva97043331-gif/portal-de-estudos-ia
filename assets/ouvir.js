@@ -83,13 +83,15 @@
   const nomeCurto = v => v.name.replace(/^(Microsoft|Google)\s+/i, m => /google/i.test(m) ? 'Google ' : '')
     .replace(/\s*-\s*Portuguese.*$/i, '').replace(/\s*Online\s*\(Natural\)/i, ' (natural)') + (ehBr(v) ? '' : ' · PT');
 
+  const FONE = '<svg class="ouvir-fone" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><path d="M4 14h3a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2z"/><path d="M20 14h-3a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h1a2 2 0 0 0 2-2z"/></svg>';
   function desenhar(){
     const c = st.ctrl; if (!c) return;
     const e = st.estado, velTx = String(vel).replace('.', ',') + 'x';
     const vozes = st.modo === 'fala' ? vozesPt() : [];
     c.classList.toggle('ativo', e !== 'parado');
+    const pulsa = st.pulsar && e === 'parado' ? ' pulsa' : ''; st.pulsar = false;
     c.innerHTML = (e === 'parado'
-      ? `<button type="button" class="ouvir-bt prin" data-ouvir="ouvir" aria-label="Ouvir o texto em voz alta"><span aria-hidden="true">🔊</span> Ouvir</button>`
+      ? `<button type="button" class="ouvir-bt prin grande${pulsa}" data-ouvir="ouvir" aria-label="${st.rotulo} em voz alta">${FONE}<span>${st.rotulo}</span></button>`
       : (e === 'lendo' && st.carregando
         ? `<button type="button" class="ouvir-bt prin" data-ouvir="pausar" aria-busy="true"><span aria-hidden="true">⏳</span> Carregando…</button>`
       : e === 'lendo'
@@ -183,7 +185,7 @@
     if (!suportado && !opcoes.audio) { el.remove(); return; }
     parar();
     if (st.audio) { st.audio.removeAttribute('src'); st.audio = null; }
-    st.ctrl = el; st.fonte = fonte; st.src = opcoes.audio || ''; st.marcas = Array.isArray(opcoes.marcas) ? opcoes.marcas : null; st.modo = st.src && window.Audio ? 'audio' : 'fala';
+    st.ctrl = el; st.fonte = fonte; st.rotulo = opcoes.rotulo || 'Ouvir'; st.pulsar = true; st.src = opcoes.audio || ''; st.marcas = Array.isArray(opcoes.marcas) ? opcoes.marcas : null; st.modo = st.src && window.Audio ? 'audio' : 'fala';
     el.classList.add('ouvir');
     el.setAttribute('role', 'group'); el.setAttribute('aria-label', 'Ouvir em voz alta');
     desenhar();
@@ -206,7 +208,13 @@
   css.textContent = `.ouvir{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0 0 18px;}
 .ouvir-bt{display:inline-flex; align-items:center; gap:7px; border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:9px 14px; font-family:inherit; font-size:14px; font-weight:700; line-height:1.2; color:#f5f5fa; background:rgba(255,255,255,.05); cursor:pointer; transition:filter .2s, transform .2s, border-color .2s;}
 .ouvir-bt:hover{border-color:var(--c,#22d3ee); transform:translateY(-1px);}
-.ouvir-bt:focus-visible,.ouvir-voz:focus-visible{outline:2px solid var(--c,#22d3ee); outline-offset:2px;}
+.ouvir-bt:focus-visible,.ouvir-voz:focus-visible{outline:3px solid #fff; outline-offset:3px; box-shadow:0 0 0 6px color-mix(in srgb,var(--c,#22d3ee) 55%,transparent);}
+.ouvir-bt.prin.grande{gap:10px; min-height:52px; padding:12px 24px 12px 18px; border-radius:16px; font-size:17px; letter-spacing:.2px; box-shadow:0 10px 28px -10px var(--c,#22d3ee), 0 0 0 1px rgba(255,255,255,.18) inset;}
+.ouvir-bt.grande .ouvir-fone{flex:none; width:26px; height:26px; padding:5px; box-sizing:content-box; border-radius:50%; background:rgba(4,4,10,.16);}
+.ouvir-bt.grande.pulsa{animation:ouvir-pulso 1.8s ease-out .4s 1;}
+@keyframes ouvir-pulso{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c,#22d3ee) 70%,transparent),0 10px 28px -10px var(--c,#22d3ee);}70%{box-shadow:0 0 0 16px transparent,0 10px 28px -10px var(--c,#22d3ee);}100%{box-shadow:0 0 0 0 transparent,0 10px 28px -10px var(--c,#22d3ee);}}
+@media (prefers-reduced-motion: reduce){.ouvir-bt.grande.pulsa{animation:none;} .ouvir-bt{transition:none;}}
+.ouvir.ativo .ouvir-bt{min-height:44px;}
 .ouvir-bt.prin{border-color:transparent; color:#04040a; font-weight:800; background:linear-gradient(135deg,var(--c,#22d3ee),var(--c2,#c084fc)); box-shadow:0 8px 22px -10px var(--c,#22d3ee);}
 .ouvir-bt.prin:hover{filter:brightness(1.1);}
 .ouvir-bt.vel{min-width:58px; justify-content:center; font-family:'JetBrains Mono',monospace; color:var(--c,#22d3ee);}

@@ -99,13 +99,13 @@
     <a class="btn sec ico" href="./" aria-label="Voltar ao portal" title="Voltar ao portal"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></a>
   </div>
 </main>
-<script src="assets/ouvir.js?v=20261017d"></script>
+<script src="assets/ouvir.js?v=20261017e"></script>
 <script>
   /* Áudio gravado com voz neural (en-US-BrianMultilingualNeural falando português) e a Ave Maria de Schubert na flauta ao fundo.
      marcas = segundo em que começam o título e cada parágrafo no mp3. Se mudar o texto acima, gere o mp3 e as marcas de novo. */
   Ouvir.montar(document.getElementById('ouvir-historia'), () =>
     [document.querySelector('main h1')].concat([...document.querySelectorAll('.texto p')]).map(el => ({ el, texto: el.innerText })),
-    { audio: 'assets/historia.mp3?v=20261017c', marcas: [1, 10.4, 58.3, 115.6, 157.9, 191.7, 236.4, 301.3, 340.8, 357.4] });
+    { rotulo: 'Ouvir história', audio: 'assets/historia.mp3?v=20261017c', marcas: [1, 10.4, 58.3, 115.6, 157.9, 191.7, 236.4, 301.3, 340.8, 357.4] });
 </script>
 </body>
 </html>

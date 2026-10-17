@@ -1227,7 +1227,7 @@ function renderLicao(){
     </section>`;
   };
   m.innerHTML = head + '<div class="ouvir-slot"></div>' + L.body.join('') + lista.slice(0, Math.min(atual + 1, lista.length)).map(bloco).join('') + navConcluida(L, mod, solved);
-  if (window.Ouvir) Ouvir.montar(m.querySelector('.ouvir-slot'), () => blocosLicao(m));
+  if (window.Ouvir) Ouvir.montar(m.querySelector('.ouvir-slot'), () => blocosLicao(m), { rotulo: 'Ouvir aula' });
   rodarGancho();
 }
 
