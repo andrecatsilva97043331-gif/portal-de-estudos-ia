@@ -86,6 +86,11 @@ for (const meta of catalogo) {
       if (!fs.existsSync(path.join(raiz, img))) erro(onde, '"capas_modulos": falta ' + img);
     });
   }
+  if (meta.audio !== undefined) {
+    const man = 'assets/audio/' + meta.id + '/manifesto.json';
+    if (meta.audio !== true) erro(onde, '"audio" deve ser true (ou ficar de fora)');
+    else if (!fs.existsSync(path.join(raiz, man))) erro(onde, '"audio": falta ' + man);
+  }
 }
 
 /* cursos/<id>/ferramentas.js (opcional): apps gratuitos de IA sugeridos ao fim de cada módulo. */

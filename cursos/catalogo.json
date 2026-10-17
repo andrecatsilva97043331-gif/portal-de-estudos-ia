@@ -2,6 +2,7 @@
   {
     "id": "ia-do-zero",
     "titulo": "IA do Zero",
+    "audio": true,
     "descricao": "Entender o que é IA e usar uma ferramenta com segurança, sem saber programar.",
     "icone": "🌱",
     "capa": "assets/capas/ia-do-zero.webp",

@@ -699,7 +699,9 @@ a.sbtn{text-decoration:none; display:inline-flex; align-items:center;}
 .mc.mod .mpct{margin:0;}
 .mc.mod .mpct b{font-size:16px;}
 .mc.mod .mpct span{display:none;}
-.mc.mod .fr-chip{padding:4px 10px; font-size:12px;}
+.mc.mod .fr-chip{position:relative; z-index:2; padding:4px 10px; font-size:12px;}
+.mc-abrir{position:absolute; inset:0; z-index:1; width:100%; margin:0; padding:0; border:0; border-radius:inherit; background:transparent; cursor:pointer;}
+.mc-abrir:focus-visible{outline:3px solid #fff; outline-offset:-4px;}
 .mod-arte{display:flex; align-items:center; justify-content:center; height:210px; margin:-4px -4px 0;}
 .mod-arte img{display:block; max-width:100%; max-height:210px; width:auto; height:auto; object-fit:contain; mix-blend-mode:screen; transition:transform .35s cubic-bezier(.2,.8,.2,1);}
 .mc.mod.com-arte:hover .mod-arte img{transform:scale(1.04);}

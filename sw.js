@@ -1,6 +1,6 @@
 /* Service worker do Portal de Estudos IA: rede primeiro, cópia local só quando estiver sem internet.
    Dados dos alunos (Supabase) e outros domínios nunca passam por aqui. */
-const CACHE = 'portal-estudos-ia-v3';
+const CACHE = 'portal-estudos-ia-v4';
 const BASICO = ['./', 'index.html', 'config.js', 'manifest.webmanifest', 'cursos/catalogo.json',
   'assets/base.css', 'assets/portal.css', 'assets/cursos.js', 'assets/dados.js', 'assets/app.js',
   'assets/certificado.css', 'assets/certificado.js', 'assets/migrar.js', 'assets/logo.svg', 'assets/assinatura.png', 'assets/qr-app.svg',
@@ -35,7 +35,10 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (ANTIGO) return;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  const url = new URL(req.url);
+  if (req.method !== 'GET' || url.origin !== self.location.origin) return;
+  /* Áudios (mp3, pedidos em partes) vão direto à rede e nunca ocupam o cache; o manifesto (json) pode ser guardado. */
+  if (/\.mp3$/i.test(url.pathname)) return;
   e.respondWith(fetch(req, { cache:'no-cache' }).then(res => {
     if (res.ok) { const copia = res.clone(); caches.open(CACHE).then(c => c.put(req, copia)); }
     return res;

@@ -39,6 +39,7 @@ function textoObrigatorio(){
 
 /* ============ UTILITÁRIOS ============ */
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+const textoPuro = s => String(s == null ? '' : s).replace(/<[^>]*>/g, '');
 const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 const cursoPorId = id => CURSOS.find(c => c.id === id);
 const pctCurso = c => { const d = PROG[c.id] || {}; return c.total ? Math.round(c.licoes.filter(l => d[l.id]).length / c.total * 100) : 0; };
@@ -998,7 +999,8 @@ function renderHome(){
     </section>${blocoCertificado()}${blocoDepoimento()}${avisoRecomendado()}
     <div class="grid mods">${C.conteudo.modulos.map((m,i) => {
       const lock = !unlocked(m.lessons[0].id), fin = modDone(m);
-      return `<div class="mc mod ${lock?'lock':''} ${fin?'fin':''} ${C.capas_modulos?'com-arte':''}" role="button" tabindex="0" data-act="openmod" data-mod="${m.id}" style="${tstyle(m.id)};--d:${i*0.5}s">
+      return `<div class="mc mod ${lock?'lock':''} ${fin?'fin':''} ${C.capas_modulos?'com-arte':''}" style="${tstyle(m.id)};--d:${i*0.5}s">
+        <button type="button" class="mc-abrir" data-act="openmod" data-mod="${m.id}" aria-label="Módulo ${m.id}: ${esc(textoPuro(m.title))}. ${modCount(m)} de ${m.lessons.length} lições. ${fin?'Concluído':lock?'Bloqueado':'Abrir'}"></button>
         ${C.capas_modulos ? `<div class="mod-arte"><img src="assets/capas/modulos/${esc(C.id)}-${m.id}.webp" alt="Módulo ${m.id}: ${esc(m.title)}" loading="lazy" decoding="async"></div>` : `<div class="mhead"><div class="mtile">${m.icon}</div>
         <div><h3>Módulo ${m.id}</h3><div class="mt">${m.title}</div><div class="ms">${m.sub || ''}</div></div></div>`}
         <div class="mfoot">${barraPct(Math.round(modCount(m) / m.lessons.length * 100))}<span>${modCount(m)} de ${m.lessons.length} lições</span><span class="mst">${fin?'✅ Concluído':lock?'🔒 Bloqueado':'▶ Abrir'}</span></div>
@@ -1191,7 +1193,7 @@ function renderLicao(){
   const m = $('main'), L = byId(S.cur), mod = modOf(L.mod), d = D();
   m.setAttribute('style', tstyle(mod.id));
   const lessonDots = mod.lessons.map(l => `<i class="${d[l.id]?'on':(l.id===L.id?'now':'')}"></i>`).join('');
-  const head = `<div class="lh"><button class="ltile" data-act="spin" aria-label="Ícone da lição">${iconeLicao(L)}</button>
+  const head = `<div class="lh"><div class="ltile" data-act="spin" aria-hidden="true">${iconeLicao(L)}</div>
     <div><div class="crumb">Módulo ${mod.id}: ${mod.title} · Lição ${L.id}${L.min?' · '+L.min+' min':''}</div><h1 class="h1">${L.title}</h1></div></div><div class="dots">${lessonDots}</div>`;
   if (!L.soon && L.projeto) { renderProjeto(L, mod, head); return; }
   if (L.soon || !L.ch) {
@@ -1201,6 +1203,7 @@ function renderLicao(){
   const ss = SESSION[C.id + ':' + L.id] || { tried:[], q:0 };
   const solved = !!d[L.id];
   const lista = perguntas(L), atual = solved ? lista.length : (ss.q || 0), letters = ['A','B','C','D','E'];
+  const ouv = !!(window.Ouvir && Ouvir.suportado);
   const bloco = (c, k) => {
     const feita = k < atual;
     const opts = c.opts.map((o,i) => {
@@ -1208,26 +1211,30 @@ function renderLicao(){
       let cls = '', dis = '';
       if (feita) { dis = 'disabled'; cls = o.ok ? 'right' : 'dim'; }
       else if (tried) { dis = 'disabled'; cls = 'wrong' + (i === ss.last ? ' shake' : ''); }
-      return `<button class="opt ${cls}" data-act="ans" data-i="${i}" ${dis}><span class="l l${letters[i]}">${letters[i]}</span><span>${o.t}</span></button>`;
+      const bt = `<button class="opt ${cls}" data-act="ans" data-i="${i}" ${dis}><span class="l l${letters[i]}">${letters[i]}</span><span>${o.t}</span></button>`;
+      return ouv ? `<div class="opt-linha">${bt}${Ouvir.botaoTrecho('Ouvir alternativa ' + letters[i], { icone: true })}</div>` : bt;
     }).join('');
     let fb = '';
+    const ouvirFb = ouv ? `<div class="fb-ouvir">${Ouvir.botaoTrecho('Ouvir resultado')}</div>` : '';
     if (feita) {
       const ultima = k === lista.length - 1;
-      fb = `<div class="fb ok pop"><b>✅ ${ultima ? (C.conteudo.acerto || 'Acertou!') + ' +100 XP' : 'Certo!'}</b><span>${c.opts.find(o => o.ok).why}</span></div>`;
+      fb = `<div class="fb ok pop"><b>✅ ${ultima ? (C.conteudo.acerto || 'Acertou!') + ' +100 XP' : 'Certo!'}</b><span>${c.opts.find(o => o.ok).why}</span>${ouvirFb}</div>`;
     } else if (ss.tried.length) {
-      fb = `<div class="fb no pop"><b>❌ Ainda não.</b><span>${c.opts[ss.tried[ss.tried.length-1]].why} Tente outra alternativa.</span></div>`;
+      fb = `<div class="fb no pop"><b>❌ Ainda não.</b><span>${c.opts[ss.tried[ss.tried.length-1]].why} Tente outra alternativa.</span>${ouvirFb}</div>`;
     }
     return `<section class="os" aria-label="Desafio">
       ${lista.length > 1 ? `<div class="pnum">Pergunta ${k + 1} de ${lista.length}</div>` : ''}
+      ${ouv ? `<div class="ouvir-q">${Ouvir.botaoTrecho('Ouvir pergunta', { deNovo: 'Ouvir de novo' })}</div>` : ''}
       <div class="who">${c.who} diz:</div>
       <div class="says">"${c.says}"</div>
       <div class="q">${c.q}</div>
       ${opts}
-      <div ${k === Math.min(atual, lista.length - 1) ? 'id="fb"' : ''}>${fb}</div>
+      <div class="fb-slot" tabindex="-1" role="status" ${k === Math.min(atual, lista.length - 1) ? 'id="fb"' : ''}>${fb}</div>
     </section>`;
   };
   m.innerHTML = head + '<div class="ouvir-slot"></div>' + L.body.join('') + lista.slice(0, Math.min(atual + 1, lista.length)).map(bloco).join('') + navConcluida(L, mod, solved);
-  if (window.Ouvir) Ouvir.montar(m.querySelector('.ouvir-slot'), () => blocosLicao(m), { rotulo: 'Ouvir aula' });
+  if (window.Ouvir) Ouvir.montar(m.querySelector('.ouvir-slot'), () => blocosLicao(m), { rotulo: 'Ouvir aula', chave: 'aula:' + C.id + ':' + L.id, aoTerminar: () => oferecerPergunta(m), partes: C.audio ? () => partesLicao(m, L) : null });
+  manifestoAudio();
   rodarGancho();
 }
 
@@ -1248,15 +1255,81 @@ function blocosLicao(m){
     partes.forEach(x => add(x, x.matches('tr') ? tr(x) : null));
   }
   const secs = m.querySelectorAll('section.os'), s = secs[secs.length - 1];
-  if (s) {
-    const tx = sel => { const e = s.querySelector(sel); return e ? e.innerText.trim() : ''; };
-    if (tx('.pnum')) add(s.querySelector('.pnum'));
-    if (tx('.says')) add(s.querySelector('.says'), tx('.who') + ' ' + tx('.says'));
-    if (tx('.q')) add(s.querySelector('.q'));
-    s.querySelectorAll('.opt').forEach((o, i) => add(o, `Alternativa ${String.fromCharCode(65 + i)}: ${(o.querySelector('span:last-child') || o).innerText.trim()}`));
-  }
+  if (s) out.push(...blocosDesafio(s));
   return out;
 }
+const textoAlternativa = (o, i) => `Alternativa ${String.fromCharCode(65 + i)}: ${(o.querySelector('span:last-child') || o).innerText.trim()}`;
+function blocosDesafio(s){
+  const out = [], add = (el, texto) => { if (el && el.getClientRects().length) out.push({ el, texto: texto == null ? el.innerText : texto }); };
+  const tx = sel => { const e = s.querySelector(sel); return e ? e.innerText.trim() : ''; };
+  if (tx('.pnum')) add(s.querySelector('.pnum'));
+  if (tx('.says')) add(s.querySelector('.says'), tx('.who') + ' ' + tx('.says'));
+  if (tx('.q')) add(s.querySelector('.q'));
+  s.querySelectorAll('.opt').forEach((o, i) => add(o, textoAlternativa(o, i)));
+  return out;
+}
+/* Áudio gravado (voz Brian, scripts/gerar-audio.js): só cursos com "audio": true no catálogo.
+   Manifesto pedido uma vez por curso (ao abrir a lição) e guardado em memória; cada mp3 só vale se o hash do texto atual bater. */
+const MANIFESTOS = {};
+function manifestoAudio(){
+  if (!C || !C.audio || !window.Ouvir || !Ouvir.hash || Ouvir.economia() || !(window.crypto && crypto.subtle)) return Promise.resolve(null);
+  const id = C.id;
+  return MANIFESTOS[id] = MANIFESTOS[id] || fetch('assets/audio/' + id + '/manifesto.json', { cache:'no-cache' })
+    .then(r => r.ok ? r.json() : null).then(j => j && j.licoes ? Object.assign(j, { pasta: 'assets/audio/' + id + '/' }) : null).catch(() => null);
+}
+async function audioConferido(man, e, blocos){
+  if (!man || !e || !e.arq || !blocos.length) return null;
+  try { if (await Ouvir.hash(blocos) !== e.hash) return null; } catch(err){ return null; }
+  return { url: (man.base || man.pasta) + e.arq, frases: e.frases, blocos: e.blocos, dur: e.dur };
+}
+/* "Ouvir aula": aula e, em seguida, a pergunta atual (cada parte com o seu mp3, ou voz do aparelho se não bater). */
+async function partesLicao(m, L){
+  const secs = m.querySelectorAll('section.os'), s = secs[secs.length - 1], k = secs.length - 1;
+  const todos = blocosLicao(m), desafio = s ? blocosDesafio(s) : [], aula = todos.slice(0, todos.length - desafio.length);
+  const man = await manifestoAudio(), e = man && man.licoes[L.id];
+  return [{ blocos: aula, audio: await audioConferido(man, e && e.aula, aula) },
+    { blocos: desafio, audio: await audioConferido(man, e && e.perguntas && e.perguntas[k], desafio) }];
+}
+/* Ao terminar o áudio da aula: oferece (na tela e falado) ir para a pergunta. Nunca abre a próxima aula sozinho. */
+const desafioAberto = m => { const secs = m.querySelectorAll('section.os:not(.projeto)'), s = secs[secs.length - 1]; return s && s.querySelector('.opt:not([disabled])') ? s : null; };
+function oferecerPergunta(m){
+  const s = desafioAberto(m); if (!s || !document.contains(s)) return;
+  m.querySelectorAll('.ouvir-fim').forEach(x => x.remove());
+  s.insertAdjacentHTML('beforebegin', `<div class="ouvir-fim" role="group" aria-labelledby="ouvir-fim-t">
+    <p id="ouvir-fim-t">Fim da leitura. Ir para a pergunta?</p>
+    <div class="ouvir-fim-bts"><button type="button" class="ouvir-bt prin" data-act="fim-ir">Ir para a pergunta</button><button type="button" class="ouvir-bt" data-act="fim-ouvir">Ouvir a pergunta</button><button type="button" class="ouvir-bt" data-act="fim-fechar">Agora não</button></div>
+  </div>`);
+  const box = s.previousElementSibling;
+  if (box.scrollIntoView) box.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block:'center' });
+  box.querySelector('[data-act="fim-ir"]').focus({ preventScroll: true });
+  Ouvir.anunciar('Fim da leitura. Ir para a pergunta?');
+}
+function irParaPergunta(ouvir){
+  const m = $('main'), s = desafioAberto(m);
+  m.querySelectorAll('.ouvir-fim').forEach(x => x.remove());
+  if (window.Ouvir) Ouvir.parar();
+  if (!s) return;
+  if (s.scrollIntoView) s.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block:'start' });
+  const bt = s.querySelector('.ouvir-q [data-ouvir-trecho]'), q = s.querySelector('.q');
+  if (ouvir && bt) { bt.focus({ preventScroll: true }); bt.click(); }
+  else if (q) { q.setAttribute('tabindex', '-1'); q.focus({ preventScroll: true }); }
+}
+/* Botões "Ouvir pergunta" e alto-falante de cada alternativa (só leem; não respondem). */
+if (window.Ouvir && Ouvir.fonteTrechos) Ouvir.fonteTrechos(b => {
+  const s = b.closest('section.os'), linha = b.closest('.opt-linha'), fb = b.closest('.fb');
+  if (!s) return [];
+  if (fb) return [{ el: fb, texto: [...fb.querySelectorAll(':scope > b, :scope > span')].map(x => x.innerText.trim()).join(' ') }];
+  const o = linha && linha.querySelector('.opt'), i = o ? [...s.querySelectorAll('.opt')].indexOf(o) : -1;
+  const blocos = !linha ? blocosDesafio(s) : o ? [{ el: o, texto: textoAlternativa(o, i) }] : [];
+  const L = byId(S.cur);
+  if (!blocos.length || !C || !C.audio || !L) return blocos;
+  const k = [...$('main').querySelectorAll('section.os')].indexOf(s);
+  return manifestoAudio().then(async man => {
+    const e = man && man.licoes[L.id];
+    const ent = !e ? null : linha ? e.alternativas && e.alternativas[k] && e.alternativas[k][i] : e.perguntas && e.perguntas[k];
+    return { blocos, audio: await audioConferido(man, ent, blocos) };
+  });
+});
 
 function navConcluida(L, mod, solved){
   if (!solved) return '';
@@ -1647,6 +1720,7 @@ async function responder(i){
     ss.q = q + 1; ss.tried = []; ss.last = null; renderMain(true);
     const novas = document.querySelectorAll('#main section.os'); const nova = novas[novas.length - 1];
     if (nova && nova.scrollIntoView) nova.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block:'start' });
+    focarResultado(q);
     return;
   }
   if (lista[q].opts[i].ok) {
@@ -1657,6 +1731,12 @@ async function responder(i){
     catch(e){ console.error(e); toast('⚠️ Não foi possível salvar o progresso. Verifique a internet.'); }
   } else { if (!ss.tried.includes(i)) ss.tried.push(i); ss.last = i; renderMain(true); }
   const fb = $('fb'); if (fb && fb.scrollIntoView) fb.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block:'center' });
+  focarResultado(q);
+}
+/* Depois de responder, o foco vai para o resultado (acerto/erro e explicação), que o leitor de tela anuncia. */
+function focarResultado(k){
+  const s = document.querySelectorAll('#main section.os')[k], slot = s && s.querySelector('.fb-slot');
+  if (slot && slot.textContent.trim()) slot.focus({ preventScroll: true });
 }
 
 document.addEventListener('click', e => {
@@ -1734,6 +1814,8 @@ document.addEventListener('click', e => {
   else if (a === 'go') { const id = t.dataset.id; if (unlocked(id)) goLesson(id); }
   else if (a === 'spin') { t.classList.remove('spin'); void t.offsetWidth; t.classList.add('spin'); setTimeout(() => t.classList.remove('spin'), 750); }
   else if (a === 'ans') responder(parseInt(t.dataset.i,10));
+  else if (a === 'fim-ir' || a === 'fim-ouvir') irParaPergunta(a === 'fim-ouvir');
+  else if (a === 'fim-fechar') { const b = t.closest('.ouvir-fim'); if (b) b.remove(); if (window.Ouvir) Ouvir.parar(); const p = document.querySelector('#main .ouvir [data-prin]'); if (p) p.focus({ preventScroll: true }); }
   else if (a === 'projeto-ok') concluirProjeto();
   else if (a === 'next') { const i = idxOf(S.cur); if (FLAT()[i+1]) goLesson(FLAT()[i+1].id); }
   else if (a === 'finish') { S.view = 'moduleDone'; S.modDone = parseInt(t.dataset.mod,10); renderAll(); confetti(); }

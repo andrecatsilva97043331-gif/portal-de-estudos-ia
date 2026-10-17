@@ -28,8 +28,8 @@
 <script>(function(){var n=navigator,c=/Android|iPhone|iPad|iPod|Mobile|Opera Mini|IEMobile/i.test(n.userAgent)||(n.platform==='MacIntel'&&n.maxTouchPoints>1)||(matchMedia('(pointer: coarse)').matches&&!matchMedia('(any-pointer: fine)').matches);document.documentElement.classList.add(c?'cel':'pc');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/base.css">
-<link rel="stylesheet" href="assets/portal.css">
+<link rel="stylesheet" href="assets/base.css?v=20261017i">
+<link rel="stylesheet" href="assets/portal.css?v=20261017i">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Dancing+Script:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/certificado.css">
 <link rel="stylesheet" href="assets/assistente.css">
@@ -39,9 +39,10 @@
 <div class="demo-bar" id="demo-bar" hidden></div>
 <header class="top">
   <div class="top-in">
-    <button class="logo" data-act="cursos" aria-label="Ir para os cursos"><img class="logoimg" src="assets/icone.svg" alt=""><span class="brand"><span class="title" id="titulo">Portal de Estudos IA</span><span class="tagline">O maior portal de estudos de desenvolvimento em IA</span></span></button>
+    <button class="logo" data-act="cursos" title="Ir para os cursos"><img class="logoimg" src="assets/icone.svg" alt=""><span class="brand"><span class="title" id="titulo">Portal de Estudos IA</span><span class="tagline">O maior portal de estudos de desenvolvimento em IA</span></span></button>
     <div class="pbar off" role="progressbar" aria-label="Progresso no curso" id="pb-wrap"><i id="pb"></i></div>
     <div class="plabel off" id="pl"></div>
+    <span data-a11y></span>
     <button class="btn-tool off" id="btn-tool" data-act="tool" aria-label="Abrir Code Toolbox">🧰 <span class="tt">Code Toolbox</span></button>
     <a class="btn-tool btn-master" id="btn-master" href="admin.html" hidden aria-label="Abrir o Painel do Master">🛡️ <span class="tt">Painel do Master</span></a>
     <button class="btn-tool btn-sair" id="btn-sair" type="button" data-act="sair" hidden aria-label="Sair do portal">🚪 <span class="tt">Sair</span></button>
@@ -53,7 +54,7 @@
 
 <div class="app full" id="app">
   <aside class="sb" id="sb" aria-label="Módulos e lições"></aside>
-  <main class="main" id="main"><div class="empty">Carregando…</div></main>
+  <main class="main" id="main" data-a11y-texto><div class="empty">Carregando…</div></main>
 </div>
 
 <nav class="bn" aria-label="Navegação">
@@ -75,7 +76,8 @@
 <script src="assets/dados.js"></script>
 <script src="assets/certificado.js"></script>
 <script src="assets/assistente.js"></script>
-<script src="assets/ouvir.js"></script>
-<script src="assets/app.js"></script>
+<script src="assets/ouvir.js?v=20261017p"></script>
+<script src="assets/acessibilidade.js?v=20261017p"></script>
+<script src="assets/app.js?v=20261017p"></script>
 </body>
 </html>

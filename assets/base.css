@@ -188,6 +188,10 @@ button{font-family:inherit; cursor:pointer;}
 .fb b{display:block; font-family:var(--font-d); font-size:17px; margin-bottom:2px;}
 .fb span{color:var(--text);}
 .fb.pop{animation:pop .4s ease;}
+.fb-slot{border-radius:14px;}
+.fb-slot:focus{outline:none;}
+.fb-slot:focus-visible{outline:3px solid #fff; outline-offset:3px;}
+.fb-ouvir{margin-top:10px;}
 @keyframes pop{from{transform:scale(.95); opacity:.3;} to{transform:scale(1); opacity:1;}}
 .next{display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,var(--c),var(--c2)); color:#000; border:0; border-radius:14px; padding:13px 22px; font-weight:800; font-size:16px; font-family:var(--font-d); box-shadow:0 12px 30px -12px var(--c); transition:transform .2s, filter .2s;}
 .next:hover{transform:translateY(-3px); filter:brightness(1.1);}
