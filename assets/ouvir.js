@@ -282,7 +282,7 @@
     const e = st.estado, mp3 = st.modo === 'audio';
     const vozes = st.modo === 'fala' ? vozesPt() : [];
     const ativo = c.contains(document.activeElement) ? document.activeElement : null;
-    const focoEra = ativo && (ativo.dataset.ouvir === 'vel' ? `[data-ouvir="vel"][data-v="${ativo.dataset.v}"]` : ['ouvir', 'pausar', 'continuar', 'parar'].includes(ativo.dataset.ouvir) ? '[data-prin]' : ativo.dataset.ouvir ? `[data-ouvir="${ativo.dataset.ouvir}"]` : ativo.matches('[data-ouvir-voz]') ? '[data-ouvir-voz]' : null);
+    const focoEra = ativo && (ativo.dataset.ouvir === 'vel' ? `[data-ouvir="vel"][data-v="${ativo.dataset.v}"]` : ['ouvir', 'pausar', 'continuar', 'parar'].includes(ativo.dataset.ouvir) ? '[data-prin]' : ativo.dataset.ouvir ? `[data-ouvir="${ativo.dataset.ouvir}"]` : ativo.matches('[data-ouvir-voz]') ? '[data-ouvir-voz]' : ativo.matches('[data-ouvir-vel]') ? '[data-ouvir-vel]' : null);
     c.classList.toggle('ativo', e !== 'parado');
     const pulsa = st.pulsar && e === 'parado' ? ' pulsa' : ''; st.pulsar = false;
     if (e === 'parado' && st.oferta) {
@@ -306,7 +306,7 @@
           <span class="ouvir-pos">${posTexto()}</span>
         </div>
         <div class="ouvir-linha">
-          <div class="ouvir-vels" role="group" aria-label="Velocidade da voz">${VELS.map(v => `<button type="button" class="ouvir-bt chip" data-ouvir="vel" data-v="${v}" aria-pressed="${v === vel}" aria-label="Velocidade ${velTexto(v)}">${velTexto(v)}</button>`).join('')}</div>
+          <select class="ouvir-voz ouvir-vel" data-ouvir-vel aria-label="Velocidade da voz" title="Velocidade da voz">${VELS.map(v => `<option value="${v}"${v === vel ? ' selected' : ''}>Velocidade ${velTexto(v)}</option>`).join('')}</select>
           ${vozes.length > 1 ? `<select class="ouvir-voz" data-ouvir-voz aria-label="Voz da leitura" title="Voz da leitura">${vozes.map(v => `<option value="${v.name.replace(/"/g, '&quot;')}"${voz && v.name === voz.name ? ' selected' : ''}>${nomeCurto(v).replace(/</g, '&lt;')}</option>`).join('')}</select>` : ''}
         </div>
       </div>`;
@@ -468,7 +468,8 @@
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); pular(e.key === 'ArrowLeft' ? -1 : 1); }
     else if ((e.key === 'k' || e.key === 'K') && st.ctrl.contains(t)) { e.preventDefault(); alternar(); }
   });
-  document.addEventListener('change', e => { const s = e.target.closest && e.target.closest('[data-ouvir-voz]'); if (s && st.ctrl && st.ctrl.contains(s)) trocarVoz(s.value); });
+  document.addEventListener('change', e => { const s = e.target.closest && e.target.closest('[data-ouvir-voz]'); if (s && st.ctrl && st.ctrl.contains(s)) trocarVoz(s.value);
+    const sv = e.target.closest && e.target.closest('[data-ouvir-vel]'); if (sv && st.ctrl && st.ctrl.contains(sv)) trocarVel(parseFloat(sv.value)); });
   addEventListener('pagehide', () => parar());
   const css = document.createElement('style');
   css.textContent = `.ouvir{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0 0 18px;}
@@ -497,7 +498,7 @@
 .ouvir-bt.chip{min-width:56px; min-height:44px; padding:8px 12px; justify-content:center; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:13px; color:#d6d6e4;}
 .ouvir-bt.chip[aria-pressed="true"]{border-color:transparent; color:#04040a; background:linear-gradient(135deg,var(--c,#22d3ee),var(--c2,#c084fc));}
 .ouvir-player .ouvir-voz{min-height:44px;}
-@media (max-width:520px){.ouvir-pos{flex-basis:100%; margin-left:0; text-align:center;} .ouvir-player .ouvir-linha:first-child{justify-content:center;} .ouvir-vels{flex:1 1 100%; justify-content:space-between;} .ouvir-bt.chip{flex:1; min-width:0; padding:8px 4px;} .ouvir-player .ouvir-voz{flex:1 1 100%; max-width:none;}}
+@media (max-width:520px){.ouvir-pos{flex-basis:100%; margin-left:0; text-align:center;} .ouvir-player .ouvir-linha:first-child{justify-content:center;} .ouvir-vels{flex:1 1 100%; justify-content:space-between;} .ouvir-bt.chip{flex:1; min-width:0; padding:8px 4px;} .ouvir-player .ouvir-voz{flex:1 1 0; max-width:none;}}
 .ouvir-voz{max-width:190px; border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:9px 10px; font-family:inherit; font-size:13px; font-weight:600; color:#f5f5fa; background:#0b0b14; cursor:pointer;}
 .ouvir-voz:hover{border-color:var(--c,#22d3ee);}
 .ouvir-lendo{background-color:rgba(34,211,238,.09) !important; box-shadow:0 0 0 2px rgba(34,211,238,.28); border-radius:8px; transition:background-color .25s, box-shadow .25s;}
