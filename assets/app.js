@@ -1226,11 +1226,37 @@ function renderLicao(){
       <div ${k === Math.min(atual, lista.length - 1) ? 'id="fb"' : ''}>${fb}</div>
     </section>`;
   };
-  m.innerHTML = head + L.body.join('') + lista.slice(0, Math.min(atual + 1, lista.length)).map(bloco).join('') + navConcluida(L, mod, solved);
+  m.innerHTML = head + '<div class="ouvir-slot"></div>' + L.body.join('') + lista.slice(0, Math.min(atual + 1, lista.length)).map(bloco).join('') + navConcluida(L, mod, solved);
+  if (window.Ouvir) Ouvir.montar(m.querySelector('.ouvir-slot'), () => blocosLicao(m));
   rodarGancho();
 }
 
 const perguntas = L => Array.isArray(L.ch) ? L.ch : [L.ch];
+
+/* Texto para o botão "Ouvir": título, conteúdo visível da lição e a pergunta atual com as alternativas. */
+const SEL_LEITURA = 'h1,h2,h3,h4,p,li,tr,blockquote,pre,figcaption,.term,.node';
+function blocosLicao(m){
+  const out = [], visivel = el => el.getClientRects().length > 0;
+  const add = (el, texto) => { if (visivel(el)) out.push({ el, texto: texto == null ? el.innerText : texto }); };
+  const tr = el => [...el.cells].map(c => c.innerText.trim()).filter(Boolean).join(', ');
+  const tit = m.querySelector('.lh .h1'); if (tit) add(tit);
+  const slot = m.querySelector('.ouvir-slot');
+  for (let el = slot && slot.nextElementSibling; el && !el.matches('section.os'); el = el.nextElementSibling) {
+    if (el.matches(SEL_LEITURA)) { add(el, el.matches('tr') ? tr(el) : null); continue; }
+    const partes = [...el.querySelectorAll(SEL_LEITURA)].filter(x => { const p = x.parentElement.closest(SEL_LEITURA); return !p || !el.contains(p); });
+    if (!partes.length) add(el);
+    partes.forEach(x => add(x, x.matches('tr') ? tr(x) : null));
+  }
+  const secs = m.querySelectorAll('section.os'), s = secs[secs.length - 1];
+  if (s) {
+    const tx = sel => { const e = s.querySelector(sel); return e ? e.innerText.trim() : ''; };
+    if (tx('.pnum')) add(s.querySelector('.pnum'));
+    if (tx('.says')) add(s.querySelector('.says'), tx('.who') + ' ' + tx('.says'));
+    if (tx('.q')) add(s.querySelector('.q'));
+    s.querySelectorAll('.opt').forEach((o, i) => add(o, `Alternativa ${String.fromCharCode(65 + i)}: ${(o.querySelector('span:last-child') || o).innerText.trim()}`));
+  }
+  return out;
+}
 
 function navConcluida(L, mod, solved){
   if (!solved) return '';
@@ -1280,6 +1306,7 @@ function rodarGancho(){
 }
 
 function renderMain(keep){
+  if (window.Ouvir) Ouvir.parar();
   if (S.view === 'cursos') renderCursos();
   else if (S.view === 'cadastro') renderCadastro();
   else if (S.view === 'verificar') renderVerificar();

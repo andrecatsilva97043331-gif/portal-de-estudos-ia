@@ -67,6 +67,8 @@
     </div>
   </section>
 
+  <div class="ouvir-slot" id="ouvir-historia"></div>
+
   <article class="texto">
     <p>Meu nome é André Luiz e sou o quarto de uma família de sete irmãos. Crescer em uma casa tão cheia significava que cada dia era uma batalha silenciosa pela sobrevivência. Vivíamos sob o peso constante da escassez. Meu pai, um homem incansável, trabalhava sem carteira assinada, enfrentando a incerteza diária e fazendo o impossível para colocar comida na mesa. Ao seu lado, minha mãe, com o coração cheio de amor e as mãos calejadas, desdobrava-se como dona de casa e lavando e passando roupas para fora. Ela transformava o suor do seu trabalho em dignidade para nós.</p>
 
@@ -97,5 +99,13 @@
     <a class="btn sec ico" href="./" aria-label="Voltar ao portal" title="Voltar ao portal"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></a>
   </div>
 </main>
+<script src="assets/ouvir.js?v=20261017d"></script>
+<script>
+  /* Áudio gravado com voz neural (en-US-BrianMultilingualNeural falando português) e a Ave Maria de Schubert na flauta ao fundo.
+     marcas = segundo em que começam o título e cada parágrafo no mp3. Se mudar o texto acima, gere o mp3 e as marcas de novo. */
+  Ouvir.montar(document.getElementById('ouvir-historia'), () =>
+    [document.querySelector('main h1')].concat([...document.querySelectorAll('.texto p')]).map(el => ({ el, texto: el.innerText })),
+    { audio: 'assets/historia.mp3?v=20261017c', marcas: [1, 10.4, 58.3, 115.6, 157.9, 191.7, 236.4, 301.3, 340.8, 357.4] });
+</script>
 </body>
 </html>
