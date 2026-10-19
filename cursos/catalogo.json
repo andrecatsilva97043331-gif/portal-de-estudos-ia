@@ -47,6 +47,7 @@
   },
   {
     "id": "automacao-sem-codigo",
+    "audio": true,
     "titulo": "Automação Sem Código",
     "descricao": "Criar fluxos que trabalham sozinhos, como formulário, planilha e WhatsApp.",
     "icone": "🔗",
