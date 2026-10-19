@@ -165,6 +165,7 @@
   {
     "id": "posts-para-redes-sociais",
     "titulo": "Posts para Redes Sociais com IA",
+    "audio": true,
     "descricao": "Planejar, escrever e entregar posts para o negócio de um cliente com ajuda de IA, com revisão e honestidade.",
     "icone": "📣",
     "capa": "assets/capas/posts-para-redes-sociais.webp",
