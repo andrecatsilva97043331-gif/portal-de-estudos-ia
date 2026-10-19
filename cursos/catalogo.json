@@ -31,6 +31,7 @@
   },
   {
     "id": "ia-no-trabalho",
+    "audio": true,
     "titulo": "IA no Trabalho e no Dia a Dia",
     "descricao": "Ganhar tempo com textos, planilhas, pesquisa e estudos usando ferramentas gratuitas.",
     "icone": "💼",
