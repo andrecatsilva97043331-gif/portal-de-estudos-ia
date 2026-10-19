@@ -16,6 +16,7 @@
   },
   {
     "id": "prompts-que-funcionam",
+    "audio": true,
     "titulo": "Prompts que Funcionam",
     "descricao": "Pedir do jeito certo e melhorar qualquer resposta da IA.",
     "icone": "✍️",
